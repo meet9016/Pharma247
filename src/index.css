@@ -1,0 +1,409 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+.item-table{
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid var(--color2);
+    font-size: 14px;
+    text-align: left;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    
+}
+
+.item-table th,
+.item-table td {
+    padding: 3px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.item-table th {
+    color: var(--color1);
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    border-bottom: 1px solid var(--color2);
+    background-color: #f9f9f9;
+}
+
+.item-table tr:hover {
+    background: #ceecfd;
+}
+
+.input-row{
+    background-color: #f9f9f9;
+    border-bottom: 1px solid var(--color2);
+}
+/* Item list table styles */
+.item-List tr {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+.item-List th,
+.item-List td {
+    padding: 8px;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.item-List th {
+    color: var(--color1);
+    font-size: 15px;
+}
+
+.item-List:hover {
+    background: #ceecfd;
+}
+
+/* Table container for scrollable tables */
+.table-container {
+    max-height: 550px;
+    height: 550px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin: 15px 0px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Responsive table styles */
+@media (max-width: 768px) {
+    .table-container {
+        max-height: 400px;
+        height: 400px;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+    
+    .item-table {
+        min-width: 1200px; /* Ensure table doesn't get too cramped */
+    }
+    
+    .item-table th,
+    .item-table td {
+        padding: 3px 3px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    
+    .item-table th {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .table-container {
+        max-height: 300px;
+        height: 300px;
+    }
+    
+    .item-table {
+        min-width: 1000px;
+    }
+    
+    .item-table th,
+    .item-table td {
+        padding: 3px 2px;
+        font-size: 11px;
+    }
+    
+    .item-table th {
+        font-size: 11px;
+    }
+}
+
+/* ===== REUSABLE COMPONENT STYLES ===== */
+
+/* Header list styles */
+.headerList {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: 10px;
+}
+
+/* Title styles */
+.title {
+    font-size: 17px;
+    display: flex;
+    gap: 5px;
+    color: #628A2F;
+    font-weight: 500;
+    line-height: 17px;
+}
+
+/* Icon styles */
+.icon {
+    color: #628A2F;
+    cursor: pointer;
+}
+
+/* Delete icon with animation */
+.delete-icon {
+    color: var(--color6);
+    cursor: pointer;
+}
+
+.delete-icon:hover {
+    color: red;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(45deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+/* Total amount cell styles */
+.total {
+    background-color: #628A2F;
+    color: white;
+    /* width: 100%; */
+    min-width: 65px;
+}
+
+/* Item list container styles */
+.item-list {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px solid rgba(221, 78, 90, 0.5) !important;
+    border-radius: 5px;
+    background: rgba(221, 78, 90, 0.1);
+}
+
+/* Flex container for item details */
+.item-list .flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+/* General styles for the labels and values */
+.item-list span {
+    display: block;
+}
+
+/* Optional: Styling for specific item details */
+.item-list .flex span:first-child {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+/* Adjust padding and margin for item details */
+.item-list .flex div {
+    padding: 5px;
+}
+
+/* List bank styles */
+.list-bank {
+    cursor: pointer;
+    margin-block: 10px;
+}
+
+.list-bank.highlighted {
+    background-color: rgba(63, 98, 18, 0.09);
+    border-radius: 10px !important;
+    -webkit-border-radius: 10px !important;
+    -moz-border-radius: 10px !important;
+    -ms-border-radius: 10px !important;
+    -o-border-radius: 10px !important;
+}
+
+/* ===== FORM STYLES ===== */
+
+/* Label styles */
+.label {
+    font-weight: 450;
+    font-size: 16px;
+}
+
+/* Field container styles */
+.field {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+/* Input styles */
+.input {
+    border: 1px solid black;
+    height: 35px;
+    width: 80px;
+}
+
+/* Info styles */
+.info {
+    font-size: 12px;
+    display: flex;
+    gap: 30px;
+}
+
+/* Item list styles */
+.itemList {
+    padding: 5px;
+    font-weight: 400;
+}
+
+/* ===== LAYOUT STYLES ===== */
+
+/* Main container */
+.main {
+    display: flex;
+    gap: 20px;
+}
+
+/* ===== MUI OVERRIDE STYLES ===== */
+
+/* Date Picker Css */
+.css-10o2lyd-MuiStack-root {
+    padding-top: 0px !important;
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+    height: 0.5rem !important;
+}
+
+/* ===== ADDITIONAL TABLE STYLES ===== */
+
+/* Sale table styles */
+.saleTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.saleTable th,
+.saleTable td {
+    padding: 8px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.saleTable th {
+    color: var(--color1);
+    font-size: 14px;
+    border-bottom: 1px solid;
+}
+
+/* Custom table styles */
+.customtable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.customtable th,
+.customtable td {
+    padding: 8px;
+    text-align: center;
+    font-size: 14px;
+    
+}
+
+.customtable th {
+    color: var(--color1);
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    border-bottom: 1px solid;
+}
+
+/* Ensure table headers stay fixed and properly styled */
+.item-table thead th {
+    background-color: white;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: 600;
+    color: var(--color1);
+    position: static;
+    top: 0;
+}
+
+/* Ensure table body has proper spacing */
+.item-table tbody {
+    background-color: white;
+}
+
+/* Add subtle hover effect for better UX */
+.item-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Item list styles */
+.itemList {
+    padding: 5px;
+    font-weight: 600;
+}
+
+/* ===== ADDITIONAL STYLES FROM ADDRETURNBILL ===== */
+
+/* Enhanced list bank styles */
+.list-bank {
+    cursor: pointer;
+    border-radius: 10px !important;
+    -webkit-border-radius: 10px !important;
+    -moz-border-radius: 10px !important;
+    -ms-border-radius: 10px !important;
+    -o-border-radius: 10px !important;
+    background-color: rgba(63, 98, 18, 0.09);
+}
+
+.list-bank.highlighted {
+    background-color: var(--color2);
+    color: white;
+    border-radius: 10px !important;
+    -webkit-border-radius: 10px !important;
+    -moz-border-radius: 10px !important;
+    -ms-border-radius: 10px !important;
+    -o-border-radius: 10px !important;
+}
+
+/* Highlighted row for keyboard navigation */
+.highlighted-row {
+    background-color: var(--color2) !important;
+    color: white !important;
+}
+
+.highlighted-row:hover {
+    background-color: var(--color2) !important;
+    color: white !important;
+}
+
+/* Enhanced custom table styles */
+.customtable th,
+.customtable td {
+    padding: 8px !important;
+    text-align: center;
+    font-size: 14px;
+}

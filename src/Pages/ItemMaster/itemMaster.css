@@ -1,0 +1,632 @@
+.heading {
+  font-weight: 700;
+  font-size: 25px;
+}
+
+/* .filed {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    flex-wrap: wrap;
+} */
+
+.checkbox-text {
+  display: flex;
+  align-items: center;
+}
+
+.uploadBox {
+  margin: 0 0 10px;
+}
+
+.product {
+  font-weight: 700;
+  font-size: 20px;
+  color: #4b5675;
+}
+
+.upload {
+  /* width: 350px; */
+  /* border-radius: 30px; */
+  border: 2px dashed #919191;
+  /* height: 300px; */
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.profile-upload {
+  width: 200px;
+  border: 2px dashed #919191;
+  border-radius: 10px;
+  height: 200px;
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  /* flex-direction: column; */
+  margin: 5px 0;
+  width: 25%;
+}
+
+.four_divv {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  margin: 5px 0;
+  width: 33.33333333333333%;
+}
+
+.third_divv {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  margin: 5px 0;
+  width: 25%;
+}
+
+.secrw_divvv {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  margin: 5px 0;
+  width: 33.33333333333333%;
+}
+
+.Unit_divvv {
+  width: 50% !important;
+  flex-direction: column;
+}
+
+.product_img_divv {
+  /* gap: 20px; */
+}
+
+.row {
+  display: flex;
+  /* gap: 20px; */
+  /* flex-wrap: wrap; */
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+}
+
+.mainform {
+  /* display: flex; */
+  flex-direction: column;
+  gap: 20px;
+  /* padding: 10px; */
+  /* flex-wrap: wrap; */
+  /* max-width: 1399px; */
+}
+
+.UploadClass {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* padding-bottom: 10px; */
+  align-items: center;
+  min-height: 200px;
+  max-height: 200px;
+}
+.UploadProfile{
+  display: flex;
+  padding-top: 10px;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  max-height: 200px;
+}
+.content {
+  padding: 20px;
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  flex-direction: column;
+  /* align-content: center; */
+}
+
+.firstRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.ExpenseBoxTitle {
+  color: rgb(4, 76, 157);
+  font-weight: 600;
+}
+
+.ExpenseBoxSubTitle {
+  color: rgb(4, 76, 157);
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}
+
+.file-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  width: 300px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+}
+
+.file-upload-container input[type="file"] {
+  display: none;
+}
+
+.file-upload-container label {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.label {
+  margin-bottom: 7px;
+}
+
+.file-upload-container label:hover {
+  background-color: #0056b3;
+}
+
+.file-upload-container .file-name {
+  margin-top: 10px;
+  font-size: 14px;
+  flex-wrap: wrap;
+  text-wrap: wrap;
+  color: #333;
+}
+
+.File-upload {
+  border: 1px solid black;
+  width: 100%;
+  padding: 5px;
+}
+
+.downloadFile {
+  color: #0056b3;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.errorFile {
+  color: red;
+}
+
+@media (min-width: 901px) and (max-width: 1131px) {
+  .item_add_box {
+    container: auto !important;
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+  }
+
+  .item_add_box_1 {
+    container: auto !important;
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+  }
+
+  .upload {
+    width: 100% !important;
+  }
+
+  .upload_bx1 {
+    padding-left: 20px;
+  }
+
+  .upload_bx3 {
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .item_add_box {
+    container: auto !important;
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+  }
+
+  .upload {
+    width: 100% !important;
+    min-width: 200px;
+  }
+
+  .item_boxes {
+    flex-direction: column;
+    gap: 0% !important;
+  }
+
+  .item_inner_box {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 453px) {
+  .header_bx {
+    flex-direction: column;
+  }
+
+  .product_img_divv {
+    flex-direction: column;
+  }
+
+  .upload {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .product_img_divv {
+    flex-direction: column;
+  }
+
+  .upload {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .UploadClass {
+    height: 240px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .itm_divv_wid {
+    width: 100% !important;
+  }
+
+  .item_fld_rw {
+    flex-direction: column !important;
+    padding-top: 0.5rem;
+  }
+}
+
+/* Inventory Page */
+@media (max-width: 1115px) {
+  .inventory_search {
+    width: 50% !important;
+  }
+
+  .inventory_search_btn {
+    margin-top: 0.5rem;
+  }
+
+  .inventory_search_main {
+    justify-content: end;
+  }
+}
+
+@media (min-width: 1549px) {
+  .inventory_search {
+    width: 50% !important;
+  }
+
+  .inventory_search_btn {
+    margin-top: 0.5rem;
+  }
+
+  .inventory_search_main {
+    justify-content: space-between;
+    align-items: baseline;
+  }
+}
+
+@media (min-width: 1441px) and (max-width: 1550px) {
+  .inventory_search {
+    width: 50% !important;
+  }
+
+  .inventory_search_btn {
+    margin-top: 0.5rem;
+  }
+
+  .inventory_search_main {
+    justify-content: space-between;
+    align-items: baseline;
+  }
+}
+
+@media (min-width: 1116px) and (max-width: 1200px) {
+  .inventory_search {
+    width: 60% !important;
+  }
+
+  .inventory_search_btn {
+    margin-top: 0.5rem;
+  }
+
+  .inventory_search_main {
+    justify-content: space-between;
+    align-items: baseline;
+  }
+}
+
+@media (min-width: 1201px) and (max-width: 1440px) {
+  .inventory_search {
+    width: 65% !important;
+  }
+
+  .inventory_search_btn {
+    margin-top: 0.5rem;
+  }
+
+  .inventory_search_main {
+    justify-content: space-between;
+    align-items: baseline;
+  }
+}
+
+@media (max-width: 992px) {
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .filterDrawer_fld {
+    display: block;
+  }
+
+  .side_contn {
+    display: none;
+  }
+}
+
+@media (min-width: 992px) {
+  .filterDrawer_fld {
+    display: none;
+  }
+
+  .side_contn {
+    display: block;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1067px) {
+  .side_contn {
+    .css-ntst6i {
+      max-width: 259px !important;
+    }
+  }
+
+  .tbl_content_inv {
+    width: 74% !important;
+  }
+}
+
+@media (min-width: 1068px) and (max-width: 1116px) {
+  .side_contn {
+    .css-ntst6i {
+      max-width: 270px !important;
+    }
+  }
+
+  .tbl_content_inv {
+    width: 77% !important;
+  }
+}
+
+.divider_btm {
+  border-bottom: none !important;
+}
+
+/* Inventory View */
+@media (min-width: 376px) and (max-width: 600px) {
+  .inven_view_purchase {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 375px) {
+  .inven_view_purchase {
+    flex-direction: column;
+  }
+
+  .inventory_txt_purchase {
+    font-size: x-large !important;
+  }
+
+  .inventory_txt_purchase_api {
+    font-size: 14px !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .item_edit_btn_inventory {
+    flex-direction: column !important;
+    margin-bottom: 5% !important;
+  }
+
+  .item_edit_btn_inventory_main {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 1042px) and (max-width: 1055px) {
+  .inventory_header_txt {
+    column-gap: 1.5rem !important;
+  }
+}
+
+@media (max-width: 492px) {
+  .inven_view_purchase_main {
+    flex-direction: column !important;
+  }
+}
+
+/* Order List */
+
+@media (max-width: 767px) {
+  .oreder_list_fld {
+    /* flex-direction: column !important; */
+  }
+
+  .dst_fld_odr {
+    min-width: 50% !important;
+  }
+}
+
+@media (max-width: 1215px) and (min-width: 768px) {
+  .oreder_list_fld_rp {
+    /* flex-direction: column !important; */
+    /* display: flex; */
+  }
+
+  .purch_report_hdr {
+    /* width: 100% !important;
+    justify-content: end;
+    display: flex; */
+  }
+
+  .purch_report_hdr1 {
+    /* width: 100% !important;
+    justify-content: end;
+    display: flex; */
+  }
+
+  .detail_report {
+    width: 100% !important;
+    margin-top: 10px;
+  }
+
+  .detail_report_totl {
+    display: flex;
+    flex-direction: row;
+    width: 100% !important;
+    justify-content: space-between;
+  }
+
+  .ttl_dldld {
+    /* width: 100% !important;
+    justify-content: end;
+    display: flex; */
+  }
+}
+
+@media (max-width: 767px) {
+  .oreder_list_fld_rp {
+    /* flex-direction: column !important; */
+    /* align-items: start !important; */
+  }
+
+  .purch_report_hdr {
+    /* flex-direction: column !important;
+    width: 100% !important; */
+  }
+
+  .purch_report_hdr1 {
+    /* flex-direction: column !important;
+    width: 100% !important; */
+  }
+
+  .detail_report_totl {
+    display: flex;
+    flex-direction: row;
+    width: 100% !important;
+    justify-content: space-between;
+  }
+
+  .detail_report {
+    width: 100% !important;
+    margin-top: 10px;
+  }
+
+  .go_btn_divv {
+    width: 100% !important;
+  }
+
+  .report_btn_purch {
+    font-size: 15px !important;
+    white-space: nowrap;
+  }
+
+  .ttl_dldld {
+    /* width: 100% !important; */
+    /* justify-content: end; */
+    /* flex-direction: column; */
+    /* display: flex; */
+  }
+
+  .day_summ_fldssss {
+    width: 100% !important;
+    justify-content: end;
+    flex-direction: row;
+    display: flex;
+  }
+
+  .day_wise_sum {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 811px) {
+  .dst_fld_odr {
+    min-width: 300px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 810px) {
+  .dst_fld_odr {
+    min-width: 250px !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .info_box_fld {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 605px) {
+  .day_summ_fldssss {
+    width: 100% !important;
+    justify-content: end;
+    flex-direction: column;
+    display: flex;
+  }
+
+  .day_wise_sum {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1086px) {
+  .dash_card_chartss {
+    flex-direction: column !important;
+  }
+}
+
+@media (min-width: 1087px) and (max-width: 1218px) {
+  .dsh_card_chart {
+    flex-direction: column !important;
+  }
+
+  .dsh_card_chart {
+    flex-direction: column !important;
+    /* gap: 35px !important; */
+  }
+}
+

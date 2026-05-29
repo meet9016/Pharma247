@@ -1,0 +1,109 @@
+[
+  {
+    "id": "add-purchase",
+    "header": "How to Add a Purchase – Full Field & Button Guide",
+    "youtube_url": "https://www.youtube.com/embed/eJ1Ctu1zrbg?si=X1Ts8Ib4PIUj1UFz",
+
+    "title": "Distributor",
+    "description": "Select the supplier you are purchasing from. Start typing to search and pick from the list. Required before saving.",
+
+    "title2": "Add Distributor (+)",
+    "description2": "Click the plus icon beside Distributor to create a new supplier quickly. Fill mandatory fields and save to use immediately.",
+
+    "title3": "Bill No. / Order No.",
+    "description3": "Enter the supplier bill or order reference exactly as on the invoice. This is mandatory and used for matching/duplicate checks.",
+
+    "title4": "Bill Date",
+    "description4": "Select the date printed on the supplier invoice. Impacts due date calculation and purchase registers.",
+
+    "title5": "Due Date",
+    "description5": "Payment due date for this purchase. Used in payables and aging reports.",
+
+    "title6": "Scan Barcode",
+    "description6": "Scan an item barcode to auto-fill item details. Focus this box and scan; the item row gets populated if barcode exists.",
+
+    "title7": "Payment Type (Credit/Cash Dropdown)",
+    "description7": "Choose payment mode for the bill. Select Credit for pay-later or Cash for immediate payment posting.",
+
+    "title8": "Import Items",
+    "description8": "Bulk add items from a file or a previous purchase template. Review imported rows before saving.",
+
+    "title9": "CN Adjust",
+    "description9": "Adjust any available Credit Notes from this supplier against the current bill amount.",
+
+    "title10": "Add Item",
+    "description10": "Insert a new item row manually. Use when not scanning barcodes.",
+
+    "title11": "Save",
+    "description11": "Validate all fields and save the purchase bill. Errors will highlight missing or invalid fields.",
+
+    "title12": "Save (▼ More Options)",
+    "description12": "Open additional save actions (e.g., Save & Print, Save as Draft) if configured.",
+
+    "title13": "Search Item Name",
+    "description13": "Type to search your item master. On select, base details (tax, pack) load into the row.",
+
+    "title14": "Unit",
+    "description14": "Enter purchase unit/pack size. Example: 10, 20, 100. Used in rate and stock calculations.",
+
+    "title15": "Batch",
+    "description15": "Enter the batch/lot number printed on the product. Required for batch‑wise stock tracking.",
+
+    "title16": "Expiry",
+    "description16": "Enter expiry in MM/YY format (e.g., 12/28). The system validates future dates if enabled.",
+
+    "title17": "MRP",
+    "description17": "Maximum Retail Price on pack. Used to compute margin% and suggested sell price checks.",
+
+    "title18": "Qty.",
+    "description18": "Number of packs being purchased (excluding free). Increasing this changes Amount and totals.",
+
+    "title19": "Free",
+    "description19": "Enter free quantity received (bonus). Free impacts Net Rate but not Base.",
+
+    "title20": "PTR",
+    "description20": "Purchase rate before any tax. Typically from supplier invoice. Used to derive Base and Net Rate.",
+
+    "title21": "CD% (Cash Discount)",
+    "description21": "Cash discount percentage on PTR. Applied before tax to reduce Base amount.",
+
+    "title22": "Base",
+    "description22": "Calculated base amount after discount but before tax. Usually read‑only and auto‑computed from PTR, Qty, and CD%.",
+
+    "title23": "GST%",
+    "description23": "Applicable GST rate for the item (e.g., 5, 12). Determines tax added over Base.",
+
+    "title24": "Loc.",
+    "description24": "Storage location/rack code (e.g., OR-102). Helps warehouse putaway and picking.",
+
+    "title25": "Net Rate",
+    "description25": "Effective per‑unit rate including taxes and after free quantity impact. Auto‑calculated; used for profitability checks.",
+
+    "title26": "Margin%",
+    "description26": "Estimated profit percentage based on MRP/ Selling vs cost. Informational for pricing decisions.",
+
+    "title27": "Amount",
+    "description27": "Line total for the item (Base + GST). Highlighted cell confirms computed amount.",
+
+    "title28": "Row Edit (Pencil)",
+    "description28": "Edit the existing item row to change batch, rates, or quantities.",
+
+    "title29": "Row Delete (Trash)",
+    "description29": "Remove the selected item row from the bill. Totals update automatically.",
+
+    "title30": "Total GST (Footer)",
+    "description30": "Sum of GST across all item rows. Updates in real time.",
+
+    "title31": "Total Qty (Footer)",
+    "description31": "Combined purchased quantity and free quantity shown as `Qty + Free`.",
+
+    "title32": "Total Base (Footer)",
+    "description32": "Sum of Base amounts for all rows before tax.",
+
+    "title33": "Total Net Rate (Footer)",
+    "description33": "Average net rate across items (informational).",
+
+    "title34": "Net Amount (Footer)",
+    "description34": "Final payable amount after discounts and taxes. Matches supplier invoice total after adjustments."
+  }
+]

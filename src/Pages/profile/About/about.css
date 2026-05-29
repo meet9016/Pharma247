@@ -1,0 +1,133 @@
+.aboutPharmacy {
+  display: flex;
+  gap: 20px;
+  margin-top: 25px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+}
+
+.aboutTextField {
+  width: 50%;
+  margin-bottom: 20px;
+}
+
+/* .aboutTextField:hover {
+  background-color: rgba(4, 76, 157, 0.2);
+  border-radius: 5px;
+} */
+
+.labelStyles {
+  color: red;
+}
+
+.selected {
+  background-color: var(--color1);
+  color: white;
+}
+
+/* .selected {
+    background-color: yellow; 
+  } */
+.input-label {
+  color: red;
+}
+
+@media (max-width: 1200px) {
+  .abt_fld_pf {
+    flex-direction: column;
+  }
+  .aboutTextField {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .list-text_pb {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .abt_res_fldd {
+    flex-direction: column-reverse;
+  }
+  .img_prv_fldd {
+    display: flex;
+    justify-content: end;
+  }
+}
+
+@media (max-width: 1470px) {
+  .dc_cdr_ff {
+    flex-direction: column;
+  }
+  .dc_imgs_fldd {
+    width: 100%;
+    height: 100%;
+    min-height: 291px;
+    object-fit: contain;
+  }
+  .dc_impt_fldd {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .cdd_mn_hdr {
+    flex-direction: column;
+  }
+  .pb_mn_hdsssss_vv {
+    height: 100% !important;
+  }
+  .pb_list_hedrr {
+    white-space: nowrap;
+  }
+  .plans_hdr_txtsss {
+    font-size: x-large;
+  }
+}
+
+@media (max-width: 991px) {
+  .pass_boxx_flds {
+    width: 100%;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1400px) {
+  .pass_boxx_flds {
+    width: 50%;
+  }
+}
+@media (min-width: 1400px) {
+  .pass_boxx_flds {
+    width: 40%;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .list-text_pb {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .pb_list_hedrr {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 731px) and (min-width: 701px) {
+  .mng_role_stf_txt {
+    white-space: nowrap;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .abt_imf_dd {
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 1400px) {
+  .plns_cds {
+    flex-direction: column;
+  }
+}
