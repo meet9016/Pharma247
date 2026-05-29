@@ -619,24 +619,24 @@ const InventoryList = () => {
             toast.error("No Record Found");
           }
           setIsLoading(false);
-
+  // BECAUSE OF THIS FITLER IS NOT WORKING PROPERLY
           // setSearchItem("");
-          setSelectedOption("");
-          setHsnCode("");
-          setSelectedCategoryIds([]);
-          setSelectedPackgingIds([]);
-          setSelectedOptionStock([]);
-          setSelectedOptionEpiry([]);
-          setManufacturer(null);
-          setDrugGroup(null);
-          setSelectedGstIds([]);
-          setLocation("");
-          setMarginStart("");
-          setMarginEnd("");
-          setMRPStart("");
-          setMRPEnd("");
-          setPTREnd("");
-          setPTRStart("");
+          // setSelectedOption("");
+          // setHsnCode("");
+          // setSelectedCategoryIds([]);
+          // setSelectedPackgingIds([]);
+          // setSelectedOptionStock([]);
+          // setSelectedOptionEpiry([]);
+          // setManufacturer(null);
+          // setDrugGroup(null);
+          // setSelectedGstIds([]);
+          // setLocation("");
+          // setMarginStart("");
+          // setMarginEnd("");
+          // setMRPStart("");
+          // setMRPEnd("");
+          // setPTREnd("");
+          // setPTRStart("");
         });
     } catch (error) {
       console.error("API error:", error);

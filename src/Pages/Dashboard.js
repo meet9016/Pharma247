@@ -101,6 +101,17 @@ const Dashboard = () => {
   const [reRender, setreRender] = useState(0);
   const [barChartData, setBarChartData] = useState([]);
 
+  const abbreviateNumber = (value) => {
+    const number = Number(value);
+    if (isNaN(number)) return value;
+    const abs = Math.abs(number);
+    if (abs >= 1e9) return `${(number / 1e9).toFixed(2).replace(/\.??0+$/, "")}B`;
+    if (abs >= 1e7) return `${(number / 1e7).toFixed(2).replace(/\.??0+$/, "")}Cr`;
+    if (abs >= 1e6) return `${(number / 1e6).toFixed(2).replace(/\.??0+$/, "")}M`;
+    if (abs >= 1e3) return `${(number / 1e3).toFixed(2).replace(/\.??0+$/, "")}K`;
+    return `${number}`;
+  };
+
   const [tickFontSize, setTickFontSize] = useState("2px");
   const [staffOverview, setStaffOverview] = useState([])
   useEffect(() => {
@@ -612,6 +623,7 @@ const Dashboard = () => {
                               ) * 1.15 || 100,
                             ]}
                             ticks={getNiceTicks(barChartData)}
+                            tickFormatter={abbreviateNumber}
                           />
 
                           <Bar
@@ -625,9 +637,9 @@ const Dashboard = () => {
                                 fill="#333"
                                 fontSize="13"
                                 textAnchor="middle"
-                                style={{ background: "rgba(255,0,0,0.2)" }} // testing only
+                                style={{ background: "rgba(255,0,0,0.2)" }}
                               >
-                                {value}
+                                {abbreviateNumber(value)}
                               </text>
                             )}
                           >

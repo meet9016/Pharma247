@@ -73,7 +73,7 @@ const Itemmaster = () => {
   const [selectedMRPFile, setSelectedMRPFile] = useState(null);
   const [gstList, setGstList] = useState([]);
   const [packList, setPackList] = useState([]);
-  const [packaging, setPackaging] = useState([]);
+  const [packaging, setPackaging] = useState("");
   const [frontImgUrl, setFrontImgUrl] = useState(null);
   const [backImgUrl, setBackImgUrl] = useState(null);
   const [mrpImgUrl, setMrpImgUrl] = useState(null);
@@ -1166,15 +1166,24 @@ const Itemmaster = () => {
                     <Select
                       labelId="dropdown-label"
                       id="dropdown"
-                      value={packaging}
+                      value={packaging || ""}
                       // sx={{ minWidth: "250px" }}
                       onChange={handlePackagingChange}
                       size="small"
                       displayEmpty
+                      renderValue={(selected) => {
+                        if (selected === "") {
+                          return <span style={{ color: "rgba(0, 0, 0, 0.6)" }}>Select Packaging</span>;
+                        }
+                        const selectedOption = packList.find((option) => option.id === selected);
+                        return selectedOption ? selectedOption.packging_name : "";
+                      }}
+                      sx={{
+                        ".MuiSelect-select": {
+                          color: packaging ? "inherit" : "rgba(0, 0, 0, 0.6)",
+                        },
+                      }}
                     >
-                      <MenuItem value="" disabled>
-                        Select Packaging
-                      </MenuItem>
                       {packList.map((option) => (
                         <MenuItem key={option.id} value={option.id}>
                           {option.packging_name}
@@ -1294,16 +1303,24 @@ const Itemmaster = () => {
                       labelId="dropdown-label"
                       id="dropdown"
                       value={gst || ""}
-                      // sx={{ minWidth: "350px" }}
                       onChange={(e) => {
                         setGST(e.target.value);
                       }}
                       size="small"
                       displayEmpty
+                      renderValue={(selected) => {
+                        if (selected === "") {
+                          return <span style={{ color: "rgba(0, 0, 0, 0.6)" }}>Select GST%</span>;
+                        }
+                        const selectedOption = gstList.find((option) => option.id === selected);
+                        return selectedOption ? selectedOption.name : "";
+                      }}
+                      sx={{
+                        ".MuiSelect-select": {
+                          color: gst ? "inherit" : "rgba(0, 0, 0, 0.6)",
+                        },
+                      }}
                     >
-                      <MenuItem value="" disabled>
-                        Select GST%
-                      </MenuItem>
                       {gstList.map((option) => (
                         <MenuItem key={option.id} value={option.id}>
                           {option.name}
