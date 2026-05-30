@@ -804,13 +804,13 @@ const Itemmaster = () => {
         })
         .then((response) => {
           const data = response.data.data;
-          setPackaging(data?.package_id);
+          setPackaging(data?.packaging_id || data?.package_id);
           setWeightage(data?.weightage);
           setPack(data?.packing_size);
           setMin(data?.minimum);
           setMax(data?.maximum);
           setMRP(data?.mrp);
-          setGST(data?.gst);
+          setGST(data?.gst_id || data?.gst);
           setBarcode(data?.barcode);
           setSelectedBackFile(data?.back_photo);
           setBackImgUrl(data?.back_photo);
@@ -1173,14 +1173,14 @@ const Itemmaster = () => {
                       displayEmpty
                       renderValue={(selected) => {
                         if (selected === "") {
-                          return <span style={{ color: "rgba(0, 0, 0, 0.6)" }}>Select Packaging</span>;
+                          return <span style={{ color: "rgba(0, 0, 0, 0.38)" }}>Select Packaging</span>;
                         }
-                        const selectedOption = packList.find((option) => option.id === selected);
+                        const selectedOption = packList.find((option) => option.id == selected);
                         return selectedOption ? selectedOption.packging_name : "";
                       }}
                       sx={{
                         ".MuiSelect-select": {
-                          color: packaging ? "inherit" : "rgba(0, 0, 0, 0.6)",
+                          color: packaging ? "inherit" : "rgba(0, 0, 0, 0.38)",
                         },
                       }}
                     >
@@ -1310,14 +1310,14 @@ const Itemmaster = () => {
                       displayEmpty
                       renderValue={(selected) => {
                         if (selected === "") {
-                          return <span style={{ color: "rgba(0, 0, 0, 0.6)" }}>Select GST%</span>;
+                          return <span style={{ color: "rgba(0, 0, 0, 0.38)" }}>Select GST%</span>;
                         }
-                        const selectedOption = gstList.find((option) => option.id === selected);
+                        const selectedOption = gstList.find((option) => option.id == selected);
                         return selectedOption ? selectedOption.name : "";
                       }}
                       sx={{
                         ".MuiSelect-select": {
-                          color: gst ? "inherit" : "rgba(0, 0, 0, 0.6)",
+                          color: gst ? "inherit" : "rgba(0, 0, 0, 0.38)",
                         },
                       }}
                     >
