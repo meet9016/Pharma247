@@ -1,4 +1,5 @@
 import { BsLightbulbFill } from "react-icons/bs";
+import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 import Header from "../../Header";
 import {
   Autocomplete,
@@ -481,6 +482,8 @@ const AdjustStock = () => {
   };
 
   // ---------------------------------------  UI    ---------------------------------------------------
+  useSubmitShortcut(validateForm, openAddPopUp);
+
   return (
     <>
       <Header />

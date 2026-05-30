@@ -2294,6 +2294,10 @@ const AddSale = () => {
 
   // Global submit shortcuts
   useSubmitShortcut(() => handleSubmit(billSaveDraft), !openAddPopUp && !openPurchaseHistoryPopUp && !openCustomer && !openAddItemPopUp && !openReminderPopUp && !openModal && !openCustomerHistory && !isModalOpen);
+  useSubmitShortcut(AddDoctorRecord, openAddPopUp);
+  useSubmitShortcut(AddCustomerRecord, openCustomer);
+  useSubmitShortcut(handleAddNewItemValidation, openAddItemPopUp);
+  useSubmitShortcut(() => handleReminder(), openReminderPopUp);
 
   return (
     <>

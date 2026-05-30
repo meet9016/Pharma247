@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 import Header from "../../Header";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
@@ -135,7 +136,7 @@ const DrugGroup = () => {
         setIsLoading(false);
         setIsSearching(false);
       })
-      .catch(() => {
+      .catch((error) => {
         setIsLoading(false);
         setIsSearching(false);
         setDrugGroupData([]);
@@ -287,6 +288,8 @@ const DrugGroup = () => {
   const handleRowClick = (drugGroupId) => {
     history.push(`/drugGroupView/${drugGroupId}`);
   };
+
+  useSubmitShortcut(validData, openAddPopUp);
 
   return (
     <div>

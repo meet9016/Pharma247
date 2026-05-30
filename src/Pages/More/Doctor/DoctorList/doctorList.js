@@ -1,3 +1,4 @@
+import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 import Header from "../../../Header";
 import Loader from "../../../../componets/loader/Loader";
 import React, { useEffect, useState, useRef } from "react";
@@ -497,6 +498,9 @@ const DoctorList = () => {
       }
     }
   };
+
+  useSubmitShortcut(AddDoctor, openAddPopUp);
+  useSubmitShortcut(uploadDoctorFile, openUpload);
 
   return (
     <>

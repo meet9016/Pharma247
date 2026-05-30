@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 import Header from "../../Header";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -543,6 +544,9 @@ toast.success(response.data.message);
     BankDetailgetByID(selectedAccountId);
   };
 
+
+  useSubmitShortcut(validateForm, openAddPopUp);
+  useSubmitShortcut(handleAdjustBalance, openAddPopUpAdjust);
 
   return (
     <>

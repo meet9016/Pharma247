@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import Header from "../../Header";
 import axios from "axios";
@@ -375,6 +376,8 @@ const LoyaltyPoint = () => {
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
   };
+
+  useSubmitShortcut(validData, openAddPopUp);
 
   return (
     <div>

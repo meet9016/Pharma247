@@ -1,3 +1,4 @@
+import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 import {
   Alert,
   AlertTitle,
@@ -472,6 +473,9 @@ const DistributerList = () => {
     });
     setTableData(sortedData);
   };
+  useSubmitShortcut(editDistributor, openEdit);
+  useSubmitShortcut(uploadDistributorFile, openUpload);
+
   return (
     <>
       <Header />

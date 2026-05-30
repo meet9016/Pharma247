@@ -58,6 +58,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { toast, ToastContainer } from "react-toastify";
 import { format, subDays } from "date-fns";
 import { GridCloseIcon } from "@mui/x-data-grid";
+import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 const InventoryList = () => {
   const csvIcon = process.env.PUBLIC_URL + "/csv-file.png";
   const [searchItem, setSearchItem] = useState("");
@@ -1032,6 +1033,11 @@ const InventoryList = () => {
   };
 
   /*<=============================================================================== ui ======================================================================> */
+
+  useSubmitShortcut(validateForm, openAddPopUp);
+  useSubmitShortcut(callBulkQRCode, openQR);
+  useSubmitShortcut(validateBulkForm, openEdit);
+  useSubmitShortcut(validateBulkOrder, bulkOrder);
 
   return (
     <>

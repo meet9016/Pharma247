@@ -2143,6 +2143,10 @@ const AddPurchaseBill = () => {
 
   // Global submit shortcuts
   useSubmitShortcut(() => handleSubmit(billSaveDraft), !showModal && !openFile && !openAddPopUp && !openAddItemPopUp && !openAddDistributorPopUp && !isOpenBox && !openItemHistory);
+  useSubmitShortcut(handleCnAmount, openAddPopUp);
+  useSubmitShortcut(handleFileUpload, openFile);
+  useSubmitShortcut(handleAddNewItem, openAddItemPopUp);
+  useSubmitShortcut(handleAddNewDistributor, openAddDistributorPopUp);
 
   return (
     <>

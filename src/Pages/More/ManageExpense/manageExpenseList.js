@@ -1,4 +1,5 @@
 import { BsLightbulbFill } from "react-icons/bs";
+import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 import Header from "../../Header";
 import React, { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -421,6 +422,8 @@ toast.success(response.data.message);
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
   };
+
+  useSubmitShortcut(validateForm, openAddPopUp);
 
   return (
     <>

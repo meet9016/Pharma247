@@ -1,3 +1,4 @@
+import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 import Header from "../../../Header";
 import Autocomplete from "@mui/material/Autocomplete";
 import Select from "@mui/material/Select";
@@ -602,6 +603,8 @@ toast.success(response.data.meassage);
   };
 
   // Render
+  useSubmitShortcut(submitPayment, confirm);
+
   return (
     <>
       <Header />

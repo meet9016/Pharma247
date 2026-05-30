@@ -1,5 +1,6 @@
 
 import CloseIcon from "@mui/icons-material/Close";
+import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 
 import React, { useState, useEffect } from "react";
 import Header from "../../Header";
@@ -354,6 +355,9 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
         }
 
     };
+
+    useSubmitShortcut(handleSubmit, addMember);
+
     return (
         <Dialog
             open={addMember}

@@ -33,6 +33,7 @@ import AddIcon from "@mui/icons-material/Add";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import useSubmitShortcut from "../../hooks/useSubmitShortcut";
 
 const OrderList = () => {
   const history = useHistory();
@@ -484,6 +485,8 @@ toast.success(response.data.meassage);
     const status = statusOption.find(option => option.name === statusName);
     return status ? status.id : null;
   };
+
+  useSubmitShortcut(PlaceOrder, openAddPopUpPlaceOrder);
 
   return (
     <>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 import Header from "../../Header";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
@@ -137,7 +138,7 @@ const Company = () => {
           localStorage.clear();
         }
       })
-      .catch(() => {
+      .catch((error) => {
         setIsLoading(false);
         setIsSearching(false);
         setCompanyData([]);
@@ -280,6 +281,8 @@ toast.error("Error deleting company");
 
   // Serial number
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
+
+  useSubmitShortcut(validData, openAddPopUp);
 
   return (
     <div>
