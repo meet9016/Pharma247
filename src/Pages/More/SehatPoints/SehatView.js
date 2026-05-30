@@ -29,6 +29,7 @@ import {
 } from "@mui/material";
 import Header from "../../Header";
 import Loader from "../../../componets/loader/Loader";
+import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 
 const SehatView = () => {
     const { id } = useParams();
@@ -83,6 +84,9 @@ const SehatView = () => {
         return isValid;
 
     };
+
+    // Global submit shortcuts
+    useSubmitShortcut(validData, openAddPopUp);
 
     const AddCompany = (id) => {
         let data = new FormData();

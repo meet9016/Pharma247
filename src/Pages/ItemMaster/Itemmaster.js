@@ -30,6 +30,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useSubmitShortcut from "../../hooks/useSubmitShortcut";
 
 const Itemmaster = () => {
   const [item, setItem] = useState("");
@@ -961,6 +962,14 @@ const Itemmaster = () => {
   const openFileUpload = () => {
     setOpenFile(true);
   };
+
+  // Global submit shortcuts
+  useSubmitShortcut(handleSubmit, !open && !openDrugGroup && !openCompany && !openDistributor && !openFile);
+  useSubmitShortcut(submitCategory, open);
+  useSubmitShortcut(submitDrugGroup, openDrugGroup);
+  useSubmitShortcut(submitCompany, openCompany);
+  useSubmitShortcut(submitDistributor, openDistributor);
+  useSubmitShortcut(handleFileUpload, openFile);
 
   return (
     <div>

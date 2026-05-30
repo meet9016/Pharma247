@@ -466,7 +466,8 @@ toast.success(response.data.meassage);
 
   const listDistributor = async () => {
     try {
-      const response = await axios.post(`distributor-payment`, {
+      const response = await axios.post(`distributor-payment`, {},
+        {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -52,6 +52,7 @@ import { FaCaretUp } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import TipsModal from "../../../../componets/Tips/TipsModal";
 import Loader from "../../../../componets/loader/Loader";
+import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 
 const AddPurchaseBill = () => {
   const timeoutRef = useRef(null);
@@ -2139,6 +2140,9 @@ const AddPurchaseBill = () => {
       }
     }
   };
+
+  // Global submit shortcuts
+  useSubmitShortcut(() => handleSubmit(billSaveDraft), !showModal && !openFile && !openAddPopUp && !openAddItemPopUp && !openAddDistributorPopUp && !isOpenBox && !openItemHistory);
 
   return (
     <>
