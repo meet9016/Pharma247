@@ -860,35 +860,38 @@ toast.success(response.data.message);
                         </div>
                       </div>
                       <div>
-                        <FormControl className="flex">
+                       <FormControl>
                           <RadioGroup
-                            aria-labelledby="demo-radio-buttons-group-label"
-                            defaultValue="items"
-                            name="radio-buttons-group"
+                            row
                             value={selectedGSTOption}
                             onChange={handleGSTOption}
-                            className="flex"
+                            name="radio-buttons-group"
                             sx={{
-                              color: "var(--color1)", // Apply color to labels
                               "& .MuiRadio-root": {
-                                color: "var(--color2)", // Unchecked radio button color
+                                color: "var(--color2)",
                               },
                               "& .Mui-checked": {
-                                color: "var(--color1)", // Checked radio button color
+                                color: "var(--color1)",
                               },
                             }}
                           >
                             <FormControlLabel
                               value="with_GST"
-                              style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                               control={<Radio />}
                               label="With GST"
+                              sx={{
+                                color: "var(--COLOR_UI_PHARMACY)",
+                                mr: 20,
+                              }}
                             />
+
                             <FormControlLabel
                               value="withOut_GST"
-                              style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                               control={<Radio />}
                               label="Without GST"
+                              sx={{
+                                color: "var(--COLOR_UI_PHARMACY)",
+                              }}
                             />
                           </RadioGroup>
                         </FormControl>

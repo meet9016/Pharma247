@@ -643,28 +643,28 @@ const LoyaltyPoint = () => {
                         variant="outlined data-mdb-input-init"
                         sx={{ width: "100% " }}
                       >
-                        <TextField
-                          autoComplete="off"
-                          type="number"
-                          inputRef={inputRef1}
-                          onKeyDown={handleKeyDown}
-                          value={minimumAmount}
-                          onChange={(e) => {
+                       <TextField
+                        autoComplete="off"
+                        type="number"
+                        inputRef={inputRef1}
+                        onKeyDown={handleKeyDown}
+                        value={minimumAmount}
+                        onChange={(e) => {
                             e.target.value = e.target.value.replace(
                               /[^0-9]/g,
                               ""
                             );
-                            setMinimumAmount(e.target.value);
-                          }}
-                          label="Minimum"
-                          variant="outlined"
-                          size="medium"
-                          sx={{
-                            "& .MuiInputLabel-root.Mui-focused": {
-                              color: "var(--COLOR_UI_PHARMACY)",
-                            },
-                          }}
-                        />
+                          setMinimumAmount(e.target.value);
+                        }}
+                        label="Minimum"
+                        variant="outlined"
+                          size="small"
+                        sx={{
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "var(--COLOR_UI_PHARMACY)",
+                          },
+                        }}
+                      />
                       </FormControl>
                       <FormControl
                         className="max_fld_ly"
@@ -686,7 +686,7 @@ const LoyaltyPoint = () => {
                           }}
                           label="Maximum"
                           variant="outlined"
-                          size="medium"
+                          size="small"
                           sx={{
                             "& .MuiInputLabel-root.Mui-focused": {
                               color: "var(--COLOR_UI_PHARMACY)",
@@ -721,7 +721,7 @@ const LoyaltyPoint = () => {
                           }}
                           id="percentage-input"
                           label="Percentage %"
-                          size="medium"
+                          size="small"
                           sx={{
                             "& .MuiInputLabel-root.Mui-focused": {
                               color: "var(--COLOR_UI_PHARMACY)",

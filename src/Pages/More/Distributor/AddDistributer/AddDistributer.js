@@ -255,7 +255,7 @@ const AddDistributer = () => {
                     Distributor GST/IN Number<span className="text-red-600">*</span>
                   </label>
 
-                  <div className="relative w-full">
+                  <div className="flex w-full">
                     <TextField
                       variant="outlined"
                       autoComplete="off"
@@ -263,8 +263,11 @@ const AddDistributer = () => {
                         ".MuiInputBase-input": {
                           padding: "10px 12px",
                         },
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "4px 0 0 4px",
+                        },
                       }}
-                      className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
+                      className="appearance-none border rounded-l-lg flex-1 leading-tight focus:outline-none focus:shadow-outline uppercase"
                       name="gst_number"
                       type="text"
                       autoFocus
@@ -288,8 +291,8 @@ const AddDistributer = () => {
                     />
 
                     <div
-                      className="absolute top-0 cursor-pointer end-0 h-full p-2.5 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg"
-                      style={{ borderRadius: "0px 4px 4px 0px" }}
+                      className="cursor-pointer h-full p-[11px] text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg flex items-center justify-center"
+                      style={{ borderRadius: "0px 4px 4px 0px", minWidth: "80px" }}
                     >
                       <span>Change</span>
                       <span className="sr-only">Search</span>
@@ -783,7 +786,7 @@ const AddDistributer = () => {
                       <div name="ifsc_code" />
                     </div>
                   </div>
-                  <div className="text-center my-8">
+                  <div className="text-end my-8">
                     <button
                       type="submit"
                       className="py-2 min-w-16 px-5 h-10 text-white rounded-md primary-bg ml-2"

@@ -127,7 +127,10 @@ const Company = () => {
         : {}),
     };
     axios
-      .get("company-list", { params })
+      .get("company-list", { 
+        params,
+        headers: { Authorization: `Bearer ${token}` }
+      })
       .then((response) => {
         setCompanyData(response.data.data || []);
         setTotalRecords(Number(response.data.total_records) || 0);

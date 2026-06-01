@@ -181,7 +181,7 @@ const DoctorList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -270,7 +270,7 @@ const DoctorList = () => {
         toast.dismiss();
         toast.error(error.response.data.message);
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -317,7 +317,7 @@ const DoctorList = () => {
       setIsLoading(false);
       toast.dismiss();
       toast.success(error.message);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -454,7 +454,7 @@ const DoctorList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -489,7 +489,7 @@ const DoctorList = () => {
         toast.error("Please Select file");
       }
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -955,7 +955,7 @@ const DoctorList = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
 
                     {/* Doctor Name - full width */}
-                    <div className="flex flex-col col-span-8 ">
+                    <div className="flex flex-col col-span-6 ">
                       <div className="mb-1">
                         <span className="label primary mb-4">Doctor Name</span>
                         <span className="text-red-600 ml-1">*</span>
@@ -988,7 +988,7 @@ const DoctorList = () => {
                     </div>
 
 
-                    <div className="flex flex-col col-span-4">
+                    <div className="flex flex-col col-span-6">
                       <span className="label primary">Set Default Doctor ?</span>
                       <FormControl size="small" className="w-full">
                         <Select
@@ -1007,7 +1007,7 @@ const DoctorList = () => {
                     </div>
 
                     {/* Clinic Name - full width */}
-                    <div className="flex flex-col col-span-12 w-full">
+                    <div className="flex flex-col col-span-6 w-full">
                       <div className="mb-1">
                         <span className="label primary">Clinic Name</span>
                       </div>
@@ -1028,7 +1028,7 @@ const DoctorList = () => {
                     </div>
 
                     {/* Email ID */}
-                    <div className="flex flex-col col-span-4">
+                    <div className="flex flex-col col-span-6">
                       <span className="label primary">Email ID</span>
                       <TextField
                         autoComplete="off"
@@ -1053,7 +1053,7 @@ const DoctorList = () => {
 
 
                     {/* Mobile No */}
-                    <div className="flex flex-col col-span-4">
+                    <div className="flex flex-col col-span-6">
                       <div className="mb-1">
                         <span className="label primary">Mobile No</span>
                       </div>
@@ -1074,7 +1074,7 @@ const DoctorList = () => {
                     </div>
 
                     {/* Licence No */}
-                    <div className="flex flex-col col-span-4">
+                    <div className="flex flex-col col-span-6">
                       <span className="label primary">Licence No.</span>
                       <OutlinedInput
                         type="text"

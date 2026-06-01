@@ -362,7 +362,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
         <Dialog
             open={addMember}
             onClose={() => setAddMember(false)}
-            maxWidth="lg"
+            maxWidth="md"
             fullWidth
             className="custom-dialog"
         >
@@ -556,14 +556,15 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                 </div>
                             </React.Fragment>
                         ))}
-                        <Button
-                            className="self-end"
-                            variant="contained"
-                            sx={{ backgroundColor: "#3f6212" }}
-                            onClick={handleSubmit}
-                        >
-                            Submit
-                        </Button>
+                    <div className="flex justify-end mt-4">
+  <Button
+    variant="contained"
+    sx={{ backgroundColor: "#3f6212" }}
+    onClick={handleSubmit}
+  >
+    Submit
+  </Button>
+</div>
                     </div>
                     {/* Submit Button */}
 

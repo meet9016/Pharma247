@@ -1120,7 +1120,7 @@ toast.error("Opening Balance is Required");
                   </div>
                 </div>
               </div>
-              <div className="border-1 text-black font-bold secondary flex justify-between items-center">
+              <div className="border-1 text-black font-bold secondary flex justify-between items-center bg-[#edf1e9] p-2">
                 Add Bank Details
               </div>
               <>
@@ -1380,190 +1380,267 @@ toast.error("Account Holder Name is Required");
         {/* className="custom-dialog" */}
 
         {/* Add Fund Dialog Box */}
-        <Dialog open={openAddPopUpAdjust} className="custom-dialog ">
-          <DialogTitle id="alert-dialog-title" className="primary">
-            Adjust Balance
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            // onClick={handleCloseDialog}
-            onClick={resetAdjustDialog}
+     <Dialog 
+  open={openAddPopUpAdjust} 
+  className="custom-dialog"
+  maxWidth="sm"
+  fullWidth
+>
+  <DialogTitle 
+    id="alert-dialog-title" 
+    className="primary"
+    sx={{
+      backgroundColor: "var(--COLOR_UI_PHARMACY)",
+      color: "#ffffff",
+      padding: "16px 24px",
+      fontSize: "1.25rem",
+      fontWeight: 600
+    }}
+  >
+    Adjust Balance
+    <IconButton
+      aria-label="close"
+      onClick={resetAdjustDialog}
+      sx={{
+        position: "absolute",
+        right: 8,
+        top: 8,
+        color: "#ffffff",
+        '&:hover': {
+          backgroundColor: "rgba(255, 255, 255, 0.1)"
+        }
+      }}
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+
+  <DialogContent sx={{ padding: "24px", backgroundColor: "#f8f9fa" }}>
+    <DialogContentText component="div" sx={{ margin: 0 }}>
+      {/* Select Account */}
+      <div className="detail mb-4 mt-4">
+        <span className="label primary">Select Account</span>
+        <Select
+          labelId="dropdown-label"
+          id="dropdown"
+          className="mb-2"
+          value={paymentType}
+          sx={{ 
+            width: "100%",
+            backgroundColor: "#ffffff",
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: "#e0e0e0"
+            }
+          }}
+          onChange={handlePaymentTypeChange}
+          size="small"
+        >
+          <MenuItem value="cash">Cash</MenuItem>
+          {bankData?.map((option) => (
+            <MenuItem key={option.id} value={option.id}>
+              {option.bank_user_name} ({option.bank_account_name})
+            </MenuItem>
+          ))}
+        </Select>
+        {errors.paymentType && (
+          <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
+            {errors.paymentType}
+          </div>
+        )}
+      </div>
+
+      {/* Add or Reduce Buttons */}
+      <div className="detail mb-4">
+        <span className="label primary mb-2">Add or Reduce</span>
+        <div className="flex flex-col sm:flex-row gap-3 mb-2">
+          <Button 
+            autoFocus 
+            onClick={handleAddBtn}
+            variant="outlined"
+            startIcon={<AddIcon />}
             sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: "#ffffff",
+              flex: 1,
+              backgroundColor: "#e8f5e9",
+              color: "#2e7d32",
+              borderColor: "#4caf50",
+              '&:hover': {
+                backgroundColor: "#c8e6c9",
+                borderColor: "#388e3c"
+              }
             }}
           >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <div className="detail mb-4">
-                <span className="label  primary ">Select account</span>
-                <Select
-                  labelId="dropdown-label"
-                  id="dropdown"
-                  className="mb-2"
-                  value={paymentType}
-                  sx={{ width: "100%" }}
-                  onChange={handlePaymentTypeChange}
-                  size="small"
-                >
-                  <MenuItem value="cash">Cash</MenuItem>
-                  {bankData?.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.bank_user_name} ({option.bank_account_name})
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errors.paymentType && (
-                  <div className="error">{errors.paymentType}</div>
-                )}
-              </div>
-              {/* <div className="detail mb-4">
-                <span className="label  primary ">Account Holder Name</span>
-                <OutlinedInput
-                  value={accountHolderName}
-                  disabled
-                  sx={{ width: "100%" }}
-                  size="small"
-                />
+            Add Money
+          </Button>
+          <Button
+            autoFocus
+            onClick={handleReduceBtn}
+            variant="outlined"
+            startIcon={<RemoveIcon />}
+            sx={{
+              flex: 1,
+              backgroundColor: "#ffebee",
+              color: "#c62828",
+              borderColor: "#ef5350",
+              '&:hover': {
+                backgroundColor: "#ffcdd2",
+                borderColor: "#d32f2f"
+              }
+            }}
+          >
+            Reduce Money
+          </Button>
+        </div>
+        {errors.reduceclicked && (
+          <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
+            {errors.reduceclicked}
+          </div>
+        )}
+      </div>
 
-              </div> */}
-              <div className="detail mb-4">
-                <span className="label primary mb-2">Add or Reduce</span>
-                <div className="flex flex-col sm:flex-row gap-5 mb-4">
-                  <div className="">
-                    <Button autoFocus style={Addbutton} onClick={handleAddBtn}>
-                      <AddIcon /> Add Money
-                    </Button>
-                  </div>
-                  <div>
-                    <Button
-                      autoFocus
-                      style={Reducebutton}
-                      onClick={handleReduceBtn}
-                    >
-                      <RemoveIcon /> Reduce Money
-                    </Button>
-                  </div>
-                </div>
-                {errors.reduceclicked && (
-                  <div className="error">{errors.reduceclicked}</div>
-                )}
-              </div>
-
-              <div className="detail mb-4 ">
-                <div className="flex flex-col md:flex-row justify-between gap-5">
-                  <div className="mb-2" style={{ width: "100%" }}>
-                    <span className="label primary">Current Balance</span>
-                    <div>
-                      <OutlinedInput
-                        type="number"
-                        value={currentBalance}
-                        disabled
-                        startAdornment={
-                          <InputAdornment position="start">Rs.</InputAdornment>
-                        }
-                        sx={{ width: "100%" }}
-                        size="small"
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-2" style={{ width: "100%" }}>
-                    <span className="label primary">Date</span>
-                    <div>
-                      {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    sx={{ width: "200px" }}
-                                                    value={adjustDate}
-                                                    onChange={(newDate) => setAdjustDate(newDate)}
-                                                    format="DD/MM/YYYY"
-                                                    maxDate={dayjs()}
-                                                />
-                                            </LocalizationProvider> */}
-                      <div style={{ width: "100%" }}>
-                        <DatePicker
-                          className="custom-datepicker "
-                          selected={adjustDate}
-                          onChange={(newDate) => setAdjustDate(newDate)}
-                          dateFormat="dd/MM/yyyy"
-                        // minDate={new Date()}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="detail mb-4 ">
-                <div className="flex flex-col md:flex-row justify-between gap-5">
-                  <div className="mb-2" style={{ width: "100%" }}>
-                    <span className="label primary">Enter Amount</span>
-                    <div>
-                      <OutlinedInput
-                        type="number"
-                        value={enterAmt}
-                        onChange={(e) => setEnterAmt(e.target.value)}
-                        startAdornment={
-                          <InputAdornment position="start">Rs.</InputAdornment>
-                        }
-                        sx={{ width: "100%" }}
-                        size="small"
-                      />
-                      {errors.enterAmt && (
-                        <div className="error">{errors.enterAmt}</div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="mb-2" style={{ width: "100%" }}>
-                    <span className="label primary">Latest Balance</span>
-                    <div>
-                      <OutlinedInput
-                        type="number"
-                        value={latestAmt}
-                        disabled
-                        startAdornment={
-                          <InputAdornment position="start">Rs.</InputAdornment>
-                        }
-                        sx={{ width: "100%" }}
-                        size="small"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="detail mb-2" style={{ width: "100%" }}>
-                <span className="label primary">Remarks</span>
-                <div>
-                  <OutlinedInput
-                    value={remarks}
-                    onChange={(e) => setRemarks(e.target.value)}
-                    sx={{ width: "100%" }}
-                    size="small"
-                  />
-                  {/* {errors.paymentType && <div className="error">{errors.paymentType}</div>} */}
-                </div>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-
-          <DialogActions style={{ padding: "0px 24px 24px" }}>
-            <Button
-              style={{
-                backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                color: "white",
+      {/* Current Balance & Date */}
+      <div className="detail mb-4">
+        <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          <div>
+            <span className="label primary">Current Balance</span>
+            <OutlinedInput
+              type="number"
+              value={currentBalance}
+              disabled
+              startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+              sx={{ 
+                width: "100%",
+                backgroundColor: "#f5f5f5",
+                '& .MuiOutlinedInput-input': {
+                  fontWeight: 600,
+                  color: "#1976d2"
+                }
               }}
-              autoFocus
-              variant="contained"
-              onClick={handleAdjustBalance}
-            >
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
+              size="small"
+            />
+          </div>
+          <div>
+            <span className="label primary">Date</span>
+            <DatePicker
+              className="custom-datepicker"
+              selected={adjustDate}
+              onChange={(newDate) => setAdjustDate(newDate)}
+              dateFormat="dd/MM/yyyy"
+              customInput={
+                <OutlinedInput
+                  size="small"
+                  sx={{ width: "100%", backgroundColor: "#ffffff" }}
+                />
+              }
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Enter Amount & Latest Balance */}
+      <div className="detail mb-4">
+        <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          <div>
+            <span className="label primary">Enter Amount</span>
+            <OutlinedInput
+              type="number"
+              value={enterAmt}
+              onChange={(e) => setEnterAmt(e.target.value)}
+              startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+              sx={{ 
+                width: "100%",
+                backgroundColor: "#ffffff",
+                '& .MuiOutlinedInput-input': {
+                  fontWeight: 500
+                }
+              }}
+              size="small"
+            />
+            {errors.enterAmt && (
+              <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
+                {errors.enterAmt}
+              </div>
+            )}
+          </div>
+          <div>
+            <span className="label primary">Latest Balance</span>
+            <OutlinedInput
+              type="number"
+              value={latestAmt}
+              disabled
+              startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+              sx={{ 
+                width: "100%",
+                backgroundColor: "#e8f5e9",
+                '& .MuiOutlinedInput-input': {
+                  fontWeight: 600,
+                  color: "#2e7d32"
+                }
+              }}
+              size="small"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Remarks */}
+      <div className="detail mb-2">
+        <span className="label primary">Remarks</span>
+        <OutlinedInput
+          value={remarks}
+          onChange={(e) => setRemarks(e.target.value)}
+          sx={{ 
+            width: "100%",
+            backgroundColor: "#ffffff",
+            '& .MuiOutlinedInput-input': {
+              padding: "8.5px 14px"
+            }
+          }}
+          size="small"
+          placeholder="Add remarks here..."
+          multiline
+          rows={2}
+        />
+      </div>
+    </DialogContentText>
+  </DialogContent>
+
+  <DialogActions sx={{ 
+    padding: "16px 24px 24px", 
+    backgroundColor: "#f8f9fa",
+    borderTop: "1px solid #e0e0e0"
+  }}>
+    <Button
+      sx={{
+        backgroundColor: "var(--COLOR_UI_PHARMACY)",
+        color: "white",
+        padding: "6px 20px",
+        '&:hover': {
+          backgroundColor: "var(--COLOR_UI_PHARMACY_DARK)",
+          opacity: 0.9
+        }
+      }}
+      autoFocus
+      variant="contained"
+      onClick={handleAdjustBalance}
+    >
+      Save Changes
+    </Button>
+    <Button
+      onClick={resetAdjustDialog}
+      variant="outlined"
+      sx={{
+        color: "#666",
+        borderColor: "#ccc",
+        '&:hover': {
+          borderColor: "#999",
+          backgroundColor: "#f5f5f5"
+        }
+      }}
+    >
+      Cancel
+    </Button>
+  </DialogActions>
+</Dialog>
 
         <Dialog
           open={openAddPopUpDownload}
