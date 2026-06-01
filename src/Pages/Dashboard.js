@@ -12,6 +12,7 @@ import TabContext from "@mui/lab/TabContext";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import { GoInfo } from "react-icons/go";
+import { FiUsers, FiBox, FiFileText, FiClock } from "react-icons/fi";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 // import { FaUser } from "react-icons/fa6";
@@ -544,7 +545,7 @@ const Dashboard = () => {
                             </p>
                           </div>
                           <div className="mt-3 space-y-4">
-                            {customers.map((customer, index) => (
+                            {customers.length > 0 ? customers.map((customer, index) => (
                               <div
                                 key={index}
                                 className="flex justify-between items-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-all duration-200 shadow-sm"
@@ -561,7 +562,15 @@ const Dashboard = () => {
                                   &#8377;{formatAmount(customer.balance)}
                                 </div>
                               </div>
-                            ))}
+                            )) : (
+                              <div className="flex flex-col items-center justify-center py-10 opacity-70">
+                                <div className="bg-green-50 p-4 rounded-full mb-3">
+                                  <FiUsers className="text-4xl text-green-500" />
+                                </div>
+                                <p className="text-gray-600 font-semibold text-lg">No Customers Found</p>
+                                <p className="text-gray-400 text-sm mt-1">Check back later or add new customers.</p>
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className="mt-4 flex justify-end">
@@ -707,7 +716,7 @@ const Dashboard = () => {
 
                   {/* Scrollable List */}
                   <div className="mt-6 space-y-4 overflow-auto max-h-[400px] flex-1">
-                    {distributor.map((item, index) => (
+                    {distributor.length > 0 ? distributor.map((item, index) => (
                       <div
                         key={index}
                         className="flex justify-between items-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-all duration-200 shadow-sm"
@@ -720,7 +729,15 @@ const Dashboard = () => {
                           &#8377;{formatAmount(item.due_amount)}
                         </div>
                       </div>
-                    ))}
+                    )) : (
+                      <div className="flex flex-col items-center justify-center py-16 opacity-70 h-full">
+                        <div className="bg-green-50 p-5 rounded-full mb-4">
+                          <FiBox className="text-5xl text-green-500" />
+                        </div>
+                        <p className="text-gray-600 font-semibold text-lg">No Distributors Found</p>
+                        <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
+                      </div>
+                    )}
                   </div>
 
                   {/* View All */}
@@ -828,12 +845,12 @@ const Dashboard = () => {
                       </>
                     ) : (
                       // No data state
-                      <div className="flex justify-center items-center flex-1">
-                        <img
-                          src="../no-data.png"
-                          alt="No data"
-                          className="h-28 opacity-80"
-                        />
+                      <div className="flex flex-col justify-center items-center flex-1 py-12 opacity-70">
+                        <div className="bg-green-50 p-5 rounded-full mb-4">
+                          <FiFileText className="text-5xl text-green-500" />
+                        </div>
+                        <p className="text-gray-600 font-semibold text-lg">No Bills Found</p>
+                        <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
                       </div>
                     )}
 
@@ -942,8 +959,12 @@ const Dashboard = () => {
                               ))}
                             </div>
                           ) : (
-                            <div className="flex justify-center items-center py-16">
-                              <img src="../no-data.png" alt="No data" className="h-28 opacity-70" />
+                            <div className="flex flex-col justify-center items-center py-12 opacity-70">
+                              <div className="bg-green-50 p-5 rounded-full mb-4">
+                                <FiUsers className="text-5xl text-green-500" />
+                              </div>
+                              <p className="text-gray-600 font-semibold text-lg">No Staff Data</p>
+                              <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
                             </div>
                           )}
                         </div>
@@ -1018,8 +1039,12 @@ const Dashboard = () => {
                               </div>
                             </>
                           ) : (
-                            <div className="flex flex-1 justify-center items-center">
-                              <img src="../no_Data1.png" alt="No data" className="w-48 opacity-70" />
+                            <div className="flex flex-col flex-1 justify-center items-center py-16 opacity-70">
+                              <div className="bg-green-50 p-5 rounded-full mb-4">
+                                <FiClock className="text-5xl text-green-500" />
+                              </div>
+                              <p className="text-gray-600 font-semibold text-lg">No Expiring Items</p>
+                              <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
                             </div>
                           )}
                         </TabPanel>
