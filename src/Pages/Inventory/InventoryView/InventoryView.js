@@ -153,13 +153,13 @@ const InventoryView = () => {
 
   const ledger = [
     { id: "bill_no", label: "Bill No", minWidth: 100 },
+    { id: "name", label: "Distributor / Customer", minWidth: 100 },
     { id: "transction", label: "Transaction", minWidth: 100 },
     { id: "bill_date", label: "Bill Date", minWidth: 100 },
     { id: "batch", label: "Batch", minWidth: 100 },
     { id: "credit", label: "In", minWidth: 100 },
     { id: "debit", label: "Out", minWidth: 100 },
     { id: "balance", label: "Close", minWidth: 100 },
-    { id: "name", label: "Distributor / Customer", minWidth: 100 },
   ];
 
   const purchaseColumns = [
@@ -261,13 +261,13 @@ const InventoryView = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
   let listItemcatagory = () => {
@@ -287,43 +287,43 @@ const InventoryView = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
 
-    // Core List API (backend pagination + search)
-    const listDrougGroup = () => {
-      setIsLoading(true);
-  
-      const formData = new FormData();
-      
-      axios
-        .post("drug-list", formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((response) => {
-          setDrugGroupList(response.data.data || []);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          setDrugGroupList([]);
-          if (error?.response?.status === 401) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("userId");
-            localStorage.removeItem("role");
-            localStorage.clear();
-            history.push("/");
-          }
-        });
-    };
+  // Core List API (backend pagination + search)
+  const listDrougGroup = () => {
+    setIsLoading(true);
+
+    const formData = new FormData();
+
+    axios
+      .post("drug-list", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setDrugGroupList(response.data.data || []);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setDrugGroupList([]);
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
+      });
+  };
 
   // const validationUpdateItem = async () => {
   //     const newErrors = {};
@@ -396,7 +396,7 @@ const InventoryView = () => {
       } else {
         toast.error("Please try again later");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -432,7 +432,7 @@ const InventoryView = () => {
         });
     } catch (error) {
       setIsLoading(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -454,13 +454,13 @@ const InventoryView = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -478,7 +478,7 @@ const InventoryView = () => {
       return distributors;
     } catch (error) {
       console.error("API Error fetching distributors:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -496,7 +496,7 @@ const InventoryView = () => {
     // };
     setIsLoading(true);
     try {
-      const response = await axios.post("list-customer?", data, {
+      const response = await axios.post("list-customer", data, {
         // params: params,
         headers: {
           Authorization: `Bearer ${token}`,
@@ -511,7 +511,7 @@ const InventoryView = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -535,13 +535,13 @@ const InventoryView = () => {
 
       .catch((error) => {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -588,7 +588,7 @@ const InventoryView = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -623,7 +623,7 @@ const InventoryView = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -722,7 +722,7 @@ const InventoryView = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -761,7 +761,7 @@ const InventoryView = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -800,7 +800,7 @@ const InventoryView = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -838,7 +838,7 @@ const InventoryView = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -872,7 +872,7 @@ const InventoryView = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -904,7 +904,7 @@ const InventoryView = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1035,70 +1035,67 @@ const InventoryView = () => {
                     <h1 className="text-black text-lg font-extrabold">
                       {itemAllData?.iteam_name?.toUpperCase()}
                     </h1>
-                    <span className="text-gray-700">{itemAllData.company}</span>
-                    <span className="text-gray-700">{itemAllData.pack}</span>
+                    <span className="text-gray-700">{!itemAllData.company || itemAllData.company === "null" || itemAllData.company === "" ? "-" : itemAllData.company}</span>
+                    <span className="text-gray-700">{!itemAllData.pack || itemAllData.pack === "null" || itemAllData.pack === "" ? "-" : itemAllData.pack}</span>
                     <span className="text-gray-700">
-                      {itemAllData.drug_group}
+                      {!itemAllData.drug_group || itemAllData.drug_group === "null" || itemAllData.drug_group === "" ? "-" : itemAllData.drug_group}
                     </span>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
-                  <div>
-                    <table style={{ whiteSpace: "nowrap" }}>
+                  <div className="overflow-hidden rounded-lg border border-[#C9D3BE] shadow-sm mb-2">
+                    <table className="w-full">
                       <thead>
-                        <tr className="primary text-sm border border-gray-300 font-bold">
-                          <td className="px-12 py-2">Current Stock</td>
-                          {/* <td className="px-12 py-2">Default Disc.</td> */}
-                          <td className="px-12 py-2">Location</td>
-                          <td className="px-12 py-2">HSN Code</td>
+                        <tr className="bg-[#F3F7EE] text-[#3F650B]">
+                          <th className="px-6 py-3 text-center font-semibold border-[#D8E2CC]">
+                            Current Stock
+                          </th>
+                          <th className="px-6 py-3 text-center font-semibold">
+                            Location
+                          </th>
+                          <th className="px-6 py-3 text-center font-semibold">
+                            HSN Code
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td className="px-12 py-4 text-center">
-                            {itemAllData.stock}
+                        <tr className="bg-white hover:bg-[#F8FBF4] transition">
+                          <td className="px-6 py-2 text-center border-[#E5E7EB] font-medium">
+                            {itemAllData.stock === null || itemAllData.stock === undefined || itemAllData.stock === "" || itemAllData.stock === "null" ? "-" : itemAllData.stock}
                           </td>
-                          {/* <td className="px-12 py-4 text-center">
-                            {itemAllData.discount}%
-                          </td> */}
-                          <td className="px-12 py-4 text-center">
-                            {itemAllData.location}
+
+                          <td className="px-6 py-2 text-center font-medium">
+                            {itemAllData.location === null || itemAllData.location === undefined || itemAllData.location === "" || itemAllData.location === "null" ? "-" : itemAllData.location}
                           </td>
-                          <td className="px-12 py-4 text-center">
-                            {!itemAllData.hsn_code
-                              ? "---"
-                              : itemAllData.hsn_code}
+                          <td className="px-6 py-2 text-center font-medium">
+                            {itemAllData.hsn_code === null || itemAllData.hsn_code === undefined || itemAllData.hsn_code === "" || itemAllData.hsn_code === "null" ? "-" : itemAllData.hsn_code}
+
                           </td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
-                  <div>
-                    <table
-                      className="border-collapse w-full"
-                      style={{ whiteSpace: "nowrap" }}
-                    >
+                  <div className="overflow-hidden rounded-lg border border-[#C9D3BE] shadow-sm mb-2">
+                    <table className="w-full">
                       <thead>
-                        <tr className="primary text-sm border border-gray-300 font-bold">
-                          {/* <td className="px-12 py-2">Minimum Qty</td>
-                          <td className="px-12 py-2">Maximum Qty</td> */}
-                          <td className="px-12 py-2">GST</td>
-                          <td className="px-12 py-2">Item Category</td>
+                        <tr className="bg-[#F3F7EE] text-[#3F650B]">
+                          <th className="px-6 py-3 text-center font-semibold border-[#D8E2CC]">
+                            GST
+                          </th>
+                          <th className="px-6 py-3 text-center font-semibold">
+                            Item Category
+                          </th>
                         </tr>
                       </thead>
+
                       <tbody>
-                        <tr>
-                          {/* <td className="px-12 py-4 text-center">
-                            {!itemAllData.minimum ? "---" : itemAllData.minimum}
+                        <tr className="bg-white hover:bg-[#F8FBF4] transition">
+                          <td className="px-6 py-2 text-center border-[#E5E7EB] font-medium">
+                            {itemAllData.gst ? `${itemAllData.gst}%` : "-"}
                           </td>
-                          <td className="px-12 py-4 text-center">
-                            {!itemAllData.maximum ? "---" : itemAllData.maximum}
-                          </td> */}
-                          <td className="px-12 py-4 text-center">
-                            {itemAllData.gst}%
-                          </td>
-                          <td className="px-12 py-4 text-center">
-                            {itemAllData.category_name}
+
+                          <td className="px-6 py-2 text-center font-medium">
+                            {itemAllData.category_name || "-"}
                           </td>
                         </tr>
                       </tbody>
@@ -1190,39 +1187,47 @@ const InventoryView = () => {
                             </tr>
                           </thead>
                           <tbody style={{ backgroundColor: "#3f621217" }}>
-                            {filteredData?.map((item, index) => (
-                              <>
-                                {hideZeroQuantity && item.qty == 0}
-                                <tr key={index}>
-                                  {batchColumns?.map((column, colIndex) => (
+                            {filteredData && filteredData.length > 0 ? (
+                              filteredData.map((item, index) => (
+                                <React.Fragment key={index}>
+                                  {hideZeroQuantity && item.qty == 0}
+                                  <tr>
+                                    {batchColumns?.map((column, colIndex) => (
+                                      <td
+                                        key={column.id}
+                                        style={
+                                          colIndex === 0
+                                            ? { borderRadius: "10px 0 0 10px" }
+                                            : undefined
+                                        }
+                                      >
+                                        {item[column.id]}
+                                      </td>
+                                    ))}
                                     <td
-                                      key={column.id}
-                                      style={
-                                        colIndex === 0
-                                          ? { borderRadius: "10px 0 0 10px" }
-                                          : undefined
-                                      }
+                                      style={{
+                                        borderRadius: "0 10px 10px 0",
+                                      }}
                                     >
-                                      {item[column.id]}
+                                      <button>
+                                        <div>
+                                          <DeleteIcon
+                                            className="delete-icon"
+                                            onClick={() => deleteOpen(item.id)}
+                                          />
+                                        </div>
+                                      </button>
                                     </td>
-                                  ))}
-                                  <td
-                                    style={{
-                                      borderRadius: "0 10px 10px 0",
-                                    }}
-                                  >
-                                    <button>
-                                      <div>
-                                        <DeleteIcon
-                                          className="delete-icon"
-                                          onClick={() => deleteOpen(item.id)}
-                                        />
-                                      </div>
-                                    </button>
-                                  </td>
-                                </tr>
-                              </>
-                            ))}
+                                  </tr>
+                                </React.Fragment>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={batchColumns.length + 1} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
+                                  No Record Found
+                                </td>
+                              </tr>
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -1272,7 +1277,7 @@ const InventoryView = () => {
                             value={distributorValue}
                             sx={{
                               width: "15%",
-                              minWidth: "180px",
+                              minWidth: "200px",
                               "@media (max-width:600px)": {
                                 minWidth: "100%",
                               },
@@ -1291,43 +1296,63 @@ const InventoryView = () => {
                           />
                         </div>
                         <div className="row gap-4 inven_view_purchase">
-                          <Select
-                            labelId="dropdown-label"
-                            id="dropdown"
-                            value={staff}
-                            sx={{ minWidth: "200px" }}
-                            onChange={handleStaff}
-                            size="small"
-                            displayEmpty
-                            renderValue={(selected) => {
-                              if (selected === "") {
-                                return <em>Select Staff</em>;
-                              }
-                              const selectedOption = staffList.find(
-                                (option) => option.id === selected
-                              );
-                              return selectedOption ? selectedOption.name : "";
+                          <Autocomplete
+                            value={staffList.find((option) => option.id === staff) || null}
+                            sx={{
+                              width: "15%",
+                              minWidth: "200px",
+                              "@media (max-width:600px)": {
+                                minWidth: "100%",
+                              },
                             }}
-                          >
-                            {staffList.map((option) => (
-                              <MenuItem key={option.id} value={option.id}>
-                                {option.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-
-                          <Select
-                            labelId="dropdown-label"
-                            id="dropdown"
-                            value={gstType}
-                            sx={{ minWidth: "150px" }}
-                            onChange={handleGstType}
                             size="small"
-                            displayEmpty
-                          >
-                            <MenuItem value={true}>With GST</MenuItem>
-                            <MenuItem value={false}>Without GST</MenuItem>
-                          </Select>
+                            onChange={(event, newValue) => {
+                              const fakeEvent = { target: { value: newValue ? newValue.id : "" } };
+                              handleStaff(fakeEvent);
+                            }}
+                            options={staffList}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => (
+                              <TextField
+                                autoComplete="off"
+                                {...params}
+                                label="Select Staff"
+                              />
+                            )}
+                          />
+
+                          <Autocomplete
+                            value={
+                              [
+                                { value: true, label: "With GST" },
+                                { value: false, label: "Without GST" }
+                              ].find((option) => option.value === gstType) || null
+                            }
+                            sx={{
+                              width: "15%",
+                              minWidth: "200px",
+                              "@media (max-width:600px)": {
+                                minWidth: "100%",
+                              },
+                            }}
+                            size="small"
+                            onChange={(event, newValue) => {
+                              const fakeEvent = { target: { value: newValue ? newValue.value : "" } };
+                              handleGstType(fakeEvent);
+                            }}
+                            options={[
+                              { value: true, label: "With GST" },
+                              { value: false, label: "Without GST" }
+                            ]}
+                            getOptionLabel={(option) => option.label}
+                            renderInput={(params) => (
+                              <TextField
+                                autoComplete="off"
+                                {...params}
+                                label="GST Type"
+                              />
+                            )}
+                          />
                         </div>
                       </div>
                       <div className="overflow-x-auto">
@@ -1373,38 +1398,46 @@ const InventoryView = () => {
                                                         ))}
                                                     </tbody> */}
                           <tbody style={{ backgroundColor: "#3f621217" }}>
-                            {purchaseListData?.map((item, index) => (
-                              <tr key={index}>
-                                {purchaseColumns.map((column, colIndex) => (
-                                  <td
-                                    key={column.id}
-                                    style={
-                                      colIndex === 0 // Check if this is the first column
-                                        ? { borderRadius: "10px 0 0 10px" }
-                                        : colIndex ===
-                                          purchaseColumns.length - 1 // Last column for right-side radius
-                                          ? { borderRadius: "0 10px 10px 0" }
-                                          : {}
-                                    }
-                                  >
-                                    {column.id === "bill_no" ? (
-                                      <span
-                                        style={{
-                                          cursor: "pointer",
-                                          color: "blue",
-                                          textDecoration: "underline",
-                                        }}
-                                        onClick={() => viewBill(item)}
-                                      >
-                                        {item[column.id]}
-                                      </span>
-                                    ) : (
-                                      item[column.id]
-                                    )}
-                                  </td>
-                                ))}
+                            {purchaseListData && purchaseListData.length > 0 ? (
+                              purchaseListData.map((item, index) => (
+                                <tr key={index}>
+                                  {purchaseColumns.map((column, colIndex) => (
+                                    <td
+                                      key={column.id}
+                                      style={
+                                        colIndex === 0 // Check if this is the first column
+                                          ? { borderRadius: "10px 0 0 10px" }
+                                          : colIndex ===
+                                            purchaseColumns.length - 1 // Last column for right-side radius
+                                            ? { borderRadius: "0 10px 10px 0" }
+                                            : {}
+                                      }
+                                    >
+                                      {column.id === "bill_no" ? (
+                                        <span
+                                          style={{
+                                            cursor: "pointer",
+                                            color: "blue",
+                                            textDecoration: "underline",
+                                          }}
+                                          onClick={() => viewBill(item)}
+                                        >
+                                          {item[column.id]}
+                                        </span>
+                                      ) : (
+                                        item[column.id]
+                                      )}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={purchaseColumns.length} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
+                                  No Record Found
+                                </td>
                               </tr>
-                            ))}
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -1482,43 +1515,63 @@ const InventoryView = () => {
                           />
                         </div>
                         <div className="row gap-4 inven_view_purchase">
-                          <Select
-                            labelId="dropdown-label"
-                            id="dropdown"
-                            value={staff}
-                            sx={{ minWidth: "200px" }}
-                            onChange={handleStaff}
-                            size="small"
-                            displayEmpty
-                            renderValue={(selected) => {
-                              if (selected === "") {
-                                return <em>Select Staff</em>;
-                              }
-                              const selectedOption = staffList.find(
-                                (option) => option.id === selected
-                              );
-                              return selectedOption ? selectedOption.name : "";
+                          <Autocomplete
+                            value={staffList.find((option) => option.id === staff) || null}
+                            sx={{
+                              width: "15%",
+                              minWidth: "200px",
+                              "@media (max-width:600px)": {
+                                minWidth: "100%",
+                              },
                             }}
-                          >
-                            {staffList.map((option) => (
-                              <MenuItem key={option.id} value={option.id}>
-                                {option.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-
-                          <Select
-                            labelId="dropdown-label"
-                            id="dropdown"
-                            value={gstType}
-                            sx={{ minWidth: "150px" }}
-                            onChange={handleGstType}
                             size="small"
-                            displayEmpty
-                          >
-                            <MenuItem value={true}>With GST</MenuItem>
-                            <MenuItem value={false}>Without GST</MenuItem>
-                          </Select>
+                            onChange={(event, newValue) => {
+                              const fakeEvent = { target: { value: newValue ? newValue.id : "" } };
+                              handleStaff(fakeEvent);
+                            }}
+                            options={staffList}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => (
+                              <TextField
+                                autoComplete="off"
+                                {...params}
+                                label="Select Staff"
+                              />
+                            )}
+                          />
+
+                          <Autocomplete
+                            value={
+                              [
+                                { value: true, label: "With GST" },
+                                { value: false, label: "Without GST" }
+                              ].find((option) => option.value === gstType) || null
+                            }
+                            sx={{
+                              width: "15%",
+                              minWidth: "200px",
+                              "@media (max-width:600px)": {
+                                minWidth: "100%",
+                              },
+                            }}
+                            size="small"
+                            onChange={(event, newValue) => {
+                              const fakeEvent = { target: { value: newValue ? newValue.value : "" } };
+                              handleGstType(fakeEvent);
+                            }}
+                            options={[
+                              { value: true, label: "With GST" },
+                              { value: false, label: "Without GST" }
+                            ]}
+                            getOptionLabel={(option) => option.label}
+                            renderInput={(params) => (
+                              <TextField
+                                autoComplete="off"
+                                {...params}
+                                label="GST Type"
+                              />
+                            )}
+                          />
                         </div>
                       </div>
                       <div className="overflow-x-auto">
@@ -1543,44 +1596,52 @@ const InventoryView = () => {
                             </tr>
                           </thead>
                           <tbody style={{ backgroundColor: "#3f621217" }}>
-                            {purchaseReturnListData?.map((item, index) => (
-                              <tr key={index}>
-                                {purchaseReturnColumns.map(
-                                  (column, colIndex) => (
-                                    <td
-                                      key={column.id}
-                                      style={
-                                        colIndex === 0
-                                          ? {
-                                            borderRadius: "10px 0 0 10px",
-                                          }
-                                          : colIndex ===
-                                            purchaseReturnColumns.length - 1
+                            {purchaseReturnListData && purchaseReturnListData.length > 0 ? (
+                              purchaseReturnListData.map((item, index) => (
+                                <tr key={index}>
+                                  {purchaseReturnColumns.map(
+                                    (column, colIndex) => (
+                                      <td
+                                        key={column.id}
+                                        style={
+                                          colIndex === 0
                                             ? {
-                                              borderRadius: "0 10px 10px 0",
+                                              borderRadius: "10px 0 0 10px",
                                             }
-                                            : {}
-                                      }
-                                    >
-                                      {column.id === "bill_no" ? (
-                                        <span
-                                          style={{
-                                            cursor: "pointer",
-                                            color: "blue",
-                                            textDecoration: "underline",
-                                          }}
-                                          onClick={() => viewBill(item)}
-                                        >
-                                          {item[column.id]}
-                                        </span>
-                                      ) : (
-                                        item[column.id]
-                                      )}
-                                    </td>
-                                  )
-                                )}
+                                            : colIndex ===
+                                              purchaseReturnColumns.length - 1
+                                              ? {
+                                                borderRadius: "0 10px 10px 0",
+                                              }
+                                              : {}
+                                        }
+                                      >
+                                        {column.id === "bill_no" ? (
+                                          <span
+                                            style={{
+                                              cursor: "pointer",
+                                              color: "blue",
+                                              textDecoration: "underline",
+                                            }}
+                                            onClick={() => viewBill(item)}
+                                          >
+                                            {item[column.id]}
+                                          </span>
+                                        ) : (
+                                          item[column.id]
+                                        )}
+                                      </td>
+                                    )
+                                  )}
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={purchaseReturnColumns.length} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
+                                  No Record Found
+                                </td>
                               </tr>
-                            ))}
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -1671,30 +1732,30 @@ const InventoryView = () => {
                                                     onChange={(e) => { setCustomerNo(e.target.value) }}
                                                 /> */}
 
-                          <Select
-                            labelId="dropdown-label"
-                            id="dropdown"
-                            value={staff}
-                            sx={{ minWidth: "200px" }}
-                            onChange={handleStaff}
-                            size="small"
-                            displayEmpty
-                            renderValue={(selected) => {
-                              if (selected === "") {
-                                return <em>Select Staff</em>;
-                              }
-                              const selectedOption = staffList.find(
-                                (option) => option.id === selected
-                              );
-                              return selectedOption ? selectedOption.name : "";
+                          <Autocomplete
+                            value={staffList.find((option) => option.id === staff) || null}
+                            sx={{
+                              width: "15%",
+                              minWidth: "200px",
+                              "@media (max-width:600px)": {
+                                minWidth: "100%",
+                              },
                             }}
-                          >
-                            {staffList.map((option) => (
-                              <MenuItem key={option.id} value={option.id}>
-                                {option.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
+                            size="small"
+                            onChange={(event, newValue) => {
+                              const fakeEvent = { target: { value: newValue ? newValue.id : "" } };
+                              handleStaff(fakeEvent);
+                            }}
+                            options={staffList}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => (
+                              <TextField
+                                autoComplete="off"
+                                {...params}
+                                label="Select Staff"
+                              />
+                            )}
+                          />
                         </div>
                       </div>
                       <div className="overflow-x-auto">
@@ -1719,39 +1780,47 @@ const InventoryView = () => {
                             </tr>
                           </thead>
                           <tbody style={{ backgroundColor: "#3f621217" }}>
-                            {saleListData?.map((item, index) => (
-                              <tr key={index}>
-                                {saleColumns.map((column, colIndex) => (
-                                  <td
-                                    key={column.id}
-                                    style={
-                                      colIndex === 0
-                                        ? {
-                                          borderRadius: "10px 0 0 10px",
-                                        }
-                                        : colIndex === saleColumns.length - 1
-                                          ? { borderRadius: "0 10px 10px 0" }
-                                          : {}
-                                    }
-                                  >
-                                    {column.id === "bill_no" ? (
-                                      <span
-                                        style={{
-                                          cursor: "pointer",
-                                          color: "blue",
-                                          textDecoration: "underline",
-                                        }}
-                                        onClick={() => viewBill(item)}
-                                      >
-                                        {item[column.id]}
-                                      </span>
-                                    ) : (
-                                      item[column.id]
-                                    )}
-                                  </td>
-                                ))}
+                            {saleListData && saleListData.length > 0 ? (
+                              saleListData.map((item, index) => (
+                                <tr key={index}>
+                                  {saleColumns.map((column, colIndex) => (
+                                    <td
+                                      key={column.id}
+                                      style={
+                                        colIndex === 0
+                                          ? {
+                                            borderRadius: "10px 0 0 10px",
+                                          }
+                                          : colIndex === saleColumns.length - 1
+                                            ? { borderRadius: "0 10px 10px 0" }
+                                            : {}
+                                      }
+                                    >
+                                      {column.id === "bill_no" ? (
+                                        <span
+                                          style={{
+                                            cursor: "pointer",
+                                            color: "blue",
+                                            textDecoration: "underline",
+                                          }}
+                                          onClick={() => viewBill(item)}
+                                        >
+                                          {item[column.id]}
+                                        </span>
+                                      ) : (
+                                        item[column.id]
+                                      )}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={saleColumns.length} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
+                                  No Record Found
+                                </td>
                               </tr>
-                            ))}
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -1858,30 +1927,30 @@ const InventoryView = () => {
                                                     onChange={(e) => { setCustomerNo(e.target.value) }}
                                                 /> */}
 
-                          <Select
-                            labelId="dropdown-label"
-                            id="dropdown"
-                            value={staff}
-                            sx={{ minWidth: "200px" }}
-                            onChange={handleStaff}
-                            size="small"
-                            displayEmpty
-                            renderValue={(selected) => {
-                              if (selected === "") {
-                                return <em>Select Staff</em>;
-                              }
-                              const selectedOption = staffList.find(
-                                (option) => option.id === selected
-                              );
-                              return selectedOption ? selectedOption.name : "";
+                          <Autocomplete
+                            value={staffList.find((option) => option.id === staff) || null}
+                            sx={{
+                              width: "15%",
+                              minWidth: "200px",
+                              "@media (max-width:600px)": {
+                                minWidth: "100%",
+                              },
                             }}
-                          >
-                            {staffList.map((option) => (
-                              <MenuItem key={option.id} value={option.id}>
-                                {option.name}
-                              </MenuItem>
-                            ))}
-                          </Select>
+                            size="small"
+                            onChange={(event, newValue) => {
+                              const fakeEvent = { target: { value: newValue ? newValue.id : "" } };
+                              handleStaff(fakeEvent);
+                            }}
+                            options={staffList}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => (
+                              <TextField
+                                autoComplete="off"
+                                {...params}
+                                label="Select Staff"
+                              />
+                            )}
+                          />
                         </div>
                       </div>
                       <div className="overflow-x-auto">
@@ -1906,38 +1975,46 @@ const InventoryView = () => {
                             </tr>
                           </thead>
                           <tbody style={{ backgroundColor: "#3f621217" }}>
-                            {saleReturnListData?.map((item, index) => (
-                              <tr key={index}>
-                                {saleReturnColumns.map((column, colIndex) => (
-                                  <td
-                                    key={column.id}
-                                    style={
-                                      colIndex === 0
-                                        ? { borderRadius: "10px 0 0 10px" }
-                                        : colIndex ===
-                                          saleReturnColumns.length - 1
-                                          ? { borderRadius: "0 10px 10px 0" }
-                                          : {}
-                                    }
-                                  >
-                                    {column.id === "bill_no" ? (
-                                      <span
-                                        style={{
-                                          cursor: "pointer",
-                                          color: "blue",
-                                          textDecoration: "underline",
-                                        }}
-                                        onClick={() => viewBill(item)}
-                                      >
-                                        {item[column.id]}
-                                      </span>
-                                    ) : (
-                                      item[column.id]
-                                    )}
-                                  </td>
-                                ))}
+                            {saleReturnListData && saleReturnListData.length > 0 ? (
+                              saleReturnListData.map((item, index) => (
+                                <tr key={index}>
+                                  {saleReturnColumns.map((column, colIndex) => (
+                                    <td
+                                      key={column.id}
+                                      style={
+                                        colIndex === 0
+                                          ? { borderRadius: "10px 0 0 10px" }
+                                          : colIndex ===
+                                            saleReturnColumns.length - 1
+                                            ? { borderRadius: "0 10px 10px 0" }
+                                            : {}
+                                      }
+                                    >
+                                      {column.id === "bill_no" ? (
+                                        <span
+                                          style={{
+                                            cursor: "pointer",
+                                            color: "blue",
+                                            textDecoration: "underline",
+                                          }}
+                                          onClick={() => viewBill(item)}
+                                        >
+                                          {item[column.id]}
+                                        </span>
+                                      ) : (
+                                        item[column.id]
+                                      )}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={saleReturnColumns.length} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
+                                  No Record Found
+                                </td>
                               </tr>
-                            ))}
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -1994,37 +2071,69 @@ const InventoryView = () => {
                             </tr>
                           </thead>
                           <tbody style={{ backgroundColor: "#3f621217" }}>
-                            {ledgerListData?.map((item, index) => (
-                              <tr key={index}>
-                                {ledger.map((column, colIndex) => (
-                                  <td
-                                    key={column.id}
-                                    style={
-                                      colIndex === 0
-                                        ? { borderRadius: "10px 0 0 10px" }
-                                        : colIndex === ledger.length - 1
-                                          ? { borderRadius: "0 10px 10px 0" }
-                                          : {}
-                                    }
-                                  >
-                                    {column.id === "bill_no" ? (
-                                      <span
-                                        style={{
-                                          cursor: "pointer",
-                                          color: "blue",
-                                          textDecoration: "underline",
-                                        }}
-                                        onClick={() => openBill(item)}
-                                      >
-                                        {item[column.id]}
-                                      </span>
-                                    ) : (
-                                      item[column.id]
-                                    )}
-                                  </td>
-                                ))}
+                            {ledgerListData && ledgerListData.length > 0 ? (
+                              ledgerListData.map((item, index) => (
+                                <tr key={index}>
+                                  {ledger.map((column, colIndex) => (
+                                    <td
+                                      key={column.id}
+                                      style={
+                                        colIndex === 0
+                                          ? { borderRadius: "10px 0 0 10px" }
+                                          : colIndex === ledger.length - 1
+                                            ? { borderRadius: "0 10px 10px 0" }
+                                            : {}
+                                      }
+                                    >
+                                      {console.log("column",column)}
+                                      
+                                      {/* {column.id === "bill_no" ? (
+                                        <span
+                                          style={{
+                                            cursor: "pointer",
+                                            color: "blue",
+                                            textDecoration: "underline",
+                                          }}
+                                          onClick={() => openBill(item)}
+                                        >
+                                          {item[column.id]}
+                                        </span>
+                                      ) : (
+                                        item[column.id]
+                                      )} */}
+                                      {column.id === "bill_no" ? (
+                                        <span
+                                          style={{
+                                            cursor: "pointer",
+                                            color: "blue",
+                                            textDecoration: "underline",
+                                          }}
+                                          onClick={() => openBill(item)}
+                                        >
+                                          {item[column.id]}
+                                        </span>
+                                      ) : column.id === "credit" ? (
+                                        <span style={{ color: "#16a34a", fontWeight: 600 }}>
+                                          {item[column.id]}
+                                        </span>
+                                      ) : column.id === "debit" ? (
+                                        <span style={{ color: "#dc2626", fontWeight: 600 }}>
+                                          {item[column.id]}
+                                        </span>
+                                      ) : (
+                                        item[column.id]
+                                      )}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={ledger.length} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
+                                  No Record Found
+                                </td>
                               </tr>
-                            ))}
+                            )}
                           </tbody>
 
                           {/* <tbody>
@@ -2077,31 +2186,27 @@ const InventoryView = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="flex flex-col">
                   <span className="label primary">Packaging In</span>
-                  <Select
-                    labelId="dropdown-label"
-                    id="dropdown"
+                  <Autocomplete
+                    id="packaging-autocomplete"
                     className="w-full"
-                    value={packaging}
-                    // sx={{ minWidth: '250px' }}
-                    onChange={(e) => setPackaging(e.target.value)}
+                    options={packList}
                     size="small"
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      Select Packaging
-                    </MenuItem>
-                    {packList.map((option) => (
-                      <MenuItem key={option.id} value={option.id}>
-                        {option.packging_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                    value={packList.find((option) => option.id == packaging) || null}
+                    onChange={(e, newValue) => setPackaging(newValue ? newValue.id : "")}
+                    getOptionLabel={(option) => option.packging_name || ""}
+                    renderInput={(params) => (
+                      <TextField
+                        autoComplete="off"
+                        {...params}
+                        placeholder="Select Packaging"
+                      />
+                    )}
+                  />
                 </div>
 
                 <div className="flex flex-col">
                   <span className="label primary">Category</span>
                   <Autocomplete
-                    disablePortal
                     id="combo-box-demo"
                     className="w-full"
                     options={categoryList}
@@ -2115,7 +2220,7 @@ const InventoryView = () => {
                       <TextField
                         autoComplete="off"
                         {...params}
-                      // label="Select Company"
+                        placeholder="Select Category"
                       />
                     )}
                   />
@@ -2123,7 +2228,6 @@ const InventoryView = () => {
                 <div className="flex flex-col">
                   <span className="label primary">Company Name</span>
                   <Autocomplete
-                    disablePortal
                     id="combo-box-demo"
                     options={companyList}
                     size="small"
@@ -2134,14 +2238,17 @@ const InventoryView = () => {
                     // sx={{ width: 250 }}
                     getOptionLabel={(option) => option.company_name}
                     renderInput={(params) => (
-                      <TextField autoComplete="off" {...params} />
+                      <TextField
+                        autoComplete="off"
+                        {...params}
+                        placeholder="Select Company"
+                      />
                     )}
                   />
                 </div>
                 <div className="flex flex-col">
                   <span className="label primary">DrugGroup</span>
                   <Autocomplete
-                    disablePortal
                     id="combo-box-demo"
                     className="w-full"
                     options={drugGroupList}
@@ -2154,7 +2261,7 @@ const InventoryView = () => {
                       <TextField
                         autoComplete="off"
                         {...params}
-                        label="Select DrugGroup"
+                        placeholder="Select DrugGroup"
                       />
                     )}
                   />

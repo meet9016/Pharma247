@@ -617,7 +617,7 @@ const InventoryList = () => {
           setData(response.data.data.data);
           if (response.data.data.data.length == 0) {
             // toast.dismiss();
-            toast.error("No Record Found");
+            // toast.error("No Record Found");
           }
           setIsLoading(false);
   // BECAUSE OF THIS FITLER IS NOT WORKING PROPERLY
@@ -687,7 +687,7 @@ const InventoryList = () => {
       setData(res.data.data.data);
       if (res.data.data.data.length == 0) {
         // toast.dismiss();
-        toast.error("No Record Found");
+        // toast.error("No Record Found");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -1758,7 +1758,7 @@ const InventoryList = () => {
                 handleSearch("items_with_missing_category");
               }}
             >
-              Missing Category :{missingData.items_with_missing_category}
+              Missing Category : {missingData.items_with_missing_category}
             </Button>
             {/* <Button
               variant="contained"
@@ -2036,7 +2036,7 @@ const InventoryList = () => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          {item.mrp}
+                          {item.mrp === null || item.mrp === undefined || item.mrp === "" || item.mrp === "null" ? "-" : item.mrp}
                         </td>
                         <td
                           onClick={() => {
@@ -2044,7 +2044,9 @@ const InventoryList = () => {
                           }}
                         >
                           {
-                            item.drug_group_name.length > 12
+                            !item.drug_group_name || item.drug_group_name === "null" || item.drug_group_name === ""
+                              ? "-"
+                              : item.drug_group_name.length > 12
                               ? item.drug_group_name.slice(0, 12).toUpperCase() + "..."
                               : item.drug_group_name.toUpperCase()
                           }
@@ -2067,7 +2069,7 @@ const InventoryList = () => {
                                 }}
                               />
 
-                              {item.stock == "null" ? "-" : item.stock}
+                              {item.stock === null || item.stock === undefined || item.stock === "" || item.stock === "null" ? "-" : item.stock}
                             </span>
                           </td>
                         </Tooltip>
@@ -2084,14 +2086,14 @@ const InventoryList = () => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          {item.loaction == "null" ? "-" : item.location}
+                          {item.location === null || item.location === undefined || item.location === "" || item.location === "null" ? "-" : item.location}
                         </td>
                         <td
                           onClick={() => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          {item.discount == "null" ? "-" : item.discount}
+                          {item.discount === null || item.discount === undefined || item.discount === "" || item.discount === "null" ? "-" : item.discount}
                         </td>
                         <td
                           style={{ borderRadius: "0 10px 10px 0" }}
@@ -2099,7 +2101,7 @@ const InventoryList = () => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          {item.barcode == "null" ? "-" : item.barcode}
+                          {item.barcode === null || item.barcode === undefined || item.barcode === "" || item.barcode === "null" ? "-" : item.barcode}
                         </td>
                       </tr>
                     ))}
@@ -2766,7 +2768,7 @@ const InventoryList = () => {
                   value={selectedCompany}
                   disabled
                   getOptionLabel={(option) => option.company_name}
-                  renderInput={(params) => <TextField autoComplete="off" {...params} />}
+                  renderInput={(params) => <TextField autoComplete="off" placeholder="Select Company" {...params} />}
                 />
               </div>
             </div>
@@ -2793,28 +2795,28 @@ const InventoryList = () => {
                   value={batch}
                   onChange={handleBatchData}
                   getOptionLabel={(option) => option.batch_number}
-                  renderInput={(params) => <TextField autoComplete="off" {...params} />}
+                  renderInput={(params) => <TextField autoComplete="off" placeholder="Batch" {...params} />}
                 />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">Unit</span>
-                <TextField autoComplete="off" disabled size="small" value={unit} />
+                <TextField autoComplete="off" disabled size="small" value={unit} placeholder="Unit" />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">Expiry</span>
-                <TextField autoComplete="off" disabled size="small" value={expiry} />
+                <TextField autoComplete="off" disabled size="small" value={expiry} placeholder="Expiry" />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">MRP</span>
-                <TextField autoComplete="off" disabled size="small" type="number" value={mrp} />
+                <TextField autoComplete="off" disabled size="small" type="number" value={mrp} placeholder="MRP"/>
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">Current Stock</span>
-                <TextField autoComplete="off" disabled size="small" type="number" value={stock} />
+                <TextField autoComplete="off" disabled size="small" type="number" value={stock} placeholder="Current Stock"/>
               </div>
 
               <div className="w-full">
@@ -2824,6 +2826,7 @@ const InventoryList = () => {
                   size="small"
                   type="number"
                   value={stockAdjust}
+                  placeholder="Maintain Stock"
                   onChange={(e) => {
                     const val = e.target.value;
                     setStockAdjust(val === "" ? "" : parseFloat(val));
@@ -2834,7 +2837,7 @@ const InventoryList = () => {
 
               <div className="w-full">
                 <span className="title primary mb-2">Stock Adjust</span>
-                <TextField autoComplete="off" disabled size="small" type="number" value={remainingStock} />
+                <TextField autoComplete="off" disabled size="small" type="number" value={remainingStock} placeholder="Stock Adjust" />
               </div>
             </div>
           </DialogContentText>
