@@ -314,7 +314,7 @@ const CashManage = () => {
                     </div>
                   </div>
 
-                  <div className="flex flex-col md:flex-row gap-6 bg-green-100 p-3 rounded-lg  md:mt-0 cash_mng_hed_ttl">
+                  {/* <div className="flex flex-col md:flex-row gap-6 bg-green-100 p-3 rounded-lg  md:mt-0 cash_mng_hed_ttl">
                     <div className="csh_tl_txt csh_tl_txt_1st">
                       <div className="relative">
                         <h2 className="primary font-medium text-md ml-6 ttl_txt_hd">
@@ -353,7 +353,55 @@ const CashManage = () => {
                         </h2>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+  
+  {/* Total In */}
+  <div className="bg-white rounded-xl border border-green-200 shadow-sm p-4">
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100">
+        <FaArrowDown className="text-green-600 text-lg" />
+      </div>
+      <div>
+        <p className="text-gray-500 text-sm font-medium">Total In</p>
+        <h2 className="text-green-600 font-bold text-2xl">
+          ₹{Number(cashManageDetails.credit || 0).toFixed(2)}
+        </h2>
+      </div>
+    </div>
+  </div>
+
+  {/* Total Out */}
+  <div className="bg-white rounded-xl border border-red-200 shadow-sm p-4">
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 flex items-center justify-center rounded-full bg-red-100">
+        <FaArrowUp className="text-red-600 text-lg" />
+      </div>
+      <div>
+        <p className="text-gray-500 text-sm font-medium">Total Out</p>
+        <h2 className="text-red-600 font-bold text-2xl">
+          ₹{Number(cashManageDetails.debit || 0).toFixed(2)}
+        </h2>
+      </div>
+    </div>
+  </div>
+
+  {/* Net Amount */}
+  <div className="bg-white rounded-xl border border-[#3f6212] shadow-sm p-4">
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#3f6212]/10">
+        <span className="font-bold text-[#3f6212]">₹</span>
+      </div>
+      <div>
+        <p className="text-gray-500 text-sm font-medium">Net Amount</p>
+        <h2 className="text-[#3f6212] font-bold text-2xl">
+          ₹{Number(cashManageDetails.total || 0).toFixed(2)}
+        </h2>
+      </div>
+    </div>
+  </div>
+
+</div>
                 </div>
               </div>
 
@@ -385,43 +433,58 @@ const CashManage = () => {
                         </tr>
                       </thead>
                       <tbody style={{ backgroundColor: "#3f621217" }}>
-                        {cashManageDetails?.cash_list?.map((row) => {
-                          return (
-                            <tr
-                              key={row.code}
-                              className="hover:bg-gray-100 cursor-pointer"
-                              tabIndex={-1}
+                        {cashManageDetails?.cash_list && cashManageDetails.cash_list.length > 0 ? (
+                          cashManageDetails.cash_list.map((row) => {
+                            return (
+                              <tr
+                                key={row.code}
+                                className="hover:bg-gray-100 cursor-pointer"
+                                tabIndex={-1}
+                              >
+                                {cashManageDetailscolumns.map((column, colIndex) => {
+                                  const value = row[column.id];
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      align={column.align}
+                                      className={`px-4 py-2 whitespace-nowrap ${column.id === "debit"
+                                        ? "debit-cell"
+                                        : column.id === "credit"
+                                          ? "credit-cell"
+                                          : ""
+                                        }`}
+                                      style={
+                                        colIndex === 0
+                                          ? { borderRadius: "10px 0 0 10px" }
+                                          : colIndex ===
+                                            cashManageDetailscolumns.length - 1
+                                            ? { borderRadius: "0 10px 10px 0" }
+                                            : {}
+                                      }
+                                    >
+                                      {column.format && typeof value === "number"
+                                        ? column.format(value)
+                                        : value}
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={cashManageDetailscolumns.length}
+                              style={{
+                                textAlign: "center",
+                                padding: "20px",
+                                color: "gray",
+                              }}
                             >
-                              {cashManageDetailscolumns.map((column, colIndex) => {
-                                const value = row[column.id];
-                                return (
-                                  <td
-                                    key={column.id}
-                                    align={column.align}
-                                    className={`px-4 py-2 whitespace-nowrap ${column.id === "debit"
-                                      ? "debit-cell"
-                                      : column.id === "credit"
-                                        ? "credit-cell"
-                                        : ""
-                                      }`}
-                                    style={
-                                      colIndex === 0
-                                        ? { borderRadius: "10px 0 0 10px" }
-                                        : colIndex ===
-                                          cashManageDetailscolumns.length - 1
-                                          ? { borderRadius: "0 10px 10px 0" }
-                                          : {}
-                                    }
-                                  >
-                                    {column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          );
-                        })}
+                              No data found
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>

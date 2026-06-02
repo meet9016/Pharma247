@@ -990,20 +990,30 @@ const DoctorList = () => {
 
                     <div className="flex flex-col col-span-6">
                       <span className="label primary">Set Default Doctor ?</span>
-                      <FormControl size="small" className="w-full">
-                        <Select
-                          value={defaultDr || ""}
-                          onChange={(e) => setDefaultDr(e.target.value)}
-                          displayEmpty
-                          inputProps={{ 'aria-label': 'Default Doctor' }}
-                        >
-                          <MenuItem value="">
-                            <em>Select Default Doctor</em>
-                          </MenuItem>
-                          <MenuItem value="1">Yes</MenuItem>
-                          <MenuItem value="0">No</MenuItem>
-                        </Select>
-                      </FormControl>
+                      <Autocomplete
+                        value={
+                          [
+                            { value: "1", label: "Yes" },
+                            { value: "0", label: "No" }
+                          ].find((option) => option.value === defaultDr) || null
+                        }
+                        size="small"
+                        onChange={(event, newValue) => {
+                          setDefaultDr(newValue ? newValue.value : "");
+                        }}
+                        options={[
+                          { value: "1", label: "Yes" },
+                          { value: "0", label: "No" }
+                        ]}
+                        getOptionLabel={(option) => option.label}
+                        renderInput={(params) => (
+                          <TextField
+                            autoComplete="off"
+                            {...params}
+                            placeholder="Select Default Doctor"
+                          />
+                        )}
+                      />
                     </div>
 
                     {/* Clinic Name - full width */}

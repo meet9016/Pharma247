@@ -272,6 +272,7 @@ const AddDistributer = () => {
                       type="text"
                       autoFocus
                       value={GSTNumber}
+                      placeholder="Distributor GST/IN Number"
                       inputRef={(el) => (inputRefs.current[0] = el)}
                       onKeyDown={(e) => handleKeyDown(e, 0)}
                       onChange={(e) => {
@@ -323,6 +324,7 @@ const AddDistributer = () => {
                         {...params}
                         variant="outlined"
                         autoComplete="off"
+                        placeholder="Distributor Name"
                         inputRef={(el) => (inputRefs.current[1] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 1)}
                         sx={{
@@ -360,6 +362,7 @@ const AddDistributer = () => {
                     name="mobile_no"
                     type="text" // change to text to avoid issues with leading 0
                     value={mobileno}
+                    placeholder="Mobile Number"
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, "").slice(0, 10); // only digits, max 10
                       setMobileno(value);
@@ -393,6 +396,7 @@ const AddDistributer = () => {
                     name="email"
                     type="text" // use text to handle validation manually
                     value={email}
+                    placeholder="Email"
                     onChange={(e) => setEmail(e.target.value)}
                     error={email.length > 0 && !emailRegex.test(email)}
                     helperText={
@@ -421,6 +425,7 @@ const AddDistributer = () => {
                     name="whatsapp"
                     type="text" // use text to handle leading 0 safely
                     value={whatsapp}
+                    placeholder="Whatsapp Number"
                     inputRef={(el) => (inputRefs.current[4] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 4)}
                     onChange={(e) => {
@@ -454,6 +459,7 @@ const AddDistributer = () => {
                     name="state"
                     type="text"
                     value={state}
+                    placeholder="State"
                     inputRef={(el) => (inputRefs.current[5] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 5)}
                     onChange={(e) => {
@@ -484,6 +490,7 @@ const AddDistributer = () => {
                     name="address"
                     type="text"
                     value={address}
+                    placeholder="Address"
                     inputRef={(el) => (inputRefs.current[6] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 6)}
                     onChange={(e) => {
@@ -516,6 +523,7 @@ const AddDistributer = () => {
                     name="area"
                     type="text"
                     value={area}
+                    placeholder="Area"
                     onChange={(e) => {
                       const value = e.target.value;
                       const formattedValue =
@@ -546,6 +554,7 @@ const AddDistributer = () => {
                     name="pincode"
                     type="text" // use text to handle leading 0 safely
                     value={pincode}
+                    placeholder="Pincode"
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, "").slice(0, 6); // only digits, max 6
                       setPincode(value);
@@ -580,6 +589,7 @@ const AddDistributer = () => {
                     name="distributor_durg_distributor"
                     type="text"
                     value={durgLicence}
+                    placeholder="Distributor Drug License Number"
                     onChange={(e) => {
                       const value = e.target.value.toUpperCase();
                       setDurgLicence(value);
@@ -608,6 +618,7 @@ const AddDistributer = () => {
                     name="food_licence_no"
                     type="text"
                     value={foodLicence}
+                    placeholder="Food Licence Number"
                     onChange={(e) => {
                       const value = e.target.value.toUpperCase();
                       setFoodLicence(value);
@@ -636,6 +647,7 @@ const AddDistributer = () => {
                     name="payment_due_days"
                     type="number"
                     value={dueDays}
+                    placeholder="Credit Due Days"
                     onChange={(e) => setDueDays(e.target.value)}
                   />
                   <div name="payment_due_days" />
@@ -683,6 +695,7 @@ const AddDistributer = () => {
                           name="bank_name"
                           type="text"
                           value={bankName}
+                          placeholder="Bank Name"
                           onChange={(e) => {
                             const uppercasedValue = e.target.value
                               .toUpperCase()
@@ -692,7 +705,7 @@ const AddDistributer = () => {
                         />
 
                         <div
-                          className="absolute top-0 end-0 h-full p-2.5  px-4 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg  cursor-pointer"
+                          className="absolute top-0 end-0 h-full p-3.5  px-4 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg  cursor-pointer"
                           style={{ borderRadius: "0px 4px 4px 0px" }}
                         >
                           <svg
@@ -735,6 +748,7 @@ const AddDistributer = () => {
                         name="account_no"
                         type="text" // use text to handle long numbers safely
                         value={accountNo}
+                        placeholder="Account Number"
                         onChange={(e) => {
                           const value = e.target.value.replace(/\D/g, ""); // only digits
                           setAccountNo(value);
@@ -769,6 +783,7 @@ const AddDistributer = () => {
                         name="ifsc_code"
                         type="text"
                         value={ifsc}
+                        placeholder="IFSC Code"
                         onChange={(e) => {
                           const value = e.target.value
                             .toUpperCase()

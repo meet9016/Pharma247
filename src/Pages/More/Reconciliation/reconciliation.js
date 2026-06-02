@@ -106,7 +106,7 @@ const Reconciliation = () => {
 
           if (response.data.data.data.length == 0) {
             toast.dismiss();
-            toast.error("No Record Found");
+            // toast.error("No Record Found");
           }
           setIsLoading(false);
         });
@@ -152,7 +152,6 @@ const Reconciliation = () => {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      console.error("API error:", error);
 
       toast.dismiss();
       toast.success("Data submitted successfully");

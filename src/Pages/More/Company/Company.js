@@ -505,7 +505,7 @@ toast.error("Error deleting company");
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField autoComplete="off" {...params} />
+                    <TextField autoComplete="off" {...params} placeholder="Comapny Name"/>
                   )}
                   freeSolo
                 />

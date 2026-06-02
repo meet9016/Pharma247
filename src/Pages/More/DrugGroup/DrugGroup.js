@@ -517,7 +517,7 @@ const DrugGroup = () => {
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField autoComplete="off" {...params} />
+                    <TextField autoComplete="off" placeholder="Drug Group Name" {...params} />
                   )}
                   freeSolo
                 />

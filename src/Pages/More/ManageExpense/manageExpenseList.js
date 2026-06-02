@@ -995,6 +995,7 @@ toast.success(response.data.message);
                             type="number"
                             size="small"
                             value={amount}
+                            placeholder="without GST Amount"
                             onChange={(e) => setAmount(e.target.value)}
                           />
                           {errors.amount && (
@@ -1017,6 +1018,7 @@ toast.success(response.data.message);
                             type="number"
                             size="small"
                             value={total}
+                            placeholder="Total"
                             onChange={(e) => setTotal(e.target.value)}
                           />
                           {errors.total && (
@@ -1036,19 +1038,35 @@ toast.success(response.data.message);
                           >
                             Payment Mode
                           </span>
-                          <Select
-                            className="w-full md:w-full"
-                            value={paymentType}
-                            onChange={(e) => setPaymentType(e.target.value)}
-                            size="small"
-                          >
-                            <MenuItem value="cash">Cash</MenuItem>
-                            {bankData?.map((option) => (
-                              <MenuItem key={option.id} value={option.id}>
-                                {option.bank_name}
-                              </MenuItem>
-                            ))}
-                          </Select>
+                          <Autocomplete
+                            options={[
+                              { value: "cash", label: "Cash" },
+                              ...(bankData || []).map((option) => ({
+                                value: option.id,
+                                label: option.bank_name,
+                              })),
+                            ]}
+                            getOptionLabel={(option) => option.label || ""}
+                            value={
+                              [
+                                { value: "cash", label: "Cash" },
+                                ...(bankData || []).map((option) => ({
+                                  value: option.id,
+                                  label: option.bank_name,
+                                })),
+                              ].find((opt) => opt.value === paymentType) || null
+                            }
+                            onChange={(event, newValue) => {
+                              setPaymentType(newValue ? newValue.value : "");
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                size="small"
+                                placeholder="Select Payment Mode"
+                              />
+                            )}
+                          />
                           {errors.paymentType && (
                             <div className="error">{errors.paymentType}</div>
                           )}
@@ -1069,6 +1087,7 @@ toast.success(response.data.message);
                             type="number"
                             size="small"
                             value={refNo}
+                            placeholder="Reference Number"
                             onChange={(e) => setRefNo(e.target.value)}
                           />
                           {errors.refNo && (
@@ -1092,6 +1111,7 @@ toast.success(response.data.message);
                             required
                             size="small"
                             value={remark}
+                            placeholder="Remark"
                             onChange={(e) => setRemark(e.target.value)}
                           />
                           {errors.remark && (

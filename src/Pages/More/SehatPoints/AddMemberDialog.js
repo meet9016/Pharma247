@@ -7,7 +7,7 @@ import Header from "../../Header";
 import Loader from "../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import { BsLightbulbFill } from "react-icons/bs";
-import { Select, MenuItem, TextField, Button, Dialog, DialogTitle, IconButton, DialogContent, DialogContentText, FormControl, DialogActions } from "@mui/material";
+import { Select, MenuItem, TextField, Button, Dialog, DialogTitle, IconButton, DialogContent, DialogContentText, FormControl, DialogActions, Autocomplete } from "@mui/material";
 import axios from "axios";
 import PlanDialog from "./Plandialog";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -55,7 +55,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
 
 
     const fetchMembersDetails = async () => {
-        if(customerId ==0){
+        if (customerId == 0) {
             return
         }
 
@@ -81,13 +81,13 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
-              if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     };
 
@@ -109,13 +109,13 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
-              if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     };
 
@@ -123,26 +123,26 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
 
     const relationList = async () => {
         try {
-            await axios.get("patient-family-relation-list?", {
+            await axios.get("patient-family-relation-list", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
                 .then((response) => {
-                    setRelations(prevRelations => [
-                        ...prevRelations,
+                    setRelations([
+                        { id: 0, name: "Self" },
                         ...response.data.data
                     ]);
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
-              if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     };
 
@@ -344,13 +344,13 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
             console.error("API error:", error);
             toast.dismiss();
             toast.error(error.response.data.message);
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
 
         }
 
@@ -368,8 +368,8 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
         >
             {/* HEADER */}
             <DialogTitle id="alert-dialog-title" className="secondary">
-                
-                {customerId?"Edit Membership":"Add Membership"}
+
+                {customerId ? "Edit Membership" : "Add Membership"}
                 <IconButton
                     aria-label="close"
                     onClick={() => setAddMember(false)}
@@ -405,21 +405,22 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                         <div className="flex justify-between gap-5 my-5">
                             <div className="flex flex-col w-full">
                                 <label className="label">Select Plan <span className="text-red-600 ">*</span></label>
-                                <Select
+                                <Autocomplete
+                                    id="plan-autocomplete"
+                                    options={planList}
                                     size="small"
-                                    value={formData.planId}
-                                    onChange={(e) => handleChange("planId", e.target.value)}
-                                    error={!!errors.planId}
-
-                                    displayEmpty
-                                >
-                                    <MenuItem value="" disabled>Select Plan <span className="text-red-600 ">*</span></MenuItem>
-                                    {planList.map(plan => (
-                                        <MenuItem key={plan.id} value={plan.id}>
-                                            {plan.plan_name} &#8377;{plan.price}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
+                                    value={planList.find(plan => String(plan.id) === String(formData.planId)) || null}
+                                    onChange={(e, newValue) => handleChange("planId", newValue ? newValue.id : "")}
+                                    getOptionLabel={(option) => option.plan_name ? `${option.plan_name} ₹${option.price}` : ""}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            autoComplete="off"
+                                            {...params}
+                                            placeholder="Select Plan"
+                                            error={!!errors.planId}
+                                        />
+                                    )}
+                                />
                                 {errors.planId && (
                                     <span className="text-red-600 text-xs">{errors.planId}</span>
                                 )}
@@ -429,23 +430,22 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
 
                             <div className="flex flex-col w-full">
                                 <label className="label">Payment Method <span className="text-red-600 ">*</span></label>
-                                <Select
+                                <Autocomplete
+                                    id="payment-method-autocomplete"
+                                    options={paymentTypes}
                                     size="small"
-                                    value={formData.paymentMethod}
-                                    onChange={(e) => handleChange("paymentMethod", e.target.value)}
-                                    displayEmpty
-                                    required
-                                    error={!!errors.paymentMethod}
-
-
-                                >
-                                    <MenuItem value="" disabled>Select Payment Method <span className="text-red-600 ">*</span></MenuItem>
-                                    {paymentTypes.map(item => (
-                                        <MenuItem key={item.id} value={item.type}>
-                                            {item.type}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
+                                    value={paymentTypes.find(item => item.type === formData.paymentMethod) || null}
+                                    onChange={(e, newValue) => handleChange("paymentMethod", newValue ? newValue.type : "")}
+                                    getOptionLabel={(option) => option.type || ""}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            autoComplete="off"
+                                            {...params}
+                                            placeholder="Select Payment Method"
+                                            error={!!errors.paymentMethod}
+                                        />
+                                    )}
+                                />
                                 {errors.paymentMethod && (
                                     <span className="text-red-600 text-xs">{errors.paymentMethod}</span>
                                 )}
@@ -458,6 +458,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                     size="small"
                                     type="email"
                                     value={formData.email}
+                                    placeholder="Email"
                                     onChange={(e) => handleChange("email", e.target.value)}
                                     error={!!errors.email}
                                     helperText={errors.email}
@@ -488,6 +489,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                             size="small"
                                             type="text"
                                             value={contact.name}
+                                            placeholder="Contact Name"
                                             error={!!errors.contacts?.[index]?.name}
                                             helperText={errors.contacts?.[index]?.name}
                                             disabled={index < disableContacts}
@@ -499,10 +501,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                                     handleContactChange(index, "name", value);
                                                 }
                                             }}
-
                                         />
-
-
 
                                     </div>
 
@@ -514,6 +513,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                             size="small"
                                             type="tel"
                                             value={contact.number}
+                                            placeholder="Mobile Number"
                                             error={!!errors.contacts?.[index]?.number}
                                             helperText={errors.contacts?.[index]?.number}
                                             disabled={index < disableContacts}
@@ -536,7 +536,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                         <label className="label">Relation    {index === 0 && (
                                             <span className="text-red-600"> *</span>
                                         )}</label>
-                                        <Select
+                                        {/* <Select
                                             size="small"
                                             value={contact.relation}
                                             error={!!errors.contacts?.[index]?.relation}
@@ -551,20 +551,44 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                                     {item.name}
                                                 </MenuItem>
                                             ))}
-                                        </Select>
+                                        </Select> */}
+                                        <Autocomplete
+                                            size="small"
+                                            options={relations || []}
+                                            getOptionLabel={(option) => option.name || ""}
+                                            value={
+                                                relations.find((item) => item.name === contact.relation) || null
+                                            }
+                                            disabled={index < disableContacts}
+                                            onChange={(event, newValue) => {
+                                                handleContactChange(
+                                                    index,
+                                                    "relation",
+                                                    newValue ? newValue.name : ""
+                                                );
+                                            }}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    placeholder="Select Relation"
+                                                    error={!!errors.contacts?.[index]?.relation}
+                                                    helperText={errors.contacts?.[index]?.relation}
+                                                />
+                                            )}
+                                        />
                                     </div>
                                 </div>
                             </React.Fragment>
                         ))}
-                    <div className="flex justify-end mt-4">
-  <Button
-    variant="contained"
-    sx={{ backgroundColor: "#3f6212" }}
-    onClick={handleSubmit}
-  >
-    Submit
-  </Button>
-</div>
+                        <div className="flex justify-end mt-4">
+                            <Button
+                                variant="contained"
+                                sx={{ backgroundColor: "#3f6212" }}
+                                onClick={handleSubmit}
+                            >
+                                Submit
+                            </Button>
+                        </div>
                     </div>
                     {/* Submit Button */}
 

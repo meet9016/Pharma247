@@ -543,8 +543,8 @@ const LoyaltyPoint = () => {
               <button
                 onClick={handlePrevious}
                 className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
                   }`}
                 disabled={currentPage === 1}
               >
@@ -583,8 +583,8 @@ const LoyaltyPoint = () => {
               <button
                 onClick={handleNext}
                 className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
                   }`}
                 disabled={currentPage >= totalPages}
               >
@@ -643,40 +643,47 @@ const LoyaltyPoint = () => {
                         variant="outlined data-mdb-input-init"
                         sx={{ width: "100% " }}
                       >
-                       <TextField
-                        autoComplete="off"
-                        type="number"
-                        inputRef={inputRef1}
-                        onKeyDown={handleKeyDown}
-                        value={minimumAmount}
-                        onChange={(e) => {
+                        <div className="mb-2">
+                          <span className="label primary">Minimum Amount</span>
+                        </div>
+                        <TextField
+                          autoComplete="off"
+                          type="number"
+                          inputRef={inputRef1}
+                          onKeyDown={handleKeyDown}
+                          value={minimumAmount}
+                          placeholder="Minimun Amount"
+                          onChange={(e) => {
                             e.target.value = e.target.value.replace(
                               /[^0-9]/g,
                               ""
                             );
-                          setMinimumAmount(e.target.value);
-                        }}
-                        label="Minimum"
-                        variant="outlined"
+                            setMinimumAmount(e.target.value);
+                          }}
+                          variant="outlined"
                           size="small"
-                        sx={{
-                          "& .MuiInputLabel-root.Mui-focused": {
-                            color: "var(--COLOR_UI_PHARMACY)",
-                          },
-                        }}
-                      />
+                          sx={{
+                            "& .MuiInputLabel-root.Mui-focused": {
+                              color: "var(--COLOR_UI_PHARMACY)",
+                            },
+                          }}
+                        />
                       </FormControl>
                       <FormControl
                         className="max_fld_ly"
                         variant="outlined data-mdb-input-init"
                         sx={{ width: "100%" }}
                       >
+                        <div className="mb-2">
+                          <span className="label primary">Maximum Amount</span>
+                        </div>
                         <TextField
                           autoComplete="off"
                           type="number"
                           inputRef={inputRef2}
                           onKeyDown={handleKeyDown}
                           value={maximumAmount}
+                          placeholder="Maximum"
                           onChange={(e) => {
                             e.target.value = e.target.value.replace(
                               /[^0-9]/g,
@@ -684,7 +691,6 @@ const LoyaltyPoint = () => {
                             );
                             setMaximumAmount(e.target.value);
                           }}
-                          label="Maximum"
                           variant="outlined"
                           size="small"
                           sx={{
@@ -700,6 +706,9 @@ const LoyaltyPoint = () => {
                         variant="outlined data-mdb-input-init"
                         sx={{ width: "100%" }}
                       >
+                        <div className="mb-2">
+                          <span className="label primary">Percentage</span>
+                        </div>
                         <TextField
                           autoComplete="off"
                           type="number"
@@ -719,8 +728,8 @@ const LoyaltyPoint = () => {
                             );
                             setPercentage(e.target.value);
                           }}
+                          placeholder="Percentage %"
                           id="percentage-input"
-                          label="Percentage %"
                           size="small"
                           sx={{
                             "& .MuiInputLabel-root.Mui-focused": {

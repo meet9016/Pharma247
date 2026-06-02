@@ -824,7 +824,7 @@ const AdjustStock = () => {
                       getOptionLabel={(option) => option?.batch_number || ""}
                       isOptionEqualToValue={(option, value) => option.id === value.id}
                       renderInput={(params) => (
-                        <TextField {...params} autoComplete="off" />
+                        <TextField {...params} autoComplete="off" placeholder="Batch" />
                       )}
                     />
 
@@ -837,6 +837,7 @@ const AdjustStock = () => {
                       disabled
                       size="small"
                       value={unit}
+                      placeholder="Unit"
                       onChange={(e) => setUnit(e.target.value)}
                       className="w-full"
                     />
@@ -849,6 +850,7 @@ const AdjustStock = () => {
                       disabled
                       size="small"
                       value={expiry}
+                      placeholder="Expiry"
                       onChange={(e) => setExpiry(e.target.value)}
                       className="w-full"
                     />
@@ -862,6 +864,7 @@ const AdjustStock = () => {
                       disabled
                       size="small"
                       value={mrp}
+                      placeholder="MRP"
                       onChange={(e) => setMrp(e.target.value)}
                       className="w-full"
                     />
@@ -875,6 +878,7 @@ const AdjustStock = () => {
                       disabled
                       size="small"
                       value={stock}
+                      placeholder="Stock"
                       onChange={(e) => setStock(e.target.value)}
                       className="w-full"
                     />
@@ -902,6 +906,7 @@ const AdjustStock = () => {
                         type="number"
                         size="small"
                         value={stockAdjust}
+                        placeholder="No."
                         onChange={(e) => setStockAdjust(parseFloat(e.target.value))}
                         className="w-full"
                       />
@@ -917,6 +922,7 @@ const AdjustStock = () => {
                       disabled
                       size="small"
                       value={remainingStock}
+                      placeholder="Remaining Stock"
                       className="w-full"
                     />
                   </div>

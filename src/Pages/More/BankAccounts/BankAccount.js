@@ -194,7 +194,7 @@ const BankAccount = () => {
     setDetails(selectedDetails);
   }, [bankData, selectedAccountId, startDate, endDate]);
 
-
+  
 
   useEffect(() => {
     if (clicked) {
@@ -247,8 +247,8 @@ const BankAccount = () => {
           .then((response) => {
             BankList();
             BankDetailgetByID();
-             toast.dismiss();
-toast.success(response.data.message);
+            toast.dismiss();
+            toast.success(response.data.message);
             setPaymentType("");
             setClicked(false);
             setOpenAddPopUpAdjust(false);
@@ -268,13 +268,13 @@ toast.success(response.data.message);
           });
       } catch (error) {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
   };
@@ -321,7 +321,7 @@ toast.success(response.data.message);
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -359,7 +359,7 @@ toast.success(response.data.message);
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -396,8 +396,8 @@ toast.success(response.data.message);
           .then((response) => {
             BankList();
             setOpenAddPopUp(false);
-             toast.dismiss();
-toast.success(response.data.message);
+            toast.dismiss();
+            toast.success(response.data.message);
             setBankName("");
             setAccountType("");
             setSwitchChecked(false);
@@ -419,13 +419,13 @@ toast.success(response.data.message);
           });
       } catch (error) {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
   };
@@ -472,11 +472,11 @@ toast.success(response.data.message);
       setCurrentBalance(selectedBankData.total_amount);
 
       setAccountHolderName(selectedBankData.account_holder_name);
-   
+
     } else {
       setCurrentBalance(selectedBankData.total_amount);
       setAccountHolderName(selectedBankData.account_holder_name);
- 
+
     }
 
 
@@ -519,7 +519,7 @@ toast.success(response.data.message);
       }
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -529,7 +529,7 @@ toast.success(response.data.message);
     }
   };
 
-  const handleStartDate = (newDate) => {
+const handleStartDate = (newDate) => {
     setStartDate(newDate);
     BankDetailgetByID(selectedAccountId);
   };
@@ -997,6 +997,7 @@ toast.success(response.data.message);
                       id="outlined-multiline-static"
                       size="small"
                       value={bankName}
+                      placeholder="Bank Name"
                       onChange={(e) => {
                         // Transform to uppercase
                         const uppercasedValue = e.target.value.toUpperCase();
@@ -1012,7 +1013,7 @@ toast.success(response.data.message);
                           if (isEnter) {
                             e.preventDefault();
                             toast.dismiss();
-toast.error("Bank Name is Required");
+                            toast.error("Bank Name is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1036,6 +1037,7 @@ toast.error("Bank Name is Required");
                       size="small"
                       type="text"
                       value={accountType}
+                      placeholder="Account Type"
                       inputRef={(el) => (inputRefs.current[1] = el)}
                       onKeyDown={(e) => {
                         if (accountType) {
@@ -1046,7 +1048,7 @@ toast.error("Bank Name is Required");
                           if (isEnter) {
                             e.preventDefault();
                             toast.dismiss();
-toast.error("Account Type is Required");
+                            toast.error("Account Type is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1078,6 +1080,7 @@ toast.error("Account Type is Required");
                       id="outlined-multiline-static"
                       size="small"
                       value={openingBalance}
+                      placeholder="Opening Balance"
                       inputRef={(el) => (inputRefs.current[2] = el)}
                       onKeyDown={(e) => {
                         if (openingBalance) {
@@ -1088,7 +1091,7 @@ toast.error("Account Type is Required");
                           if (isEnter) {
                             e.preventDefault();
                             toast.dismiss();
-toast.error("Opening Balance is Required");
+                            toast.error("Opening Balance is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1137,6 +1140,7 @@ toast.error("Opening Balance is Required");
                       id="outlined-multiline-static"
                       size="small"
                       value={accountNumber}
+                      placeholder="Bank Account Number"
                       onChange={(e) => {
                         const numericValue = e.target.value.replace(
                           /[^0-9]/g,
@@ -1155,7 +1159,7 @@ toast.error("Opening Balance is Required");
                           if (isEnter) {
                             e.preventDefault();
                             toast.dismiss();
-toast.error("Bank Account Number is Required");
+                            toast.error("Bank Account Number is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1180,6 +1184,7 @@ toast.error("Bank Account Number is Required");
                       id="outlined-multiline-static"
                       size="small"
                       value={reEnterAccountNumber}
+                      placeholder="Re-Enter Account Number"
                       onChange={(e) => {
                         // Allow only numeric input
                         const numericValue = e.target.value.replace(/[^0-9]/g, "");
@@ -1194,13 +1199,13 @@ toast.error("Bank Account Number is Required");
                           if (isEnter) {
                             e.preventDefault();
                             toast.dismiss();
-toast.error("Re-Enter Account Number is Required");
+                            toast.error("Re-Enter Account Number is Required");
                           }
                         } else if (isTab && accountNumber !== reEnterAccountNumber) {
                           // Block focus move if mismatch
                           e.preventDefault();
                           toast.dismiss();
-toast.error("Account Numbers do not match");
+                          toast.error("Account Numbers do not match");
                         } else {
                           handleKeyDown(e, 4);
                         }
@@ -1228,6 +1233,7 @@ toast.error("Account Numbers do not match");
                       id="outlined-multiline-static"
                       size="small"
                       value={ifscCode}
+                      placeholder="IFSC Code"
                       onChange={(e) => {
                         const uppercasedValue = e.target.value.toUpperCase();
                         setIfscCode(uppercasedValue);
@@ -1242,7 +1248,7 @@ toast.error("Account Numbers do not match");
                           if (isEnter) {
                             e.preventDefault();
                             toast.dismiss();
-toast.error("IFSC Code is Required");
+                            toast.error("IFSC Code is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1266,6 +1272,7 @@ toast.error("IFSC Code is Required");
                         id="outlined-multiline-static"
                         size="small"
                         value={branchName}
+                        placeholder="Branch Name"
                         onChange={(e) => {
                           setBranchName(e.target.value);
                         }}
@@ -1279,7 +1286,7 @@ toast.error("IFSC Code is Required");
                             if (isEnter) {
                               e.preventDefault();
                               toast.dismiss();
-toast.error("Branch Name is Required");
+                              toast.error("Branch Name is Required");
                             }
                             // Shift + Tab is allowed by default; do not prevent it
                           }
@@ -1307,6 +1314,7 @@ toast.error("Branch Name is Required");
                       id="outlined-multiline-static"
                       size="small"
                       value={accountHolderName}
+                      placeholder="Account Holder Name"
                       onChange={(e) => {
                         const capitalizedValue = e.target.value
                           .toLowerCase()
@@ -1323,7 +1331,7 @@ toast.error("Branch Name is Required");
                           if (isEnter) {
                             e.preventDefault();
                             toast.dismiss();
-toast.error("Account Holder Name is Required");
+                            toast.error("Account Holder Name is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1348,6 +1356,7 @@ toast.error("Account Holder Name is Required");
                         id="outlined-multiline-static"
                         size="small"
                         value={upiId}
+                        placeholder="UPI ID"
                         onChange={(e) => {
                           setUpiId(e.target.value);
                         }}
@@ -1380,267 +1389,277 @@ toast.error("Account Holder Name is Required");
         {/* className="custom-dialog" */}
 
         {/* Add Fund Dialog Box */}
-     <Dialog 
-  open={openAddPopUpAdjust} 
-  className="custom-dialog"
-  maxWidth="sm"
-  fullWidth
->
-  <DialogTitle 
-    id="alert-dialog-title" 
-    className="primary"
-    sx={{
-      backgroundColor: "var(--COLOR_UI_PHARMACY)",
-      color: "#ffffff",
-      padding: "16px 24px",
-      fontSize: "1.25rem",
-      fontWeight: 600
-    }}
-  >
-    Adjust Balance
-    <IconButton
-      aria-label="close"
-      onClick={resetAdjustDialog}
-      sx={{
-        position: "absolute",
-        right: 8,
-        top: 8,
-        color: "#ffffff",
-        '&:hover': {
-          backgroundColor: "rgba(255, 255, 255, 0.1)"
-        }
-      }}
-    >
-      <CloseIcon />
-    </IconButton>
-  </DialogTitle>
-
-  <DialogContent sx={{ padding: "24px", backgroundColor: "#f8f9fa" }}>
-    <DialogContentText component="div" sx={{ margin: 0 }}>
-      {/* Select Account */}
-      <div className="detail mb-4 mt-4">
-        <span className="label primary">Select Account</span>
-        <Select
-          labelId="dropdown-label"
-          id="dropdown"
-          className="mb-2"
-          value={paymentType}
-          sx={{ 
-            width: "100%",
-            backgroundColor: "#ffffff",
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: "#e0e0e0"
-            }
-          }}
-          onChange={handlePaymentTypeChange}
-          size="small"
+        <Dialog
+          open={openAddPopUpAdjust}
+          className="custom-dialog"
+          maxWidth="sm"
+          fullWidth
         >
-          <MenuItem value="cash">Cash</MenuItem>
-          {bankData?.map((option) => (
-            <MenuItem key={option.id} value={option.id}>
-              {option.bank_user_name} ({option.bank_account_name})
-            </MenuItem>
-          ))}
-        </Select>
-        {errors.paymentType && (
-          <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
-            {errors.paymentType}
-          </div>
-        )}
-      </div>
-
-      {/* Add or Reduce Buttons */}
-      <div className="detail mb-4">
-        <span className="label primary mb-2">Add or Reduce</span>
-        <div className="flex flex-col sm:flex-row gap-3 mb-2">
-          <Button 
-            autoFocus 
-            onClick={handleAddBtn}
-            variant="outlined"
-            startIcon={<AddIcon />}
+          <DialogTitle
+            id="alert-dialog-title"
+            className="primary"
             sx={{
-              flex: 1,
-              backgroundColor: "#e8f5e9",
-              color: "#2e7d32",
-              borderColor: "#4caf50",
-              '&:hover': {
-                backgroundColor: "#c8e6c9",
-                borderColor: "#388e3c"
-              }
+              backgroundColor: "var(--COLOR_UI_PHARMACY)",
+              color: "#ffffff",
+              padding: "16px 24px",
+              fontSize: "1.25rem",
+              fontWeight: 600
             }}
           >
-            Add Money
-          </Button>
-          <Button
-            autoFocus
-            onClick={handleReduceBtn}
-            variant="outlined"
-            startIcon={<RemoveIcon />}
-            sx={{
-              flex: 1,
-              backgroundColor: "#ffebee",
-              color: "#c62828",
-              borderColor: "#ef5350",
-              '&:hover': {
-                backgroundColor: "#ffcdd2",
-                borderColor: "#d32f2f"
-              }
-            }}
-          >
-            Reduce Money
-          </Button>
-        </div>
-        {errors.reduceclicked && (
-          <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
-            {errors.reduceclicked}
-          </div>
-        )}
-      </div>
-
-      {/* Current Balance & Date */}
-      <div className="detail mb-4">
-        <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-          <div>
-            <span className="label primary">Current Balance</span>
-            <OutlinedInput
-              type="number"
-              value={currentBalance}
-              disabled
-              startAdornment={<InputAdornment position="start">₹</InputAdornment>}
-              sx={{ 
-                width: "100%",
-                backgroundColor: "#f5f5f5",
-                '& .MuiOutlinedInput-input': {
-                  fontWeight: 600,
-                  color: "#1976d2"
+            Adjust Balance
+            <IconButton
+              aria-label="close"
+              onClick={resetAdjustDialog}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: "#ffffff",
+                '&:hover': {
+                  backgroundColor: "rgba(255, 255, 255, 0.1)"
                 }
               }}
-              size="small"
-            />
-          </div>
-          <div>
-            <span className="label primary">Date</span>
-            <DatePicker
-              className="custom-datepicker"
-              selected={adjustDate}
-              onChange={(newDate) => setAdjustDate(newDate)}
-              dateFormat="dd/MM/yyyy"
-              customInput={
-                <OutlinedInput
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+
+          <DialogContent sx={{ padding: "24px", backgroundColor: "#f8f9fa" }}>
+            <DialogContentText component="div" sx={{ margin: 0 }}>
+              {/* Select Account */}
+              <div className="detail mb-4 mt-4">
+                <span className="label primary">Select Account</span>
+                <Autocomplete
+                  id="select-account-autocomplete"
+                  options={[
+                    { value: "cash", label: "Cash" },
+                    ...(bankData || []).map((option) => ({
+                      value: option.id,
+                      label: `${option.bank_user_name} (${option.bank_account_name})`
+                    }))
+                  ]}
+                  getOptionLabel={(option) => option.label || ""}
+                  value={
+                    [
+                      { value: "cash", label: "Cash" },
+                      ...(bankData || []).map((option) => ({
+                        value: option.id,
+                        label: `${option.bank_user_name} (${option.bank_account_name})`
+                      }))
+                    ].find((option) => option.value === paymentType) || null
+                  }
+                  onChange={(event, newValue) => {
+                    const fakeEvent = { target: { value: newValue ? newValue.value : "" } };
+                    handlePaymentTypeChange(fakeEvent);
+                  }}
                   size="small"
-                  sx={{ width: "100%", backgroundColor: "#ffffff" }}
+                  renderInput={(params) => (
+                    <TextField
+                      autoComplete="off"
+                      {...params}
+                      placeholder="Select Account"
+                    />
+                  )}
                 />
-              }
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Enter Amount & Latest Balance */}
-      <div className="detail mb-4">
-        <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-          <div>
-            <span className="label primary">Enter Amount</span>
-            <OutlinedInput
-              type="number"
-              value={enterAmt}
-              onChange={(e) => setEnterAmt(e.target.value)}
-              startAdornment={<InputAdornment position="start">₹</InputAdornment>}
-              sx={{ 
-                width: "100%",
-                backgroundColor: "#ffffff",
-                '& .MuiOutlinedInput-input': {
-                  fontWeight: 500
-                }
-              }}
-              size="small"
-            />
-            {errors.enterAmt && (
-              <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
-                {errors.enterAmt}
+                {errors.paymentType && (
+                  <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
+                    {errors.paymentType}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div>
-            <span className="label primary">Latest Balance</span>
-            <OutlinedInput
-              type="number"
-              value={latestAmt}
-              disabled
-              startAdornment={<InputAdornment position="start">₹</InputAdornment>}
-              sx={{ 
-                width: "100%",
-                backgroundColor: "#e8f5e9",
-                '& .MuiOutlinedInput-input': {
-                  fontWeight: 600,
-                  color: "#2e7d32"
+
+              {/* Add or Reduce Buttons */}
+              <div className="detail mb-4">
+                <span className="label primary mb-2">Add or Reduce</span>
+                <div className="flex flex-col sm:flex-row gap-3 mb-2">
+                  <Button
+                    autoFocus
+                    onClick={handleAddBtn}
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    sx={{
+                      flex: 1,
+                      backgroundColor: "#e8f5e9",
+                      color: "#2e7d32",
+                      borderColor: "#4caf50",
+                      '&:hover': {
+                        backgroundColor: "#c8e6c9",
+                        borderColor: "#388e3c"
+                      }
+                    }}
+                  >
+                    Add Money
+                  </Button>
+                  <Button
+                    autoFocus
+                    onClick={handleReduceBtn}
+                    variant="outlined"
+                    startIcon={<RemoveIcon />}
+                    sx={{
+                      flex: 1,
+                      backgroundColor: "#ffebee",
+                      color: "#c62828",
+                      borderColor: "#ef5350",
+                      '&:hover': {
+                        backgroundColor: "#ffcdd2",
+                        borderColor: "#d32f2f"
+                      }
+                    }}
+                  >
+                    Reduce Money
+                  </Button>
+                </div>
+                {errors.reduceclicked && (
+                  <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
+                    {errors.reduceclicked}
+                  </div>
+                )}
+              </div>
+
+              {/* Current Balance & Date */}
+              <div className="detail mb-4">
+                <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div>
+                    <span className="label primary">Current Balance</span>
+                    <OutlinedInput
+                      type="number"
+                      value={currentBalance}
+                      disabled
+                      startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+                      sx={{
+                        width: "100%",
+                        backgroundColor: "#f5f5f5",
+                        '& .MuiOutlinedInput-input': {
+                          fontWeight: 600,
+                          color: "#1976d2"
+                        }
+                      }}
+                      size="small"
+                    />
+                  </div>
+                  <div>
+                    <span className="label primary">Date</span>
+                    <DatePicker
+                      className="custom-datepicker"
+                      selected={adjustDate}
+                      onChange={(newDate) => setAdjustDate(newDate)}
+                      dateFormat="dd/MM/yyyy"
+                      customInput={
+                        <OutlinedInput
+                          size="small"
+                          sx={{ width: "100%", backgroundColor: "#ffffff" }}
+                        />
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Enter Amount & Latest Balance */}
+              <div className="detail mb-4">
+                <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div>
+                    <span className="label primary">Enter Amount</span>
+                    <OutlinedInput
+                      type="number"
+                      value={enterAmt}
+                      onChange={(e) => setEnterAmt(e.target.value)}
+                      startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+                      sx={{
+                        width: "100%",
+                        backgroundColor: "#ffffff",
+                        '& .MuiOutlinedInput-input': {
+                          fontWeight: 500
+                        }
+                      }}
+                      size="small"
+                    />
+                    {errors.enterAmt && (
+                      <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
+                        {errors.enterAmt}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <span className="label primary">Latest Balance</span>
+                    <OutlinedInput
+                      type="number"
+                      value={latestAmt}
+                      disabled
+                      startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+                      sx={{
+                        width: "100%",
+                        backgroundColor: "#e8f5e9",
+                        '& .MuiOutlinedInput-input': {
+                          fontWeight: 600,
+                          color: "#2e7d32"
+                        }
+                      }}
+                      size="small"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Remarks */}
+              <div className="detail mb-2">
+                <span className="label primary">Remarks</span>
+                <OutlinedInput
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                  sx={{
+                    width: "100%",
+                    backgroundColor: "#ffffff",
+                    '& .MuiOutlinedInput-input': {
+                      padding: "8.5px 14px"
+                    }
+                  }}
+                  size="small"
+                  placeholder="Add remarks here..."
+                  multiline
+                  rows={2}
+                />
+              </div>
+            </DialogContentText>
+          </DialogContent>
+
+          <DialogActions sx={{
+            padding: "16px 24px 24px",
+            backgroundColor: "#f8f9fa",
+            borderTop: "1px solid #e0e0e0"
+          }}>
+            <Button
+              sx={{
+                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                color: "white",
+                padding: "6px 20px",
+                '&:hover': {
+                  backgroundColor: "var(--COLOR_UI_PHARMACY_DARK)",
+                  opacity: 0.9
                 }
               }}
-              size="small"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Remarks */}
-      <div className="detail mb-2">
-        <span className="label primary">Remarks</span>
-        <OutlinedInput
-          value={remarks}
-          onChange={(e) => setRemarks(e.target.value)}
-          sx={{ 
-            width: "100%",
-            backgroundColor: "#ffffff",
-            '& .MuiOutlinedInput-input': {
-              padding: "8.5px 14px"
-            }
-          }}
-          size="small"
-          placeholder="Add remarks here..."
-          multiline
-          rows={2}
-        />
-      </div>
-    </DialogContentText>
-  </DialogContent>
-
-  <DialogActions sx={{ 
-    padding: "16px 24px 24px", 
-    backgroundColor: "#f8f9fa",
-    borderTop: "1px solid #e0e0e0"
-  }}>
-    <Button
-      sx={{
-        backgroundColor: "var(--COLOR_UI_PHARMACY)",
-        color: "white",
-        padding: "6px 20px",
-        '&:hover': {
-          backgroundColor: "var(--COLOR_UI_PHARMACY_DARK)",
-          opacity: 0.9
-        }
-      }}
-      autoFocus
-      variant="contained"
-      onClick={handleAdjustBalance}
-    >
-      Save Changes
-    </Button>
-    <Button
-      onClick={resetAdjustDialog}
-      variant="outlined"
-      sx={{
-        color: "#666",
-        borderColor: "#ccc",
-        '&:hover': {
-          borderColor: "#999",
-          backgroundColor: "#f5f5f5"
-        }
-      }}
-    >
-      Cancel
-    </Button>
-  </DialogActions>
-</Dialog>
+              autoFocus
+              variant="contained"
+              onClick={handleAdjustBalance}
+            >
+              Save Changes
+            </Button>
+            <Button
+              onClick={resetAdjustDialog}
+              variant="outlined"
+              sx={{
+                color: "#666",
+                borderColor: "#ccc",
+                '&:hover': {
+                  borderColor: "#999",
+                  backgroundColor: "#f5f5f5"
+                }
+              }}
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         <Dialog
           open={openAddPopUpDownload}

@@ -1045,6 +1045,7 @@ const CustomerList = () => {
                       size="small"
                       type="name"
                       value={customer}
+                      placeholder="Customer Name"
                       onChange={(e) => {
                         const cst =
                           e.target.value.charAt(0).toUpperCase() +
@@ -1072,6 +1073,7 @@ const CustomerList = () => {
                       type="number"
                       value={mobileNo}
                       onChange={handleChange}
+                      placeholder="Mobile Number"
                       startAdornment={
                         <InputAdornment position="start">
                           +91
@@ -1096,6 +1098,7 @@ const CustomerList = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={emailId}
+                      placeholder="Email"
                       onChange={(e) => {
                         setEmailId(e.target.value);
                       }}
@@ -1111,6 +1114,7 @@ const CustomerList = () => {
                       size="small"
                       type="number"
                       value={amount}
+                      placeholder="Amount"
                       onChange={(e) => {
                         setAmount(e.target.value);
                       }}
@@ -1128,7 +1132,7 @@ const CustomerList = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={area}
-
+                      placeholder="Area"
                       onChange={(e) => {
                         const amt =
                           e.target.value.charAt(0).toUpperCase() +
@@ -1146,6 +1150,7 @@ const CustomerList = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={city}
+                      placeholder="City"
                       onChange={(e) => {
                         const city =
                           e.target.value.charAt(0).toUpperCase() +
@@ -1166,6 +1171,7 @@ const CustomerList = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={address}
+                      placeholder="Address"
                       onChange={(e) => {
                         const add =
                           e.target.value.charAt(0).toUpperCase() +
@@ -1183,6 +1189,7 @@ const CustomerList = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={state}
+                      placeholder="State"
                       onChange={(e) => {
                         const state =
                           e.target.value.charAt(0).toUpperCase() +
