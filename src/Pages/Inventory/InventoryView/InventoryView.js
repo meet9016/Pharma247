@@ -466,7 +466,7 @@ const InventoryView = () => {
 
   const listDistributor = async () => {
     try {
-      const response = await axios.post(`list-distributer`, {
+      const response = await axios.post(`list-distributer`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -523,7 +523,7 @@ const InventoryView = () => {
 
   let listOfstaff = () => {
     axios
-      .post("staff-list", {
+      .post("staff-list", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
