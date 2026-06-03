@@ -613,7 +613,7 @@ const Dashboard = () => {
                         <BarChart
                           data={barChartData}
                           barCategoryGap="20%" // closes gap between label and bar
-                              margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
+                          margin={{ top: 10, right: 30, left: 0, bottom: 40 }}
                         >
                           <XAxis
                             dataKey="name"
@@ -774,44 +774,47 @@ const Dashboard = () => {
                       <TabContext value={value}>
                         <TabList
                           onChange={handlechange}
-                          aria-label="tabs"
-                          className="rounded-lg overflow-hidden bg-gray-100"
+                          // aria-label="tabs"
+                          TabIndicatorProps={{ style: { display: "none" } }}
+                          className="rounded-full bg-gray-100 flex-shrink"
                         >
                           {types.map((e) => (
                             <Tab
                               key={e.id}
                               value={e.id}
                               label={e.value}
-                              className="tab_txt_crd"
+                              // className="tab_txt_crd"
+                              className="px-4 py-1 text-sm font-medium capitalize"
                               sx={{
                                 "&.Mui-selected": {
                                   backgroundColor: "var(--color1)",
                                   color: "#fff",
-                                  fontWeight: 600,
+                                  // fontWeight: 600,
+                                  borderRadius: "999px",
+
                                 },
-                                textTransform: "none",
-                                paddingX: 2,
+                                // textTransform: "none",
+                                // paddingX: 2,
                               }}
                             />
                           ))}
                         </TabList>
                       </TabContext>
-{console.log("billData",billData)}
 
-                       {/* {billData.length > 0 && ( */}
-                        <FormControl size="small" sx={{ minWidth: 120 }}>
-                          <Select
-                            value={typeValue}
-                            onChange={typeHandlechange}
-                            className="rounded-md"
-                          >
-                            {staffList.map((e) => (
-                              <MenuItem key={e.id} value={e.id}>
-                                {e.value}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                      {/* {billData.length > 0 && ( */}
+                      <FormControl size="small" sx={{ minWidth: 120 }}>
+                        <Select
+                          value={typeValue}
+                          onChange={typeHandlechange}
+                          className="rounded-md"
+                        >
+                          {staffList.map((e) => (
+                            <MenuItem key={e.id} value={e.id}>
+                              {e.value}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                       {/* )} */}
                     </div>
                   </div>

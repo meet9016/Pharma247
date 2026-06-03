@@ -1422,7 +1422,7 @@ const Itemmaster = () => {
                           },
                         },
                       }}
-                      freeSolo
+                      // freeSolo
                     />
 
 

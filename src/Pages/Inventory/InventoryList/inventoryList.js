@@ -617,10 +617,10 @@ const InventoryList = () => {
           setData(response.data.data.data);
           if (response.data.data.data.length == 0) {
             // toast.dismiss();
-            // toast.error("No Record Found");
+            toast.error("No Record Found");
           }
           setIsLoading(false);
-  // BECAUSE OF THIS FITLER IS NOT WORKING PROPERLY
+          // BECAUSE OF THIS FITLER IS NOT WORKING PROPERLY
           // setSearchItem("");
           // setSelectedOption("");
           // setHsnCode("");
@@ -671,36 +671,36 @@ const InventoryList = () => {
     setPTREnd("");
     setPTRStart("");
 
-    // Prepare API call
-    let data = new FormData();
-    const params = {};
+    // // Prepare API call
+    // let data = new FormData();
+    // const params = {};
 
-    setIsLoading(true);
-    try {
-      const res = await axios.post("item-search?", data, {
-        params: params,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setData(res.data.data.data);
-      if (res.data.data.data.length == 0) {
-        // toast.dismiss();
-        // toast.error("No Record Found");
-      }
-    } catch (error) {
-      console.error("API error:", error);
-      if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    // setIsLoading(true);
+    // try {
+    //   const res = await axios.post("item-search?", data, {
+    //     params: params,
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
+    //   setData(res.data.data.data);
+    //   if (res.data.data.data.length == 0) {
+    //     // toast.dismiss();
+    //     toast.error("No Record Found");
+    //   }
+    // } catch (error) {
+    //   console.error("API error:", error);
+    //   if (error?.response?.status === 401) {
+    //     localStorage.removeItem("token");
+    //     localStorage.removeItem("userId");
+    //     localStorage.removeItem("role");
+    //     localStorage.clear();
+    //     history.push("/");
+    //   }
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   /*<================================================================================= sort table data  ========================================================================> */
@@ -1195,7 +1195,7 @@ const InventoryList = () => {
                               name={category.name}
                             />
                           }
-                          label={category.category_name}
+                          label={category.item_category_id}
                         />
                       ))}
                     </FormGroup>
@@ -1758,7 +1758,7 @@ const InventoryList = () => {
                 handleSearch("items_with_missing_category");
               }}
             >
-              Missing Category : {missingData.items_with_missing_category}
+              Missing Category :{missingData.items_with_missing_category}
             </Button>
             {/* <Button
               variant="contained"
@@ -1783,7 +1783,7 @@ const InventoryList = () => {
               value={searchItem.toUpperCase()}
               size="small"
               autoFocus
-              sx={{ width: "50%", marginTop: "5px" , }}
+              sx={{ width: "50%", marginTop: "5px", }}
               onChange={(e) => setSearchItem(e.target.value)}
               onKeyDown={handleKeyPress}
               variant="outlined"
@@ -1951,6 +1951,20 @@ const InventoryList = () => {
                       </th>
                       <th
                         className="cursor-pointer"
+                        onClick={() => sortByColumn("hsn_code")}
+                      >
+                        HSN Code
+                        <SwapVertIcon />
+                      </th>
+                      <th
+                        className="cursor-pointer"
+                        onClick={() => sortByColumn("item_category_id")}
+                      >
+                        Category
+                        <SwapVertIcon />
+                      </th>
+                      <th
+                        className="cursor-pointer"
                         onClick={() => sortByColumn("discount")}
                       >
                         Disc
@@ -2036,7 +2050,9 @@ const InventoryList = () => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          {item.mrp === null || item.mrp === undefined || item.mrp === "" || item.mrp === "null" ? "-" : item.mrp}
+                          {item.mrp === "null" || item.mrp === ""
+                            ? "-"
+                            : item.mrp}
                         </td>
                         <td
                           onClick={() => {
@@ -2044,13 +2060,10 @@ const InventoryList = () => {
                           }}
                         >
                           {
-                            !item.drug_group_name || item.drug_group_name === "null" || item.drug_group_name === ""
-                              ? "-"
-                              : item.drug_group_name.length > 12
+                            item.drug_group_name?.length > 12
                               ? item.drug_group_name.slice(0, 12).toUpperCase() + "..."
-                              : item.drug_group_name.toUpperCase()
+                              : item.drug_group_name?.toUpperCase() || "-"
                           }
-
                         </td>
                         <Tooltip title="Stock Adjusted" placement="left" arrow>
                           <td
@@ -2068,8 +2081,9 @@ const InventoryList = () => {
                                   handelAddOpen(item);
                                 }}
                               />
-
-                              {item.stock === null || item.stock === undefined || item.stock === "" || item.stock === "null" ? "-" : item.stock}
+                              {item.stock === "null" || item.stock === ""
+                                ? "-"
+                                : item.stock}
                             </span>
                           </td>
                         </Tooltip>
@@ -2081,19 +2095,41 @@ const InventoryList = () => {
                         {item.stock == "null" ? "-" : item.stock}
                       </td> */}
                         <td
-                          td
                           onClick={() => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          {item.location === null || item.location === undefined || item.location === "" || item.location === "null" ? "-" : item.location}
+                          {/* {item.loaction == "null" ? "-" : item.location} */}
+                          {item.location === "null" || item.location === ""
+                            ? "-"
+                            : item.location}
                         </td>
                         <td
                           onClick={() => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          {item.discount === null || item.discount === undefined || item.discount === "" || item.discount === "null" ? "-" : item.discount}
+                          {item.hsn_code === "null" || item.hsn_code === "" || !item.hsn_code
+                            ? "-"
+                            : item.hsn_code}
+                        </td>
+                        <td
+                          onClick={() => {
+                            history.push(`/inventoryView/${item.id}`);
+                          }}
+                        >
+                          {item.item_category_id === "null" || item.item_category_id === "" || !item.item_category_id
+                            ? "-"
+                            : item.item_category_id}
+                        </td>
+                        <td
+                          onClick={() => {
+                            history.push(`/inventoryView/${item.id}`);
+                          }}
+                        >
+                          {item.discount === "null" || item.discount === ""
+                            ? "-"
+                            : item.discount}
                         </td>
                         <td
                           style={{ borderRadius: "0 10px 10px 0" }}
@@ -2101,7 +2137,9 @@ const InventoryList = () => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
                         >
-                          {item.barcode === null || item.barcode === undefined || item.barcode === "" || item.barcode === "null" ? "-" : item.barcode}
+                          {item.barcode === "null" || item.barcode === ""
+                            ? "-"
+                            : item.barcode}
                         </td>
                       </tr>
                     ))}
@@ -2232,7 +2270,7 @@ const InventoryList = () => {
                               name={category.name}
                             />
                           }
-                          label={category.category_name}
+                          label={category.item_category_id}
                         />
                       ))}
                     </FormGroup>
@@ -2768,7 +2806,7 @@ const InventoryList = () => {
                   value={selectedCompany}
                   disabled
                   getOptionLabel={(option) => option.company_name}
-                  renderInput={(params) => <TextField autoComplete="off" placeholder="Select Company" {...params} />}
+                  renderInput={(params) => <TextField autoComplete="off" {...params} />}
                 />
               </div>
             </div>
@@ -2795,28 +2833,28 @@ const InventoryList = () => {
                   value={batch}
                   onChange={handleBatchData}
                   getOptionLabel={(option) => option.batch_number}
-                  renderInput={(params) => <TextField autoComplete="off" placeholder="Batch" {...params} />}
+                  renderInput={(params) => <TextField autoComplete="off" {...params} />}
                 />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">Unit</span>
-                <TextField autoComplete="off" disabled size="small" value={unit} placeholder="Unit" />
+                <TextField autoComplete="off" disabled size="small" value={unit} />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">Expiry</span>
-                <TextField autoComplete="off" disabled size="small" value={expiry} placeholder="Expiry" />
+                <TextField autoComplete="off" disabled size="small" value={expiry} />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">MRP</span>
-                <TextField autoComplete="off" disabled size="small" type="number" value={mrp} placeholder="MRP"/>
+                <TextField autoComplete="off" disabled size="small" type="number" value={mrp} />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">Current Stock</span>
-                <TextField autoComplete="off" disabled size="small" type="number" value={stock} placeholder="Current Stock"/>
+                <TextField autoComplete="off" disabled size="small" type="number" value={stock} />
               </div>
 
               <div className="w-full">
@@ -2826,7 +2864,6 @@ const InventoryList = () => {
                   size="small"
                   type="number"
                   value={stockAdjust}
-                  placeholder="Maintain Stock"
                   onChange={(e) => {
                     const val = e.target.value;
                     setStockAdjust(val === "" ? "" : parseFloat(val));
@@ -2837,7 +2874,7 @@ const InventoryList = () => {
 
               <div className="w-full">
                 <span className="title primary mb-2">Stock Adjust</span>
-                <TextField autoComplete="off" disabled size="small" type="number" value={remainingStock} placeholder="Stock Adjust" />
+                <TextField autoComplete="off" disabled size="small" type="number" value={remainingStock} />
               </div>
             </div>
           </DialogContentText>

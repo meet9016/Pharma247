@@ -47,6 +47,7 @@ const InventoryView = () => {
   const [hideZeroQuantity, setHideZeroQuantity] = useState(true);
   const [tabValue, setTabValue] = useState(0);
   const [openImg, setOpenImg] = useState(false);
+  const [activeImgIndex, setActiveImgIndex] = useState(0);
   const [batchId, setBatchId] = useState(null);
   const [IsDelete, setIsDelete] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -914,6 +915,7 @@ const InventoryView = () => {
     }
   };
   const openImage = () => {
+    setActiveImgIndex(0);
     setOpenImg(true);
   };
 
@@ -1003,51 +1005,83 @@ const InventoryView = () => {
                   </Button>
                 </div>
               </div>
-              <div className="flex justify-between flex-wrap">
-                <div className="img flex gap-10 inventory_header_txt">
-                  <div className="relative w-28 h-28 mb-6 bg-white p-2">
-                    <img
-                      src={
-                        itemAllData?.front_photo
-                          ? itemAllData.front_photo
-                          : tablet
-                      }
-                      alt={itemAllData?.front_photo ? "Pharma" : "Tablet"}
-                      className="w-full h-full object-cover cursor-pointer"
-                    />
+              <div className="flex flex-col lg:flex-row justify-between gap-6">
+                {/* Left Section */}
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Images */}
+                  <div className="flex gap-3 flex-wrap">
                     <div
-                      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
-                      onClick={openImage}
+                      className="relative w-28 h-28 bg-white rounded-lg border shadow-sm overflow-hidden group flex items-center justify-center"
                     >
-                      <p className="text-sm px-2">Click to zoom</p>
+                      <img
+                        src={itemAllData?.front_photo || tablet}
+                        alt="Medicine"
+                        className="w-full h-full object-contain p-1 transition-transform duration-300 group-hover:scale-105"
+                      />
+
+                      <div
+                        className="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                        onClick={openImage}
+                      >
+                        <p className="text-xs">Click to Zoom</p>
+                      </div>
                     </div>
                   </div>
 
+                  {/* Product Details */}
                   <div className="flex flex-col">
                     <span
-                      className={`text-lg font-medium ${itemAllData.status === "Not Available"
-                        ? "text-red-500"
-                        : "text-emerald-500"
+                      className={`text-base font-semibold mb-1 ${itemAllData.status === "Not Available"
+                          ? "text-red-500"
+                          : "text-emerald-500"
                         }`}
                     >
                       {itemAllData?.status}
                     </span>
-                    <h1 className="text-black text-lg font-extrabold">
+
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
                       {itemAllData?.iteam_name?.toUpperCase()}
                     </h1>
-                    <span className="text-gray-700">{!itemAllData.company || itemAllData.company === "null" || itemAllData.company === "" ? "-" : itemAllData.company}</span>
-                    <span className="text-gray-700">{!itemAllData.pack || itemAllData.pack === "null" || itemAllData.pack === "" ? "-" : itemAllData.pack}</span>
-                    <span className="text-gray-700">
-                      {!itemAllData.drug_group || itemAllData.drug_group === "null" || itemAllData.drug_group === "" ? "-" : itemAllData.drug_group}
-                    </span>
+
+                    <div className="space-y-1 text-gray-600">
+                      <p>
+                        <span className="font-bold text-gray-900">Company:</span>{" "}
+                        {!itemAllData.company ||
+                          itemAllData.company === "null" ||
+                          itemAllData.company === ""
+                          ? "-"
+                          : itemAllData.company}
+                      </p>
+
+                      <p>
+                        <span className="font-bold text-gray-900">Pack:</span>{" "}
+                        {!itemAllData.pack ||
+                          itemAllData.pack === "null" ||
+                          itemAllData.pack === ""
+                          ? "-"
+                          : itemAllData.pack}
+                      </p>
+
+                      <p>
+                        <span className="font-bold text-gray-900">Drug Group:</span>{" "}
+                        {!itemAllData.drug_group ||
+                          itemAllData.drug_group === "null" ||
+                          itemAllData.drug_group === ""
+                          ? "-"
+                          : itemAllData.drug_group}
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div className="overflow-x-auto">
-                  <div className="overflow-hidden rounded-lg border border-[#C9D3BE] shadow-sm mb-2">
-                    <table className="w-full">
+
+                {/* Right Section */}
+                <div className="w-full lg:w-auto space-y-4 mb-4">
+                  {/* Stock Table */}
+                  <div className="overflow-hidden rounded-xl border border-[#C9D3BE] shadow-sm">
+                    <table className="w-full min-w-[450px]">
                       <thead>
                         <tr className="bg-[#F3F7EE] text-[#3F650B]">
-                          <th className="px-6 py-3 text-center font-semibold border-[#D8E2CC]">
+                          <th className="px-6 py-3 text-center font-semibold">
                             Current Stock
                           </th>
                           <th className="px-6 py-3 text-center font-semibold">
@@ -1058,30 +1092,46 @@ const InventoryView = () => {
                           </th>
                         </tr>
                       </thead>
+
                       <tbody>
-                        <tr className="bg-white hover:bg-[#F8FBF4] transition">
-                          <td className="px-6 py-2 text-center border-[#E5E7EB] font-medium">
-                            {itemAllData.stock === null || itemAllData.stock === undefined || itemAllData.stock === "" || itemAllData.stock === "null" ? "-" : itemAllData.stock}
+                        <tr className="bg-white">
+                          <td className="px-6 py-3 text-center font-medium">
+                            {itemAllData.stock === null ||
+                              itemAllData.stock === undefined ||
+                              itemAllData.stock === "" ||
+                              itemAllData.stock === "null"
+                              ? "-"
+                              : itemAllData.stock}
                           </td>
 
-                          <td className="px-6 py-2 text-center font-medium">
-                            {itemAllData.location === null || itemAllData.location === undefined || itemAllData.location === "" || itemAllData.location === "null" ? "-" : itemAllData.location}
+                          <td className="px-6 py-3 text-center font-medium">
+                            {itemAllData.location === null ||
+                              itemAllData.location === undefined ||
+                              itemAllData.location === "" ||
+                              itemAllData.location === "null"
+                              ? "-"
+                              : itemAllData.location}
                           </td>
-                          <td className="px-6 py-2 text-center font-medium">
-                            {itemAllData.hsn_code === null || itemAllData.hsn_code === undefined || itemAllData.hsn_code === "" || itemAllData.hsn_code === "null" ? "-" : itemAllData.hsn_code}
 
+                          <td className="px-6 py-3 text-center font-medium">
+                            {itemAllData.hsn_code === null ||
+                              itemAllData.hsn_code === undefined ||
+                              itemAllData.hsn_code === "" ||
+                              itemAllData.hsn_code === "null"
+                              ? "-"
+                              : itemAllData.hsn_code}
                           </td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
-                  <div className="overflow-hidden rounded-lg border border-[#C9D3BE] shadow-sm mb-2">
-                    <table className="w-full">
+
+                  {/* GST Table */}
+                  <div className="overflow-hidden rounded-xl border border-[#C9D3BE] shadow-sm">
+                    <table className="w-full min-w-[300px]">
                       <thead>
                         <tr className="bg-[#F3F7EE] text-[#3F650B]">
-                          <th className="px-6 py-3 text-center font-semibold border-[#D8E2CC]">
-                            GST
-                          </th>
+                          <th className="px-6 py-3 text-center font-semibold">GST</th>
                           <th className="px-6 py-3 text-center font-semibold">
                             Item Category
                           </th>
@@ -1089,12 +1139,12 @@ const InventoryView = () => {
                       </thead>
 
                       <tbody>
-                        <tr className="bg-white hover:bg-[#F8FBF4] transition">
-                          <td className="px-6 py-2 text-center border-[#E5E7EB] font-medium">
+                        <tr className="bg-white">
+                          <td className="px-6 py-3 text-center font-medium">
                             {itemAllData.gst ? `${itemAllData.gst}%` : "-"}
                           </td>
 
-                          <td className="px-6 py-2 text-center font-medium">
+                          <td className="px-6 py-3 text-center font-medium">
                             {itemAllData.category_name || "-"}
                           </td>
                         </tr>
@@ -2085,8 +2135,8 @@ const InventoryView = () => {
                                             : {}
                                       }
                                     >
-                                      {console.log("column",column)}
-                                      
+                                      {console.log("column", column)}
+
                                       {/* {column.id === "bill_no" ? (
                                         <span
                                           style={{
@@ -2298,7 +2348,7 @@ const InventoryView = () => {
           </DialogActions>
         </Dialog>
 
-        <Dialog open={openImg}>
+        <Dialog open={openImg} maxWidth="sm" fullWidth>
           <IconButton
             aria-label="close"
             onClick={() => setOpenImg(false)}
@@ -2306,27 +2356,94 @@ const InventoryView = () => {
               position: "absolute",
               right: 8,
               top: 8,
-              color: "#d61818ff",
+              color: "#333",
+              zIndex: 10,
+              "&:hover": {
+                color: "#d61818ff",
+              }
             }}
           >
             <CloseIcon />
           </IconButton>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <img
-                src={
-                  itemAllData?.front_photo ? itemAllData.front_photo : tablet
-                }
-                alt={itemAllData?.front_photo ? "Pharma" : "Tablet"}
-                className="w-full h-full object-cover cursor-pointer"
-              />
-            </DialogContentText>
+          <DialogContent style={{ padding: 0, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "350px", position: "relative" }}>
+            <div className="relative w-full flex items-center justify-center p-8">
+              {/* Prev Button */}
+              {(() => {
+                const list = [itemAllData?.front_photo, itemAllData?.back_photo, itemAllData?.mrp_photo].filter(Boolean);
+                const imagesList = list.length > 0 ? list : [tablet];
+                return (
+                  <>
+                    {imagesList.length > 1 && (
+                      <button
+                        onClick={() => setActiveImgIndex((prev) => (prev === 0 ? imagesList.length - 1 : prev - 1))}
+                        style={{
+                          position: "absolute",
+                          left: 16,
+                          color: "#333",
+                          background: "rgba(0,0,0,0.08)",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "40px",
+                          height: "40px",
+                          cursor: "pointer",
+                          fontSize: "20px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          zIndex: 5,
+                        }}
+                      >
+                        &#10094;
+                      </button>
+                    )}
+
+                    <img
+                      src={imagesList[activeImgIndex] || tablet}
+                      alt="Medicine Zoomed"
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "450px",
+                        objectFit: "contain",
+                      }}
+                    />
+
+                    {/* Next Button */}
+                    {imagesList.length > 1 && (
+                      <button
+                        onClick={() => setActiveImgIndex((prev) => (prev === imagesList.length - 1 ? 0 : prev + 1))}
+                        style={{
+                          position: "absolute",
+                          right: 16,
+                          color: "#333",
+                          background: "rgba(0,0,0,0.08)",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "40px",
+                          height: "40px",
+                          cursor: "pointer",
+                          fontSize: "20px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          zIndex: 5,
+                        }}
+                      >
+                        &#10095;
+                      </button>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
           </DialogContent>
-          <DialogActions>
-            {/* <Button autoFocus variant="contained" color="success">
-                            {buttonLabel}
-                        </Button> */}
-          </DialogActions>
+          {(() => {
+            const list = [itemAllData?.front_photo, itemAllData?.back_photo, itemAllData?.mrp_photo].filter(Boolean);
+            return list.length > 1 ? (
+              <div style={{ textAlign: "center", padding: "10px", color: "#666", fontSize: "14px" }}>
+                {activeImgIndex + 1} / {list.length}
+              </div>
+            ) : null;
+          })()}
         </Dialog>
 
         <div
