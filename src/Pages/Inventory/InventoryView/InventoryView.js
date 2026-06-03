@@ -1054,7 +1054,7 @@ const InventoryView = () => {
                       </p>
 
                       <p>
-                        <span className="font-bold text-gray-900">Pack:</span>{" "}
+                        <span className="font-bold text-gray-900">Packaging Type:</span>{" "}
                         {!itemAllData.pack ||
                           itemAllData.pack === "null" ||
                           itemAllData.pack === ""
@@ -1172,7 +1172,7 @@ const InventoryView = () => {
               >
                 <Tab label="Batches" sx={{ mx: 0 }} />
                 <Tab label="Purchases" sx={{ mx: 0 }} />
-                <Tab label="Pu.return" sx={{ mx: 0 }} />
+                <Tab label="Purchases return" sx={{ mx: 0 }} />
                 <Tab label="Sales" sx={{ mx: 0 }} />
                 <Tab label="Sales Return" sx={{ mx: 0 }} />
                 <Tab label="Ledger" sx={{ mx: 0 }} />

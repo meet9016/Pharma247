@@ -62,6 +62,7 @@ import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 const InventoryList = () => {
   const csvIcon = process.env.PUBLIC_URL + "/csv-file.png";
   const [searchItem, setSearchItem] = useState("");
+  const [activeMissingFilter, setActiveMissingFilter] = useState("");
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const toggleDrawer = (newOpen) => () => {
@@ -562,6 +563,7 @@ const InventoryList = () => {
   /*<==================================================================================== handle search  ===========================================================================> */
 
   const handleSearch = async (payload) => {
+    let activeFilter = payload !== undefined ? payload : activeMissingFilter;
     let data = new FormData();
     data.append("search", searchItem);
     data.append("item", selectedOption);
@@ -580,7 +582,9 @@ const InventoryList = () => {
     data.append("ptr_start", ptrStart);
     data.append("ptr_end", ptrEnd);
     data.append("expired", selectedOptionExpiry.join(","));
-    data.append(payload, "1");
+    if (activeFilter) {
+      data.append(activeFilter, "1");
+    }
     // data.append("drug", drugGroup);
     const params = {
       page: page + 1,
@@ -651,6 +655,51 @@ const InventoryList = () => {
     }
   };
   /*<==================================================================================== handle search  ===========================================================================> */
+  const handleClearAllFilters = () => {
+    setActiveMissingFilter("");
+    setSearchItem("");
+    setSelectedOption("");
+    setHsnCode("");
+    setSelectedCategoryIds([]);
+    setSelectedPackgingIds([]);
+    setSelectedOptionStock([]);
+    setSelectedOptionEpiry([]);
+    setManufacturer(null);
+    setDrugGroup(null);
+    setSelectedGstIds([]);
+    setLocation("");
+    setMarginStart("");
+    setMarginEnd("");
+    setMRPStart("");
+    setMRPEnd("");
+    setPTREnd("");
+    setPTRStart("");
+    setTimeout(() => {
+      let data = new FormData();
+      const params = {
+        page: 1,
+        limit: rowsPerPage,
+      };
+      setIsLoading(true);
+      axios
+        .post("item-search?", data, {
+          params: params,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setData(response.data.data.data);
+          setPage(0);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+        });
+    }, 0);
+  };
+
   const handleReset = async () => {
     // Reset all states
     setSearchItem("");
@@ -1711,68 +1760,84 @@ const InventoryList = () => {
 
 
         <Box className="p-6 tbl_content_inv" sx={{ width: "100%" }}>
-          <div className="row gap-3 mb-3 flex-wrap">
+          <div className="flex flex-wrap justify-between items-center gap-3 mb-3 w-full">
+            <div className="flex flex-wrap gap-3">
+              <Button
+                variant={activeMissingFilter === "items_with_missing_hsn" ? "contained" : "outlined"}
+                style={{
+                  borderColor: "rgb(14, 86, 143)",
+                  backgroundColor: activeMissingFilter === "items_with_missing_hsn" ? "rgb(14, 86, 143)" : "transparent",
+                  color: activeMissingFilter === "items_with_missing_hsn" ? "white" : "rgb(14, 86, 143)",
+                  textTransform: "none",
+                }}
+                onClick={() => {
+                  const newFilter = activeMissingFilter === "items_with_missing_hsn" ? "" : "items_with_missing_hsn";
+                  setActiveMissingFilter(newFilter);
+                  handleSearch(newFilter);
+                }}
+              >
+                Missing HSN : {missingData.items_with_missing_hsn}
+              </Button>
+              <Button
+                variant={activeMissingFilter === "items_with_invalid_mrp" ? "contained" : "outlined"}
+                style={{
+                  borderColor: "rgb(14, 86, 143)",
+                  backgroundColor: activeMissingFilter === "items_with_invalid_mrp" ? "rgb(14, 86, 143)" : "transparent",
+                  color: activeMissingFilter === "items_with_invalid_mrp" ? "white" : "rgb(14, 86, 143)",
+                  textTransform: "none",
+                }}
+                onClick={() => {
+                  const newFilter = activeMissingFilter === "items_with_invalid_mrp" ? "" : "items_with_invalid_mrp";
+                  setActiveMissingFilter(newFilter);
+                  handleSearch(newFilter);
+                }}
+              >
+                Missing MRP : {missingData.items_with_invalid_mrp}
+              </Button>
+              <Button
+                variant={activeMissingFilter === "items_with_missing_location" ? "contained" : "outlined"}
+                style={{
+                  borderColor: "rgb(14, 86, 143)",
+                  backgroundColor: activeMissingFilter === "items_with_missing_location" ? "rgb(14, 86, 143)" : "transparent",
+                  color: activeMissingFilter === "items_with_missing_location" ? "white" : "rgb(14, 86, 143)",
+                  textTransform: "none",
+                }}
+                onClick={() => {
+                  const newFilter = activeMissingFilter === "items_with_missing_location" ? "" : "items_with_missing_location";
+                  setActiveMissingFilter(newFilter);
+                  handleSearch(newFilter);
+                }}
+              >
+                Missing Location : {missingData.items_with_missing_location}
+              </Button>
+              <Button
+                variant={activeMissingFilter === "items_with_missing_category" ? "contained" : "outlined"}
+                style={{
+                  borderColor: "rgb(14, 86, 143)",
+                  backgroundColor: activeMissingFilter === "items_with_missing_category" ? "rgb(14, 86, 143)" : "transparent",
+                  color: activeMissingFilter === "items_with_missing_category" ? "white" : "rgb(14, 86, 143)",
+                  textTransform: "none",
+                }}
+                onClick={() => {
+                  const newFilter = activeMissingFilter === "items_with_missing_category" ? "" : "items_with_missing_category";
+                  setActiveMissingFilter(newFilter);
+                  handleSearch(newFilter);
+                }}
+              >
+                Missing Category : {missingData.items_with_missing_category}
+              </Button>
+            </div>
             <Button
-              variant="contained"
+              variant="outlined"
               style={{
-                background: "rgb(14 86 143)",
-                color: "white",
+                borderColor: "#dc2626",
+                color: "#dc2626",
+                textTransform: "none",
               }}
-              onClick={() => {
-                handleSearch("items_with_missing_hsn");
-              }}
+              onClick={handleClearAllFilters}
             >
-              Missing HSN : {missingData.items_with_missing_hsn}
+              Clear Filters
             </Button>
-            <Button
-              variant="contained"
-              style={{
-                background: "rgb(14 86 143)",
-                color: "white",
-              }}
-              onClick={() => {
-                handleSearch("items_with_invalid_mrp");
-              }}
-            >
-              Missing MRP : {missingData.items_with_invalid_mrp}
-            </Button>
-            <Button
-              variant="contained"
-              style={{
-                background: "rgb(14 86 143)",
-                color: "white",
-              }}
-              onClick={() => {
-                handleSearch("items_with_missing_location");
-              }}
-            >
-              Missing Location : {missingData.items_with_missing_location}
-            </Button>
-            <Button
-              variant="contained"
-              style={{
-                background: "rgb(14 86 143)",
-                color: "white",
-              }}
-              onClick={() => {
-                handleSearch("items_with_missing_category");
-              }}
-            >
-              Missing Category :{missingData.items_with_missing_category}
-            </Button>
-            {/* <Button
-              variant="contained"
-              style={{
-                background: "rgb(14 86 143)",
-                color: "white",
-                size: "large",
-              }}
-              onClick={() => {
-                handleSearch("items_with_invalid_price");
-              }}
-            >
-              Invalid Price : {missingData.items_with_invalid_price}
-            </Button> */}
           </div>
 
           <div className="flex flex-wrap  justify-between relative inventory_search_main">
@@ -2054,17 +2119,18 @@ const InventoryList = () => {
                             ? "-"
                             : item.mrp}
                         </td>
-                        <td
-                          onClick={() => {
-                            history.push(`/inventoryView/${item.id}`);
-                          }}
-                        >
-                          {
-                            item.drug_group_name?.length > 12
+                        <Tooltip title={item.drug_group_name || "-"}>
+                          <td
+                            onClick={() => {
+                              history.push(`/inventoryView/${item.id}`);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            {item.drug_group_name?.length > 12
                               ? item.drug_group_name.slice(0, 12).toUpperCase() + "..."
-                              : item.drug_group_name?.toUpperCase() || "-"
-                          }
-                        </td>
+                              : item.drug_group_name?.toUpperCase() || "-"}
+                          </td>
+                        </Tooltip>
                         <Tooltip title="Stock Adjusted" placement="left" arrow>
                           <td
                           // onClick={() => {
