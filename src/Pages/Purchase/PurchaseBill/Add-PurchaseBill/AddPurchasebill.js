@@ -133,6 +133,7 @@ const AddPurchaseBill = () => {
   const [addDistributorNo, setAddDistributorNo] = useState("");
   const [addDistributorMobile, setAddDistributorMobile] = useState("");
   const [addDistributorAddress, setAddDistributorAddress] = useState("");
+  const [addDistributorId, setAddDistributorId] = useState("");
   const [highlightedRowId, setHighlightedRowId] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
   const [autocompleteKey, setAutocompleteKey] = useState(0);
@@ -384,13 +385,13 @@ const AddPurchaseBill = () => {
         await handleLeavePage();
       } catch (error) {
         console.error("Error during initialization:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     };
     initialize();
@@ -543,7 +544,7 @@ const AddPurchaseBill = () => {
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
-      
+
       }
     }
   };
@@ -651,7 +652,7 @@ const AddPurchaseBill = () => {
         toast.dismiss();
         toast.error(error?.message || "Something went wrong. Please try again.");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -896,13 +897,13 @@ const AddPurchaseBill = () => {
             }
           } catch (error) {
             setUnsavedItems(false);
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+              localStorage.removeItem("token");
+              localStorage.removeItem("userId");
+              localStorage.removeItem("role");
+              localStorage.clear();
+              history.push("/");
+            }
           }
         };
         handleBarcodeItem();
@@ -914,7 +915,7 @@ const AddPurchaseBill = () => {
       if (error.response?.status === 400) {
         toast.error(error.response?.data?.message || "This barcode has no items");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -950,7 +951,7 @@ const AddPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-   if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1010,30 +1011,30 @@ const AddPurchaseBill = () => {
         .catch((error) => {
           console.error("Search failed", error);
           setUnsavedItems(false);
-             if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+          if (error?.response?.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("role");
+            localStorage.clear();
+            history.push("/");
+          }
         });
     } else {
       axios
-        .get("list-distributer", { headers })
+        .post("list-distributer", {}, { headers })
         .then((response) => {
           const list = response.data.data?.distributor || response.data.data || [];
           localStorage.setItem("distributor", JSON.stringify(list));
           setDistributorList(list);
         })
         .catch((error) => {
-             if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+          if (error?.response?.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("role");
+            localStorage.clear();
+            history.push("/");
+          }
           console.error("Fetch failed", error);
           setUnsavedItems(false);
         });
@@ -1068,7 +1069,7 @@ const AddPurchaseBill = () => {
           setTotalFRee(response.data.data.total_free);
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1153,7 +1154,7 @@ const AddPurchaseBill = () => {
           }
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1374,7 +1375,7 @@ const AddPurchaseBill = () => {
       }
 
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1400,11 +1401,24 @@ const AddPurchaseBill = () => {
       return;
     }
 
+    const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    if (!gstRegex.test(addDistributorNo)) {
+      toast.dismiss();
+      toast.error("Please enter a valid GST Number");
+      return;
+    }
+
     let data = new FormData();
     data.append("gst_number", addDistributorNo);
-    data.append("distributor_name", addDistributorName);
     data.append("mobile_no", addDistributorMobile);
     data.append("area", addDistributorAddress);
+    if (addDistributorId) {
+      data.append("distributor_id", addDistributorId);
+      data.append("distributor_name", "");
+    } else {
+      data.append("distributor_id", "");
+      data.append("distributor_name", addDistributorName);
+    }
 
     try {
       const response = await axios.post("create-distributer", data, {
@@ -1418,6 +1432,7 @@ const AddPurchaseBill = () => {
         setAddDistributorMobile("");
         setAddDistributorName("");
         setAddDistributorNo("");
+        setAddDistributorId("");
         toast.dismiss();
         toast.success("Distributor Added successfully");
         setOpenAddDistributorPopUp(false);
@@ -1429,7 +1444,7 @@ const AddPurchaseBill = () => {
         listDistributor();
       }
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1507,7 +1522,7 @@ const AddPurchaseBill = () => {
       }
 
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1578,7 +1593,7 @@ const AddPurchaseBill = () => {
       console.error("API error:", error);
     } finally {
       setIsFetchingMore(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1635,7 +1650,7 @@ const AddPurchaseBill = () => {
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1667,7 +1682,7 @@ const AddPurchaseBill = () => {
       console.error("API error:", error);
       toast.dismiss();
       toast.error("Failed to fetch customer history");
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1736,7 +1751,7 @@ const AddPurchaseBill = () => {
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1838,13 +1853,13 @@ const AddPurchaseBill = () => {
       if (error.response.data.status == 400) {
         toast.dismiss();
         toast.error(error.response.data.message);
-        
+
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
-      
+
       } else {
       }
     }
@@ -2126,13 +2141,13 @@ const AddPurchaseBill = () => {
         setTimeout(() => {
           history.push(nextPath);
         }, 0);
-         
+
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
-      
+
       } else {
         setUnsavedItems(false);
 
@@ -3798,6 +3813,7 @@ const AddPurchaseBill = () => {
                 setAddDistributorMobile("");
                 setAddDistributorName("");
                 setAddDistributorNo("");
+                setAddDistributorId("");
               }}
 
               sx={{
@@ -3830,27 +3846,36 @@ const AddPurchaseBill = () => {
                           options={distributorList.map(d => d.name)}
                           value={addDistributorName}
                           onInputChange={(e, newValue) => {
-                            setAddDistributorName(newValue.toUpperCase());
-                          }}
+                             setAddDistributorName(newValue.toUpperCase());
+                             const found = distributorList.find(d => d.name === newValue.toUpperCase());
+                             if (found) {
+                               setAddDistributorId(found.id);
+                             } else {
+                               setAddDistributorId("");
+                             }
+                           }}
                           onChange={(e, selectedValue) => {
-                            const found = distributorList.find(d => d.name === selectedValue);
-                            if (found) {
-                              setAddDistributorName(found.name);
-                              setAddDistributorMobile(found.phone_number);
-                              setAddDistributorNo(found.gst);
-                              setAddDistributorAddress(found.area || "");
-                            }
-                          }}
+                             const found = distributorList.find(d => d.name === selectedValue);
+                             if (found) {
+                               setAddDistributorName(found.name);
+                               setAddDistributorMobile(found.phone_number);
+                               setAddDistributorNo(found.gst);
+                               setAddDistributorAddress(found.area || "");
+                               setAddDistributorId(found.id);
+                             } else {
+                               setAddDistributorId("");
+                             }
+                           }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
-
+                              placeholder="Distributor Name"
                               size="small"
                               inputRef={(el) => (inputRefs.current[16] = el)}
                               onKeyDown={(e) => handleKeyDown(e, 16)}
                               inputProps={{
                                 ...params.inputProps,
-                                style: { textTransform: "uppercase" },
+                                // style: { textTransform: "uppercase" },
                                 autoComplete: "off",
                               }}
                             />
@@ -3881,17 +3906,21 @@ const AddPurchaseBill = () => {
                             setAddDistributorMobile(numericValue);
                           }}
                           onChange={(e, selectedValue) => {
-                            const found = distributorList.find(d => d.phone_number === selectedValue);
-                            if (found) {
-                              setAddDistributorName(found.name);
-                              setAddDistributorMobile(found.phone_number);
-                              setAddDistributorNo(found.gst);
-                              setAddDistributorAddress(found.area || "");
-                            }
-                          }}
+                             const found = distributorList.find(d => d.phone_number === selectedValue);
+                             if (found) {
+                               setAddDistributorName(found.name);
+                               setAddDistributorMobile(found.phone_number);
+                               setAddDistributorNo(found.gst);
+                               setAddDistributorAddress(found.area || "");
+                               setAddDistributorId(found.id);
+                             } else {
+                               setAddDistributorId("");
+                             }
+                           }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
+                              placeholder="Mobile Number"
                               size="small"
                               inputRef={(el) => (inputRefs.current[17] = el)}
                               onKeyDown={(e) => handleKeyDown(e, 17)}
@@ -3906,7 +3935,7 @@ const AddPurchaseBill = () => {
                                 }
                               }}
                               error={distributorList.some(d => d.phone_number === addDistributorMobile)}
-                              helperText={distributorList.some(d => d.phone_number === addDistributorMobile) ? "This number already exists" : ""}
+                              // helperText={distributorList.some(d => d.phone_number === addDistributorMobile) ? "This number already exists" : ""}
                             />
                           )}
                         />
@@ -3923,31 +3952,31 @@ const AddPurchaseBill = () => {
                             setAddDistributorNo(newValue.toUpperCase());
                           }}
                           onChange={(e, selectedValue) => {
-                            const found = distributorList.find(d => d.gst === selectedValue);
-                            if (found) {
-                              setAddDistributorName(found.name);
-                              setAddDistributorMobile(found.phone_number);
-                              setAddDistributorNo(found.gst);
-                              setAddDistributorAddress(found.area || "");
-                            }
-                          }}
+                             const found = distributorList.find(d => d.gst === selectedValue);
+                             if (found) {
+                               setAddDistributorName(found.name);
+                               setAddDistributorMobile(found.phone_number);
+                               setAddDistributorNo(found.gst);
+                               setAddDistributorAddress(found.area || "");
+                               setAddDistributorId(found.id);
+                             } else {
+                               setAddDistributorId("");
+                             }
+                           }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
-
+                              placeholder="Distributor GSTIN Number"
                               size="small"
                               inputRef={(el) => (inputRefs.current[18] = el)}
                               onKeyDown={(e) => handleKeyDown(e, 18)}
                               inputProps={{
                                 ...params.inputProps,
-                                style: { textTransform: "uppercase" },
                                 autoComplete: "off",
                                 maxLength: 15,
-                                onInput: (e) => {
-                                  e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 15);
-                                }
                               }}
-
+                              error={addDistributorNo.length > 0 && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(addDistributorNo)}
+                              helperText={addDistributorNo.length > 0 && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(addDistributorNo) ? "Invalid GST Number" : ""}
                             />
                           )}
                         />
@@ -3966,6 +3995,7 @@ const AddPurchaseBill = () => {
                           autoComplete="off"
                           size="small"
                           value={addDistributorAddress}
+                          placeholder="Address"
                           onChange={(e) => {
                             const value = e.target.value;
                             const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
@@ -4038,6 +4068,7 @@ const AddPurchaseBill = () => {
                           id="outlined-number"
                           size="small"
                           value={addItemName}
+                          placeholder="Item Name"
                           autoFocus
                           onChange={(e) =>
                             setAddItemName(e.target.value.toUpperCase())
@@ -4058,6 +4089,7 @@ const AddPurchaseBill = () => {
                           type="number"
                           size="small"
                           value={addBarcode}
+                          placeholder="Barcode"
                           onChange={(e) => setAddBarcode(Number(e.target.value))}
                           inputRef={(el) => (inputRefs.current[14] = el)}
                           onKeyDown={(e) => handleKeyDown(e, 14)}
@@ -4071,6 +4103,7 @@ const AddPurchaseBill = () => {
                           type="number"
                           size="small"
                           value={addUnit}
+                          placeholder="Unit"
                           onChange={(e) => setAddUnit(e.target.value)}
                           inputRef={(el) => (inputRefs.current[15] = el)}
                           onKeyDown={(e) => {

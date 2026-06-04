@@ -30,6 +30,7 @@ const AddDistributer = () => {
   const [durgLicence, setDurgLicence] = useState("");
   const [dueDays, setDueDays] = useState("15");
   const [distributorList, setDistributorList] = useState([]);
+  const [distributorId, setDistributorId] = useState("");
 
   // const [isEditMode, setIsEditMode] = useState('');
   /*<================================================================================ Input ref on keydown enter  =======================================================================> */
@@ -87,7 +88,7 @@ const AddDistributer = () => {
         });
     } else {
       axios
-        .get("list-distributer", { headers })
+        .post("list-distributer", {}, { headers })
         .then((response) => {
           const list = response.data.data?.distributor || response.data.data || [];
           localStorage.setItem("distributor", JSON.stringify(list));
@@ -141,7 +142,7 @@ const AddDistributer = () => {
     const token = localStorage.getItem("token");
     const data = new FormData();
     data.append("gst_number", GSTNumber);
-    data.append("distributor_name", distributorName);
+    // data.append("distributor_name", distributorName);
     data.append("email", email);
     data.append("mobile_no", mobileno);
     data.append("whatsapp", whatsapp);
@@ -155,7 +156,16 @@ const AddDistributer = () => {
     data.append("food_licence_no", foodLicence);
     data.append("distributor_durg_distributor", durgLicence);
     data.append("payment_due_days", dueDays);
+    if (distributorId) {
+      data.append("distributor_id", distributorId);
+      data.append("distributor_name", "");
+    } else {
+      data.append("distributor_id", "");
+      data.append("distributor_name", distributorName);
+    }
 
+
+    
     try {
       await axios
         .post("create-distributer", data, {
@@ -167,25 +177,26 @@ const AddDistributer = () => {
           toast.dismiss();
           toast.success(response.data.message);
 
-          setGSTNumber("");
-          setDistributorName("");
-          setEmail("");
-          setMobileno("");
-          setWhatsapp("");
-          setState("");
-          setAddress("");
-          setArea("");
-          setPincode("");
-          setBankName("");
-          setAccountNo("");
-          setIfsc("");
-          setFoodLicence("");
-          setDurgLicence("");
-          setDueDays("");
-          setTimeout(() => {
-            history.push("/DistributorList");
-          }, 1000);
-        });
+           setGSTNumber("");
+           setDistributorName("");
+           setDistributorId("");
+           setEmail("");
+           setMobileno("");
+           setWhatsapp("");
+           setState("");
+           setAddress("");
+           setArea("");
+           setPincode("");
+           setBankName("");
+           setAccountNo("");
+           setIfsc("");
+           setFoodLicence("");
+           setDurgLicence("");
+           setDueDays("");
+           setTimeout(() => {
+             history.push("/DistributorList");
+           }, 1000);
+         });
     } catch (error) {
       if (error.response.data.status == 400) {
         toast.dismiss();
@@ -317,7 +328,32 @@ const AddDistributer = () => {
                       // Allow only alphabets and spaces
                       const filteredValue = newInputValue.replace(/[^A-Z\s]/gi, "").toUpperCase();
                       setDistributorName(filteredValue);
+                      const found = distributorList.find(
+                        (option) => (option.distributor_name || option.name || "").toUpperCase() === filteredValue.toUpperCase()
+                      );
+                      if (found) {
+                        setDistributorId(found.id);
+                      } else {
+                        setDistributorId("");
+                      }
                       listDistributor({ search: filteredValue }); // call API with search
+                    }}
+                    onChange={(event, selectedValue) => {
+                      const found = distributorList.find(
+                        (option) => (option.distributor_name || option.name || "").toUpperCase() === (selectedValue || "").toUpperCase()
+                      );
+                      if (found) {
+                        setDistributorName(found.distributor_name || found.name || "");
+                        setGSTNumber(found.gst || "");
+                        setMobileno(found.phone_number || "");
+                        setAddress(found.address || "");
+                        setArea(found.area || "");
+                        setPincode(found.pincode || "");
+                        setState(found.state || "");
+                        setDistributorId(found.id);
+                      } else {
+                        setDistributorId("");
+                      }
                     }}
                     renderInput={(params) => (
                       <TextField

@@ -508,7 +508,7 @@ const AddSale = () => {
       updateTodayPoints()
     }
 
-  }, [netAmount,customer])
+  }, [netAmount, customer])
 
   const updateTodayPoints = async () => {
     let data = new FormData();
@@ -528,7 +528,7 @@ const AddSale = () => {
       }
     } catch (error) {
       console.error("Error updating today points:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -560,7 +560,7 @@ const AddSale = () => {
       console.error("API error:", error);
       toast.dismiss();
       toast.error("Failed to fetch customer history");
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -783,7 +783,7 @@ const AddSale = () => {
       if (error.name !== "AbortError") {
         console.error("API error:", error);
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -943,7 +943,7 @@ const AddSale = () => {
         localStorage.clear();
       }
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -983,7 +983,7 @@ const AddSale = () => {
       console.error("API error:", error);
       toast.dismiss();
       toast.error("Failed to fetch customer history");
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1015,7 +1015,7 @@ const AddSale = () => {
       }
     } catch (error) {
       console.error("Error fetching item-drug-group:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1069,7 +1069,7 @@ const AddSale = () => {
       }
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1134,7 +1134,7 @@ const AddSale = () => {
 
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1174,7 +1174,7 @@ const AddSale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1201,13 +1201,13 @@ const AddSale = () => {
         ])
       } catch (error) {
         console.error(error)
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
 
@@ -1259,7 +1259,7 @@ const AddSale = () => {
         toast.dismiss();
         toast.error("An unexpected error occurred");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1302,7 +1302,7 @@ const AddSale = () => {
         toast.dismiss();
         toast.error("An unexpected error occurred");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1315,14 +1315,14 @@ const AddSale = () => {
   /*<========================================================================= handle edit item  ====================================================================> */
 
   const handleEditClick = (item) => {
-    console.log(item.qty,item.total_stock)
+    console.log(item.qty, item.total_stock)
     if (!item) return;
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId();
 
     setSelectedOption(item);
-    setMaxQty(Number(item.total_stock)+Number(item.qty));
+    setMaxQty(Number(item.total_stock) + Number(item.qty));
 
     // const found = uniqueItems.find(u => u.id === item.id);
     // if (found) {
@@ -1375,18 +1375,18 @@ const AddSale = () => {
           if (response.data.status == 401) {
             history.push("/");
             localStorage.clear();
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+              localStorage.removeItem("token");
+              localStorage.removeItem("userId");
+              localStorage.removeItem("role");
+              localStorage.clear();
+              history.push("/");
+            }
           }
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1545,24 +1545,24 @@ const AddSale = () => {
           if (addResponse.data.status === 401) {
             history.push("/");
             localStorage.clear();
-         
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("role");
+            localStorage.clear();
+            history.push("/");
+
           }
         } catch (error) {
           console.error("Sales item add error:", error);
           setUnsavedItems(false);
-             if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+          if (error?.response?.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("role");
+            localStorage.clear();
+            history.push("/");
+          }
         }
       };
 
@@ -1571,7 +1571,7 @@ const AddSale = () => {
       if (error.response?.status === 400) {
         toast.error(error.response?.data?.message || "This barcode has no items");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1756,7 +1756,7 @@ const AddSale = () => {
       }, 1000);
       setSubmitTimeout(timeout);
 
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1819,13 +1819,13 @@ const AddSale = () => {
         setTimeout(() => {
           history.push(nextPath);
         }, 0);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       } else {
         console.error("Error deleting items:", error);
       }
@@ -1873,7 +1873,7 @@ const AddSale = () => {
         return;
       }
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -2037,7 +2037,7 @@ const AddSale = () => {
     } catch (error) {
       console.error("API error:", error);
       toast.error(error.response.data.message)
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -2093,7 +2093,7 @@ const AddSale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -2192,13 +2192,13 @@ const AddSale = () => {
           toast.dismiss();
           toast.error("Error setting reminder. Please try again later.");
         }
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
   };
@@ -2238,7 +2238,7 @@ const AddSale = () => {
       const response = await axios.post(url, payload);
     } catch (error) {
       console.error("Error sending message:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -2269,7 +2269,7 @@ const AddSale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -4237,6 +4237,7 @@ const AddSale = () => {
                         onKeyDown={handleKeyDown}
                         size="small"
                         value={addItemName}
+                        placeholder="Item Name"
                         onChange={(e) => setAddItemName(e.target.value.toUpperCase())}
                       />
 
@@ -4253,6 +4254,7 @@ const AddSale = () => {
                         size="small"
                         sx={{ minWidth: "150px" }}
                         value={addBarcode}
+                        placeholder="Barcode"
                         onChange={(e) => setAddBarcode(Number(e.target.value))}
                       />
                     </div>
@@ -4265,6 +4267,7 @@ const AddSale = () => {
                         size="small"
                         sx={{ minWidth: "150px" }}
                         value={addUnit}
+                        placeholder="Unit"
                         onChange={(e) => setAddUnit(e.target.value)}
                         onKeyDown={(e) => {
                           handleKeyDown(e);

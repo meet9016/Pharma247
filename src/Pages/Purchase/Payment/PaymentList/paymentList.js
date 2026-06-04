@@ -674,6 +674,7 @@ toast.success(response.data.meassage);
                     autoFocus
                     onChange={handleDistributorBillList}
                     options={distributorList}
+                    placeholder="Distributor Name"
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => (
                       <TextField

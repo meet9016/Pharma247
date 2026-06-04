@@ -141,13 +141,13 @@ const Itemmaster = () => {
       } catch (error) {
         setIsLoading(false);
         console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     } else {
       toast.dismiss();
@@ -179,13 +179,13 @@ const Itemmaster = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -236,13 +236,13 @@ const Itemmaster = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -260,13 +260,13 @@ const Itemmaster = () => {
       .catch((error) => {
 
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
 
       });
   };
@@ -286,13 +286,13 @@ const Itemmaster = () => {
       .catch((error) => {
         console.error("API error:", error);
 
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -309,20 +309,20 @@ const Itemmaster = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
 
       });
   };
 
   let listSuppliers = (newlyAddedName) => {
     axios
-      .get("list-distributer", {
+      .post("list-distributer", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -332,7 +332,7 @@ const Itemmaster = () => {
         setSuppliersList(list);
         setIsLoading(false);
         if (newlyAddedName) {
-          const found = list.find(d => 
+          const found = list.find(d =>
             (d.name || d.distributor_name || "").toUpperCase() === newlyAddedName.toUpperCase()
           );
           if (found) {
@@ -344,13 +344,13 @@ const Itemmaster = () => {
 
         console.error("API error:", error);
 
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -375,7 +375,7 @@ const Itemmaster = () => {
 
     } catch (error) {
       console.error("API error:", error);
-   if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -407,7 +407,7 @@ const Itemmaster = () => {
       console.error("API error:", error);
       toast.dismiss();
       toast.error(error);
-   if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -440,7 +440,7 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-   if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -473,21 +473,32 @@ const Itemmaster = () => {
 
     let finalDistributorVal = selectedDistributorId;
     if (!finalDistributorVal && distributorName) {
-      const exactMatch = suppliersList.find(d => 
+      const exactMatch = suppliersList.find(d =>
         (d.name || d.distributor_name || "").toUpperCase() === distributorName.trim().toUpperCase()
       );
       if (exactMatch) {
         finalDistributorVal = exactMatch.id;
       }
     }
+    const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    if (!gstRegex.test(distributorGSTNumber)) {
+      toast.dismiss();
+      toast.error("Please enter a valid GST Number");
+      return;
+    }
 
     let data = new FormData();
     data.append("gst_number", distributorGSTNumber);
-    data.append("distributor_name", finalDistributorVal || distributorName);
     data.append("mobile_no", distributorMobileNo);
     data.append("address", distributorAddress);
     data.append("payment_due_days", "15");
-
+    if (finalDistributorVal) {
+      data.append("distributor_id", finalDistributorVal);
+      data.append("distributor_name", "");
+    } else {
+      data.append("distributor_id", "");
+      data.append("distributor_name", distributorName);
+    }
     const nameToSelect = distributorName;
     try {
       await axios
@@ -648,14 +659,14 @@ const Itemmaster = () => {
         toast.dismiss();
         toast.error("Please try again later");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
       }
-      
+
     }
   };
 
@@ -746,7 +757,7 @@ const Itemmaster = () => {
       }
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -778,7 +789,7 @@ const Itemmaster = () => {
       setDrugGroupList(response.data.data);
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -856,7 +867,7 @@ const Itemmaster = () => {
     } catch (error) {
       console.error("API error:", error);
 
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1422,7 +1433,7 @@ const Itemmaster = () => {
                           },
                         },
                       }}
-                      // freeSolo
+                    // freeSolo
                     />
 
 
@@ -1977,7 +1988,7 @@ const Itemmaster = () => {
                       }}
                       onChange={(e, selectedValue) => {
                         if (selectedValue) {
-                          const found = suppliersList.find(d => 
+                          const found = suppliersList.find(d =>
                             (d.name || d.distributor_name || "").toUpperCase() === selectedValue.toUpperCase()
                           );
                           if (found) {
@@ -2020,7 +2031,7 @@ const Itemmaster = () => {
                       }}
                       onChange={(e, selectedValue) => {
                         if (selectedValue) {
-                          const found = suppliersList.find(d => 
+                          const found = suppliersList.find(d =>
                             (d.phone_number || d.mobile_no || "").toUpperCase() === selectedValue.toUpperCase()
                           );
                           if (found) {
@@ -2059,7 +2070,7 @@ const Itemmaster = () => {
                       }}
                       onChange={(e, selectedValue) => {
                         if (selectedValue) {
-                          const found = suppliersList.find(d => 
+                          const found = suppliersList.find(d =>
                             (d.gst || d.gst_number || "").toUpperCase() === selectedValue.toUpperCase()
                           );
                           if (found) {
