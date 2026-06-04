@@ -320,39 +320,63 @@ const AddDistributer = () => {
                   </label>
                   <Autocomplete
                     freeSolo
-                    options={distributorList.map(
-                      (option) => option.distributor_name || option.name || ""
-                    )}
+                    options={Array.from(new Set(distributorList.map(d => (d.distributor_name || d.name || "").toUpperCase().trim()).filter(Boolean)))}
                     inputValue={distributorName}
                     onInputChange={(event, newInputValue) => {
                       // Allow only alphabets and spaces
                       const filteredValue = newInputValue.replace(/[^A-Z\s]/gi, "").toUpperCase();
                       setDistributorName(filteredValue);
                       const found = distributorList.find(
-                        (option) => (option.distributor_name || option.name || "").toUpperCase() === filteredValue.toUpperCase()
+                        (option) => (option.distributor_name || option.name || "").toUpperCase().trim() === filteredValue.trim()
                       );
                       if (found) {
-                        setDistributorId(found.id);
-                      } else {
-                        setDistributorId("");
-                      }
-                      listDistributor({ search: filteredValue }); // call API with search
-                    }}
-                    onChange={(event, selectedValue) => {
-                      const found = distributorList.find(
-                        (option) => (option.distributor_name || option.name || "").toUpperCase() === (selectedValue || "").toUpperCase()
-                      );
-                      if (found) {
-                        setDistributorName(found.distributor_name || found.name || "");
+                        setDistributorId(found.id || "");
                         setGSTNumber(found.gst || "");
                         setMobileno(found.phone_number || "");
                         setAddress(found.address || "");
                         setArea(found.area || "");
                         setPincode(found.pincode || "");
                         setState(found.state || "");
-                        setDistributorId(found.id);
                       } else {
                         setDistributorId("");
+                        if (!newInputValue) {
+                          setGSTNumber("");
+                          setMobileno("");
+                          setAddress("");
+                          setArea("");
+                          setPincode("");
+                          setState("");
+                        }
+                      }
+                      if (!found && filteredValue) {
+                        listDistributor({ search: filteredValue });
+                      }
+                    }}
+                    onChange={(event, selectedValue) => {
+                      if (selectedValue) {
+                        const valString = String(selectedValue).toUpperCase().trim();
+                        const found = distributorList.find(
+                          (option) => (option.distributor_name || option.name || "").toUpperCase().trim() === valString
+                        );
+                        if (found) {
+                          setDistributorName((found.distributor_name || found.name || "").toUpperCase().trim());
+                          setGSTNumber(found.gst || "");
+                          setMobileno(found.phone_number || "");
+                          setAddress(found.address || "");
+                          setArea(found.area || "");
+                          setPincode(found.pincode || "");
+                          setState(found.state || "");
+                          setDistributorId(found.id || "");
+                        }
+                      } else {
+                        setDistributorId("");
+                        setDistributorName("");
+                        setGSTNumber("");
+                        setMobileno("");
+                        setAddress("");
+                        setArea("");
+                        setPincode("");
+                        setState("");
                       }
                     }}
                     renderInput={(params) => (

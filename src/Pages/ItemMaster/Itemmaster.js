@@ -1980,24 +1980,47 @@ const Itemmaster = () => {
                     <label className="label secondary">Distributor Name<span className="text-red-600">*</span></label>
                     <Autocomplete
                       freeSolo
-                      options={Array.from(new Set(suppliersList.map(d => (d.name || d.distributor_name || "").toUpperCase()).filter(Boolean)))}
+                      options={Array.from(new Set(suppliersList.map(d => (d.name || d.distributor_name || "").toUpperCase().trim()).filter(Boolean)))}
                       value={distributorName}
                       onInputChange={(e, newValue) => {
-                        setDistributorName(newValue.toUpperCase());
-                        setSelectedDistributorId("");
+                        const uppercased = newValue.toUpperCase();
+                        setDistributorName(uppercased);
+                        const found = suppliersList.find(d =>
+                          (d.name || d.distributor_name || "").toUpperCase().trim() === uppercased.trim()
+                        );
+                        if (found) {
+                          setSelectedDistributorId(found.id || "");
+                          setDistributorMobileNo(found.phone_number || found.mobile_no || "");
+                          setDistributorGSTNumber((found.gst || found.gst_number || "").toUpperCase().trim());
+                          setDistributorAddress(found.address || found.area || "");
+                        } else {
+                          setSelectedDistributorId("");
+                          if (!newValue) {
+                            setDistributorMobileNo("");
+                            setDistributorGSTNumber("");
+                            setDistributorAddress("");
+                          }
+                        }
                       }}
                       onChange={(e, selectedValue) => {
                         if (selectedValue) {
+                          const valString = String(selectedValue).toUpperCase().trim();
                           const found = suppliersList.find(d =>
-                            (d.name || d.distributor_name || "").toUpperCase() === selectedValue.toUpperCase()
+                            (d.name || d.distributor_name || "").toUpperCase().trim() === valString
                           );
                           if (found) {
                             setSelectedDistributorId(found.id || "");
-                            setDistributorName((found.name || found.distributor_name || "").toUpperCase());
+                            setDistributorName((found.name || found.distributor_name || "").toUpperCase().trim());
                             setDistributorMobileNo(found.phone_number || found.mobile_no || "");
-                            setDistributorGSTNumber((found.gst || found.gst_number || "").toUpperCase());
+                            setDistributorGSTNumber((found.gst || found.gst_number || "").toUpperCase().trim());
                             setDistributorAddress(found.address || found.area || "");
                           }
+                        } else {
+                          setSelectedDistributorId("");
+                          setDistributorName("");
+                          setDistributorMobileNo("");
+                          setDistributorGSTNumber("");
+                          setDistributorAddress("");
                         }
                       }}
                       renderInput={(params) => (
