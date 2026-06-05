@@ -955,78 +955,73 @@ toast.success(response.data.meassage);
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                   <div className="flex flex-col gap-5" style={{ width: "100%" }}>
-                    <FormControl size="small" style={{ width: "100%" }}>
-                      <InputLabel id="demo-select-small-label">
-                        Item Name
-                      </InputLabel>
-                      <Select
-                        labelId="demo-select-small-label"
-                        id="demo-select-small"
-                        multiple
-                        value={items}
-                        sx={{ width: "100%" }}
-                        onChange={handleChangeFilter}
-                        renderValue={renderValue}
-                        label="Item Name"
-                        MenuProps={{
-                          PaperProps: {
-                            style: {
-                              maxHeight: 200,
-                              overflowY: "auto",
-                            },
-                          },
-                        }}
-                      >
-                        <MenuItem key="select-all" value="select-all">
-                          <Checkbox
-                            sx={{
-                              color: "var(--color2)",
-                              "&.Mui-checked": {
-                                color: "var(--color1)",
-                              },
-                            }}
-                            checked={items.length === onlineOrder.length}
-                            indeterminate={
-                              items.length > 0 &&
-                              items.length < onlineOrder.length
-                            }
-                          />
-                          <ListItemText primary="Select All" />
-                        </MenuItem>
-                        {onlineOrder?.map((option) => (
-                          <MenuItem key={option.item_id} value={option.item_id}>
+                    <Autocomplete
+                      multiple
+                      id="pending-orders-autocomplete"
+                      options={[{ item_id: "select-all", iteam_name: "Select All" }, ...(onlineOrder || [])]}
+                      disableCloseOnSelect
+                      getOptionLabel={(option) => option.iteam_name || ""}
+                      value={onlineOrder.filter(option => items.includes(option.item_id))}
+                      onChange={(event, newValue) => {
+                        const hasSelectAll = newValue.some(option => option.item_id === "select-all");
+                        if (hasSelectAll) {
+                          if (items.length === onlineOrder.length) {
+                            setItems([]);
+                          } else {
+                            setItems(onlineOrder.map((item) => item.item_id));
+                          }
+                        } else {
+                          const selectedIds = newValue.map(option => option.item_id).filter(id => id !== "select-all");
+                          setItems(selectedIds);
+                        }
+                      }}
+                      renderOption={(props, option, { selected }) => {
+                        const isSelectAll = option.item_id === "select-all";
+                        const isChecked = isSelectAll ? items.length === onlineOrder.length : selected;
+                        const isIndeterminate = isSelectAll && items.length > 0 && items.length < onlineOrder.length;
+                        return (
+                          <li {...props}>
                             <Checkbox
+                              style={{ marginRight: 8 }}
+                              checked={isChecked}
+                              indeterminate={isIndeterminate}
                               sx={{
                                 color: "var(--color2)",
                                 "&.Mui-checked": {
                                   color: "var(--color1)",
                                 },
                               }}
-                              checked={items.indexOf(option.item_id) > -1}
                             />
-                            <ListItemText primary={option.iteam_name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                            {option.iteam_name}
+                          </li>
+                        );
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Item Name" placeholder="Select Items" size="small" />
+                      )}
+                      sx={{ width: "100%" }}
+                    />
 
-                    <FormControl size="small" style={{ width: "100%" }}>
-                      <Select
-                        labelId="demo-select-small-label"
-                        id="demo-select-small-label"
-                        value={statusName}
-                        sx={{ width: "100%" }}
-                        onChange={(e) => setStatusName(e.target.value)}
-                        size="small"
-                        displayEmpty
-                      >
-                        {statusOption.map((option) => (
-                          <MenuItem key={option.id} value={option.id}>
-                            {option.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Autocomplete
+                      id="pending-orders-status-autocomplete"
+                      options={statusOption || []}
+                      getOptionLabel={(option) => option.name || ""}
+                      value={statusOption.find(option => {
+                        const targetId = statusName && typeof statusName === "object" ? statusName.id : statusName;
+                        return option.id === targetId;
+                      }) || null}
+                      onChange={(event, newValue) => {
+                        if (newValue) {
+                          setStatusName(newValue.id);
+                        } else {
+                          setStatusName("");
+                        }
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Status" placeholder="Select Status" size="small" />
+                      )}
+                      sx={{ width: "100%" }}
+                    />
                   </div>
                 </DialogContentText>
               </DialogContent>

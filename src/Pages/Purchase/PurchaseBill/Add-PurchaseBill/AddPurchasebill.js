@@ -2398,11 +2398,12 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         variant="outlined"
                         error={!!error.distributor}
+                        placeholder="Select Distributor"
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         inputProps={{
                           ...params.inputProps,
-                          style: { textTransform: "uppercase" },
+                          // style: { textTransform: "uppercase" },
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === "Tab") {
@@ -2443,6 +2444,7 @@ const AddPurchaseBill = () => {
                       setbillNo(e.target.value.toUpperCase());
                     }}
                     inputRef={(el) => (inputRefs.current[1] = el)}
+                    placeholder="Bill No. / Order No."
                     onKeyDown={(e) => {
                       if (billNo) {
                         handleKeyDown(e, 1);

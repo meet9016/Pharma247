@@ -167,7 +167,7 @@ const BankAccount = () => {
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      if (selectedAccountId) {
+      if (selectedAccountId !== null && selectedAccountId !== undefined) {
         BankDetailgetByID(selectedAccountId);
       }
     }, 500); // debounce time in ms
@@ -177,24 +177,20 @@ const BankAccount = () => {
 
   useEffect(() => {
     BankList();
-    if (selectedAccountId == 0) {
-      BankDetailgetByID(selectedAccountId);
-    }
   }, []);
 
   useEffect(() => {
-    if (bankData.length > 0 && selectedAccountId === null) {
-      setSelectedAccountId(bankData[0].id);
-      BankDetailgetByID(selectedAccountId);
-      const selectedDetails = bankData.find((x) => x.id === selectedAccountId);
-      setDetails(selectedDetails);
+    if (bankData.length > 0) {
+      if (selectedAccountId === null) {
+        setSelectedAccountId(bankData[0].id);
+      } else {
+        const selectedDetails = bankData.find((x) => x.id === selectedAccountId);
+        setDetails(selectedDetails);
+      }
     }
-    BankDetailgetByID(selectedAccountId);
-    const selectedDetails = bankData.find((x) => x.id === selectedAccountId);
-    setDetails(selectedDetails);
-  }, [bankData, selectedAccountId, startDate, endDate]);
+  }, [bankData, selectedAccountId]);
 
-  
+
 
   useEffect(() => {
     if (clicked) {
@@ -529,7 +525,7 @@ const BankAccount = () => {
     }
   };
 
-const handleStartDate = (newDate) => {
+  const handleStartDate = (newDate) => {
     setStartDate(newDate);
     BankDetailgetByID(selectedAccountId);
   };
@@ -920,36 +916,43 @@ const handleStartDate = (newDate) => {
                           </tr>
                         </thead>
                         <tbody style={{ backgroundColor: "#3f621217" }}>
-                          {bankDetails?.map((item, index) => (
-                            <tr key={index}>
-                              {PassbookColumns.map((column, colIndex) => (
-                                <td
-                                  key={column.id}
-                                  style={
-                                    colIndex === 0
-                                      ? {
-                                        borderRadius: "10px 0 0 10px",
-                                      }
-                                      : colIndex ===
-                                        PassbookColumns.length - 1
-                                        ? {
-                                          borderRadius: "0 10px 10px 0",
-                                        }
-                                        : {}
-                                  }
-                                  className={
-                                    column.id === "withdraw"
-                                      ? "debit-cell"
-                                      : column.id === "deposit"
-                                        ? "credit-cell"
-                                        : ""
-                                  }
-                                >
-                                  {item[column.id]}
-                                </td>
-                              ))}
+                          {bankDetails?.length > 0 ? (
+                            bankDetails.map((item, index) => (
+                              <tr key={index}>
+                                {PassbookColumns.map((column, colIndex) => (
+                                  <td
+                                    key={column.id}
+                                    style={
+                                      colIndex === 0
+                                        ? { borderRadius: "10px 0 0 10px" }
+                                        : colIndex === PassbookColumns.length - 1
+                                          ? { borderRadius: "0 10px 10px 0" }
+                                          : {}
+                                    }
+                                    className={
+                                      column.id === "withdraw"
+                                        ? "debit-cell"
+                                        : column.id === "deposit"
+                                          ? "credit-cell"
+                                          : ""
+                                    }
+                                  >
+                                    {item[column.id]}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={PassbookColumns.length} style={{
+                                textAlign: "center", padding: "20px",
+                                color: "gray",
+                              }}>
+                                No Data Found
+                              </td>
                             </tr>
-                          ))}
+                          )}
+
                         </tbody>
                       </table>
                     </div>
