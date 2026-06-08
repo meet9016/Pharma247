@@ -1230,9 +1230,9 @@ const InventoryList = () => {
                           control={
                             <Checkbox
                               sx={{
-                                color: "#628a2f", // Color for unchecked checkboxes
+                                color: "var(--color2)", // Color for unchecked checkboxes
                                 "&.Mui-checked": {
-                                  color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
+                                  color: "var(--color1)", // Color for checked checkboxes
                                 },
                               }}
                               checked={selectedCategoryIds.includes(
@@ -1244,7 +1244,7 @@ const InventoryList = () => {
                               name={category.name}
                             />
                           }
-                          label={category.item_category_id}
+                          label={category.category_name}
                         />
                       ))}
                     </FormGroup>
@@ -2336,7 +2336,7 @@ const InventoryList = () => {
                               name={category.name}
                             />
                           }
-                          label={category.item_category_id}
+                          label={category.category_name}
                         />
                       ))}
                     </FormGroup>
