@@ -104,7 +104,7 @@ const Itemmaster = () => {
   const [error, setError] = useState({ searchItem: "", unit: "", weightage: "", pack: "", packaging: "", selectedCompany: "", selectedSuppliers: "", drugGroup: "", selectedCategory: "", selectedFrontFile: "", selectedMRPFile: "", selectedBackFile: "", });
 
   const [drugGroupSearch, setDrugGroupSearch] = useState("");
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e) => {
@@ -542,6 +542,7 @@ const Itemmaster = () => {
 
 
   const handleSubmit = () => {
+    if (isSubmitting) return false;
 
     const newErrors = {};
     if (!searchItem.trim()) {
@@ -606,6 +607,8 @@ const Itemmaster = () => {
   };
 
   const submitItemRecord = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     let formData = new FormData();
 
     formData.append("item_id", value.id ? value.id : "");
@@ -648,8 +651,12 @@ const Itemmaster = () => {
       } else if (response.data.status === 400) {
         toast.dismiss();
         toast.error(response.data.message);
+        setIsSubmitting(false);
+      } else {
+        setIsSubmitting(false);
       }
     } catch (error) {
+      setIsSubmitting(false);
       if (error.response && error.response.status === 400) {
         toast.dismiss();
         toast.error(error.response.data.message);
