@@ -1025,7 +1025,7 @@ const PaymentList = () => {
                   </div>
 
                 </div>
-                <div className="flex sm:flex-nowrap flex-wrap gap-4">
+                <div className="flex sm:flex-nowrap flex-wrap gap-4" style={{ marginTop: "13px" }}>
 
                   <div style={{ width: "100%" }}>
                     <span className="label primary">Payment Date <span className="text-red-600">*</span></span>
@@ -1075,8 +1075,8 @@ const PaymentList = () => {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <span className="label primary">Note</span>
+                <div style={{ display: "flex", flexDirection: "column", marginTop: "13px" }}>
+                  <span >Note</span>
                   <TextField
                     autoComplete="off"
                     id="outlined-multiline-static"
@@ -1196,8 +1196,8 @@ const PaymentList = () => {
                             <td
                               colSpan={4}
                               style={{
-                                textAlign: "center", 
-                                padding: "20px", 
+                                textAlign: "center",
+                                padding: "20px",
                                 color: "gray",
                                 fontWeight: 600,
                               }}

@@ -474,7 +474,14 @@ const ReturnView = () => {
 
 
 
-            <div className="overflow-x-auto mt-5">
+            <div
+              className="overflow-x-auto mt-5"
+              style={{
+                maxHeight: "670px",
+                overflowY: "auto",
+                overflowX: "auto",
+              }}
+            >
               <table
                 className="customtable  w-full border-collapse custom-table"
                 style={{
@@ -485,19 +492,19 @@ const ReturnView = () => {
               >
                 <thead>
                   <tr>
-                    <th>Item Name</th>
-                    <th>Unit </th>
-                    <th>Batch </th>
-                    <th>Expiry </th>
-                    <th>MRP </th>
-                    <th>Qty. </th>
-                    <th>Free </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Item Name</th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Unit </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Batch </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Expiry </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>MRP </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Qty. </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Free </th>
 
-                    <th>PTR </th>
-                    <th>CD% </th>
-                    <th>GST% </th>
-                    <th>Loc </th>
-                    <th>Amount </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>PTR </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>CD% </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>GST% </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Loc </th>
+                    <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Amount </th>
                   </tr>
                 </thead>
                 {tableData.length == 0 ? (

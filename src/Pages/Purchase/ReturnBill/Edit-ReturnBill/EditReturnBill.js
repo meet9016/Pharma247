@@ -1142,7 +1142,7 @@ const EditReturnBill = () => {
 
                                 onClick={() => history.push("/purchaseReturn")}
                             >
-                                Purchase Return
+                                Purchase Return  
                             </span>
                             <ArrowForwardIosIcon
                                 fontSize="small"

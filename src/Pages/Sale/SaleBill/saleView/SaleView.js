@@ -528,7 +528,14 @@ const SaleView = () => {
                     </div>
                   </div>
                 </div>
-                <div className="overflow-x-auto mt-4">
+                <div
+                  className="overflow-x-auto mt-4"
+                  style={{
+                    maxHeight: "670px",
+                    overflowY: "auto",
+                    overflowX: "auto",
+                  }}
+                >
                   <table
                     className="customtable  w-full border-collapse custom-table"
                     style={{
@@ -539,17 +546,17 @@ const SaleView = () => {
                   >
                     <thead>
                       <tr style={{ whiteSpace: "nowrap" }}>
-                        <th>Item Name</th>
-                        <th>Unit </th>
-                        <th>Batch </th>
-                        <th>Expiry </th>
-                        <th>MRP </th>
-                        <th>Base </th>
-                        <th>GST% </th>
-                        <th>QTY </th>
-                        <th>Order </th>
-                        <th>Loc. </th>
-                        <th>Amount </th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Item Name</th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Unit </th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Batch </th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Expiry </th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>MRP </th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Base </th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>GST% </th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>QTY </th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Order </th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Loc. </th>
+                        <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Amount </th>
                       </tr>
                     </thead>
                     <tbody style={{ background: "#3f621217" }}>
