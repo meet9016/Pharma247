@@ -113,7 +113,7 @@ const PurchaseView = () => {
         purchaseBillGetByID(response.data.data[index].id);
       }
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -153,7 +153,7 @@ const PurchaseView = () => {
           }
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -197,7 +197,7 @@ const PurchaseView = () => {
           setIsLoading(false);
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -326,7 +326,7 @@ const PurchaseView = () => {
         {/*<===================================================================== top details  =====================================================================> */}
 
         <div>
-          <div className="firstrow flex mt-2 rounded-md p-3" style={{
+          {/* <div className="firstrow flex mt-2 rounded-md p-3" style={{
             backgroundColor: 'rgb(63 98 18 / 11%)',
           }}>
             <div className="detail_main">
@@ -335,7 +335,7 @@ const PurchaseView = () => {
             </div>
             <div className="detail_main">
               <span className="heading mb-2 ">Bill Creator</span>
-              {/*  <span className="data_bg">2 | Owner</span> */}
+               <span className="data_bg">2 | Owner</span>
               <span className="data_bg capitalize">{data.user_name}</span>
             </div>
             <div className="detail_main">
@@ -362,6 +362,144 @@ const PurchaseView = () => {
             <div className="detail_main">
               <span className="heading mb-2">Entery By</span>
               <span className="data_bg">{localStorage.getItem("UserName")}</span>
+            </div>
+          </div> */}
+          <div className="scroll-wrapper">
+            <div
+              className="firstrow"
+              style={{
+                display: "flex",
+                alignItems: "stretch",
+                marginTop: "0.5rem",
+                background: "#E0E3DC",
+                border: "1px solid #e7ebe0",
+                borderRadius: "12px",
+                boxShadow:
+                  "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(63,98,18,0.15)",
+                overflow: "hidden",
+                position: "relative",
+
+              }}
+            >
+              {/* Left accent */}
+              <div
+                style={{
+                  width: "5px",
+                  background: "linear-gradient(180deg, #3f6212 0%, #65a30d 50%, #84cc16 100%)",
+                  flexShrink: 0,
+                }}
+              />
+              {/* SR No badge - compact */}
+              <div
+                style={{
+                  flex: "0 0 auto",
+                  minWidth: "62px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "10px 14px",
+                  background: "linear-gradient(180deg, #b8c7a1 0%, #a2b687 50%, #8fa46f 100%)",
+                  borderRight: "1px solid #e7ebe0",
+                }}
+              >
+                {/* <span style={{ fontSize: "0.82rem", color: "#65784a", fontWeight: 700, letterSpacing: "0.05em" }}>
+                  SR
+                </span> */}
+                <span style={{ fontSize: "25px", fontWeight: 700, color: "#3f6212", lineHeight: 1.1 }}>
+                  {data.sr_no}
+                </span>
+              </div>
+
+              {/* Fields */}
+              <div
+                style={{
+                  flex: 1,
+                  display: "grid",
+                  gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+                  alignItems: "center",
+                }}
+              >
+                {[
+                  { label: "Bill Creator", value: data.user_name, cap: true, accent: "#0f172a" },
+                  { label: "Bill No", value: data.bill_no, mono: true },
+                  { label: "Bill Date", value: data.bill_date },
+                  { label: "Due Date", value: data.due_date, },
+                  { label: "Distributor", value: data.distributor_name, cap: true },
+                  { label: "Payment Type", value: data.payment_type, pill: true },
+                  { label: "Entry By", value: localStorage.getItem("UserName"), cap: true },
+                ].map((item, idx, arr) => (
+                  <div
+                    key={item.label}
+                    className="detail_main"
+                    style={{
+                      minWidth: 0,
+                      padding: "12px 16px",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      gap: "4px",
+                      borderRight: idx < arr.length - 1 ? "1px solid #7c8d66" : "none",
+                      position: "relative",
+                    }}
+                  >
+                    <span
+                      className="heading"
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 700,
+                        color: "#3f6212",
+                        letterSpacing: "0.01em",
+                      }}
+                    >
+                      {item.label}
+                    </span>
+
+                    {item.pill ? (
+                      <span
+                        style={{
+                          alignSelf: "flex-start",
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                          color: "#3f6212",
+                          background: "#ecfccb",
+                          border: "1px solid #d9f99d",
+                          padding: "2px 10px",
+                          borderRadius: "999px",
+                          textTransform: "capitalize",
+                          whiteSpace: "nowrap",
+                          maxWidth: "100%",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        title={String(item.value ?? "")}
+                      >
+                        {item.value}
+                      </span>
+                    ) : (
+                      <span
+                        className="data"
+                        style={{
+                          fontSize: "15px",
+                          fontWeight: 600,
+                          color: item.accent || "#0f172a",
+                          // fontFamily: item.mono
+                          //   ? "'JetBrains Mono', ui-monospace, monospace"
+                          //   : "inherit",
+                          textTransform: item.cap ? "capitalize" : "none",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          letterSpacing: item.mono ? "-0.01em" : "normal",
+                        }}
+                        title={String(item.value ?? "")}
+                      >
+                        {item.value || "—"}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -427,7 +565,7 @@ const PurchaseView = () => {
         {/*<================================================================= total bottom details  =================================================================> */}
 
         <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0', overflow: 'auto' }}>
-          <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
+          {/* <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
             <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
               <label className="font-bold">Total GST : </label>
 
@@ -450,7 +588,78 @@ const PurchaseView = () => {
               <label className="font-bold">Total Net Rate : </label>
               <span style={{ fontWeight: 600 }}>&#8377; {data?.total_net_rate} </span>
             </div>
+          </div> */}
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "20px",
+              padding: "20px",
+            }}
+          >
+            <div
+              className="invoice_total_fld"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                minWidth: "180px",
+              }}
+            >
+              <label className="font-bold">Total GST :</label>
+              <span style={{ fontWeight: 600 }}>
+                {data?.total_gst || 0}
+              </span>
+            </div>
+
+            <div
+              className="invoice_total_fld"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                minWidth: "220px",
+              }}
+            >
+              <label className="font-bold">Total Qty :</label>
+              <span style={{ fontWeight: 600 }}>
+                {data?.total_qty || 0} + {data?.total_free_qty || 0} Free
+              </span>
+            </div>
+
+            <div
+              className="invoice_total_fld"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                minWidth: "200px",
+              }}
+            >
+              <label className="font-bold">Total Base :</label>
+              <span style={{ fontWeight: 600 }}>
+                {data?.total_base || 0}
+              </span>
+            </div>
+
+            <div
+              className="invoice_total_fld"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                minWidth: "220px",
+              }}
+            >
+              <label className="font-bold">Total Net Rate :</label>
+              <span style={{ fontWeight: 600 }}>
+                ₹ {data?.total_net_rate || 0}
+              </span>
+            </div>
           </div>
+
 
           <div style={{ display: 'flex' }}>
             <div
@@ -512,8 +721,10 @@ const PurchaseView = () => {
                 <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{data?.net_amount ? data?.net_amount : 0}
                   <FaCaretUp />
                 </span>
-
               </div>
+
+
+
 
               <Modal
                 show={isModalOpen}
@@ -521,9 +732,10 @@ const PurchaseView = () => {
                 size="lg"
                 position="bottom-center"
                 className="modal_amount"
+                style={{ background: "transparent" }}
               >
                 <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
-                  <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                  <h2 style={{ textTransform: "uppercase" }}>invoice total </h2>
                   <IoMdClose onClick={() => setIsModalOpen(!isModalOpen)} cursor={"pointer"} size={30} />
 
                 </div>
@@ -564,6 +776,9 @@ const PurchaseView = () => {
                   </div>
                 </div>
               </Modal>
+
+
+
             </div>
           </div>
         </div>

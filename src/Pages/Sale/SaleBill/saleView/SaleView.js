@@ -73,7 +73,7 @@ const SaleView = () => {
       setIsLoading(false);
     } catch (error) {
       console.error("API error:", error);
-   if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -117,7 +117,7 @@ const SaleView = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -198,7 +198,7 @@ const SaleView = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -325,7 +325,7 @@ const SaleView = () => {
               </div>
 
               <div>
-                <div
+                {/* <div
                   className="firstrow flex rounded-md p-3 gap-3 "
                   style={{
                     backgroundColor: "rgb(63 98 18 / 11%)",
@@ -369,17 +369,164 @@ const SaleView = () => {
                         gap: "1rem",
                       }}
                     >
-                      {/* {pickup} */}
                       {pickup?.icon} {pickup?.label}
                     </span>
                   </div>
-                  {/* <div className="detail">
-                                    <span className="heading mb-2">Address</span>
-                                    <span className="data">
-                                        {tableData.customer_address}
+                  <div className="detail">
+                    <span className="heading mb-2">Address</span>
+                    <span className="data">
+                      {tableData.customer_address}
 
-                                    </span>
-                                </div> */}
+                    </span>
+                  </div>
+                </div> */}
+
+                <div className="scroll-wrapper">
+                  <div
+                    className="firstrow"
+                    style={{
+                      display: "flex",
+                      alignItems: "stretch",
+                      marginTop: "0.5rem",
+                      background: "#E0E3DC",
+                      border: "1px solid #e7ebe0",
+                      borderRadius: "12px",
+                      boxShadow:
+                        "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(63,98,18,0.15)",
+                      overflow: "hidden",
+                      position: "relative",
+
+                    }}
+                  >
+                    {/* Left accent */}
+                    <div
+                      style={{
+                        width: "5px",
+                        background: "linear-gradient(180deg, #3f6212 0%, #65a30d 50%, #84cc16 100%)",
+                        flexShrink: 0,
+                      }}
+                    />
+
+                    {/* SR No badge - compact */}
+                    <div
+                      style={{
+                        flex: "0 0 auto",
+                        minWidth: "62px",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "10px 14px",
+                        background: "linear-gradient(180deg, #b8c7a1 0%, #a2b687 50%, #8fa46f 100%)",
+                        borderRight: "1px solid #e7ebe0",
+                      }}
+                    >
+                      {/* <span style={{ fontSize: "0.82rem", color: "#65784a", fontWeight: 700, letterSpacing: "0.05em" }}>
+                        Bill No
+                      </span> */}
+                      <span style={{ fontSize: "25px", fontWeight: 700, color: "#3f6212", lineHeight: 1.1 }}>
+                        {tableData.bill_no}
+                      </span>
+                    </div>
+
+                    {/* Fields */}
+                    <div
+                      style={{
+                        flex: 1,
+                        display: "grid",
+                        gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+                        alignItems: "center",
+                      }}
+                    >
+                      {[
+                        // { label: "Bill No", value: tableData.bill_no, mono: true },
+                        { label: "Bill Date", value: tableData.bill_date },
+                        { label: "Customer", value: tableData.customer_name },
+                        { label: "Mobile No.", value: tableData.mobile_numbr },
+                        { label: "Doctor", value: tableData.doctor_name || "-" },
+                        { label: "Payment Mode", value: tableData.payment_name },
+                        {
+                          label: "Pickup",
+                          value: pickup ? (
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ color: '#65784a' }}>{pickup.icon}</span>
+                              <span>{pickup.label}</span>
+                            </span>
+                          ) : "-"
+                        }
+                      ].map((item, idx, arr) => (
+                        <div
+                          key={item.label}
+                          className="detail_main"
+                          style={{
+                            minWidth: 0,
+                            padding: "12px 16px",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            gap: "4px",
+                            borderRight: idx < arr.length - 1 ? "1px solid #7c8d66" : "none",
+                            position: "relative",
+                          }}
+                        >
+                          <span
+                            className="heading"
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: 700,
+                              color: "#3f6212",
+                              letterSpacing: "0.01em",
+                            }}
+                          >
+                            {item.label}
+                          </span>
+
+                          {item.pill ? (
+                            <span
+                              style={{
+                                alignSelf: "flex-start",
+                                fontSize: "0.78rem",
+                                fontWeight: 600,
+                                color: "#3f6212",
+                                background: "#ecfccb",
+                                border: "1px solid #d9f99d",
+                                padding: "2px 10px",
+                                borderRadius: "999px",
+                                textTransform: "capitalize",
+                                whiteSpace: "nowrap",
+                                maxWidth: "100%",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                              title={String(item.value ?? "")}
+                            >
+                              {item.value}
+                            </span>
+                          ) : (
+                            <span
+                              className="data"
+                              style={{
+                                fontSize: "15px",
+                                fontWeight: 600,
+                                color: item.accent || "#000000",
+                                // fontFamily: item.mono
+                                //   ? "'JetBrains Mono', ui-monospace, monospace"
+                                //   : "inherit",
+                                textTransform: item.cap ? "capitalize" : "none",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                letterSpacing: item.mono ? "-0.01em" : "normal",
+                              }}
+                              title={String(item.value ?? "")}
+                            >
+                              {item.value || "—"}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 <div className="overflow-x-auto mt-4">
                   <table
@@ -446,7 +593,9 @@ const SaleView = () => {
                   overflow: "auto",
                 }}
               >
-                <div
+
+
+                {/* <div
                   className=""
                   style={{
                     display: "flex",
@@ -495,7 +644,104 @@ const SaleView = () => {
                       &#8377; {tableData?.total_net_rate}{" "}
                     </span>
                   </div>
+                </div> */}
+
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    gap: "20px",
+                    padding: "20px",
+                  }}
+                >
+                  <div
+                    className="invoice_total_fld"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      minWidth: "180px",
+                    }}
+                  >
+                    <label className="font-bold">Total GST :</label>
+                    <span
+                      title={String(tableData?.total_gst || 0)}
+                      style={{
+                        fontWeight: 600,
+                      }}
+                    >
+                      {tableData?.total_gst || 0}
+                    </span>
+                  </div>
+
+                  <div
+                    className="invoice_total_fld"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      minWidth: "180px",
+                    }}
+                  >
+                    <label className="font-bold">Total Base :</label>
+                    <span
+                      title={String(tableData?.total_base || 0)}
+                      style={{
+                        fontWeight: 600,
+                      }}
+                    >
+                      {tableData?.total_base || 0}
+                    </span>
+                  </div>
+
+                  <div
+                    className="invoice_total_fld"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      minWidth: "250px",
+                    }}
+                  >
+                    <label className="font-bold">Profit :</label>
+                    <span
+                      title={String(tableData?.margin_net_profit || 0)}
+                      style={{
+                        fontWeight: 600,
+                      }}
+                    >
+                      ₹ {tableData?.margin_net_profit || 0} (
+                      {Number(tableData?.total_margin || 0).toFixed(2)}%)
+                    </span>
+                  </div>
+
+                  <div
+                    className="invoice_total_fld"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      minWidth: "220px",
+                    }}
+                  >
+                    <label className="font-bold">Net Rate :</label>
+                    <span
+                      title={`₹ ${tableData?.total_net_rate || 0}`}
+                      style={{
+                        fontWeight: 600,
+                      }}
+                    >
+                      ₹ {tableData?.total_net_rate || 0}
+                    </span>
+                  </div>
                 </div>
+
+
+
+
+
 
                 <div style={{ display: "flex" }}>
                   <div

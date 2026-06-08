@@ -756,7 +756,7 @@ const BankAccount = () => {
                 </Button>
               </div>
 
-              <Box
+              {/* <Box
                 sx={{
                   marginTop: "20px",
                   backgroundColor: "rgba(63, 98, 18, 0.09)",
@@ -837,7 +837,144 @@ const BankAccount = () => {
                     </span>
                   </div>
                 </div>
-              </Box>
+              </Box> */}
+
+
+              <div className="scroll-wrapper">
+                <div
+                  className="firstrow"
+                  style={{
+                    display: "flex",
+                    alignItems: "stretch",
+                    marginTop: "0.5rem",
+                    background: "#E0E3DC",
+                    border: "1px solid #e7ebe0",
+                    borderRadius: "12px",
+                    boxShadow:
+                      "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(63,98,18,0.15)",
+                    overflow: "hidden",
+                    position: "relative",
+                  }}
+                >
+                  {/* Left accent */}
+                  <div
+                    style={{
+                      width: "5px",
+                      background: "linear-gradient(180deg, #3f6212 0%, #65a30d 50%, #84cc16 100%)",
+                      flexShrink: 0,
+                    }}
+                  />
+                  {/* Fields */}
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "grid",
+                      gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+                      alignItems: "center",
+                    }}
+                  >
+                    {[
+                      { label: "Bank Name", value: !details?.bank_name ? "-" : details?.bank_name },
+                      {
+                        label: "Bank Account Number", value: !details?.bank_account_number
+                          ? "-"
+                          : details?.bank_account_number
+                      },
+                      {
+                        label: "Account Type", value: !details?.bank_account_name
+                          ? "-"
+                          : details?.bank_account_name
+                      },
+                      { label: "IFSC Code", value: !details?.ifsc_code ? "-" : details?.ifsc_code },
+                      {
+                        label: "Branch Name", value: !details?.bank_branch_name
+                          ? "-"
+                          : details?.bank_branch_name
+                      },
+                      {
+                        label: "Account Holder Name", value: !details?.account_holder_name
+                          ? "-"
+                          : details?.account_holder_name
+                      },
+                      {
+                        label: "Current Balance", value: !details?.total_amount
+                          ? "-"
+                          : details?.total_amount
+                      },
+                    ].map((item, idx, arr) => (
+                      <div
+                        key={item.label}
+                        className="detail_main"
+                        style={{
+                          minWidth: 0,
+                          padding: "12px 16px",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          gap: "4px",
+                          borderRight: idx < arr.length - 1 ? "1px solid #7c8d66" : "none",
+                          position: "relative",
+                        }}
+                      >
+                        <span
+                          className="heading"
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: 700,
+                            color: "#3f6212",
+                            letterSpacing: "0.01em",
+                          }}
+                        >
+                          {item.label}
+                        </span>
+
+                        {item.pill ? (
+                          <span
+                            style={{
+                              alignSelf: "flex-start",
+                              fontSize: "0.78rem",
+                              fontWeight: 600,
+                              color: "#3f6212",
+                              background: "#ecfccb",
+                              border: "1px solid #d9f99d",
+                              padding: "2px 10px",
+                              borderRadius: "999px",
+                              textTransform: "capitalize",
+                              whiteSpace: "nowrap",
+                              maxWidth: "100%",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                            title={String(item.value ?? "")}
+                          >
+                            {item.value}
+                          </span>
+                        ) : (
+                          <span
+                            className="data"
+                            style={{
+                              fontSize: "15px",
+                              fontWeight: 600,
+                              color: item.accent || "#000000",
+
+                              textTransform: item.cap ? "capitalize" : "none",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              letterSpacing: item.mono ? "-0.01em" : "normal",
+                            }}
+                            title={String(item.value ?? "")}
+                          >
+                            {item.value || "—"}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+
 
               <div
                 className="flex  flex-row detail_st_ed_dt gap-6 mt-5"

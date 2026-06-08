@@ -92,7 +92,7 @@ const CustomerView = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -133,7 +133,7 @@ const CustomerView = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -182,7 +182,7 @@ const CustomerView = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -261,7 +261,11 @@ const CustomerView = () => {
               </span>
             </div>
           </div>
-          <div className="p-3"
+
+
+
+
+          {/* <div className="p-3"
             style={{
               backgroundColor: "rgb(63 98 18 / 11%)",
               borderRadius: "10px",
@@ -322,9 +326,129 @@ const CustomerView = () => {
                   {tableData.address ? tableData.address : "____"}
                 </span>
               </div>
-              {/*  </div> */}
+            </div>
+          </div> */}
+
+
+          <div className="scroll-wrapper">
+            <div
+              className="firstrow"
+              style={{
+                display: "flex",
+                alignItems: "stretch",
+                marginTop: "0.5rem",
+                background: "#E0E3DC",
+                border: "1px solid #e7ebe0",
+                borderRadius: "12px",
+                boxShadow:
+                  "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(63,98,18,0.15)",
+                overflow: "hidden",
+                position: "relative",
+              }}
+            >
+              {/* Left accent */}
+              <div
+                style={{
+                  width: "5px",
+                  background: "linear-gradient(180deg, #3f6212 0%, #65a30d 50%, #84cc16 100%)",
+                  flexShrink: 0,
+                }}
+              />
+              {/* Fields */}
+              <div
+                style={{
+                  flex: 1,
+                  display: "grid",
+                  gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+                  alignItems: "center",
+                }}
+              >
+                {[
+                  { label: "Customer Name", value: tableData.name ? tableData.name : "____" },
+                  { label: "Mobile No", value: tableData.phone_number ? tableData.phone_number : "____" },
+                  { label: "Email ID", value: tableData.email ? tableData.email : "____", },
+                  { label: "Total Amount", value: tableData.balance ? tableData.balance : "____" },
+                  { label: "Loyalty Points", value: tableData.roylti_point ? tableData.roylti_point : "____" },
+                  { label: "Area", value: tableData.area ? tableData.area : "____" },
+                  { label: "City", value: tableData.city ? tableData.city : "____" },
+                  { label: "Address", value: tableData.address ? tableData.address : "____" },
+                ].map((item, idx, arr) => (
+                  <div
+                    key={item.label}
+                    className="detail_main"
+                    style={{
+                      minWidth: 0,
+                      padding: "12px 16px",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      gap: "4px",
+                      borderRight: idx < arr.length - 1 ? "1px solid #7c8d66" : "none",
+                      position: "relative",
+                    }}
+                  >
+                    <span
+                      className="heading"
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 700,
+                        color: "#3f6212",
+                        letterSpacing: "0.01em",
+                      }}
+                    >
+                      {item.label}
+                    </span>
+
+                    {item.pill ? (
+                      <span
+                        style={{
+                          alignSelf: "flex-start",
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                          color: "#3f6212",
+                          background: "#ecfccb",
+                          border: "1px solid #d9f99d",
+                          padding: "2px 10px",
+                          borderRadius: "999px",
+                          textTransform: "capitalize",
+                          whiteSpace: "nowrap",
+                          maxWidth: "100%",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        title={String(item.value ?? "")}
+                      >
+                        {item.value}
+                      </span>
+                    ) : (
+                      <span
+                        className="data"
+                        style={{
+                          fontSize: "15px",
+                          fontWeight: 600,
+                          color: item.accent || "#000000",
+                          textTransform: item.cap ? "capitalize" : "none",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          letterSpacing: item.mono ? "-0.01em" : "normal",
+                        }}
+                        title={String(item.value ?? "")}
+                      >
+                        {item.value || "—"}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+
+
+
+
+
+
 
           <div className=" ">
             <Box sx={{ width: "100%", bgcolor: "background.paper" }}>

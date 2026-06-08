@@ -197,7 +197,7 @@
   min-width: 250px;
   /* min-height: 60px; */
   gap: 6px;
-  margin-block:10px;
+  margin-block: 10px;
 }
 
 .detail_main_bg_CV {
@@ -358,7 +358,7 @@
   font-weight: 600;
   /* max-width: 156px; */
   text-wrap: wrap;
-  width: 330px;
+  /* width: 330px; */
   text-overflow: ellipsis;
   /* white-space: nowrap; */
   display: inline-block;
@@ -1525,4 +1525,19 @@
 .dark\:border-gray-700 {
   --tw-border-opacity: 1;
   border-color: white !important;
+}
+
+
+
+
+
+
+
+
+
+/* NEW CSS ADD */
+.modal_amount {
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  background: rgba(0, 0, 0, 0.2) !important;
 }

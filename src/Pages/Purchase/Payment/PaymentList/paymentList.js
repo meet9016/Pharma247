@@ -298,7 +298,7 @@ const PaymentList = () => {
     if (!distributorValue) {
       newErrors.distributorValue = "Distributor is required";
       toast.dismiss();
-toast.error(newErrors.distributorValue);
+      toast.error(newErrors.distributorValue);
     }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
@@ -325,7 +325,7 @@ toast.error(newErrors.distributorValue);
           }
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -390,8 +390,8 @@ toast.error(newErrors.distributorValue);
             setErrors({});
             setNote("");
             setAmounts(0);
-             toast.dismiss();
-toast.success(response.data.meassage);
+            toast.dismiss();
+            toast.success(response.data.meassage);
             setPurchaseBill([]);
             if (response.data.status === 401) {
               history.push("/");
@@ -423,7 +423,7 @@ toast.success(response.data.meassage);
             }
           });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -453,7 +453,7 @@ toast.success(response.data.meassage);
           setPurchaseBill(response?.data?.data);
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -469,10 +469,10 @@ toast.success(response.data.meassage);
     try {
       const response = await axios.post(`distributor-payment`, {},
         {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       if (response.data.status === 401) {
         history.push("/");
         localStorage.clear();
@@ -482,7 +482,7 @@ toast.success(response.data.meassage);
       setDistributorList(distributors);
       return distributors;
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -491,7 +491,7 @@ toast.success(response.data.meassage);
       }
       console.error("API Error fetching distributors:", error);
       return [];
-      
+
     }
   };
 
@@ -540,7 +540,7 @@ toast.success(response.data.meassage);
       console.error("API error:", error);
       setTableData([]);
       setTotalRecords(0);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -848,7 +848,7 @@ toast.success(response.data.meassage);
                         ) : (
                           tableData.map((row, index) => (
                             <tr key={row.code || index} className="bg-[#f5f8f3] align-middle">
-                              <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
+                              <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center ">
                                 {((currentPage - 1) * rowsPerPage) + index + 1}
                               </td>
                               {columns.map((column) => {
@@ -865,7 +865,7 @@ toast.success(response.data.meassage);
                                 return (
                                   <td
                                     key={column.id}
-                                    className="px-4 py-2 font-semibold text-center capitalize"
+                                    className="px-4 py-2 font-semibold text-center capitalize cursor-default"
                                     align={column.align}
                                   >
                                     <span
@@ -997,6 +997,7 @@ toast.success(response.data.meassage);
                         disabled
                         size="small"
                         value={distributor}
+
                         sx={{ width: "100%" }}
                         rows={2}
                         variant="outlined"
@@ -1012,7 +1013,7 @@ toast.success(response.data.meassage);
                           onChange={handleDistributor}
                           options={distributorList}
                           getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} />}
+                          renderInput={(params) => <TextField {...params} placeholder="Select distributor" />}
                         />
                         {errors.distributor && (
                           <span style={{ color: "red", fontSize: "12px" }}>
@@ -1057,6 +1058,7 @@ toast.success(response.data.meassage);
                       }}
                       size="small"
                     >
+
                       <MenuItem selected value="cash">Cash</MenuItem>
                       <MenuItem value="credit">Credit</MenuItem>
                       {bankData?.map((option) => (
@@ -1078,6 +1080,7 @@ toast.success(response.data.meassage);
                   <TextField
                     autoComplete="off"
                     id="outlined-multiline-static"
+                    placeholder="Enter Note "
                     multiline
                     size="small"
                     value={note}
@@ -1175,17 +1178,32 @@ toast.success(response.data.meassage);
                           </tr>
                         </tbody>
                       ) : (
+                        // <tbody>
+                        //   <tr>
+                        //     <div
+                        //       className="pt-3"
+                        //       style={{
+                        //         textAlign: "center",
+                        //         whiteSpace: "nowrap",
+                        //       }}
+                        //     >
+                        //       No Record Found
+                        //     </div>
+                        //   </tr>
+                        // </tbody>
                         <tbody>
                           <tr>
-                            <div
-                              className="pt-3"
+                            <td
+                              colSpan={4}
                               style={{
-                                textAlign: "center",
-                                whiteSpace: "nowrap",
+                                textAlign: "center", 
+                                padding: "20px", 
+                                color: "gray",
+                                fontWeight: 600,
                               }}
                             >
                               No Record Found
-                            </div>
+                            </td>
                           </tr>
                         </tbody>
                       )}
