@@ -83,7 +83,8 @@ const Purchasebill = () => {
   useEffect(() => {
     purchaseBillList(currentPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, startDate, endDate]);
+    // }, [currentPage, startDate, endDate]);
+  }, [currentPage]);
 
   // Effect for handling search with debouncing
   useEffect(() => {
@@ -513,7 +514,7 @@ const Purchasebill = () => {
               <div className="detail flex flex-col">
                 <span className="text-gray-500 block">
                   End Date</span>
-                <div style={{zIndex: 9999}}>
+                <div style={{ zIndex: 9999 }}>
                   <DatePicker
                     className="custom-datepicker"
                     selected={endDate}

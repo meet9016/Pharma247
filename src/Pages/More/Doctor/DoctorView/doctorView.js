@@ -191,12 +191,12 @@ const DoctorView = () => {
                                 }}
                             >
                                 {[
-                                    { label: "Doctor Name", value: doctorDetails.name ? doctorDetails.name : '____' },
-                                    { label: "Clinic Name", value: doctorDetails.clinic ? doctorDetails.clinic : '____' },
-                                    { label: "Mobile No", value: doctorDetails.phone_number ? doctorDetails.phone_number : '____', },
-                                    { label: "License Number", value: doctorDetails.license ? doctorDetails.license : '____' },
-                                    { label: "Default Doctor", value: doctorDetails.default_doctor ? doctorDetails.default_doctor : 'No' },
-                                    { label: "Address", value: doctorDetails.address ? doctorDetails.address : '____' },
+                                    { label: "Doctor Name", value: doctorDetails.name },
+                                    { label: "Clinic Name", value: doctorDetails.clinic },
+                                    { label: "Mobile No", value: doctorDetails.phone_number  },
+                                    { label: "License Number", value: doctorDetails.license },
+                                    { label: "Default Doctor", value: doctorDetails.default_doctor  },
+                                    { label: "Address", value: doctorDetails.address},
                                 ].map((item, idx, arr) => (
                                     <div
                                         key={item.label}

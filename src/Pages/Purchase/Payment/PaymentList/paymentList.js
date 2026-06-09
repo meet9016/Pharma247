@@ -114,13 +114,22 @@ const PaymentList = () => {
   const [paymentType, setPaymentType] = useState("");
   const [bankData, setBankData] = useState([]);
 
+  // const paymentOptions = [
+  //   { value: "cash", label: "Cash" },
+  //   { value: "credit", label: "Credit" },
+  //   { value: "upi", label: "UPI" },
+  //   { value: "cheque", label: "Cheque" },
+  //   { value: "paytm", label: "Paytm" },
+  //   { value: "rtgs/neft", label: "RTGS/NEFT" },
+  // ];
+
   const paymentOptions = [
-    { value: "cash", label: "Cash" },
-    { value: "credit", label: "Credit" },
-    { value: "upi", label: "UPI" },
-    { value: "cheque", label: "Cheque" },
-    { value: "paytm", label: "Paytm" },
-    { value: "rtgs/neft", label: "RTGS/NEFT" },
+    { label: "Cash", value: "cash" },
+    { label: "Credit", value: "credit" },
+    ...(bankData?.map((option) => ({
+      label: option.bank_name,
+      value: option.id,
+    })) || []),
   ];
 
   // Effect for handling search with debouncing (copied from OrderList)
@@ -990,7 +999,7 @@ const PaymentList = () => {
               <DialogContentText id="alert-dialog-description">
                 <div className="flex sm:flex-nowrap flex-wrap gap-4">
                   <div style={{ width: "100%" }}>
-                    <span className="label primary">Distributor Name <span className="text-red-600">*</span></span>
+                    <span className="label primary">Distributor Name<span className="text-red-600">*</span></span>
                     {isEditMode == true ? (
                       <TextField
                         autoComplete="off"
@@ -1014,7 +1023,9 @@ const PaymentList = () => {
                           onChange={handleDistributor}
                           options={distributorList}
                           getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} placeholder="Select distributor" />}
+                          renderInput={(params) => <TextField {...params}
+                            placeholder="Select Distributor " />
+                          }
                         />
                         {errors.distributor && (
                           <span style={{ color: "red", fontSize: "12px" }}>
@@ -1047,7 +1058,8 @@ const PaymentList = () => {
                       minDate={new Date()} //
                     />
                   </div>
-                  <div style={{ width: "100%" }}>
+
+                  {/* <div style={{ width: "100%" }}>
                     <span className="label primary">Payment Mode <span className="text-red-600">*</span></span>
                     <Select
                       labelId="dropdown-label"
@@ -1058,7 +1070,7 @@ const PaymentList = () => {
                         setPaymentType(e.target.value);
                       }}
                       size="small"
-                      
+
                     >
 
                       <MenuItem selected value="cash">Cash</MenuItem>
@@ -1074,7 +1086,42 @@ const PaymentList = () => {
                         {errors.paymentType}
                       </span>
                     )}
+                  </div> */}
+
+
+                  <div style={{ width: "100%" }}>
+                    <span className="label primary">
+                      Payment Mode <span className="text-red-600">*</span>
+                    </span>
+
+                    <Autocomplete
+                      fullWidth
+                      size="small"
+                      options={paymentOptions}
+                      getOptionLabel={(option) => option.label || ""}
+                      value={
+                        paymentOptions.find(
+                          (option) => String(option.value) === String(paymentType)
+                        ) || null
+                      }
+                      onChange={(event, newValue) => {
+                        setPaymentType(newValue ? newValue.value : "");
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          placeholder="Select Payment Mode"
+                        />
+                      )}
+                    />
+
+                    {errors.paymentType && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors.paymentType}
+                      </span>
+                    )}
                   </div>
+
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", marginTop: "13px" }}>
@@ -1244,13 +1291,31 @@ const PaymentList = () => {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button autoFocus variant="contained" onClick={submitPayment}>
+              <Button
+                autoFocus
+                variant="contained"
+                onClick={submitPayment}
+                sx={{
+                  backgroundColor: "#3F6212", // Green
+                  "&:hover": {
+                    backgroundColor: "#3F6212",
+                  },
+                }}
+              >
                 Yes
               </Button>
               <Button
                 autoFocus
                 variant="outlined"
                 onClick={() => setConfirm(false)}
+                sx={{
+                  borderColor: "#3F6212", // Red border
+                  color: "#3F6212", // Red text
+                  "&:hover": {
+                    borderColor: "#3F6212",
+                    color: "#3F6212 ",
+                  },
+                }}
               >
                 No
               </Button>

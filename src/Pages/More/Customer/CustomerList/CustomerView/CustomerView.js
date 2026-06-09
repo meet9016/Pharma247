@@ -359,19 +359,19 @@ const CustomerView = () => {
                 style={{
                   flex: 1,
                   display: "grid",
-                  gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+                  gridTemplateColumns: "repeat(8, minmax(0, 1fr))",
                   alignItems: "center",
                 }}
               >
                 {[
-                  { label: "Customer Name", value: tableData.name ? tableData.name : "____" },
-                  { label: "Mobile No", value: tableData.phone_number ? tableData.phone_number : "____" },
-                  { label: "Email ID", value: tableData.email ? tableData.email : "____", },
-                  { label: "Total Amount", value: tableData.balance ? tableData.balance : "____" },
-                  { label: "Loyalty Points", value: tableData.roylti_point ? tableData.roylti_point : "____" },
-                  { label: "Area", value: tableData.area ? tableData.area : "____" },
-                  { label: "City", value: tableData.city ? tableData.city : "____" },
-                  { label: "Address", value: tableData.address ? tableData.address : "____" },
+                  { label: "Customer Name", value: tableData.name },
+                  { label: "Mobile No", value: tableData.phone_number },
+                  { label: "Email ID", value: tableData.email },
+                  { label: "Total Amount", value: tableData.balance },
+                  { label: "Loyalty Points", value: tableData.roylti_point },
+                  { label: "Area", value: tableData.area },
+                  { label: "City", value: tableData.city },
+                  { label: "Address", value: tableData.address },
                 ].map((item, idx, arr) => (
                   <div
                     key={item.label}
@@ -494,6 +494,7 @@ const CustomerView = () => {
                         borderRadius: "6px",
                         backgroundColor: "rgba(63, 98, 18, 0.09)",
                         width: "fit-content",
+                        margin: '25px'
                       }}
                     >
                       <Typography
@@ -570,10 +571,11 @@ const CustomerView = () => {
                     <table
                       className="w-full border-collapse custom-table"
                       style={{
+                        width: "100%",
                         whiteSpace: "nowrap",
                         borderCollapse: "separate",
                         borderSpacing: "0 6px",
-                        overflow: "auto",
+                        // overflow: "auto",
                       }}
                     >
                       <thead>
@@ -629,7 +631,7 @@ const CustomerView = () => {
                         ))}
                       </tbody>
                     </table>
-                    <TablePagination
+                    {/* <TablePagination
                       rowsPerPageOptions={[5, 10, 12]}
                       component="div"
                       count={tableData?.sales?.[0]?.count}
@@ -637,13 +639,36 @@ const CustomerView = () => {
                       page={page}
                       onPageChange={handleChangePage}
                       onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
+                    /> */}
+                    {tableData?.sales?.length > 0 ? (
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 12]}
+                        component="div"
+                        count={tableData?.sales?.[0]?.count || 0}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          textAlign: "center",
+                          padding: "40px 0",
+                          fontSize: "14px",
+                          fontWeight: 600,
+                          color: "#666",
+                        }}
+                      >
+                        No Records Found
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
 
               {tabValue === 1 && (
-                <div style={{ margin: "25px" }}>
+                <div >
                   {/* <div className="mx-4 my-2 ">
                     <Typography
                       style={{
@@ -666,10 +691,11 @@ const CustomerView = () => {
                     <table
                       className="w-full border-collapse custom-table"
                       style={{
+                        width: "100%",
                         whiteSpace: "nowrap",
                         borderCollapse: "separate",
                         borderSpacing: "0 6px",
-                        overflow: "auto",
+                        // overflow: "auto",
                       }}
                     >
                       <thead>
@@ -705,7 +731,7 @@ const CustomerView = () => {
                         ))}
                       </tbody>
                     </table>
-                    <TablePagination
+                    {/* <TablePagination
                       rowsPerPageOptions={[5, 10, 12]}
                       component="div"
                       count={tableData?.sales_return?.[0]?.count}
@@ -713,12 +739,39 @@ const CustomerView = () => {
                       page={page}
                       onPageChange={handleChangePage}
                       onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
+                    /> */}
+                    {tableData?.sales_return?.length > 0 ? (
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 12]}
+                        component="div"
+                        count={tableData?.sales_return?.[0]?.count || 0}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          textAlign: "center",
+                          padding: "40px 0",
+                          fontSize: "14px",
+                          fontWeight: 600,
+                          color: "#666",
+                        }}
+                      >
+                        No Records Found
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
             </Box>
           </div>
+
+
+
+
           <Dialog
             open={openStatusDialog}
             sx={{
