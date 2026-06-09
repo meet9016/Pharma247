@@ -680,7 +680,8 @@ const PaymentList = () => {
                       <TextField
                         autoFocus
                         {...params}
-                        label="Search Distributor Name"
+                        // label="Search Distributor Name"
+                        placeholder="Search Distributor Name"
                       />
                     )}
                   />
@@ -1057,6 +1058,7 @@ const PaymentList = () => {
                         setPaymentType(e.target.value);
                       }}
                       size="small"
+                      
                     >
 
                       <MenuItem selected value="cash">Cash</MenuItem>

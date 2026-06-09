@@ -226,7 +226,7 @@ const ReturnView = () => {
                   }}
                   onClick={() => history.push("/purchaseReturn")}
                 >
-                  Purchase Return
+                  Purchase Return 
                 </span>
                 <ArrowForwardIosIcon
                   style={{ fontSize: "20px", color: "var(--color1)" }}

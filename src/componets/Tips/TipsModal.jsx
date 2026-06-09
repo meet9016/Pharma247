@@ -35,14 +35,14 @@ const TipsModal = ({ id, onClose }) => {
   return (
     <div
       id="modal"
-      className="fixed inset-0 z-[1000] overflow-y-auto px-4 sm:px-6 lg:px-8"
+      className="fixed inset-0 z-[1000] overflow-y-auto px-4 sm:px-6 lg:px-8 flex justify-center"
       role="dialog"
       aria-modal="true"
       aria-labelledby="tips-modal-title"
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-all duration-300"
+        className="fixed inset-0 bg-black/50 backdrop-blur-md transition-all duration-300"
         onClick={onClose}
       />
 
@@ -52,11 +52,11 @@ const TipsModal = ({ id, onClose }) => {
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 w-11 h-11 flex items-center justify-center rounded-full bg-white shadow-lg hover:shadow-xl border border-gray-200/50 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:scale-105 backdrop-blur-sm"
+            className="absolute top-4 right-4 z-20 w-15 h-15 flex items-center justify-center rounded-full bg-white shadow-lg hover:shadow-xl border border-gray-200/50 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:scale-105 backdrop-blur-sm"
             aria-label="Close modal"
           >
             <svg
-              className="w-5 h-5"
+              className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -88,7 +88,7 @@ const TipsModal = ({ id, onClose }) => {
                 </div>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-6 h-full flex flex-col">
                 {/* YouTube Section */}
                 {tip.youtube_url && (
                   <div className="relative group">
@@ -146,19 +146,19 @@ const TipsModal = ({ id, onClose }) => {
 
                 {/* Sections */}
                 {sections.length > 0 && (
-                  <div className="px-8 pb-10">
-                    <div className="bg-gradient-to-br from-gray-50/80 via-white to-gray-50/60 rounded-2xl p-8 xl:p-10 space-y-6 shadow-sm">
+                  <div className="px-8 pb-6 overflow-y-auto " style={{height: "550px"}}>
+                  <div className="bg-gradient-to-br from-gray-50/80 via-white to-gray-50/60 rounded-2xl p-8 xl:p-10 space-y-6 shadow-sm max-h-[500px] overflow-y-auto">
 
                       {/* Enhanced Step Items */}
                       {sections.map((s, i) => (
                         <div
                           key={i}
-                          className="group relative flex items-start gap-6 p-8 bg-white rounded-xl border border-gray-200/80 hover:border-[var(--color2)]/30 shadow-sm hover:shadow-lg transition-all duration-300 animate-in slide-in-from-bottom-4 hover:translate-y-[-2px]"
+                          className="group relative flex items-start gap-6 p-4 bg-white rounded-xl border border-gray-200/80 hover:border-[var(--color2)]/30 shadow-sm hover:shadow-lg transition-all duration-300 animate-in slide-in-from-bottom-4 hover:translate-y-[-2px]"
                           style={{ animationDelay: `${i * 150}ms` }}
                         >
                           {/* Enhanced Step Number */}
                           <div className="relative flex-shrink-0">
-                            <div className="w-14 h-14 flex items-center justify-center rounded-xl secondary-bg text-white font-bold text-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 ring-2 ring-white">
+                            <div className="w-12 h-12 flex items-center justify-center rounded-xl secondary-bg text-white font-bold text-md shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 ring-2 ring-white">
                               {i + 1}
                             </div>
                             {/* Connection Line for non-last items */}

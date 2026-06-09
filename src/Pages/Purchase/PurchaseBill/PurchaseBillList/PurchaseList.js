@@ -256,7 +256,7 @@ const Purchasebill = () => {
       console.error("API error:", error);
       setTableData([]);
       setTotalRecords(0);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -301,7 +301,7 @@ const Purchasebill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -338,7 +338,7 @@ const Purchasebill = () => {
     } catch (error) {
       console.error("API error:", error);
       setIsLoading(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -390,7 +390,7 @@ const Purchasebill = () => {
     } catch (error) {
       console.error("API error:", error);
       setIsLoading(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -501,7 +501,7 @@ const Purchasebill = () => {
             <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
               <div className="detail flex flex-col">
                 <span className="text-gray-500 block">Start Date</span>
-                <div className="" style={{ width: "100%" }}>
+                <div style={{ width: "100%" }}>
                   <DatePicker
                     className="custom-datepicker"
                     selected={startDate}
@@ -511,8 +511,9 @@ const Purchasebill = () => {
                 </div>
               </div>
               <div className="detail flex flex-col">
-                <span className="text-gray-500 block">End Date</span>
-                <div className="" style={{ width: "100%" }}>
+                <span className="text-gray-500 block">
+                  End Date</span>
+                <div style={{zIndex: 9999}}>
                   <DatePicker
                     className="custom-datepicker"
                     selected={endDate}

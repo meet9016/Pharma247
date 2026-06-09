@@ -172,10 +172,10 @@ const Salereturn = () => {
     }, [tableData, selectedIndex]);
 
     useEffect(() => {
-        if (searchDoctor) {
+        if (searchDoctor?.trim()) {
             const ListOfDoctor = async () => {
                 const params = {
-                    search: searchDoctor
+                    search: searchDoctor.trim()
                 };
                 setIsLoading(true);
                 try {
@@ -194,13 +194,13 @@ const Salereturn = () => {
                 } catch (error) {
                     setIsLoading(false);
                     console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                    if (error?.response?.status === 401) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("userId");
+                        localStorage.removeItem("role");
+                        localStorage.clear();
+                        history.push("/");
+                    }
                 }
             };
 
@@ -336,13 +336,13 @@ const Salereturn = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
 
@@ -362,13 +362,13 @@ const Salereturn = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
 
@@ -389,10 +389,10 @@ const Salereturn = () => {
     }, [selectedEditItem]);
 
     useEffect(() => {
-        if (searchQuery) {
+        if (searchQuery?.trim()) {
             const customerAllData = async () => {
                 const params = {
-                    search: searchQuery
+                    search: searchQuery.trim()
                 };
                 setIsLoading(true);
                 try {
@@ -414,13 +414,13 @@ const Salereturn = () => {
                 } catch (error) {
                     setIsLoading(false);
                     console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                    if (error?.response?.status === 401) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("userId");
+                        localStorage.removeItem("role");
+                        localStorage.clear();
+                        history.push("/");
+                    }
                 }
             };
 
@@ -437,6 +437,9 @@ const Salereturn = () => {
     const handleInputChange = (e) => {
         const value = e.target.value;
         setSearch(value);
+        if (!value.trim()) {
+            return;
+        }
         getSaleItemList(value);
     };
 
@@ -467,13 +470,13 @@ const Salereturn = () => {
             }
         } catch (error) {
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     };
 
@@ -507,7 +510,7 @@ const Salereturn = () => {
         data.append('customer_id', (customer && customer.id) ? customer.id : '');
         data.append('start_date', startDate.format('YYYY-MM-DD') ? startDate.format('YYYY-MM-DD') : '');
         data.append('end_date', endDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
-        data.append('search', value ? value : '');
+        data.append('search', value?.trim() ? value.trim() : '');
         const params = {
             customer_id: (customer && customer.id) ? customer.id : '',
             start_date: startDate ? startDate : '',
@@ -539,13 +542,13 @@ const Salereturn = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
 
@@ -603,13 +606,13 @@ const Salereturn = () => {
                 })
             }
             catch (e) {
-                   if (e?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                if (e?.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("role");
+                    localStorage.clear();
+                    history.push("/");
+                }
             }
         }
     }
@@ -737,13 +740,13 @@ const Salereturn = () => {
             } catch (error) {
                 console.error("API error:", error);
                 setIsSubmitting(false);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                if (error?.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("role");
+                    localStorage.clear();
+                    history.push("/");
+                }
             }
         }
 
@@ -781,13 +784,13 @@ const Salereturn = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
 
@@ -1041,9 +1044,19 @@ const Salereturn = () => {
                                 value={customer}
                                 onChange={handleCustomerOption}
                                 inputValue={searchQuery}
+                                // onInputChange={(event, newInputValue) => {
+                                //     setSearchQuery(newInputValue);
+                                //     setUnsavedItems(true);
+                                // }}
                                 onInputChange={(event, newInputValue) => {
-                                    setSearchQuery(newInputValue);
-                                    // setUnsavedItems(true);
+                                    const value = newInputValue || "";
+                                    if (!value.trim()) {
+                                        setSearchQuery("");
+                                        setCustomerDetails([]);
+                                        return;
+                                    }
+
+                                    setSearchQuery(value.trim());
                                 }}
                                 autoFocus
                                 options={customerDetails}
@@ -1100,10 +1113,18 @@ const Salereturn = () => {
                                 value={doctor}
                                 onChange={handleDoctorOption}
                                 inputValue={searchDoctor}
+                                // onInputChange={(event, newInputValue) => {
+                                //     setSearchDoctor(newInputValue);
+                                //     // setUnsavedItems(true);
+                                // }}
                                 onInputChange={(event, newInputValue) => {
-                                    setSearchDoctor(newInputValue);
-                                    // setUnsavedItems(true);
-
+                                    const value = newInputValue || "";
+                                    if (!value.trim()) {
+                                        setSearchDoctor("");
+                                        setDoctorData([]);
+                                        return;
+                                    }
+                                    setSearchDoctor(value.trim());
                                 }}
                                 options={doctorData}
                                 getOptionLabel={(option) => option.name ? `${option.name} [${option.clinic}]` : option.clinic || ''}
@@ -1198,8 +1219,8 @@ const Salereturn = () => {
                                     background: "var(--color1)"
                                 }}
                                 ref={el => inputRefs.current[4] = el}
-                                onKeyDown={()=>{
-                                     handleClearHistory();
+                                onKeyDown={() => {
+                                    handleClearHistory();
                                     validfilter();
                                 }}
 
@@ -1260,7 +1281,7 @@ const Salereturn = () => {
                                             value={search}
                                             onChange={handleInputChange}
                                             variant="outlined"
-                                            placeholder="Please search any items.."
+                                            placeholder="Please Search Items.."
                                             inputRef={el => inputRefs.current[5] = el}
                                             onKeyDown={e => {
                                                 if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
@@ -1287,6 +1308,7 @@ const Salereturn = () => {
                                         inputRef={el => inputRefs.current[6] = el}
                                         onKeyDown={handleKeyDown}
                                         size="small"
+                                        placeholder="Unit"
                                         value={unit}
                                         sx={{
                                             minWidth: "40px",
@@ -1303,6 +1325,7 @@ const Salereturn = () => {
                                         autoComplete="off"
                                         id="outlined-number"
                                         type="string"
+                                        placeholder="Base"
                                         sx={{
                                             minWidth: "100px",
                                             width: "100%",
@@ -1342,6 +1365,7 @@ const Salereturn = () => {
                                         disabled
                                         id="outlined-number"
                                         type="number"
+                                        placeholder="Mrp"
                                         sx={{
                                             minWidth: "65px",
                                             width: "100%",
@@ -1361,6 +1385,7 @@ const Salereturn = () => {
                                         autoComplete="off"
                                         id="outlined-number"
                                         type="number"
+                                        placeholder="Base"
                                         sx={{
                                             minWidth: "65px",
                                             width: "100%",
@@ -1380,6 +1405,7 @@ const Salereturn = () => {
                                         autoComplete="off"
                                         id="outlined-number"
                                         type="number"
+                                        placeholder="Gst"
                                         disabled
                                         size="small"
                                         inputRef={el => inputRefs.current[11] = el}
@@ -1399,6 +1425,7 @@ const Salereturn = () => {
                                     <TextField
                                         autoComplete="off"
                                         id="outlined-number"
+                                        placeholder="Qty"
                                         type="number"
                                         sx={{
                                             minWidth: "65px",
@@ -1418,6 +1445,7 @@ const Salereturn = () => {
                                     <TextField
                                         autoComplete="off"
                                         id="outlined-number"
+                                        placeholder="Loc"
                                         size="small"
                                         inputRef={el => inputRefs.current[13] = el}
                                         onKeyDown={handleKeyDown}

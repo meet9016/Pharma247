@@ -333,7 +333,7 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const SearchTimer = setTimeout(() => {
-      if (searchItem) {
+      if (searchItem.trim()) {
         setPage(1);
         setHasMore(true);
         handleSearch(searchItem.toUpperCase(), 1);
@@ -2192,7 +2192,7 @@ const AddPurchaseBill = () => {
                   className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
                   onClick={() => history.push("/purchase")}
                 >
-                  Purchase
+                  Purchase  
                 </span>
                 <span className="w-6 h-6">
                   <ArrowForwardIosIcon
@@ -2504,7 +2504,7 @@ const AddPurchaseBill = () => {
                     size="small"
                     variant="outlined"
                     value={barcode}
-                    placeholder="scan barcode"
+                    placeholder="Scan Barcode"
                     // inputRef={inputRef10}
                     // onKeyDown={handleKeyDown}
 
@@ -2539,7 +2539,7 @@ const AddPurchaseBill = () => {
                         />
                       </div>
                     </th>
-                    <th>Unit <span className="text-red-600 ">*</span></th>
+                    <th>Unit<span className="text-red-600 ">*</span></th>
                     <th>Batch <span className="text-red-600 ">*</span> </th>
                     <th>Expiry <span className="text-red-600 ">*</span></th>
                     <th>MRP <span className="text-red-600 ">*</span></th>
@@ -2605,6 +2605,7 @@ const AddPurchaseBill = () => {
                               tabIndex={0}
                               variant="outlined"
                               autoComplete="off"
+                              placeholder="Search Item Name"
                               {...params}
                               value={searchItem?.iteam_name}
                               inputRef={(el) => (inputRefs.current[2] = el)}
@@ -2615,7 +2616,7 @@ const AddPurchaseBill = () => {
                                 width: "100%",
                                 '& .MuiInputBase-input': {
                                   // textAlign: 'center',
-                                  textTransform: 'uppercase',
+                                  // textTransform: 'uppercase',
                                 },
                               }}
 
@@ -2728,6 +2729,7 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
+                        placeholder="Unit"
                         type="text"
                         size="small"
                         error={!!error.unit}
@@ -2776,6 +2778,7 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
+                        placeholder="Batch"
                         error={!!error.batch}
                         value={batch}
                         sx={{
@@ -2870,6 +2873,7 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
+                        placeholder="Mrp"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
@@ -2918,7 +2922,7 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-
+                        placeholder="Qty"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
@@ -2958,6 +2962,7 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         type="number"
+                        placeholder="Free"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -2994,6 +2999,7 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
+                        placeholder="Ptr"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
@@ -3050,6 +3056,7 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
+                        placeholder="CD%"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -3089,6 +3096,7 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
+                        placeholder="Base"
                         size="small"
                         value={base === 0 ? "" : base}
                         disabled
@@ -3111,7 +3119,7 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         size="small"
                         value={gst}
-
+                        placeholder="GST%"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -3164,7 +3172,7 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         value={loc?.toUpperCase()}
-
+                        placeholder="Loc."
                         sx={{
                           minWidth: "65px",
                           width: "100%",
@@ -3193,6 +3201,7 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         type="number"
                         disabled
+                        placeholder="Net Rate"
                         size="small"
                         value={netRate === 0 ? "" : netRate}
                         sx={{
@@ -3211,6 +3220,7 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
+                        placeholder="Margin %"
                         disabled
                         size="small"
                         value={margin === 0 ? "" : margin}
@@ -3928,17 +3938,17 @@ const AddPurchaseBill = () => {
                             setAddDistributorMobile(numericValue);
                           }}
                           onChange={(e, selectedValue) => {
-                             const found = distributorList.find(d => d.phone_number === selectedValue);
-                             if (found) {
-                               setAddDistributorName(found.name);
-                               setAddDistributorMobile(found.phone_number);
-                               setAddDistributorNo(found.gst);
-                               setAddDistributorAddress(found.area || "");
-                               setAddDistributorId(found.id);
-                             } else {
-                               setAddDistributorId("");
-                             }
-                           }}
+                            const found = distributorList.find(d => d.phone_number === selectedValue);
+                            if (found) {
+                              setAddDistributorName(found.name);
+                              setAddDistributorMobile(found.phone_number);
+                              setAddDistributorNo(found.gst);
+                              setAddDistributorAddress(found.area || "");
+                              setAddDistributorId(found.id);
+                            } else {
+                              setAddDistributorId("");
+                            }
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -3957,7 +3967,7 @@ const AddPurchaseBill = () => {
                                 }
                               }}
                               error={distributorList.some(d => d.phone_number === addDistributorMobile)}
-                              // helperText={distributorList.some(d => d.phone_number === addDistributorMobile) ? "This number already exists" : ""}
+                            // helperText={distributorList.some(d => d.phone_number === addDistributorMobile) ? "This number already exists" : ""}
                             />
                           )}
                         />
@@ -3974,17 +3984,17 @@ const AddPurchaseBill = () => {
                             setAddDistributorNo(newValue.toUpperCase());
                           }}
                           onChange={(e, selectedValue) => {
-                             const found = distributorList.find(d => d.gst === selectedValue);
-                             if (found) {
-                               setAddDistributorName(found.name);
-                               setAddDistributorMobile(found.phone_number);
-                               setAddDistributorNo(found.gst);
-                               setAddDistributorAddress(found.area || "");
-                               setAddDistributorId(found.id);
-                             } else {
-                               setAddDistributorId("");
-                             }
-                           }}
+                            const found = distributorList.find(d => d.gst === selectedValue);
+                            if (found) {
+                              setAddDistributorName(found.name);
+                              setAddDistributorMobile(found.phone_number);
+                              setAddDistributorNo(found.gst);
+                              setAddDistributorAddress(found.area || "");
+                              setAddDistributorId(found.id);
+                            } else {
+                              setAddDistributorId("");
+                            }
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}

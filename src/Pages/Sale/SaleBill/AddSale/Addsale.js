@@ -677,7 +677,7 @@ const AddSale = () => {
 
   /*<================================================================= Search Item Debouncing ========================================================> */
   useEffect(() => {
-    if (!searchItem) {
+    if (!searchItem?.trim()) {
       setItemList([]);
       return;
     }
@@ -728,7 +728,7 @@ const AddSale = () => {
   };
 
   const handleSearch = async (searchTerm, pageNumber = 1) => {
-    if (!searchTerm || isFetchingMore) return;
+    if (!searchTerm?.trim() || isFetchingMore) return;
 
     setIsFetchingMore(true);
 
@@ -809,6 +809,17 @@ const AddSale = () => {
   const handleInputChange = (event, newInputValue) => {
     setUnsavedItems(true);
     setSearchItem(newInputValue.toUpperCase());
+
+
+    if (!newInputValue.trim()) {
+      setSearchItem("");
+      setItemList([]);
+      setPage(1);
+      setHasMore(true);
+      return;
+    }
+    setSearchItem(newInputValue.trim().toUpperCase());
+
   };
 
   const handleOptionChange = (event, newValue) => {
@@ -2790,7 +2801,6 @@ const AddSale = () => {
               />
             </div>
           </div>
-
         </div>
 
         {/*<=========================================================== item table   ==========================================================> */}
@@ -3006,7 +3016,7 @@ const AddSale = () => {
                             ...params.InputProps,
                             style: {
                               height: 40,
-                              textTransform: 'uppercase',
+                              // textTransform: 'uppercase',
                             },
                             startAdornment: (
                               <InputAdornment position="start">
@@ -3084,7 +3094,7 @@ const AddSale = () => {
                           }}
                           sx={{
                             "& .MuiInputBase-input": {
-                              textTransform: "uppercase",
+                              // textTransform: "uppercase",
                             },
                             "& .MuiInputBase-input::placeholder": {
                               fontSize: "1rem",
@@ -3149,6 +3159,7 @@ const AddSale = () => {
                     disabled
                     type="number"
                     inputRef={inputRef1}
+                    placeholder="Unit"
                     onKeyDown={(e) => {
                       if (e.key === "Tab" && e.shiftKey) {
                         e.preventDefault();
@@ -3188,6 +3199,7 @@ const AddSale = () => {
                     size="small"
                     disabled
                     value={batch}
+                    placeholder="Batch"
                     onKeyDown={(e) => {
                       if (e.key === "Tab" && e.shiftKey) {
                         e.preventDefault();
@@ -3213,6 +3225,7 @@ const AddSale = () => {
                     id="outlined-number"
                     disabled
                     size="small"
+
                     sx={{
                       minWidth: "65px",
                       width: "100%",
@@ -3245,6 +3258,7 @@ const AddSale = () => {
                   <TextField
                     disabled
                     id="outlined-number"
+                    placeholder="Mrp"
                     type="number"
                     sx={{
                       minWidth: "65px",
@@ -3281,6 +3295,7 @@ const AddSale = () => {
                     autoComplete="off"
                     id="outlined-number"
                     type="number"
+                    placeholder="Base"
                     sx={{
                       minWidth: "65px",
                       width: "100%",
@@ -3323,6 +3338,7 @@ const AddSale = () => {
                     id="outlined-number"
                     type="number"
                     disabled
+                    placeholder="Gst"
                     size="small"
                     inputRef={inputRef6}
                     onKeyDown={(e) => {
@@ -3358,6 +3374,7 @@ const AddSale = () => {
                     autoComplete="off"
                     id="outlined-number"
                     type="number"
+                    placeholder="Qty"
                     sx={{
                       minWidth: "65px",
                       width: "100%",
@@ -3409,6 +3426,7 @@ const AddSale = () => {
                   <TextField
                     id="outlined-number"
                     size="small"
+                    placeholder="Loc"
                     inputRef={inputRef9}
                     onKeyDown={(e) => {
                       if (e.key === "Tab" && e.shiftKey) {
@@ -3443,6 +3461,7 @@ const AddSale = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
+                    placeholder="Order"
                     sx={{
                       minWidth: "40px",
                       width: "100%",

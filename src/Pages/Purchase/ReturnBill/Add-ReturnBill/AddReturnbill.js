@@ -328,7 +328,7 @@ const AddReturnbill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -350,13 +350,13 @@ const AddReturnbill = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -377,13 +377,13 @@ const AddReturnbill = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
   /*<============================================================================ handle leave page fuction  ===================================================================> */
@@ -394,13 +394,13 @@ const AddReturnbill = () => {
         await handleLeavePage();
       } catch (error) {
         console.error("Error during initialization:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     };
 
@@ -433,13 +433,13 @@ const AddReturnbill = () => {
     } catch (error) {
       if (error.response && error.response.status === 401) {
         setUnsavedItems(false);
-         
+
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
-      
+
         setIsOpenBox(false);
         localStorage.setItem("unsavedItems", unsavedItems.toString());
         setTimeout(() => {
@@ -523,7 +523,7 @@ const AddReturnbill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -564,6 +564,10 @@ const AddReturnbill = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
+
+    if (!value.trim()) {
+      return;
+    }
 
     if (!distributor) {
       toast.dismiss();
@@ -606,7 +610,7 @@ const AddReturnbill = () => {
       localStorage.setItem("DistributorId", distributor.id);
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -760,13 +764,13 @@ const AddReturnbill = () => {
           });
       } catch (error) {
         console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
         setIsSubmitting(false);
 
       }
@@ -878,7 +882,7 @@ const AddReturnbill = () => {
         .then((response) => { });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -912,7 +916,7 @@ const AddReturnbill = () => {
       }
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -988,7 +992,7 @@ const AddReturnbill = () => {
       }
     } catch (e) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1098,6 +1102,7 @@ const AddReturnbill = () => {
                         autoFocus
                         autoComplete="off"
                         variant="outlined"
+                        placeholder="Distributor"
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 0)}
@@ -1243,13 +1248,13 @@ const AddReturnbill = () => {
                           sx={{
                             minWidth: 400,
                             width: "100%",
-                            textTransform: 'uppercase',
+                            // textTransform: 'uppercase',
 
                           }}
                           value={searchQuery.toUpperCase()}
                           onChange={handleInputChange}
                           variant="outlined"
-                          placeholder="Please search any items.."
+                          placeholder="Please Search Any Items.."
                           inputRef={(el) => (inputRefs.current[5] = el)}
                           onKeyDown={e => {
                             if (e.key === "Enter" && !searchQuery) {
@@ -1277,6 +1282,7 @@ const AddReturnbill = () => {
                         id="outlined-number"
                         type="number"
                         size="small"
+                        placeholder="Unit"
                         error={!!errors.unit}
                         helperText={errors.unit}
                         value={unit}
@@ -1312,6 +1318,7 @@ const AddReturnbill = () => {
                         id="outlined-number"
                         size="small"
                         disabled
+                        placeholder="Batch"
                         error={!!errors.batch}
                         helperText={errors.batch}
                         value={batch}
@@ -1372,6 +1379,7 @@ const AddReturnbill = () => {
                           },
                         }}
                         size="small"
+                        placeholder="Mrp"
                         disabled
                         error={!!errors.mrp}
                         helperText={errors.mrp}
@@ -1399,6 +1407,7 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
+                        placeholder="Qty"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
@@ -1434,6 +1443,7 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
+                        placeholder="Free"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -1465,6 +1475,7 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
+                        placeholder="Ptr"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
@@ -1495,6 +1506,7 @@ const AddReturnbill = () => {
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
+                        placeholder="Cd"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -1527,6 +1539,7 @@ const AddReturnbill = () => {
                         labelId="dropdown-label"
                         id="dropdown"
                         value={gst}
+                        placeholder="Gst"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -1557,6 +1570,7 @@ const AddReturnbill = () => {
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
+                        placeholder="Loc"
                         size="small"
                         sx={{
                           minWidth: "65px",
