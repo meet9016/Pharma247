@@ -2535,18 +2535,16 @@ const AddSale = () => {
                 // loading={isLoading}
 
                 sx={{
-
                   width: "100%",
                   minWidth: "350px",
-                  minHeight: "40px",
-                  "@media (max-width:600px)": { minWidth: "250px" },
+
+                  '& .MuiOutlinedInput-root': {
+                    height: '40px',
+                    minHeight: '40px',
+                  },
 
                   '& .MuiAutocomplete-inputRoot': {
-                    padding: '0 !important',
                     paddingRight: customer ? '65px !important' : '39px !important',
-                  },
-                  '& .MuiInputBase-root': {
-                    padding: '0',
                   }
                 }}
 
@@ -2651,7 +2649,7 @@ const AddSale = () => {
 
             </div>
             <div>
-              <span className="title mb-2 flex  items-center gap-2">
+              <span className="title flex mb-2 items-center gap-2">
                 <span className="flex flex-row gap-1">
                   Doctor
                   <FaPlusCircle
@@ -2692,18 +2690,16 @@ const AddSale = () => {
 
                 // loading={isLoading}
                 sx={{
-
                   width: "100%",
                   minWidth: "350px",
-                  minHeight: "40px",
-                  "@media (max-width:600px)": { minWidth: "250px" },
+
+                  '& .MuiOutlinedInput-root': {
+                    height: '40px',
+                    minHeight: '40px',
+                  },
 
                   '& .MuiAutocomplete-inputRoot': {
-                    padding: '0 !important',
                     paddingRight: customer ? '65px !important' : '39px !important',
-                  },
-                  '& .MuiInputBase-root': {
-                    padding: '0',
                   }
                 }}
                 renderOption={(props, option) => (

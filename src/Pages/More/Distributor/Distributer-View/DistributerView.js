@@ -717,6 +717,7 @@ const DistributerView = () => {
                     <label className="label secondary">Company Name <span className="text-red-600  ">*</span></label>
                     <TextField
                       value={companyName}
+                      placeholder="Company Name"
                       onChange={(e) => setCompanyName(e.target.value)}
                       error={!!errors.companyName}
                       helperText={errors.companyName}

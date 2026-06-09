@@ -52,7 +52,7 @@ const Documents = () => {
     const fetchAboutDetails = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.post("license-list",{}, {
+            const response = await axios.post("license-list", {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -88,13 +88,13 @@ const Documents = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     };
 
@@ -128,28 +128,28 @@ const Documents = () => {
                     Authorization: `Bearer ${token}`,
                 },
             }).then((response) => {
-                 toast.dismiss();
-toast.success(response.data.message)
+                toast.dismiss();
+                toast.success(response.data.message)
                 fetchAboutDetails();
                 setErrors({})
-               
+
             })
         } catch (error) {
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
 
     return (
         <>
             <Header />
-              <ToastContainer
+            <ToastContainer
 
                 position="top-right"
                 autoClose={5000}
@@ -190,6 +190,7 @@ toast.success(response.data.message)
                                             <div className="mb-4">
                                                 <span className=" flex ">License Number</span>
                                                 <TextField
+                                                    placeholder="License Number"
                                                     required
                                                     autoComplete="off"
                                                     id="outlined-number"
@@ -203,7 +204,7 @@ toast.success(response.data.message)
                                             <div>
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
-
+                                                    placeholderText="Select Expiry Date"
                                                     className="custom-datepicker"
                                                     selected={licenseExpiryDate}
                                                     onChange={() => setLicenseExpiryDate()}
@@ -212,7 +213,7 @@ toast.success(response.data.message)
                                                 />
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-center flex-1" style={{width:'100%'}}>
+                                        <div className="flex items-center justify-center flex-1" style={{ width: '100%' }}>
                                             <label htmlFor="upload-photo-file-one" className="flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dc_imgs_fldd" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
@@ -221,7 +222,7 @@ toast.success(response.data.message)
                                                     type="file"
                                                     onChange={(event) => handleUploadFile(event, setSelectedUploadFile, setUploadUrl)}
                                                 />
-                                                {selectedUploadFile == null || selectedUploadFile == ""?(
+                                                {selectedUploadFile == null || selectedUploadFile == "" ? (
                                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                                         <MdOutlineCloudUpload className="w-10 h-10" />
                                                         <span>Drop your image here</span>
@@ -248,7 +249,7 @@ toast.success(response.data.message)
                                                 <span className="primary flex">License Number</span>
                                                 <TextField
                                                     autoComplete="off"
-
+                                                    placeholder="License Number"
                                                     required
                                                     id="outlined-number-two"
                                                     sx={{ width: '100%' }}
@@ -267,10 +268,11 @@ toast.success(response.data.message)
                                                     onChange={(newDate) => setLicenseExpiryDateTwo(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}
+                                                    placeholderText="Select License Expiry Date"
                                                 />
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-center flex-1" style={{width:'100%'}}>
+                                        <div className="flex items-center justify-center flex-1" style={{ width: '100%' }}>
                                             <label htmlFor="upload-photo-file-two" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dc_imgs_fldd" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
@@ -309,6 +311,7 @@ toast.success(response.data.message)
                                                 <span className="primary flex">License Number</span>
                                                 <TextField
                                                     required
+                                                    placeholder="License Number"
                                                     id="outlined-number-three"
                                                     sx={{ width: '100%' }}
                                                     size="small"
@@ -325,10 +328,11 @@ toast.success(response.data.message)
                                                     onChange={(newDate) => setLicenseExpiryDateThree(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}
+                                                    placeholderText="Select License Expiry Date"
                                                 />
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-center flex-1" style={{width:'100%'}}>
+                                        <div className="flex items-center justify-center flex-1" style={{ width: '100%' }}>
                                             <label htmlFor="upload-photo-file-three" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dc_imgs_fldd" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
@@ -362,6 +366,7 @@ toast.success(response.data.message)
                                             <div className="mb-4">
                                                 <span className="primary flex">License Number</span>
                                                 <TextField
+                                                    placeholder="License Number"
                                                     required
                                                     id="outlined-number-four"
                                                     sx={{ width: '100%' }}
@@ -379,11 +384,11 @@ toast.success(response.data.message)
                                                     onChange={(newDate) => setLicenseExpiryDateFour(newDate)}
                                                     dateFormat="dd/MM/yyyy"
                                                     minDate={new Date()}
-
+                                                    placeholderText="Select License Expiry Date"
                                                 />
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-center flex-1" style={{width:'100%'}}>
+                                        <div className="flex items-center justify-center flex-1" style={{ width: '100%' }}>
                                             <label htmlFor="upload-photo-file-four" className="flex flex-col items-center justify-center w-44 h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dc_imgs_fldd" style={{ width: "100%", height: "100%", minHeight: "200px", objectFit: "contain" }}>
                                                 <input
                                                     accept="image/*"
@@ -392,7 +397,7 @@ toast.success(response.data.message)
                                                     type="file"
                                                     onChange={(event) => handleUploadFile(event, setSelectedUploadFileFour, setUploadUrlFour)}
                                                 />
-                                                {selectedUploadFileFour == null || selectedUploadFileFour == ""? (
+                                                {selectedUploadFileFour == null || selectedUploadFileFour == "" ? (
                                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                                         <MdOutlineCloudUpload className="w-10 h-10" />
                                                         <span>Drop your image here</span>

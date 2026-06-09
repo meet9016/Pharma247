@@ -123,14 +123,14 @@ const EditReturnBill = () => {
         try {
             const try3 = parseISO(String(value));
             if (isValid(try3)) return try3;
-        } catch (error) { 
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        } catch (error) {
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
 
         return null; // fallback
@@ -237,13 +237,13 @@ const EditReturnBill = () => {
                 try {
                     nextElement.focus();
                 } catch (error) {
-                       if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                    if (error?.response?.status === 401) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("userId");
+                        localStorage.removeItem("role");
+                        localStorage.clear();
+                        history.push("/");
+                    }
                     console.warn(`Could not focus element at index ${nextIndex}:`, error);
                 }
             }, 10);
@@ -449,13 +449,13 @@ const EditReturnBill = () => {
                 setTimeout(() => {
                     history.push(nextPath);
                 }, 0);
-                  
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      
+
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+
             } else {
                 console.error("Error deleting items:", error);
             }
@@ -501,13 +501,13 @@ const EditReturnBill = () => {
         } catch (error) {
             console.error("API Error fetching distributors:", error);
             return [];
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     };
     /*<================================================================ get batch data  ======================================================================> */
@@ -532,13 +532,13 @@ const EditReturnBill = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
 
@@ -566,13 +566,13 @@ const EditReturnBill = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
 
@@ -595,13 +595,13 @@ const EditReturnBill = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
     /*<================================================================ get gst data  ======================================================================> */
@@ -618,13 +618,13 @@ const EditReturnBill = () => {
             })
             .catch((error) => {
                 console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                if (error?.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("role");
+                    localStorage.clear();
+                    history.push("/");
+                }
             });
     }
     /*<================================================================ handle search  ======================================================================> */
@@ -684,13 +684,13 @@ const EditReturnBill = () => {
             }
         } catch (error) {
             console.error("API error:", error);
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
 
         } finally {
             isFetching = false;
@@ -899,13 +899,13 @@ const EditReturnBill = () => {
         }
         catch (error) {
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
 
@@ -1003,13 +1003,13 @@ const EditReturnBill = () => {
             console.error("API error:", error);
 
             setIsSubmitting(false);
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
 
 
         }
@@ -1045,13 +1045,13 @@ const EditReturnBill = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
 
         }
     }
@@ -1097,13 +1097,13 @@ const EditReturnBill = () => {
 
         } catch (error) {
             console.error("API error:", error);
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
 
         }
     };
@@ -1142,7 +1142,7 @@ const EditReturnBill = () => {
 
                                 onClick={() => history.push("/purchaseReturn")}
                             >
-                                Purchase Return  
+                                Purchase Return
                             </span>
                             <ArrowForwardIosIcon
                                 fontSize="small"
@@ -1344,7 +1344,7 @@ const EditReturnBill = () => {
                                         <TextField
                                             autoComplete="off"
                                             id="outlined-number"
-
+                                            placeholder='Unit'
                                             type="number"
                                             size="small"
                                             sx={{
@@ -1383,6 +1383,7 @@ const EditReturnBill = () => {
                                             autoComplete="off"
                                             id="outlined-number"
                                             size="small"
+                                            placeholder='Batch'
                                             sx={{
                                                 minWidth: "100px",
                                                 width: "100%",
@@ -1420,6 +1421,7 @@ const EditReturnBill = () => {
                                         <TextField
                                             autoComplete="off"
                                             id="outlined-number"
+                                            placeholder='Mrp'
                                             type="number"
                                             sx={{
                                                 minWidth: "65px",
@@ -1451,6 +1453,7 @@ const EditReturnBill = () => {
                                         <TextField
                                             autoComplete="off"
                                             id="outlined-number"
+                                            placeholder='Qty'
                                             type="number"
                                             sx={{
                                                 minWidth: "65px",
@@ -1489,6 +1492,7 @@ const EditReturnBill = () => {
                                             autoComplete="off"
                                             id="outlined-number"
                                             size="small"
+                                            placeholder='Free'
                                             type="number"
                                             sx={{
                                                 minWidth: "40px",
@@ -1525,6 +1529,7 @@ const EditReturnBill = () => {
                                             autoComplete="off"
                                             id="outlined-number"
                                             type="number"
+                                            placeholder='Ptr'
                                             sx={{
                                                 minWidth: "65px",
                                                 width: "100%",
@@ -1565,6 +1570,7 @@ const EditReturnBill = () => {
                                         <TextField
                                             autoComplete="off"
                                             id="outlined-number"
+                                            placeholder='Cd'
                                             sx={{
                                                 minWidth: "40px",
                                                 width: "100%",
@@ -1609,6 +1615,7 @@ const EditReturnBill = () => {
                                         <TextField
                                             labelId="dropdown-label"
                                             id="dropdown"
+                                            placeholder='Gst'
                                             value={gst}
                                             sx={{
                                                 minWidth: "40px",
@@ -1647,6 +1654,7 @@ const EditReturnBill = () => {
                                         <TextField
                                             autoComplete="off"
                                             id="outlined-number"
+                                            placeholder='Loc.'
                                             size="small"
                                             value={loc}
                                             inputRef={(el) => (inputRefs.current[7] = el)}

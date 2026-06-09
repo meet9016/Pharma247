@@ -521,10 +521,11 @@ const CustomerView = () => {
                       className="mx-4 my-2 "
                       style={{
                         border: "1px solid var(--color2)",
-                        padding: "10px",
+                        padding: "5px",
                         borderRadius: "6px",
                         backgroundColor: "rgba(63, 98, 18, 0.09)",
                         width: "fit-content",
+                        margin: '25px'
                       }}
                     >
                       <Typography
