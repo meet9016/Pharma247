@@ -243,6 +243,7 @@ const CreateRole = () => {
                                         variant="outlined"
                                         value={roleName}
                                         onChange={(e) => setRoleName(e.target.value)}
+                                        placeholder="Role Name"
                                     />
                                     {errors.RoleName && <span style={{ color: 'red', fontSize: '14px' }}>{errors.RoleName}</span>}
                                 </div>

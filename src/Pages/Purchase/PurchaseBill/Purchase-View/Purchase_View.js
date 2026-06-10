@@ -546,22 +546,22 @@ const PurchaseView = () => {
                       <td style={{ borderRadius: "10px 0 0 10px" }}>
                         <div>{item.item_name}</div>
                       </td>
-                      <td>{item.weightage}</td>
-                      <td>{item.hsn_code}</td>
-                      <td>{item.batch_number}</td>
-                      <td>{item.expiry}</td>
-                      <td>{item.mrp}</td>
-                      <td>{item.qty}</td>
-                      <td>{item.fr_qty}</td>
-                      <td>{item.ptr}</td>
-                      <td>{item.disocunt}</td>
-                      <td>{item.scheme_account}</td>
-                      <td>{item.base_price}</td>
-                      <td>{item.gst_name}</td>
-                      <td>{item.location}</td>
-                      <td>{item.margin}</td>
-                      <td>{item.net_rate}</td>
-                      <td className="amount" style={{ borderRadius: "0 10px 10px 0" }}>{item.amount} </td>
+                      <td>{item.weightage || "-"}</td>
+                      <td>{item.hsn_code || "-"}</td>
+                      <td>{item.batch_number || "-"}</td>
+                      <td>{item.expiry || "-"}</td>
+                      <td>{item.mrp || "-"}</td>
+                      <td>{item.qty || "-"}</td>
+                      <td>{item.fr_qty || "-"}</td>
+                      <td>{item.ptr || "-"}</td>
+                      <td>{item.disocunt || "-"}</td>
+                      <td>{item.scheme_account || "-"}</td>
+                      <td>{item.base_price || "-"}</td>
+                      <td>{item.gst_name || "-"}</td>
+                      <td>{item.location || "-"}</td>
+                      <td>{item.margin || "-"}</td>
+                      <td>{item.net_rate || "-"}</td>
+                      <td className="amount" style={{ borderRadius: "0 10px 10px 0" }}>{item.amount || "-"}</td>
                     </tr>
                   ))}
                 </tbody>)}

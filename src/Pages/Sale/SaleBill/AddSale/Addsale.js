@@ -186,6 +186,9 @@ const AddSale = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
+  console.log(customerHistoryData, "aa");
+
+
   const toggleModal = async () => {
     if (isModalOpen && netAmount >= 0) {
       await updateTodayPoints();
@@ -2503,6 +2506,8 @@ const AddSale = () => {
 
         <div className=" flex gap-4  mt-4">
           <div className="flex flex-row gap-4 overflow-x-auto w-full">
+
+
             <div>
               <span
                 className="title mb-2 flex  items-center gap-2"
@@ -2646,8 +2651,11 @@ const AddSale = () => {
                   />
                 )}
               />
-
             </div>
+
+
+
+
             <div>
               <span className="title flex mb-2 items-center gap-2">
                 <span className="flex flex-row gap-1">
@@ -4552,9 +4560,9 @@ const AddSale = () => {
                           </th>
                         </tr>
                       </thead>
-                      <tbody>
-                        {customerHistoryData?.sales && customerHistoryData.sales.length > 0 ? (
-                          customerHistoryData.sales.map((sale) => (
+                      {/* <tbody>
+                        {customerHistoryData?.sales?.length > 0 ? (
+                          customerHistoryData.sales.map((sale) => (                
                             <tr
                               hover
                               tabIndex={-1}
@@ -4585,6 +4593,38 @@ const AddSale = () => {
                             >
                               No sales history found
                             </td>
+                          </tr>
+                        )}
+                      </tbody> */}
+
+                      <tbody>
+                        {customerHistoryData?.sales?.length > 0 ? (
+                          customerHistoryData.sales.map((sale) => (
+                            <tr
+                              hover
+                              tabIndex={-1}
+                              key={sale.id}
+                              onClick={() => {
+                                history.push(`/saleView/${sale.id}`)
+                              }}>
+                              <td>{customerHistoryData?.name || "-"}</td>
+                              <td>{sale?.area || "-"}</td>
+                              <td>{sale?.doctor || "-"}</td>
+                              <td>{sale?.bill_no || "-"}</td>
+                              <td>{sale?.bill_date || "-"}</td>
+                              <td>{sale?.payment_mode || "-"}</td>
+                              <td>{sale?.amt || "-"}</td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td>{customerHistoryData?.name || "-"}</td>
+                            <td>{customerHistoryData?.area || "-"}</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
                           </tr>
                         )}
                       </tbody>

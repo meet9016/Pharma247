@@ -224,6 +224,7 @@ const OnlineOrders = () => {
                     <TextField
                       value={settings.minimum_order_amount}
                       type="number"
+                      placeholder="Minimum Order Amount"
                       size="small"
                       onChange={(e) =>
                         setSettings((prev) => ({
@@ -239,6 +240,7 @@ const OnlineOrders = () => {
                     <TextField
                       value={settings.order_shipping_price}
                       type="number"
+                      placeholder="Delivery Charges"
                       size="small"
                       onChange={(e) =>
                         setSettings((prev) => ({
@@ -254,6 +256,7 @@ const OnlineOrders = () => {
                     <TextField
                       value={settings.delivery_estimated_time}
                       type="number"
+                      placeholder="Estimated Delivery Time"
                       size="small"
                       onChange={(e) =>
                         setSettings((prev) => ({
@@ -271,6 +274,7 @@ const OnlineOrders = () => {
                     <TextField
                       value={settings.pharmacy_whatsapp}
                       size="small"
+                      placeholder="Pharmacy WhatsApp"
                       onChange={(e) =>
                         setSettings((prev) => ({
                           ...prev,
@@ -285,6 +289,7 @@ const OnlineOrders = () => {
                     <TextField
                       value={settings.email}
                       size="small"
+                      placeholder="Pharmacy Email"
                       onChange={(e) =>
                         setSettings((prev) => ({
                           ...prev,
@@ -299,6 +304,7 @@ const OnlineOrders = () => {
                     <TextField
                       value={settings.delivery_executive}
                       size="small"
+                      placeholder="Delivery Executive"
                       onChange={(e) =>
                         setSettings((prev) => ({
                           ...prev,
@@ -313,6 +319,7 @@ const OnlineOrders = () => {
                     <TextField
                       value={settings.order_manager}
                       size="small"
+                      placeholder="Order Manager"
                       onChange={(e) =>
                         setSettings((prev) => ({
                           ...prev,
@@ -327,6 +334,7 @@ const OnlineOrders = () => {
                     <TextField
                       value={settings.delivery_start_time}
                       size="small"
+                      placeholder="Delivery Hours"
                       onChange={(e) =>
                         setSettings((prev) => ({
                           ...prev,
@@ -341,6 +349,7 @@ const OnlineOrders = () => {
                     <TextField
                       value={settings.delivery_end_time}
                       size="small"
+                      placeholder="Delivery Hours"
                       onChange={(e) =>
                         setSettings((prev) => ({
                           ...prev,

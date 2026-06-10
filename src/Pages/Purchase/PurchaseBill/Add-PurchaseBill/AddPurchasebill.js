@@ -3056,7 +3056,7 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
-                        placeholder="CD%"
+                        placeholder="Cd"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -3119,7 +3119,7 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         size="small"
                         value={gst}
-                        placeholder="GST%"
+                        placeholder="Gst"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -3220,7 +3220,7 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        placeholder="Margin %"
+                        placeholder="Margin"
                         disabled
                         size="small"
                         value={margin === 0 ? "" : margin}

@@ -407,3 +407,24 @@
     text-align: center;
     font-size: 14px;
 }
+
+
+
+/* NEW CSS ADD */
+.MuiAutocomplete-root .MuiOutlinedInput-root {
+    height: 40px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.MuiAutocomplete-root .MuiAutocomplete-input {
+    padding: 0 2px !important;
+    margin: 0 !important;
+    line-height: 40px !important;
+}
+
+.MuiAutocomplete-root .MuiOutlinedInput-input {
+    padding: 0 14px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+}

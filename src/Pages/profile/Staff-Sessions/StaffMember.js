@@ -102,13 +102,13 @@ const StaffMember = () => {
             })
             .catch((error) => {
                 console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                if (error?.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("role");
+                    localStorage.clear();
+                    history.push("/");
+                }
             });
     };
 
@@ -127,13 +127,13 @@ const StaffMember = () => {
             })
             .catch((error) => {
                 console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                if (error?.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("role");
+                    localStorage.clear();
+                    history.push("/");
+                }
 
             });
     };
@@ -240,13 +240,13 @@ const StaffMember = () => {
                 toast.dismiss();
                 toast.error(error.response.data.message);
             }
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
             console.error("API error:", error);
 
         }
@@ -290,13 +290,13 @@ const StaffMember = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
         // }
     }
@@ -335,13 +335,13 @@ const StaffMember = () => {
             })
             .catch((error) => {
                 console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                if (error?.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("role");
+                    localStorage.clear();
+                    history.push("/");
+                }
             });
     }
 
@@ -476,6 +476,7 @@ const StaffMember = () => {
                                     <TextField
                                         autoComplete="off" id="standard-basic"
                                         size="small"
+                                        placeholder="Full Name"
                                         sx={{ width: '100%' }}
                                         value={fullName}
                                         onChange={(e) => {
@@ -496,6 +497,7 @@ const StaffMember = () => {
                                         size="small"
                                         sx={{ width: '100%' }}
                                         value={mobileNo}
+                                        placeholder="Mobile No"
                                         onChange={handleChange}
                                     />
                                     {errors.mobileNo && <span style={{ color: 'red', fontSize: '12px' }}>{errors.mobileNo}</span>}
@@ -505,12 +507,13 @@ const StaffMember = () => {
                             <div className="flex flex-col md:flex-row gap-5">
                                 <div className="flex flex-col " style={{ width: "100%" }}>
                                     <span className="label primary">Assign Role <span className="text-red-600">*</span></span>
-                                    <FormControl sx={{ width: '100%' }} size="small">
+                                    {/* <FormControl sx={{ width: '100%' }} size="small">
                                         <Select
                                             labelId="demo-select-small-label"
                                             id="demo-select-small"
                                             value={selectedAssignRole}
                                             onChange={(e) => setSelectedAssignRole(e.target.value)}
+                                            
                                         >
                                             <MenuItem value="" disabled>
                                                 Select Assign Role
@@ -520,6 +523,40 @@ const StaffMember = () => {
                                             )}
                                         </Select>
                                         {errors.selectedAssignRole && <span style={{ color: 'red', fontSize: '12px' }}>{errors.selectedAssignRole}</span>}
+                                    </FormControl> */}
+                                    <FormControl sx={{ width: "100%" }} size="small">
+                                        <Select
+                                            value={selectedAssignRole}
+                                            onChange={(e) => setSelectedAssignRole(e.target.value)}
+                                            displayEmpty
+                                            renderValue={(selected) => {
+                                                if (!selected) {
+                                                    return <span style={{ color: "#9ca3af" }}>Select Assign Role</span>;
+                                                }
+
+                                                const role = manageStaffRoleData.find(
+                                                    (item) => item.id === selected
+                                                );
+
+                                                return role?.role || "";
+                                            }}
+                                        >
+                                            <MenuItem value="">
+                                                <em>Select Assign Role</em>
+                                            </MenuItem>
+
+                                            {manageStaffRoleData.map((item) => (
+                                                <MenuItem key={item.id} value={item.id}>
+                                                    {item.role}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+
+                                        {errors.selectedAssignRole && (
+                                            <span style={{ color: "red", fontSize: "12px" }}>
+                                                {errors.selectedAssignRole}
+                                            </span>
+                                        )}
                                     </FormControl>
                                 </div>
                                 <div
@@ -532,6 +569,7 @@ const StaffMember = () => {
                                         autoComplete="off" id="standard-basic"
                                         size="small"
                                         sx={{ width: '100%' }}
+                                        placeholder="Email Id"
                                         value={emailID}
                                         onChange={(e) => setEmailID(e.target.value)} />
                                     {errors.emailID && <span style={{ color: 'red', fontSize: '12px' }}>{errors.emailID}</span>}
@@ -544,6 +582,7 @@ const StaffMember = () => {
                                     <FormControl sx={{ width: '100%', height: '42px' }} variant="outlined">
                                         <OutlinedInput
                                             value={password}
+                                            placeholder="Password"
                                             className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
                                             id="outlined-basic"
                                             type={PasswordIcon ? 'text' : 'password'}
@@ -569,6 +608,7 @@ const StaffMember = () => {
                                     <FormControl sx={{ width: '100%', height: '42px' }} variant="outlined">
                                         <OutlinedInput
                                             value={reEnterPassword}
+                                            placeholder="Re-Enter Password"
                                             className="text-gray-700 border border-gray-300 rounded block w-full focus:outline-2 focus:outline-blue-700"
                                             id="outlined-basic"
                                             type={reEnterPasswordIcon ? 'text' : 'password'}
