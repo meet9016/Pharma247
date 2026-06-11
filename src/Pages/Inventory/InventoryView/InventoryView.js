@@ -2322,6 +2322,7 @@ const InventoryView = () => {
                     autoComplete="off"
                     id="outlined-multiline-static"
                     size="small"
+                    placeholder="Location"
                     value={loc}
                     onChange={(e) => {
                       setLoc((e.target.value).toUpperCase());

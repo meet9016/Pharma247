@@ -511,28 +511,30 @@ const PurchaseView = () => {
               maxHeight: "670px",
               overflowY: "auto",
               overflowX: "auto",
+              // position: "relative",
+              // zIndex: 1,
             }}
           >
             <table className="customtable  w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
               <thead>
                 <tr>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Item Name</th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Unit </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>HSN</th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Batch </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Expiry </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>MRP </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Qty. </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Free </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>PTR </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>CD% </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Sch.Amt </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Base </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>GST% </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Loc. </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Margin </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Net Rate </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Amount </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Item Name</th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Unit </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>HSN</th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Batch </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Expiry </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>MRP </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Qty. </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Free </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>PTR </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>CD% </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Sch.Amt </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Base </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>GST% </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Loc. </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Margin </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Net Rate </th>
+                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Amount </th>
                 </tr>
               </thead>
               {isLoading ? (

@@ -1055,28 +1055,59 @@ const BankAccount = () => {
                         <tbody style={{ backgroundColor: "#3f621217" }}>
                           {bankDetails?.length > 0 ? (
                             bankDetails.map((item, index) => (
+                              // <tr key={index}>
+                              //   {PassbookColumns.map((column, colIndex) => (
+
+                              //     <td
+                              //       key={column.id}
+                              //       style={
+                              //         colIndex === 0
+                              //           ? { borderRadius: "10px 0 0 10px" }
+                              //           : colIndex === PassbookColumns.length - 1
+                              //             ? { borderRadius: "0 10px 10px 0" }
+                              //             : {}
+                              //       }
+                              //       className={
+                              //         column.id === "withdraw"
+                              //           ? "debit-cell"
+                              //           : column.id === "deposit"
+                              //             ? "credit-cell"
+                              //             : ""
+                              //       }
+                              //     >
+                              //       {item[column.id]}
+                              //     </td>
+                              //   ))}
+                              // </tr>
+
                               <tr key={index}>
-                                {PassbookColumns.map((column, colIndex) => (
-                                  <td
-                                    key={column.id}
-                                    style={
-                                      colIndex === 0
-                                        ? { borderRadius: "10px 0 0 10px" }
-                                        : colIndex === PassbookColumns.length - 1
-                                          ? { borderRadius: "0 10px 10px 0" }
-                                          : {}
-                                    }
-                                    className={
-                                      column.id === "withdraw"
-                                        ? "debit-cell"
-                                        : column.id === "deposit"
-                                          ? "credit-cell"
-                                          : ""
-                                    }
-                                  >
-                                    {item[column.id]}
-                                  </td>
-                                ))}
+                                {PassbookColumns.map((column, colIndex) => {
+                                  let value = item[column.id];
+                                  if (!value && value !== 0) {
+                                    value = "-";
+                                  }
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      style={
+                                        colIndex === 0
+                                          ? { borderRadius: "10px 0 0 10px" }
+                                          : colIndex === PassbookColumns.length - 1
+                                            ? { borderRadius: "0 10px 10px 0" }
+                                            : {}
+                                      }
+                                      className={
+                                        column.id === "withdraw"
+                                          ? "debit-cell"
+                                          : column.id === "deposit"
+                                            ? "credit-cell"
+                                            : ""
+                                      }
+                                    >
+                                      {value}
+                                    </td>
+                                  );
+                                })}
                               </tr>
                             ))
                           ) : (

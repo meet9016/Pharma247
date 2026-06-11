@@ -1854,8 +1854,8 @@ const InventoryList = () => {
               variant="outlined"
               placeholder="Please search any items.."
               InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
+                startAdornment: (
+                  <InputAdornment position="start">
                     <SearchIcon />
                   </InputAdornment>
                 ),
@@ -2996,7 +2996,17 @@ const InventoryList = () => {
                 <tbody>
                   {QRBatch && QRBatch.length === 0 ? (
                     <tr>
-                      <td colSpan={3}>No data found</td>
+                      <td
+                        colSpan={5}
+                        style={{
+                          textAlign: "center",
+                          padding: "20px 0",
+                          fontWeight: 600,
+                          fontSize: "16px",
+                        }}
+                      >
+                        No data found
+                      </td>
                     </tr>
                   ) : (
                     QRBatch.map((row, index) => (
@@ -3106,6 +3116,7 @@ const InventoryList = () => {
                   // sx={{ width: "200px" }}
                   className="w-full"
                   size="small"
+                  placeholder="Barcode"
                   value={barcode}
                   onChange={(e) => {
                     setBarcode(e.target.value.toUpperCase());
@@ -3144,7 +3155,7 @@ const InventoryList = () => {
       </Dialog>
 
       {/*<=========================================================================== Bulk Order dialog===========================================================================>*/}
-      <Dialog className="custom-dialog" open={bulkOrder}>
+      {/* <Dialog className="custom-dialog" open={bulkOrder}>
         <DialogTitle>
           <WarningAmberRoundedIcon
             sx={{ color: "#F31C1C", marginBottom: "5px", fontSize: "2.5rem" }}
@@ -3177,7 +3188,71 @@ const InventoryList = () => {
             </Button>
           </div>
         </DialogActions>
+      </Dialog> */}
+
+
+
+
+      <Dialog
+        className="custom-dialog"
+        open={bulkOrder}
+        onClose={() => setBulkOrder(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            fontWeight: 600,
+            fontSize: "1.2rem",
+            color: "#F31C1C",
+          }}
+        >
+          <WarningAmberRoundedIcon sx={{ fontSize: "2.5rem" }} />
+          Warning
+        </DialogTitle>
+
+        <DialogContent>
+          <DialogContentText sx={{ mt: 2, fontSize: "1rem" }}>
+            Are you sure you want to Place Order?
+          </DialogContentText>
+        </DialogContent>
+
+        <DialogActions sx={{ justifyContent: "center", paddingBottom: 3 }}>
+          <Button
+            variant="contained"
+            autoFocus
+            onClick={validateBulkOrder}
+            sx={{
+              backgroundColor: "var(--COLOR_UI_PHARMACY)",
+              color: "white",
+              minWidth: 100,
+              textTransform: "none",
+            }}
+          >
+            Yes
+          </Button>
+
+          <Button
+            variant="outlined"
+            onClick={() => setBulkOrder(false)}
+            sx={{
+              backgroundColor: "#F31C1C",
+              color: "white",
+              minWidth: 100,
+              textTransform: "none",
+              borderColor: "#F31C1C",
+            }}
+          >
+            No
+          </Button>
+        </DialogActions>
       </Dialog>
+
+
+
 
       {/* Bulk Print QR */}
       {/* <Dialog open={openEdit} >

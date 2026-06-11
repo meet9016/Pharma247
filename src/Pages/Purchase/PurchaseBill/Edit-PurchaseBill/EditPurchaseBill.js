@@ -277,13 +277,13 @@ const EditPurchaseBill = () => {
       try {
         await handleLeavePage();
       } catch (error) {
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
         console.error("Error during initialization:", error);
       }
     };
@@ -326,7 +326,7 @@ const EditPurchaseBill = () => {
           itemPurchaseList();
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -388,7 +388,7 @@ const EditPurchaseBill = () => {
 
       return distributors;
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -419,7 +419,7 @@ const EditPurchaseBill = () => {
           }
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -490,7 +490,7 @@ const EditPurchaseBill = () => {
       setIsLoading(false);
       return purchaseData;
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -632,7 +632,7 @@ const EditPurchaseBill = () => {
           toast.success(response.data.message);
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -662,13 +662,13 @@ const EditPurchaseBill = () => {
       .catch((error) => {
         console.error("API error:", error);
         setUnsavedItems(false);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -693,7 +693,7 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -754,7 +754,7 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -948,7 +948,7 @@ const EditPurchaseBill = () => {
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -995,13 +995,13 @@ const EditPurchaseBill = () => {
         setTimeout(() => {
           history.push(nextPath);
         }, 0);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       } else {
         console.error("Error deleting items:", error);
         setUnsavedItems(false);
@@ -1064,7 +1064,7 @@ const EditPurchaseBill = () => {
 
 
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1153,7 +1153,7 @@ const EditPurchaseBill = () => {
         setHasMore(false);
       }
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1192,7 +1192,7 @@ const EditPurchaseBill = () => {
           removeItem()
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1291,7 +1291,7 @@ const EditPurchaseBill = () => {
           }
         })
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1664,6 +1664,7 @@ const EditPurchaseBill = () => {
                   <Autocomplete
                     value={distributor}
                     disabled
+                    placeholder="Distributer"
                     sx={{
                       width: "100%",
                       minWidth: "350px",
@@ -1737,7 +1738,7 @@ const EditPurchaseBill = () => {
                     type="number"
                     size="small"
                     value={barcode}
-                    placeholder="scan barcode"
+                    placeholder="Scan Barcode"
                     sx={{
                       width: "100%",
                       minWidth: "200px",
@@ -1830,6 +1831,7 @@ const EditPurchaseBill = () => {
                             <TextField
                               variant="outlined"
                               autoComplete="off"
+                              placeholder="Search Item Name"
                               {...params}
                               autoFocus
                               fullWidth
@@ -1838,7 +1840,7 @@ const EditPurchaseBill = () => {
                                 width: "100%",
                                 '& .MuiInputBase-input': {
                                   // textAlign: 'center',
-                                  textTransform: 'uppercase',
+                                  // textTransform: 'uppercase',
                                 },
                               }}
 
@@ -1873,6 +1875,7 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
+                        placeholder="Unit"
                         type="text"
                         size="small"
                         error={!!error.unit}
@@ -1913,6 +1916,7 @@ const EditPurchaseBill = () => {
                     <td >
                       <TextField
                         variant="outlined"
+                        placeholder="Batch"
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
@@ -2002,6 +2006,7 @@ const EditPurchaseBill = () => {
                       <TextField
                         variant="outlined"
                         autoComplete="off"
+                        placeholder="Mrp"
                         id="outlined-number"
                         type="number"
                         sx={{
@@ -2042,6 +2047,7 @@ const EditPurchaseBill = () => {
                       <TextField
                         variant="outlined"
                         autoComplete="off"
+                        placeholder="Qty"
                         id="outlined-number"
                         type="number"
 
@@ -2078,6 +2084,7 @@ const EditPurchaseBill = () => {
                       <TextField
                         variant="outlined"
                         autoComplete="off"
+                        placeholder="Free"
                         id="outlined-number"
                         size="small"
                         type="number"
@@ -2120,6 +2127,7 @@ const EditPurchaseBill = () => {
                       <TextField
                         variant="outlined"
                         autoComplete="off"
+                        placeholder="Ptr"
                         id="outlined-number"
                         type="number"
                         sx={{
@@ -2171,6 +2179,7 @@ const EditPurchaseBill = () => {
                       <TextField
                         variant="outlined"
                         autoComplete="off"
+                        placeholder="Cd"
                         id="outlined-number"
                         sx={{
                           minWidth: "40px",
@@ -2204,6 +2213,7 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
+                        placeholder="Base"
                         type="number"
                         size="small"
                         value={base === 0 ? "" : base}
@@ -2224,6 +2234,7 @@ const EditPurchaseBill = () => {
                       <TextField
                         variant="outlined"
                         size="small"
+                        placeholder="Gst"
                         value={gst}
                         sx={{
                           minWidth: "40px",
@@ -2268,6 +2279,7 @@ const EditPurchaseBill = () => {
                       <TextField
                         variant="outlined"
                         autoComplete="off"
+                        placeholder="Loc"
                         id="outlined-number"
                         size="small"
                         value={loc?.toUpperCase()}
@@ -2295,6 +2307,7 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
+                        placeholder="Net Rate"
                         type="number"
                         disabled
                         size="small"
@@ -2313,6 +2326,7 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
+                        placeholder="Margin"
                         type="number"
                         disabled
                         size="small"

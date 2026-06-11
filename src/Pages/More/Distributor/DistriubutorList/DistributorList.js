@@ -270,7 +270,7 @@ const DistributerList = () => {
       setIsLoading(false);
       toast.dismiss();
       toast.error(error.message);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -324,7 +324,7 @@ const DistributerList = () => {
         toast.error("Please Select file");
       }
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -376,7 +376,7 @@ const DistributerList = () => {
       console.error("API error:", error);
       setTableData([]);
       setTotalRecords(0);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -421,7 +421,7 @@ const DistributerList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -670,6 +670,11 @@ const DistributerList = () => {
 
                               {columns.map((column, colIndex) => {
                                 let value = row[column.id];
+                    
+                                if (!value || value === "") {
+                                  value = "-";
+                                }
+
                                 if (column.id === "email") {
                                   if (value && value[0] !== value[0].toLowerCase()) {
                                     value = value.toLowerCase();
@@ -823,6 +828,7 @@ const DistributerList = () => {
                             size="small"
                             type="text"
                             value={gstNumber}
+                            placeholder="GST/IN Number"
                             onChange={(e) => {
                               const value = e.target.value
                                 .toUpperCase()
@@ -848,6 +854,7 @@ const DistributerList = () => {
                           <TextField
                             autoComplete="off"
                             id="outlined-multiline-static"
+                            placeholder=" Distributor Name"
                             size="small"
                             type="text"
                             value={distributerName}
@@ -869,6 +876,7 @@ const DistributerList = () => {
                           <span className="label primary">Email ID</span>
                           <TextField
                             autoComplete="off"
+                            placeholder="Email ID"
                             id="outlined-multiline-static"
                             size="small"
                             type="email"
@@ -887,6 +895,7 @@ const DistributerList = () => {
                             type="number"
                             value={mobileNo}
                             onChange={handleChange}
+                            placeholder="Mobile Number"
                             startAdornment={
                               <InputAdornment position="start">
                                 +91
@@ -907,6 +916,7 @@ const DistributerList = () => {
                           <span className="label primary">Whatsapp No.</span>
                           <TextField
                             autoComplete="off"
+                            placeholder="Whatsapp No."
                             id="outlined-multiline-static"
                             size="small"
                             type="number"
@@ -925,6 +935,7 @@ const DistributerList = () => {
                         <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                           <span className="label primary"> Address</span>
                           <TextField
+                            placeholder="Address"
                             autoComplete="off"
                             id="outlined-multiline-static"
                             size="small"
@@ -940,6 +951,7 @@ const DistributerList = () => {
                           <span className="label primary">Area</span>
                           <TextField
                             autoComplete="off"
+                            placeholder="Area"
                             value={area}
                             onChange={(e) => setArea(e.target.value)}
                             className="w-full"
@@ -952,6 +964,7 @@ const DistributerList = () => {
                             autoComplete="off"
                             id="outlined-multiline-static"
                             size="small"
+                            placeholder="Pincode"
                             type="number"
                             value={pincode}
                             onChange={(e) => setPincode(e.target.value)}
@@ -966,6 +979,7 @@ const DistributerList = () => {
                           <TextField
                             autoComplete="off"
                             id="outlined-multiline-static"
+                            placeholder="State"
                             size="small"
                             value={state}
                             onChange={(e) => {
@@ -987,6 +1001,7 @@ const DistributerList = () => {
                           <span className="label primary">Credit Due Days</span>
                           <TextField
                             autoComplete="off"
+                            placeholder="Credit Due Days"
                             id="outlined-multiline-static"
                             size="small"
                             value={creditDuedays}

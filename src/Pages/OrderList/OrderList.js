@@ -4,6 +4,7 @@ import {
   Alert,
   AlertTitle,
   Autocomplete,
+  Box,
   Button,
   Checkbox,
   DialogActions,
@@ -12,6 +13,12 @@ import {
   ListItemText,
   MenuItem,
   Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -233,7 +240,7 @@ const OrderList = () => {
       console.error("API error:", error);
       setOnlineOrder([]);
       setTotalRecords(0);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -263,17 +270,17 @@ const OrderList = () => {
           },
         })
         .then((response) => {
-           toast.dismiss();
-toast.success(response.data.meassage || "Status updated successfully");
+          toast.dismiss();
+          toast.success(response.data.meassage || "Status updated successfully");
           OnlineOrderList(currentPage); // Refresh the current page data
           setUpdatingStatus(null);
         });
     } catch (error) {
       console.error("API error:", error);
       toast.dismiss();
-toast.error("Failed to update status");
+      toast.error("Failed to update status");
       setUpdatingStatus(null);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -306,8 +313,8 @@ toast.error("Failed to update status");
           },
         })
         .then((response) => {
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
           OnlineOrderList(currentPage);
           setOpenAddPopUpPlaceOrder(false);
           setItems([]);
@@ -315,7 +322,7 @@ toast.success(response.data.meassage);
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -339,7 +346,7 @@ toast.success(response.data.meassage);
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -362,7 +369,7 @@ toast.success(response.data.meassage);
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -393,7 +400,7 @@ toast.success(response.data.meassage);
     } catch (error) {
       console.error("API error:", error);
       setIsLoading(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -819,6 +826,25 @@ toast.success(response.data.meassage);
               </button>
             </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <Dialog
               className="order_list_ml custom-dialog"
               open={openAddPopUp}
@@ -832,9 +858,9 @@ toast.success(response.data.meassage);
               }}
             >
               <DialogTitle id="alert-dialog-title" className="primary">
-                Item Purchase History
+                Item Purchase History 
               </DialogTitle>
-              <div className="px-6">
+              <div className="px-6 mt-5">
                 <Alert severity="info" className="" style={{ width: "100%" }}>
                   <AlertTitle>Info</AlertTitle>
                   Lastest 5 Purchase History.
@@ -932,7 +958,44 @@ toast.success(response.data.meassage);
                 </DialogContentText>
               </DialogContent>
             </Dialog>
-          {/*<=============================================== order dialog  ==============================================> */}
+
+
+
+
+
+
+
+
+
+
+         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            {/*<=============================================== order dialog  ==============================================> */}
             <Dialog className=" custom-dialog pending-orders-dialog" open={openAddPopUpPlaceOrder}>
               <DialogTitle
                 id="alert-dialog-title"

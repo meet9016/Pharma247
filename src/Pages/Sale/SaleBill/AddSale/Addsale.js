@@ -186,7 +186,15 @@ const AddSale = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-  console.log(customerHistoryData, "aa");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5; // adjust as needed
+
+  const paginatedData = useMemo(() => {
+    if (!customerHistoryData?.data) return [];
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return customerHistoryData.data.slice(startIndex, endIndex);
+  }, [customerHistoryData, currentPage]);
 
 
   const toggleModal = async () => {
@@ -976,31 +984,56 @@ const AddSale = () => {
 
   /*<========================================================== Fetch customer history   =====================================================> */
 
+  // const fetchCustomerHistory = async (customerId) => {
+  //   let data = new FormData();
+  //   data.append("customer_id", customerId);
+  //   // setIsLoading(true);
+  //   try {
+  //     const response = await axios.get("customer-sale-item-history", data, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     if (response.data.status === 200) {
+  //       setCustomerHistoryData(response.data.data);
+  //       setOpenCustomerHistory(true);
+  //     }
+  //     // setIsLoading(false);
+  //   } catch (error) {
+  //     // setIsLoading(false);
+  //     console.error("API error:", error);
+  //     toast.dismiss();
+  //     toast.error("Failed to fetch customer history");
+  //     if (error?.response?.status === 401) {
+  //       localStorage.removeItem("token");
+  //       localStorage.removeItem("userId");
+  //       localStorage.removeItem("role");
+  //       localStorage.clear();
+  //       history.push("/");
+  //     }
+  //   }
+  // };
+
   const fetchCustomerHistory = async (customerId) => {
-    let data = new FormData();
-    data.append("id", customerId);
-    // setIsLoading(true);
     try {
-      const response = await axios.post("customer-view", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `customer-sale-item-history?customer_id=${customerId}&search=`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       if (response.data.status === 200) {
         setCustomerHistoryData(response.data.data);
-
         setOpenCustomerHistory(true);
       }
-      // setIsLoading(false);
     } catch (error) {
-      // setIsLoading(false);
       console.error("API error:", error);
       toast.dismiss();
       toast.error("Failed to fetch customer history");
       if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
       }
@@ -2312,7 +2345,7 @@ const AddSale = () => {
   useSubmitShortcut(AddCustomerRecord, openCustomer);
   useSubmitShortcut(handleAddNewItemValidation, openAddItemPopUp);
   useSubmitShortcut(() => handleReminder(), openReminderPopUp);
-
+  
   return (
     <>
 
@@ -2506,8 +2539,6 @@ const AddSale = () => {
 
         <div className=" flex gap-4  mt-4">
           <div className="flex flex-row gap-4 overflow-x-auto w-full">
-
-
             <div>
               <span
                 className="title mb-2 flex  items-center gap-2"
@@ -4480,6 +4511,43 @@ const AddSale = () => {
         </Dialog>
 
         {/*<======================================================== Customer History Modal  =======================================================> */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <Dialog
           open={openCustomerHistory}
           onClose={() => setOpenCustomerHistory(false)}
@@ -4493,9 +4561,52 @@ const AddSale = () => {
             },
           }}
         >
-          <DialogTitle id="alert-dialog-title" className="secondary">
-            Customer Sales History - {customerHistoryData?.name}
+          {/* <DialogTitle id="alert-dialog-title" className="secondary">
+            {customerHistoryData?.[0]?.customer_name || ""}
+            {customerHistoryData?.[0]?.mobile_number ? ` (${customerHistoryData[0].mobile_number})` : ""}
+          </DialogTitle> */}
+
+
+
+          <DialogTitle
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 1,
+            }}
+          >
+
+            <span style={{ fontWeight: 600, fontSize: "18px" }}>
+              Customer Sale History - {customerHistoryData?.[0]?.customer_name || ""}
+              {customerHistoryData?.[0]?.mobile_number ? ` (${customerHistoryData[0].mobile_number})` : ""}
+            </span>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <TextField
+                autoComplete="off"
+                value={customerSearch.toUpperCase()}
+                onChange={(e) => setCustomerSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleCustomerSearch();
+                }}
+                placeholder="Search items..."
+                variant="outlined"
+              />
+
+              {/* Only one close button */}
+              <IconButton
+                aria-label="close"
+                onClick={() => setOpenCustomerHistory(false)}
+                sx={{ color: "#000" }}
+              >
+
+              </IconButton>
+            </div>
           </DialogTitle>
+
+
+
           <IconButton
             aria-label="close"
             onClick={() => setOpenCustomerHistory(false)}
@@ -4519,25 +4630,14 @@ const AddSale = () => {
                   className="flex"
                   style={{ flexDirection: "column", gap: "0" }}
                 >
-                  <div className="custom-scroll-sale" style={{ width: "100%" }}>
+
+
+
+
+                  {/* <div className="custom-scroll-sale" style={{ width: "100%" }}>
                     <table className="custom-table" style={{ background: "none", margin: 0 }}>
                       <thead>
                         <tr className="customtable">
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Customer Name</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Area</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Doctor</span>
-                            </div>
-                          </th>
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
                               <span>Bill No</span>
@@ -4550,25 +4650,48 @@ const AddSale = () => {
                           </th>
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Type</span>
+                              <span>Item Name</span>
+                            </div>
+                          </th>
+
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Batch</span>
+                            </div>
+                          </th>
+
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Exp</span>
                             </div>
                           </th>
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Amount</span>
+                              <span>Qty</span>
                             </div>
                           </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Mrp</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Location</span>
+                            </div>
+                          </th>
+
                         </tr>
                       </thead>
-                      {/* <tbody>
+                      <tbody>
                         {customerHistoryData?.sales?.length > 0 ? (
-                          customerHistoryData.sales.map((sale) => (                
+                          customerHistoryData.data.map((sale) => (
                             <tr
                               hover
                               tabIndex={-1}
-                              key={sale.id}
+                              key={sale.sale_id}
                               onClick={() => {
-                                history.push(`/saleView/${sale.id}`)
+                                history.push(`/saleView/${sale.sale_id}`)
                               }}
                             >
                               <td>{customerHistoryData.name}</td>
@@ -4578,6 +4701,7 @@ const AddSale = () => {
                               <td>{sale.bill_date}</td>
                               <td>{sale.payment_mode}</td>
                               <td>&#8377;{sale.amt}</td>
+
                             </tr>
                           ))
                         ) : (
@@ -4595,46 +4719,127 @@ const AddSale = () => {
                             </td>
                           </tr>
                         )}
-                      </tbody> */}
 
+
+
+
+                     
+
+
+
+                      </tbody>
+                    </table>
+                  </div> */}
+
+
+
+                  <div
+                    className="custom-scroll-sale"
+                    style={{ width: "100%", maxHeight: 400, overflowY: "auto" }}
+                  >
+                    <table className="custom-table" style={{ background: "none", margin: 0, width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr className="customtable">
+                          {["Bill No", "Date", "Item Name", "Batch", "Exp", "Qty", "Mrp", "Location"].map((label, index) => (
+                            <th
+                              key={index}
+                              style={{
+                                position: "sticky",
+                                top: 0,
+                                background: "#E0E3DC",
+                                color: "black",
+                                fontWeight: 600,
+                                zIndex: 10,
+                                padding: "10px 8px",
+                                borderBottom: "1px solid #ccc",
+                                textAlign: "left",
+                              }}
+                            >
+                              <div className="headerStyle">
+                                <span>{label}</span>
+                              </div>
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
                       <tbody>
-                        {customerHistoryData?.sales?.length > 0 ? (
-                          customerHistoryData.sales.map((sale) => (
+                        {customerHistoryData?.length ? (
+                          customerHistoryData.map((sale) => (
                             <tr
+                              key={sale.sale_id}
                               hover
                               tabIndex={-1}
-                              key={sale.id}
-                              onClick={() => {
-                                history.push(`/saleView/${sale.id}`)
-                              }}>
-                              <td>{customerHistoryData?.name || "-"}</td>
-                              <td>{sale?.area || "-"}</td>
-                              <td>{sale?.doctor || "-"}</td>
-                              <td>{sale?.bill_no || "-"}</td>
-                              <td>{sale?.bill_date || "-"}</td>
-                              <td>{sale?.payment_mode || "-"}</td>
-                              <td>{sale?.amt || "-"}</td>
+                              onClick={() => window.open(`/saleView/${sale.sale_id}`, "_blank")}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <td>{sale.bill_no || "-"}</td>
+                              <td>{sale.bill_date || "-"}</td>
+                              <td>{sale.item_name || "-"}</td>
+                              <td>{sale.batch || "-"}</td>
+                              <td>{sale.exp || "-"}</td>
+                              <td>{sale.qty || "-"}</td>
+                              <td>{sale.mrp || "-"}</td>
+                              <td>{sale.location || "-"}</td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td>{customerHistoryData?.name || "-"}</td>
-                            <td>{customerHistoryData?.area || "-"}</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
+                            <td colSpan={8} style={{ textAlign: "center", padding: "20px" }}>
+                              No Sales History Found
+                            </td>
                           </tr>
                         )}
                       </tbody>
                     </table>
                   </div>
+
+
                 </div>
               )}
             </DialogContentText>
           </DialogContent>
         </Dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         {/*<========================================================== Item History Modal  =========================================================> */}
         <Dialog

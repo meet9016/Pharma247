@@ -57,7 +57,7 @@ const Header = () => {
         });
     } catch (error) {
       console.error("API error:", error?.response?.status);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -135,7 +135,7 @@ const Header = () => {
         });
 
     } catch (error) {
-       if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -395,7 +395,7 @@ const Header = () => {
                         <span className="mr-1">Sales</span>
                         <FaPlusCircle className="fill-current h-3 w-3 ml-1" />
                       </button>
-                      <ul className="dropdown-menu absolute hidden text-gray-700 pt-3 shadow-lg w-48">
+                      <ul className="dropdown-menu absolute hidden text-gray-700 pt-3 shadow-lg w-48" style={{ zIndex: 999 }}>
                         <li className="block flex items-center bg-white border-b-2 hover:bg-[var(--color2)]   hover:text-white">
                           {hasPermission(permissions, "sale bill view") && (
                             <div className="w-36 border-r-2">
@@ -978,7 +978,7 @@ const Header = () => {
                     )}
                   </ul>
                 </div>
-                <div className="dropdown relative">
+                <div className="dropdown relative" style={{ zIndex: 999 }}>
                   <button
                     style={{ borderBottom: "1px solid rgb(0 0 0 / 40%)" }}
                     className="text-white font-semibold py-2  w-full px-4 transition-all  primhover hover:rounded-md inline-flex items-center"

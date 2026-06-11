@@ -146,7 +146,7 @@ const CustomerList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -290,7 +290,7 @@ const CustomerList = () => {
         toast.dismiss();
         toast.error(error.response.data.message);
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -322,7 +322,7 @@ const CustomerList = () => {
         toast.dismiss();
         toast.error("Please Select file");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -374,7 +374,7 @@ const CustomerList = () => {
         toast.dismiss();
         toast.error(error.response.data.message);
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -535,7 +535,7 @@ const CustomerList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -782,6 +782,11 @@ const CustomerList = () => {
                             </td>
                             {columns.map((column) => {
                               let value = row[column.id];
+                              // Replace null, undefined, or empty string with "-"
+                              if (!value && value !== 0) {
+                                value = "-";
+                              }
+
                               let style = {};
 
                               // Apply red color if the column is 'due_amount' and status is 'due'

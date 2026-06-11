@@ -703,6 +703,12 @@ const DoctorList = () => {
                                 </td>
                                 {columns.map((column) => {
                                   let value = row[column.id];
+
+                                  // Show '-' if value is null, undefined, or empty string
+                                  if (!value && value !== 0) {
+                                    value = "-";
+                                  }
+
                                   if (column.id === "email") {
                                     if (
                                       value &&

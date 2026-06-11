@@ -577,6 +577,7 @@ const CustomerView = () => {
                         borderCollapse: "separate",
                         borderSpacing: "0 6px",
                         // overflow: "auto",
+
                       }}
                     >
                       <thead>
@@ -584,7 +585,7 @@ const CustomerView = () => {
                           {saleColumns.map((column) => (
                             <th
                               key={column.id}
-                              style={{ minWidth: column.minWidth }}
+                              style={{ minWidth: column.minWidth, background: "#EEF1EA" }}
                             >
                               {column.label}
                             </th>
@@ -655,13 +656,14 @@ const CustomerView = () => {
                       <div
                         style={{
                           textAlign: "center",
-                          padding: "40px 0",
+                          padding: "10px 0",
                           fontSize: "14px",
                           fontWeight: 600,
                           color: "#666",
+                          background: "#E0E3DC"
                         }}
                       >
-                        No Records Found
+                        No Data Found
                       </div>
                     )}
                   </div>
@@ -704,7 +706,7 @@ const CustomerView = () => {
                           {saleReturnColumns.map((column) => (
                             <th
                               key={column.id}
-                              style={{ minWidth: column.minWidth }}
+                              style={{ minWidth: column.minWidth, background: "#EEF1EA" }}
                             >
                               {column.label}
                             </th>
@@ -755,13 +757,14 @@ const CustomerView = () => {
                       <div
                         style={{
                           textAlign: "center",
-                          padding: "40px 0",
+                          padding: "10px 0",
                           fontSize: "14px",
                           fontWeight: 600,
                           color: "#666",
+                          background: "#E0E3DC"
                         }}
                       >
-                        No Records Found
+                        No Data Found
                       </div>
                     )}
                   </div>

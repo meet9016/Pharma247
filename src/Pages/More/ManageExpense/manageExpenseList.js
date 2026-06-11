@@ -125,7 +125,7 @@ const ManageExpense = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -155,7 +155,7 @@ const ManageExpense = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -272,7 +272,7 @@ const ManageExpense = () => {
       // window.open(fileURL);
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -306,7 +306,7 @@ const ManageExpense = () => {
         })
         .then((response) => {
           const responseData = response.data.data;
-          
+
           if (response.data.status === 401) {
             history.push("/");
             localStorage.clear();
@@ -315,11 +315,11 @@ const ManageExpense = () => {
 
           // Set the expense data
           setExpenseData(responseData || { expense_list: [], total: 0 });
-          
+
           // Extract and set total count for pagination
           const totalCount = response.data.total_records || responseData?.expense_list?.length || 0;
           setTotalRecords(totalCount);
-          
+
           setIsLoading(false);
         });
     } catch (error) {
@@ -327,7 +327,7 @@ const ManageExpense = () => {
       setExpenseData({ expense_list: [], total: 0 });
       setTotalRecords(0);
       setIsLoading(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -341,7 +341,7 @@ const ManageExpense = () => {
     if (validateForm()) {
       // Proceed with saving the expense
       let data = new FormData();
-      data.append("category", selectedOption||"");
+      data.append("category", selectedOption || "");
       data.append(
         "expense_date",
         expenseDate ? format(expenseDate, "yyyy-MM-dd") : ""
@@ -350,15 +350,15 @@ const ManageExpense = () => {
         "payment_date",
         paymentdate ? format(paymentdate, "yyyy-MM-dd") : ""
       );
-      data.append("gst_type", selectedGSTOption||"");
-      data.append("gst", gst||"");
-      data.append("gstn_number", gstIN||"");
-      data.append("party", party||"");
-      data.append("amount", amount||"");
-      data.append("total", total||"");
-      data.append("payment_mode", paymentType||"");
-      data.append("reference_no", refNo||"");
-      data.append("remark", remark||"");
+      data.append("gst_type", selectedGSTOption || "");
+      data.append("gst", gst || "");
+      data.append("gstn_number", gstIN || "");
+      data.append("party", party || "");
+      data.append("amount", amount || "");
+      data.append("total", total || "");
+      data.append("payment_mode", paymentType || "");
+      data.append("reference_no", refNo || "");
+      data.append("remark", remark || "");
 
       try {
         await axios
@@ -383,8 +383,8 @@ const ManageExpense = () => {
             setRefNo(null);
             setErrors("");
             setRemark(null);
-             toast.dismiss();
-toast.success(response.data.message);
+            toast.dismiss();
+            toast.success(response.data.message);
             setTimeout(() => {
               setOpenAddPopUp(false);
             }, 2000);
@@ -395,13 +395,13 @@ toast.success(response.data.message);
           });
       } catch (error) {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
   };
@@ -588,7 +588,7 @@ toast.success(response.data.message);
                         <span className="secondary font-bold text-xl ">
                           Rs.{Number(expenseData.total).toFixed(2)}
                         </span>
-                      </h2> 
+                      </h2>
                     </div>
                   </div>
                 </div>
@@ -635,15 +635,20 @@ toast.success(response.data.message);
                               {((currentPage - 1) * rowsPerPage) + index + 1}
                             </td>
                             {expenseColumns.map((column, colIndex) => {
+                              let value = item[column.id];
+
+                              
+                              if (!value && value !== 0) {
+                                value = "-";
+                              }
                               const tdClass = "px-4 py-2 font-semibold text-center";
                               return (
                                 <td
                                   key={column.id}
-                                  className={`capitalize ${tdClass} ${
-                                    colIndex === expenseColumns.length - 1 ? 'rounded-r-[10px]' : ''
-                                  }`}
+                                  className={`capitalize ${tdClass} ${colIndex === expenseColumns.length - 1 ? 'rounded-r-[10px]' : ''
+                                    }`}
                                 >
-                                  {item[column.id]}
+                                  {value}
                                 </td>
                               );
                             })}
@@ -670,11 +675,10 @@ toast.success(response.data.message);
             >
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                     ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
-                }`}
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -711,11 +715,10 @@ toast.success(response.data.message);
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage >= totalPages
+                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
                     ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
-                }`}
+                  }`}
                 disabled={currentPage >= totalPages}
               >
                 Next
@@ -860,7 +863,7 @@ toast.success(response.data.message);
                         </div>
                       </div>
                       <div>
-                       <FormControl>
+                        <FormControl>
                           <RadioGroup
                             row
                             value={selectedGSTOption}
@@ -920,7 +923,7 @@ toast.success(response.data.message);
                                 size="small"
                                 value={gst}
                                 onChange={handleGSTChange}
-                                // inputProps={{ min: 0, max: 100 }}
+                              // inputProps={{ min: 0, max: 100 }}
                               />
                               {errors.gst && (
                                 <div className="error">{errors.gst}</div>

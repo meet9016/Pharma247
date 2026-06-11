@@ -2,7 +2,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-.item-table{
+.item-table {
     border-collapse: collapse;
     width: 100%;
     border: 1px solid var(--color2);
@@ -11,7 +11,7 @@
     padding: 8px;
     background-color: #f9f9f9;
     border-radius: 5px;
-    
+
 }
 
 .item-table th,
@@ -33,10 +33,11 @@
     background: #ceecfd;
 }
 
-.input-row{
+.input-row {
     background-color: #f9f9f9;
     border-bottom: 1px solid var(--color2);
 }
+
 /* Item list table styles */
 .item-List tr {
     width: 100%;
@@ -99,18 +100,19 @@
         overflow-x: auto;
         overflow-y: auto;
     }
-    
+
     .item-table {
-        min-width: 1200px; /* Ensure table doesn't get too cramped */
+        min-width: 1200px;
+        /* Ensure table doesn't get too cramped */
     }
-    
+
     .item-table th,
     .item-table td {
         padding: 3px 3px;
         font-size: 12px;
         white-space: nowrap;
     }
-    
+
     .item-table th {
         font-size: 12px;
     }
@@ -121,17 +123,17 @@
         max-height: 300px;
         height: 300px;
     }
-    
+
     .item-table {
         min-width: 1000px;
     }
-    
+
     .item-table th,
     .item-table td {
         padding: 3px 2px;
         font-size: 11px;
     }
-    
+
     .item-table th {
         font-size: 11px;
     }
@@ -179,6 +181,7 @@
     from {
         transform: rotate(45deg);
     }
+
     to {
         transform: rotate(0deg);
     }
@@ -330,7 +333,7 @@
     padding: 8px;
     text-align: center;
     font-size: 14px;
-    
+
 }
 
 .customtable th {
