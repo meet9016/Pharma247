@@ -176,6 +176,9 @@ const AddSale = () => {
   const [billNo, setBillNo] = useState(localStorage.getItem("BillNo"));
   const tableRef = useRef(null);
   const [openCustomerHistory, setOpenCustomerHistory] = useState(false);
+  const [customerSearch, setCustomerSearch] = useState("");
+  const [historyPage, setHistoryPage] = useState(1);
+  const historyRowsPerPage = 5;
   const [customerHistoryData, setCustomerHistoryData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -1014,10 +1017,10 @@ const AddSale = () => {
   //   }
   // };
 
-  const fetchCustomerHistory = async (customerId) => {
+  const fetchCustomerHistory = async (customerId, search = "", page = 1) => {
     try {
       const response = await axios.get(
-        `customer-sale-item-history?customer_id=${customerId}&search=`,
+        `customer-sale-item-history?customer_id=${customerId}&search=${search}&page=${page}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -1027,6 +1030,7 @@ const AddSale = () => {
 
       if (response.data.status === 200) {
         setCustomerHistoryData(response.data.data);
+        setHistoryPage(page);
         setOpenCustomerHistory(true);
       }
     } catch (error) {
@@ -1037,6 +1041,12 @@ const AddSale = () => {
         localStorage.clear();
         history.push("/");
       }
+    }
+  };
+
+  const handleCustomerSearch = () => {
+    if (customer && customer.id) {
+      fetchCustomerHistory(customer.id, customerSearch.toUpperCase(), 1);
     }
   };
 
@@ -4550,7 +4560,10 @@ const AddSale = () => {
 
         <Dialog
           open={openCustomerHistory}
-          onClose={() => setOpenCustomerHistory(false)}
+          onClose={() => {
+            setOpenCustomerHistory(false);
+            setCustomerSearch("");
+          }}
           className="custom-dialog"
           sx={{
             "& .MuiDialog-container": {
@@ -4585,19 +4598,23 @@ const AddSale = () => {
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <TextField
                 autoComplete="off"
-                value={customerSearch.toUpperCase()}
+                value={customerSearch}
                 onChange={(e) => setCustomerSearch(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleCustomerSearch();
                 }}
                 placeholder="Search items..."
                 variant="outlined"
+                size="small"
               />
 
               {/* Only one close button */}
               <IconButton
                 aria-label="close"
-                onClick={() => setOpenCustomerHistory(false)}
+                onClick={() => {
+                  setOpenCustomerHistory(false);
+                  setCustomerSearch("");
+                }}
                 sx={{ color: "#000" }}
               >
 
@@ -4609,7 +4626,10 @@ const AddSale = () => {
 
           <IconButton
             aria-label="close"
-            onClick={() => setOpenCustomerHistory(false)}
+            onClick={() => {
+              setOpenCustomerHistory(false);
+              setCustomerSearch("");
+            }}
             sx={{
               position: "absolute",
               right: 8,
@@ -4719,19 +4739,9 @@ const AddSale = () => {
                             </td>
                           </tr>
                         )}
-
-
-
-
-                     
-
-
-
                       </tbody>
                     </table>
                   </div> */}
-
-
 
                   <div
                     className="custom-scroll-sale"
@@ -4793,6 +4803,51 @@ const AddSale = () => {
                     </table>
                   </div>
 
+                  {/* Pagination Controls */}
+                  {(historyPage > 1 || customerHistoryData?.length >= 10) && (
+                    <div
+                      className="flex justify-center items-center py-4 bg-[#F2F4EF]"
+                      style={{
+                        width: '100%',
+                        borderTop: '1px solid #ccc',
+                        gap: '8px'
+                      }}
+                    >
+                      <button
+                        onClick={() => fetchCustomerHistory(customer.id, customerSearch.toUpperCase(), historyPage - 1)}
+                        disabled={historyPage === 1}
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: '4px',
+                          backgroundColor: historyPage === 1 ? '#e0e0e0' : 'var(--color1)',
+                          color: historyPage === 1 ? '#9e9e9e' : '#fff',
+                          fontWeight: 600,
+                          cursor: historyPage === 1 ? 'not-allowed' : 'pointer',
+                          border: 'none',
+                        }}
+                      >
+                        Previous
+                      </button>
+                      <span className="text-sm font-semibold text-gray-700">
+                        Page {historyPage}
+                      </span>
+                      <button
+                        onClick={() => fetchCustomerHistory(customer.id, customerSearch.toUpperCase(), historyPage + 1)}
+                        disabled={!customerHistoryData || customerHistoryData.length < 10}
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: '4px',
+                          backgroundColor: (!customerHistoryData || customerHistoryData.length < 10) ? '#e0e0e0' : 'var(--color1)',
+                          color: (!customerHistoryData || customerHistoryData.length < 10) ? '#9e9e9e' : '#fff',
+                          fontWeight: 600,
+                          cursor: (!customerHistoryData || customerHistoryData.length < 10) ? 'not-allowed' : 'pointer',
+                          border: 'none',
+                        }}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
 
                 </div>
               )}
