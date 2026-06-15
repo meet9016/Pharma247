@@ -381,9 +381,9 @@ const DistributerView = () => {
             </div>
             <div
               className="rounded-md p-3"
-              // style={{
-              //   backgroundColor: "rgb(63 98 18 / 11%)",
-              // }}
+            // style={{
+            //   backgroundColor: "rgb(63 98 18 / 11%)",
+            // }}
             >
 
 
@@ -524,15 +524,15 @@ const DistributerView = () => {
                       { label: "GST/IN Number", value: tableData.gst_number },
                       { label: "Email", value: tableData.email, },
                       { label: "Mobile No.", value: tableData.phone_number, cap: true },
-                      { label: "Address", value: tableData.address,  },
+                      { label: "Address", value: tableData.address, },
                       { label: "Bank Name", value: tableData.bank_name, },
-                      { label: "Account No.", value: tableData.account_no,  },
+                      { label: "Account No.", value: tableData.account_no, },
                       { label: "IFSC Code", value: tableData.ifsc_code },
                       { label: "Credit Period", value: tableData.credit_due_days },
                       { label: "Total Bill Amount", value: tableData.total_bill_amount },
                       { label: "Total Paid Amount", value: tableData.total_paid_amount },
                       { label: "Total due Amount", value: tableData.total_due_amount },
-                      { label: "CN Amount", value: tableData.total_cn_amount},
+                      { label: "CN Amount", value: tableData.total_cn_amount },
                     ].map((item, idx, arr) => (
                       <div
                         key={item.label}
@@ -588,7 +588,7 @@ const DistributerView = () => {
                               fontSize: "15px",
                               fontWeight: 600,
                               color: item.accent || "#000000",
-                            
+
                               textTransform: item.cap ? "capitalize" : "none",
                               whiteSpace: "nowrap",
                               overflow: "hidden",
@@ -632,11 +632,10 @@ const DistributerView = () => {
                       ))}
                     </tr>
                   </thead>
-                  <tbody style={{ backgroundColor: "#3f621217" }}>
+                  {/* <tbody style={{ backgroundColor: "#3f621217" }}>            
                     {tableData?.payment_list?.map((item, index) => (
                       <tr key={index}>
-                        {PaymentHistory.map((column, colIndex) => (
-                          // <td key={column.id} className={`text-lg ${column.id === 'due_amount' ? 'text-red-500' : 'text-dark'}`} >
+                        {PaymentHistory.map((column, colIndex) => (   
                           <td
                             key={column.id}
                             className={`text-lg ${column.id === "due_amount"
@@ -644,14 +643,14 @@ const DistributerView = () => {
                               : "text-dark"
                               }`}
                             style={
-                              colIndex === 0 // Check if this is the first column
+                              colIndex === 0
                                 ? { borderRadius: "10px 0 0 10px" }
-                                : colIndex === PaymentHistory.length - 1 // Last column for right-side radius
+                                : colIndex === PaymentHistory.length - 1
                                   ? { borderRadius: "0 10px 10px 0" }
                                   : {}
                             }
                           >
-                            {/* {item[column.id]} */}
+                            
                             {column.id === "bill_no" ? (
                               <a
                                 href={`/purchaseView/${item.purches_id}`}
@@ -668,19 +667,72 @@ const DistributerView = () => {
                         ))}
                       </tr>
                     ))}
+                  </tbody> */}
+                  <tbody style={{ backgroundColor: "#3f621217" }}>
+                    {tableData?.payment_list?.length > 0 ? (
+                      tableData.payment_list.map((item, index) => (
+                        <tr key={index}>
+                          {PaymentHistory.map((column, colIndex) => (
+                            <td
+                              key={column.id}
+                              className={`text-lg ${column.id === "due_amount"
+                                ? "text-red-500"
+                                : "text-dark"
+                                }`}
+                              style={
+                                colIndex === 0
+                                  ? { borderRadius: "10px 0 0 10px" }
+                                  : colIndex === PaymentHistory.length - 1
+                                    ? { borderRadius: "0 10px 10px 0" }
+                                    : {}
+                              }
+                            >
+
+                              {column.id === "bill_no" ? (
+                                <a
+                                  href={`/purchaseView/${item.purches_id}`}
+                                  target="_blank"
+                                  className="primary"
+                                  rel="noopener"
+                                >
+                                  {item[column.id]}
+                                </a>
+                              ) : (
+                                item[column.id]
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={PaymentHistory.length}
+                          style={{
+                            textAlign: "center",
+                            padding: "10px",
+                            fontWeight: "600",
+                          }}
+                        >
+                          No Data Found
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
               <div>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 12]}
-                  component="div"
-                  count={tableData?.payment_list?.[0]?.count}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                />
+                {tableData?.payment_list?.length > 0 && (
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 12]}
+                    component="div"
+                    count={tableData?.payment_list?.[0]?.count}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                )}
               </div>
             </div>
           </div>

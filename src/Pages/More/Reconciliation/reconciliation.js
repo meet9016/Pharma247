@@ -192,14 +192,14 @@ const Reconciliation = () => {
                 <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
 
               </div>
-              <div className="headerList">
+              {/* <div className="headerList">
                 <Button style={{
                   background: "var(--color1)",
                 }} variant="contained" size='small' onClick={handleSubmit}  >
                   <AddIcon />Submit</Button>
 
 
-              </div>
+              </div> */}
               {/* <div className="headerList">
                   <Button style={{
                     background: "var(--color1)",

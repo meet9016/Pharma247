@@ -60,13 +60,13 @@ const ManageStaffRole = () => {
             })
             .catch((error) => {
                 console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                if (error?.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("role");
+                    localStorage.clear();
+                    history.push("/");
+                }
             });
     }
     useEffect(() => {
@@ -87,13 +87,13 @@ const ManageStaffRole = () => {
             })
             .catch((error) => {
                 console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                if (error?.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("role");
+                    localStorage.clear();
+                    history.push("/");
+                }
             });
     };
     const handelAddOpen = (id) => {
@@ -120,13 +120,13 @@ const ManageStaffRole = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
 
@@ -178,67 +178,149 @@ const ManageStaffRole = () => {
                                             <th>Action</th>
                                         </tr>
                                     </thead>
+
+                                    {/* <tbody style={{ background: "#3f621217" }}>  
+                                            { manageStaffRoleData?.map((item, index) => {
+                                                const displayStatus = item.status === "1" ? "Active" : item.status === "0" ? "Inactive" : item.status;
+                                                return (
+                                                    <tr key={index}>
+                                                        <td style={{ borderRadius: "10px 0 0 10px" }}>{index + 1}</td>
+                                                        {ManageStaffRole.map((column) => {
+                                                            const value = column.id === "status" ? displayStatus : item[column.id];
+                                                            const statusClass =
+                                                                column.id === "status" && value === "Active"
+                                                                    ? "orderStatus"
+                                                                    : column.id === "status" && value === "Inactive"
+                                                                        ? "dueStatus"
+                                                                        : "text-black";
+
+                                                            return (
+                                                                <td key={column.id} className="text-lg">
+                                                                    <span className={`text ${column.id === "status" ? statusClass : ""}`}>
+                                                                        {value}
+                                                                    </span>
+                                                                </td>
+                                                            );
+                                                        })}
+                                                        <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                                            <div className="flex justify-center items-center">
+                                                                <VisibilityIcon className="primary mr-3" onClick={() => handelAddOpen(item.id)} />
+                                                                <BorderColorIcon
+                                                                    style={{ color: "var(--color1)" }}
+                                                                    className="primary mr-3"
+                                                                    onClick={() => history.push(`/RolesEdit/${item.id}`)}
+                                                                />
+                                                                <Tooltip title={displayStatus === "Active" ? "Deactivate" : "Activate"}>
+                                                                    {displayStatus === "Active" ? (
+                                                                        <DoNotDisturbIcon
+                                                                            className="text-red-600 mr-3"
+                                                                            onClick={() => handleDeactive(item.id)}
+                                                                        />
+                                                                    ) : (
+                                                                        <FaCheckCircle
+                                                                            className="text-blue-600 mr-3"
+                                                                            size={24}
+                                                                            onClick={() => handleDeactive(item.id)}
+                                                                        />
+                                                                    )}
+                                                                </Tooltip>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                    </tbody> */}
+
+
+
                                     <tbody style={{ background: "#3f621217" }}>
-                                        {manageStaffRoleData?.map((item, index) => {
-                                            // Convert numeric status to text
-                                            const displayStatus = item.status === "1" ? "Active" : item.status === "0" ? "Inactive" : item.status;
+                                        {manageStaffRoleData?.length > 0 ? (
+                                            manageStaffRoleData.map((item, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td style={{ borderRadius: "10px 0 0 10px" }}>{index + 1}</td>
+                                                        {ManageStaffRole.map((column) => {
+                                                            const value = column.id === "status" ? displayStatus : item[column.id];
+                                                            const statusClass =
+                                                                column.id === "status" && value === "Active"
+                                                                    ? "orderStatus"
+                                                                    : column.id === "status" && value === "Inactive"
+                                                                        ? "dueStatus"
+                                                                        : "text-black";
 
-                                            return (
-                                                <tr key={index}>
-                                                    <td style={{ borderRadius: "10px 0 0 10px" }}>{index + 1}</td>
-                                                    {ManageStaffRole.map((column) => {
-                                                        const value = column.id === "status" ? displayStatus : item[column.id];
-
-                                                        // Determine status class
-                                                        const statusClass =
-                                                            column.id === "status" && value === "Active"
-                                                                ? "orderStatus"
-                                                                : column.id === "status" && value === "Inactive"
-                                                                    ? "dueStatus"
-                                                                    : "text-black";
-
-                                                        return (
-                                                            <td key={column.id} className="text-lg">
-                                                                <span className={`text ${column.id === "status" ? statusClass : ""}`}>
-                                                                    {value}
-                                                                </span>
-                                                            </td>
-                                                        );
-                                                    })}
-                                                    <td style={{ borderRadius: "0 10px 10px 0" }}>
-                                                        <div className="flex justify-center items-center">
-                                                            <VisibilityIcon className="primary mr-3" onClick={() => handelAddOpen(item.id)} />
-                                                            <BorderColorIcon
-                                                                style={{ color: "var(--color1)" }}
-                                                                className="primary mr-3"
-                                                                onClick={() => history.push(`/RolesEdit/${item.id}`)}
-                                                            />
-                                                            <Tooltip title={displayStatus === "Active" ? "Deactivate" : "Activate"}>
-                                                                {displayStatus === "Active" ? (
-                                                                    <DoNotDisturbIcon
-                                                                        className="text-red-600 mr-3"
-                                                                        onClick={() => handleDeactive(item.id)}
-                                                                    />
-                                                                ) : (
-                                                                    <FaCheckCircle
-                                                                        className="text-blue-600 mr-3"
-                                                                        size={24}
-                                                                        onClick={() => handleDeactive(item.id)}
-                                                                    />
-                                                                )}
-                                                            </Tooltip>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
+                                                            return (
+                                                                <td key={column.id} className="text-lg">
+                                                                    <span className={`text ${column.id === "status" ? statusClass : ""}`}>
+                                                                        {value}
+                                                                    </span>
+                                                                </td>
+                                                            );
+                                                        })}
+                                                        <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                                            <div className="flex justify-center items-center">
+                                                                <VisibilityIcon className="primary mr-3" onClick={() => handelAddOpen(item.id)} />
+                                                                <BorderColorIcon
+                                                                    style={{ color: "var(--color1)" }}
+                                                                    className="primary mr-3"
+                                                                    onClick={() => history.push(`/RolesEdit/${item.id}`)}
+                                                                />
+                                                                <Tooltip title={displayStatus === "Active" ? "Deactivate" : "Activate"}>
+                                                                    {displayStatus === "Active" ? (
+                                                                        <DoNotDisturbIcon
+                                                                            className="text-red-600 mr-3"
+                                                                            onClick={() => handleDeactive(item.id)}
+                                                                        />
+                                                                    ) : (
+                                                                        <FaCheckCircle
+                                                                            className="text-blue-600 mr-3"
+                                                                            size={24}
+                                                                            onClick={() => handleDeactive(item.id)}
+                                                                        />
+                                                                    )}
+                                                                </Tooltip>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
+                                        ) : (
+                                            <tr>
+                                                <td
+                                                    colSpan={ManageStaffRole.length + 2}
+                                                    style={{
+                                                        textAlign: "center",
+                                                        padding: "20px",
+                                                        fontWeight: "600",
+                                                    }}
+                                                >
+                                                    No Data Found
+                                                </td>
+                                            </tr>
+                                        )}
                                     </tbody>
 
                                 </table>
                             </div>
                         </div>
                     </Box>
-                    <Dialog open={openAddPopUp} sx={{ '& .MuiDialog-paper': { maxWidth: '1000px', width: '50%' } }} >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    {/* <Dialog open={openAddPopUp} sx={{ '& .MuiDialog-paper': { maxWidth: '1000px', width: '50%' } }} >
                         <DialogTitle id="alert-dialog-title" className="secondary">
                             {header}
                         </DialogTitle>
@@ -271,12 +353,160 @@ const ManageStaffRole = () => {
                                                 </div>
                                             </div>
                                             <div className="w-4/5 space-x-2">
-                                                {/* {roleHistory?.permission.map((role, index) => (
+                                                {roleHistory?.permission.map((role, index) => (
                                                     <span key={index} className="inline-block bg-blue-500 text-white px-3 py-1 rounded-full gap-2 mt-4">
                                                         {role.roleName}
                                                     </span>
-                                                ))} */}
+                                                ))}
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </DialogContentText>
+                        </DialogContent>
+                    </Dialog> */}
+
+
+
+
+
+                    <Dialog
+                        open={openAddPopUp}
+                        sx={{
+                            "& .MuiDialog-paper": {
+                                maxWidth: "900px",
+                                width: "90%",
+                                borderRadius: "16px",
+                                overflow: "hidden",
+                                boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
+                            },
+                        }}
+                    >
+                        {/* Header */}
+                        <DialogTitle
+                            id="alert-dialog-title"
+                            sx={{
+                                background: "#3F6212",
+                                color: "#fff",
+                                fontWeight: 700,
+                                fontSize: "20px",
+                                py: 2,
+                                px: 3,
+                            }}
+                        >
+                            {header}
+                        </DialogTitle>
+
+                        <IconButton
+                            aria-label="close"
+                            onClick={resetAddDialog}
+                            sx={{
+                                position: "absolute",
+                                right: 12,
+                                top: 12,
+                                color: "#ffffff",
+                                backgroundColor: "rgba(255,255,255,0.15)",
+                                "&:hover": {
+                                    backgroundColor: "rgba(255,255,255,0.25)",
+                                },
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+
+                        <DialogContent sx={{ p: 3, backgroundColor: "#F9FAFB" }}>
+                            <DialogContentText
+                                id="alert-dialog-description"
+                                component="div"
+                            >
+                                <div
+                                    style={{
+                                        background: "#fff",
+                                        borderRadius: "14px",
+                                        padding: "24px",
+                                        border: "1px solid #E5E7EB",
+                                    }}
+                                >
+                                    {/* Role Section */}
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            paddingBottom: "20px",
+                                            marginBottom: "20px",
+                                            borderBottom: "1px solid #E5E7EB",
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                width: "180px",
+                                                fontWeight: 600,
+                                                color: "#374151",
+                                            }}
+                                        >
+                                            Role
+                                        </div>
+
+                                        <div
+                                            style={{
+                                                flex: 1,
+                                            }}
+                                        >
+                                            <span
+                                                style={{
+                                                    background: "#ECFDF5",
+                                                    color: "#3F6212",
+                                                    padding: "8px 16px",
+                                                    borderRadius: "999px",
+                                                    fontWeight: 600,
+                                                    display: "inline-block",
+                                                }}
+                                            >
+                                                {roleHistory?.role}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Permission Section */}
+                                    <div>
+                                        <div
+                                            style={{
+                                                fontWeight: 600,
+                                                color: "#374151",
+                                                marginBottom: "16px",
+                                            }}
+                                        >
+                                            Permissions
+                                        </div>
+
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexWrap: "wrap",
+                                                gap: "10px",
+                                                minHeight: "60px",
+                                                alignItems: "flex-start",
+                                            }}
+                                        >
+                                            {/* Dynamic permissions here */}
+                                            {/*
+                        {roleHistory?.permission?.map((role, index) => (
+                            <span
+                                key={index}
+                                style={{
+                                    background: "#F0FDF4",
+                                    color: "#3F6212",
+                                    border: "1px solid #BBF7D0",
+                                    padding: "8px 14px",
+                                    borderRadius: "999px",
+                                    fontSize: "14px",
+                                    fontWeight: 500,
+                                }}
+                            >
+                                {role.roleName}
+                            </span>
+                        ))}
+                        */}
                                         </div>
                                     </div>
                                 </div>
@@ -285,7 +515,18 @@ const ManageStaffRole = () => {
                     </Dialog>
 
 
-                    <Dialog open={openAddPopUpDeactive} sx={{ '& .MuiDialog-paper': { maxWidth: '500px', width: '50%' } }} >
+
+
+
+
+
+
+
+
+
+
+
+                    {/* <Dialog open={openAddPopUpDeactive} sx={{ '& .MuiDialog-paper': { maxWidth: '500px', width: '50%' } }} >
                         <DialogContent>
                             <DialogContentText id="alert-dialog-description">
                                 <div className="text-center">
@@ -310,7 +551,140 @@ const ManageStaffRole = () => {
                                 </div>
                             </DialogContentText>
                         </DialogContent>
+                    </Dialog> */}
+
+
+
+
+
+                    <Dialog
+                        open={openAddPopUpDeactive}
+                        onClose={resetAddDialogDeactive}
+                        sx={{
+                            "& .MuiDialog-paper": {
+                                maxWidth: "420px",
+                                width: "100%",
+                                borderRadius: "16px",
+                                overflow: "hidden",
+                                boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
+                            },
+                        }}
+                    >
+                        <DialogContent sx={{ p: 0 }}>
+                            <div
+                                style={{
+                                    padding: "32px 24px",
+                                    textAlign: "center",
+                                }}
+                            >
+                                {/* Icon */}
+                                <div
+                                    style={{
+                                        width: "70px",
+                                        height: "70px",
+                                        margin: "0 auto 20px",
+                                        borderRadius: "50%",
+                                        background: "#FEF2F2",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <span
+                                        style={{
+                                            fontSize: "34px",
+                                            color: "#e61829",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        !
+                                    </span>
+                                </div>
+
+                                {/* Title */}
+                                <h2
+                                    style={{
+                                        margin: 0,
+                                        fontSize: "24px",
+                                        fontWeight: 700,
+                                        color: "#111827",
+                                    }}
+                                >
+                                    Are You Sure?
+                                </h2>
+
+                                {/* Description */}
+                                <p
+                                    style={{
+                                        marginTop: "10px",
+                                        color: "#6B7280",
+                                        fontSize: "15px",
+                                        lineHeight: "22px",
+                                    }}
+                                >
+                                    Do you really want to deactivate this role?
+                                </p>
+
+                                {/* Buttons */}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        gap: "12px",
+                                        marginTop: "28px",
+                                    }}
+                                >
+                                    <Button
+                                        variant="outlined"
+                                        onClick={resetAddDialogDeactive}
+                                        sx={{
+                                            minWidth: "110px",
+                                            borderRadius: "10px",
+                                            textTransform: "none",
+                                            fontWeight: 600,
+                                            borderColor: "#3F6212",
+                                            color: "#3F6212",
+                                            "&:hover": {
+                                                borderColor: "#3F6212",
+                                                backgroundColor: "rgba(63, 98, 18, 0.08)",
+                                            },
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleDeactiveRole}
+                                        sx={{
+                                            minWidth: "110px",
+                                            borderRadius: "10px",
+                                            textTransform: "none",
+                                            fontWeight: 600,
+                                            boxShadow: "none",
+                                            backgroundColor: "#3F6212",
+                                            "&:hover": {
+                                                backgroundColor: "#365314",
+                                                boxShadow: "none",
+                                            },
+                                        }}
+                                    >
+                                        Yes, Deactivate
+                                    </Button>
+                                </div>
+                            </div>
+                        </DialogContent>
                     </Dialog>
+
+
+
+
+
+
+
+
+
+
                 </div>
             }
         </>

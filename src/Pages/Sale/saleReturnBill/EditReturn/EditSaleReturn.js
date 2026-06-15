@@ -938,7 +938,7 @@ const EditSaleReturn = () => {
             <span className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
               onClick={() => { history.push("/saleReturn") }}
             >
-              Sales Return
+              Sales Return 
             </span>
 
             <span className="w-6 h-6">
@@ -1217,6 +1217,7 @@ const EditSaleReturn = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
+                    placeholder="Unit"
                     type="number"
                     sx={{
                       minWidth: "40px",
@@ -1250,6 +1251,7 @@ const EditSaleReturn = () => {
                 <td>
                   <TextField
                     autoComplete="off"
+                    placeholder="Batch"
                     id="outlined-number"
                     type="string"
                     sx={{
@@ -1297,6 +1299,7 @@ const EditSaleReturn = () => {
                 <td>
                   <TextField
                     autoComplete="off"
+                    placeholder="Mrp"
                     disabled
                     id="outlined-number"
                     type="number"
@@ -1324,6 +1327,7 @@ const EditSaleReturn = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
+                    placeholder="Base"
                     type="number"
                     sx={{
                       minWidth: "65px",
@@ -1353,6 +1357,7 @@ const EditSaleReturn = () => {
                 <td>
                   <TextField
                     autoComplete="off"
+                    placeholder="Gst"
                     id="outlined-number"
                     type="number"
                     disabled
@@ -1380,6 +1385,7 @@ const EditSaleReturn = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
+                    placeholder="Qty"
                     type="number"
                     sx={{
                       minWidth: "65px",
@@ -1417,6 +1423,7 @@ const EditSaleReturn = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
+                    placeholder="Loc."
                     size="small"
                     inputRef={inputRef9}
                     onKeyDown={handleKeyDown}

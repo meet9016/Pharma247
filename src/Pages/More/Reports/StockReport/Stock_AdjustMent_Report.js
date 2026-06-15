@@ -75,7 +75,7 @@ const Stock_AdjustMent_Report = () => {
     } catch (error) {
       toast.dismiss();
       toast.success(error.data.message);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -406,9 +406,13 @@ const Stock_AdjustMent_Report = () => {
                                           : {}
                                     }
                                   >
-                                    {item[column.id] &&
+                                    {/* {item[column.id] &&
                                       item[column.id].charAt(0).toUpperCase() +
-                                      item[column.id].slice(1)}
+                                      item[column.id].slice(1)} */}
+                                    {item[column.id]
+                                      ? (item[column.id]).charAt(0).toUpperCase() +
+                                      (item[column.id]).slice(1)
+                                      : "-"}
                                   </td>
                                 )
                               )}
@@ -428,8 +432,8 @@ const Stock_AdjustMent_Report = () => {
                       <button
                         onClick={handlePrevious}
                         className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                            ? "bg-gray-200 text-gray-700"
-                            : "secondary-bg text-white"
+                          ? "bg-gray-200 text-gray-700"
+                          : "secondary-bg text-white"
                           }`}
                         disabled={currentPage === 1}
                       >
@@ -440,8 +444,8 @@ const Stock_AdjustMent_Report = () => {
                           key={i}
                           onClick={() => handleClick(i + 1)}
                           className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1
-                              ? "secondary-bg text-white"
-                              : "bg-gray-200 text-gray-700"
+                            ? "secondary-bg text-white"
+                            : "bg-gray-200 text-gray-700"
                             }`}
                         >
                           {i + 1}
@@ -450,8 +454,8 @@ const Stock_AdjustMent_Report = () => {
                       <button
                         onClick={handleNext}
                         className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                            ? "bg-gray-200 text-gray-700"
-                            : "secondary-bg text-white"
+                          ? "bg-gray-200 text-gray-700"
+                          : "secondary-bg text-white"
                           }`}
                       // disabled={currentPage === totalPages}
                       >

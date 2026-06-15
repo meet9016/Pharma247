@@ -2355,7 +2355,7 @@ const AddSale = () => {
   useSubmitShortcut(AddCustomerRecord, openCustomer);
   useSubmitShortcut(handleAddNewItemValidation, openAddItemPopUp);
   useSubmitShortcut(() => handleReminder(), openReminderPopUp);
-  
+
   return (
     <>
 
@@ -4595,7 +4595,7 @@ const AddSale = () => {
               {customerHistoryData?.[0]?.mobile_number ? ` (${customerHistoryData[0].mobile_number})` : ""}
             </span>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            {/* <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <TextField
                 autoComplete="off"
                 value={customerSearch}
@@ -4608,16 +4608,61 @@ const AddSale = () => {
                 size="small"
               />
 
-              {/* Only one close button */}
               <IconButton
                 aria-label="close"
                 onClick={() => {
                   setOpenCustomerHistory(false);
                   setCustomerSearch("");
                 }}
-                sx={{ color: "#000" }}
+                sx={{ color: "#ffffff" }}
               >
 
+              </IconButton>
+            </div> */}
+
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <TextField
+                autoComplete="off"
+                value={customerSearch}
+                onChange={(e) => setCustomerSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleCustomerSearch();
+                }}
+                placeholder="Search items..."
+                variant="outlined"
+                size="small"
+                sx={{
+               
+                  "& .MuiOutlinedInput-root": {
+                    color: "#ffffff",
+                    "& fieldset": {
+                      borderColor: "#ffffff",
+                      borderWidth: "1px",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#ffffff",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ffffff",
+                    },
+                  },
+                  "& .MuiInputBase-input::placeholder": {
+                    color: "#ffffff",
+                    opacity: 0.7, 
+                  },
+                }}
+              />
+              <IconButton
+                aria-label="close"
+                onClick={() => {
+                  setOpenCustomerHistory(false);
+                  setCustomerSearch("");
+                }}
+                sx={{
+                  color: "#ffffff",
+                  padding: "12px"
+                }}
+              >
               </IconButton>
             </div>
           </DialogTitle>

@@ -16,9 +16,119 @@ import { useState, useEffect } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import usePermissions, { hasPermission } from "../../../componets/permission";
+import axios from "axios";
 
 const ReportsMain = () => {
   const [open, setOpen] = useState(false);
+
+
+
+
+
+
+
+
+
+
+
+
+  const [reportTitles, setReportTitles] = useState([]);
+  const token = localStorage.getItem("token");
+  const getReportTitles = () => {
+    axios
+      .get("report-titles", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setReportTitles(response.data.data);
+      })
+      .catch((error) => {
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
+
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getReportTitles();
+
+    getFavoriteReports();
+  }, []);
+
+
+  const updateFavoriteStatus = (subTitle) => {
+
+    const isFavorite = subTitle.status;
+
+    const status = isFavorite ? 0 : 1;
+
+    axios
+      .post(
+        `report-sub-titles-add-data?sub_title_id=${subTitle.id}&status=${status}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data.status === 200) {
+          getReportTitles();
+          getFavoriteReports();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+
+  const [favoriteReports, setFavoriteReports] = useState([]);
+
+  const getFavoriteReports = () => {
+    axios
+      .get("report-sub-titles-get-data", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setFavoriteReports(response.data.data || []);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
@@ -33,6 +143,19 @@ const ReportsMain = () => {
   const AccouaccountingIcon = `${process.env.PUBLIC_URL}/accountingIcon1.png`;
 
   const [favorites, setFavorites] = useState([]);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const gstReports = [
     // { name: 'Purchase Register', path: '/gst-purchase-register', icon: GSTIcon },
@@ -155,6 +278,17 @@ const ReportsMain = () => {
     },
   ];
 
+
+
+
+
+
+
+
+
+
+
+
   const combinedReports = [
     ...gstReports,
     ...marginReports,
@@ -163,6 +297,8 @@ const ReportsMain = () => {
     ...eNtelligentReports,
     ...othersReports,
   ];
+
+  
 
   useEffect(() => {
     const storedFavorites = localStorage.getItem("favorites");
@@ -177,12 +313,27 @@ const ReportsMain = () => {
     localStorage.setItem("favorites", JSON.stringify(newFavorites));
   };
 
+  // const toggleFavorite = (report) => {
+  //   const newFavorites = favorites.includes(report.name)
+  //     ? favorites.filter((item) => item !== report.name)
+  //     : [...favorites, report.name];
+  //   updateFavorites(newFavorites);
+  // };
   const toggleFavorite = (report) => {
-    const newFavorites = favorites.includes(report.name)
-      ? favorites.filter((item) => item !== report.name)
-      : [...favorites, report.name];
+    const reportName = report.sub_title_name || report.name;
+
+    const newFavorites = favorites.includes(reportName)
+      ? favorites.filter((item) => item !== reportName)
+      : [...favorites, reportName];
+
     updateFavorites(newFavorites);
   };
+
+
+
+  
+
+
 
   return (
     <div>
@@ -223,318 +374,25 @@ const ReportsMain = () => {
               <BsLightbulbFill className="ml-4 secondary hover-yellow" />
             </h1>
           </Box>
-          {hasPermission(permissions, "report accounting") && (
-            <Accordion className="customreportasccordion">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography
-                  sx={{
-                    my: 0,
-                    fontSize: {
-                      xs: "15px",
-                      sm: "17px",
-                      md: "18px",
-                    },
-                    whiteSpace: "noWrap",
-                    fontWeight: "500",
-                    position: "relative",
-                    paddingLeft: "50px",
-                  }}
-                >
-                  {/* <img src={AccouaccountingIcon} className="reportMain-icon absolute mr-10" alt="Accounting Icon"></img> */}
-                  <Box
-                    component="img"
-                    src={AccouaccountingIcon}
-                    alt="Accounting "
-                    sx={{
-                      position: "absolute",
-                      left: 0,
-                      width: {
-                        xs: "30px",
-                        sm: "35px",
-                      },
-                      height: {
-                        xs: "36px",
-                        sm: "41px",
-                      },
-                    }}
-                    className="reportMain-icon"
-                  />
-                  Accounting Reports
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <FormControl sx={{ width: "100%", paddingX: "20px" }}>
-                  {accountingReport.map((report) => (
-                    <ul className="hover-report" key={report.name}>
-                      <li
-                        onClick={() => history.push(report.path)}
-                        className="font-semibold p-2 cursor-pointer flex justify-between"
-                      >
-                        <div
-                          style={{ paddingLeft: "23px", whiteSpace: "noWrap" }}
-                          sx={{
-                            fontSize: {
-                              xs: "15px",
-                              sm: "16px",
-                            },
-                          }}
-                        >
-                          {report.name}
-                        </div>
-                        <span
-                          className="heart-icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFavorite(report);
-                          }}
-                        >
-                          {favorites.includes(report.name) ? (
-                            <FavoriteIcon />
-                          ) : (
-                            <FavoriteBorderIcon />
-                          )}
-                        </span>
-                      </li>
-                    </ul>
-                  ))}
-                </FormControl>
-              </AccordionDetails>
-            </Accordion>
-          )}
 
-          {hasPermission(permissions, "report stock") && (
-            <Accordion className="customreportasccordion">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography
-                  sx={{
-                    my: 0,
-                    fontSize: {
-                      xs: "15px",
-                      sm: "17px",
-                      md: "18px",
-                    },
-                    whiteSpace: "noWrap",
-                    fontWeight: "500",
-                    position: "relative",
-                    paddingLeft: "50px",
-                  }}
-                >
-                  {/* <img src={StockIcon} className="reportMain-icon absolute mr-10" alt="Stock Icon"></img> */}
-                  <Box
-                    component="img"
-                    src={StockIcon}
-                    alt="Stock "
-                    sx={{
-                      position: "absolute",
-                      left: 0,
-                      width: {
-                        xs: "30px",
-                        sm: "35px",
-                      },
-                      height: {
-                        xs: "30px",
-                        sm: "35px",
-                      },
-                    }}
-                    className="reportMain-icon"
-                  />
-                  Stock Reports
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <FormControl sx={{ width: "100%", paddingX: "20px" }}>
-                  {stockReports.map((report) => (
-                    <ul className="hover-report" key={report.name}>
-                      <li
-                        onClick={() => history.push(report.path)}
-                        className="font-semibold p-2 cursor-pointer flex justify-between"
-                      >
-                        <div
-                          style={{ paddingLeft: "23px", whiteSpace: "noWrap" }}
-                        >
-                          {report.name}
-                        </div>
-                        <span
-                          className="heart-icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFavorite(report);
-                          }}
-                        >
-                          {favorites.includes(report.name) ? (
-                            <FavoriteIcon />
-                          ) : (
-                            <FavoriteBorderIcon />
-                          )}
-                        </span>
-                      </li>
-                    </ul>
-                  ))}
-                </FormControl>
-              </AccordionDetails>
-            </Accordion>
-          )}
 
-          {hasPermission(permissions, "report margin") && (
-            <Accordion className="customreportasccordion">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography
-                  sx={{
-                    my: 0,
-                    fontSize: {
-                      xs: "15px",
-                      sm: "17px",
-                      md: "18px",
-                    },
-                    whiteSpace: "noWrap",
-                    fontWeight: "500",
-                    position: "relative",
-                    paddingLeft: "50px",
-                  }}
-                >
-                  {/* <img src={MarginIcon} className="reportMain-icon absolute mr-10" alt="Margin Icon"></img> */}
-                  <Box
-                    component="img"
-                    src={MarginIcon}
-                    alt="Margin "
-                    sx={{
-                      position: "absolute",
-                      left: 0,
-                      width: {
-                        xs: "30px",
-                        sm: "35px",
-                      },
-                      height: {
-                        xs: "30px",
-                        sm: "35px",
-                      },
-                    }}
-                    className="reportMain-icon"
-                  />
-                  Margin Reports
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <FormControl sx={{ width: "100%", paddingX: "20px" }}>
-                  {marginReports.map((report) => (
-                    <ul className="hover-report" key={report.name}>
-                      <li
-                        onClick={() => history.push(report.path)}
-                        className="font-semibold p-2 cursor-pointer flex justify-between"
-                      >
-                        <div
-                          style={{ paddingLeft: "23px", whiteSpace: "noWrap" }}
-                          sx={{
-                            fontSize: {
-                              xs: "15px",
-                              sm: "16px",
-                            },
-                          }}
-                        >
-                          {report.name}
-                        </div>
-                        <span
-                          className="heart-icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFavorite(report);
-                          }}
-                        >
-                          {favorites.includes(report.name) ? (
-                            <FavoriteIcon />
-                          ) : (
-                            <FavoriteBorderIcon />
-                          )}
-                        </span>
-                      </li>
-                    </ul>
-                  ))}
-                </FormControl>
-              </AccordionDetails>
-            </Accordion>
-          )}
-          {hasPermission(permissions, "report entelligent") && (
-            <Accordion className="customreportasccordion">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography
-                  sx={{
-                    my: 0,
-                    fontSize: {
-                      xs: "15px",
-                      sm: "17px",
-                      md: "18px",
-                    },
-                    whiteSpace: "noWrap",
-                    textTransform: "none",
-                    fontWeight: "500",
-                    position: "relative",
-                    paddingLeft: "50px",
-                  }}
-                >
-                  {/* <img src={ENtelligentIcon} className="reportMain-icon absolute mr-10" alt="eNtelligent Icon"></img> */}
-                  <Box
-                    component="img"
-                    src={ENtelligentIcon}
-                    alt="eNtelligent Icon"
-                    sx={{
-                      position: "absolute",
-                      left: 0,
-                      width: {
-                        xs: "30px",
-                        sm: "35px",
-                      },
-                      height: {
-                        xs: "30px",
-                        sm: "35px",
-                      },
-                    }}
-                    className="reportMain-icon"
-                  />
-                  Sales Insights
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <FormControl sx={{ width: "100%", paddingX: "20px" }}>
-                  {eNtelligentReports.map((report) => (
-                    <ul className="hover-report" key={report.name}>
-                      <li
-                        onClick={() => history.push(report.path)}
-                        className="font-semibold p-2 cursor-pointer flex justify-between"
-                      >
-                        <div
-                          style={{ paddingLeft: "23px", whiteSpace: "noWrap" }}
-                          sx={{
-                            fontSize: {
-                              xs: "15px",
-                              sm: "16px",
-                            },
-                          }}
-                        >
-                          {report.name}
-                        </div>
-                        <span
-                          className="heart-icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFavorite(report);
-                          }}
-                        >
-                          {favorites.includes(report.name) ? (
-                            <FavoriteIcon />
-                          ) : (
-                            <FavoriteBorderIcon />
-                          )}
-                        </span>
-                      </li>
-                    </ul>
-                  ))}
-                </FormControl>
-              </AccordionDetails>
-            </Accordion>
-          )}
 
-          {hasPermission(permissions, "report gst") && (
-            <Accordion className="customreportasccordion">
+
+
+
+
+
+
+
+
+
+
+
+          {reportTitles.map((report) => (
+            <Accordion
+              key={report.id}
+              className="customreportasccordion"
+            >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography
                   sx={{
@@ -550,11 +408,10 @@ const ReportsMain = () => {
                     paddingLeft: "50px",
                   }}
                 >
-                  {/* <img src={GSTIcon} className="reportMain-icon absolute mr-10" alt="GST Icon" /> */}
                   <Box
                     component="img"
-                    src={GSTIcon}
-                    alt="GST Icon"
+                    src={report.icon}
+                    alt={report.title}
                     sx={{
                       position: "absolute",
                       left: 0,
@@ -567,122 +424,51 @@ const ReportsMain = () => {
                         sm: "35px",
                       },
                     }}
-                    className="reportMain-icon"
                   />
-                  GST Reports
+
+                  {report.title}
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails>
-                <FormControl sx={{ width: "100%", paddingX: "20px" }}>
-                  <div>
-                    {gstReports.map((report) => (
-                      <ul className="hover-report" key={report}>
-                        <li
-                          onClick={() => history.push(report.path)}
-                          className="font-semibold p-2 cursor-pointer flex justify-between"
-                        >
-                          <div
-                            style={{
-                              paddingLeft: "23px",
-                              whiteSpace: "noWrap",
-                            }}
-                            sx={{
-                              fontSize: {
-                                xs: "15px",
-                                sm: "16px",
-                              },
-                            }}
-                          >
-                            {report.name}
-                          </div>
-                          <span
-                            className="heart-icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleFavorite(report);
-                            }}
-                          >
-                            {favorites.includes(report.name) ? (
-                              <FavoriteIcon />
-                            ) : (
-                              <FavoriteBorderIcon />
-                            )}
-                          </span>
-                        </li>
-                      </ul>
-                    ))}
-                  </div>
-                </FormControl>
-              </AccordionDetails>
-            </Accordion>
-          )}
 
-          {hasPermission(permissions, "report others") && (
-            <Accordion className="customreportasccordion">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography
+              <AccordionDetails>
+                <FormControl
                   sx={{
-                    my: 0,
-                    fontSize: {
-                      xs: "15px",
-                      sm: "17px",
-                      md: "19px",
-                    },
-                    whiteSpace: "noWrap",
-                    fontWeight: "500",
-                    position: "relative",
-                    paddingLeft: "50px",
+                    width: "100%",
+                    paddingX: "20px",
                   }}
                 >
-                  {/* <img src={OtherIcon}className="reportMain-icon absolute mr-10" alt="Other Icon"></img> */}
-                  <Box
-                    component="img"
-                    src={OtherIcon}
-                    alt="Other "
-                    sx={{
-                      position: "absolute",
-                      left: 0,
-                      width: {
-                        xs: "30px",
-                        sm: "35px",
-                      },
-                      height: {
-                        xs: "30px",
-                        sm: "39px",
-                      },
-                    }}
-                    className="reportMain-icon"
-                  />
-                  MIS reports
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <FormControl sx={{ width: "100%", paddingX: "20px" }}>
-                  {othersReports.map((report) => (
-                    <ul className="hover-report" key={report.name}>
+                  {report.sub_titles?.map((subTitle) => (
+                    <ul
+                      className="hover-report"
+                      key={subTitle.id}
+                    >
                       <li
-                        onClick={() => history.push(report.path)}
                         className="font-semibold p-2 cursor-pointer flex justify-between"
                       >
                         <div
-                          style={{ paddingLeft: "23px", whiteSpace: "noWrap" }}
-                          sx={{
-                            fontSize: {
-                              xs: "15px",
-                              sm: "16px",
-                            },
+                          style={{
+                            paddingLeft: "23px",
+                            whiteSpace: "noWrap",
                           }}
                         >
-                          {report.name}
+                          {subTitle.sub_title_name}
                         </div>
+
                         <span
                           className="heart-icon"
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleFavorite(report);
+                            updateFavoriteStatus(subTitle);
                           }}
                         >
-                          {favorites.includes(report.name) ? (
+                          {/* {favorites.includes(
+                            subTitle.sub_title_name
+                          ) ? (
+                            <FavoriteIcon />
+                          ) : (
+                            <FavoriteBorderIcon />
+                          )} */}
+                          {subTitle.status ? (
                             <FavoriteIcon />
                           ) : (
                             <FavoriteBorderIcon />
@@ -694,44 +480,54 @@ const ReportsMain = () => {
                 </FormControl>
               </AccordionDetails>
             </Accordion>
-          )}
+          ))}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
           {/* <Divider /> */}
         </Box>
         <Box sx={{ flex: 1, overflow: "auto", padding: "16px" }}>
           <div className="p-2" style={{ width: "100%" }}>
-            {favorites.length > 0 ? (
+            {favoriteReports.length > 0 ? (
               <>
                 <h1 className="text-2xl mb-8 primary font-semibold">
                   Favourite Reports
                 </h1>
 
-                <ul className="flex flex-wrap gap-4 p-8">
-                  {favorites.map((favorite) => {
-                    const report = combinedReports.find(
-                      (r) => r.name === favorite
-                    );
-                    return (
-                      <li
-                        key={favorite}
-                        className="font-semibold report_main_card"
-                      >
-                        <div
-                          className="custom-box-report"
-                          onClick={() => history.push(report.path)}
-                        >
-                          <img
-                            src={report?.icon}
-                            className="w-1/2"
-                            alt="Report "
-                          />
-                          <span className="font-semibold text-sm">
-                            {favorite}
-                          </span>
-                        </div>
-                      </li>
-                    );
-                  })}
+                <ul className="flex flex-wrap gap-4 p-0">
+                  {favoriteReports.map((favorite) => (
+                    <li
+                      key={favorite.id}
+                      className="font-semibold report_main_card"
+                    >
+                      <div className="custom-box-report"  onClick={() => history.push(`/${favorite.path}`)}>
+                        <img
+                          src={favorite.icon}
+                          className="w-1/2"
+                          alt="Report"
+                        />
+
+                        <span className="font-semibold text-sm">
+                          {favorite.sub_title_name}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
                 </ul>
               </>
             ) : (

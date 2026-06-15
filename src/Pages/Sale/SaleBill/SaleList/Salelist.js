@@ -133,7 +133,7 @@ const Salelist = () => {
       setTableData([]);
       setTotalRecords(0);
       setIsLoading(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -145,7 +145,7 @@ const Salelist = () => {
 
 
   const AllPDFGenerate = async () => {
-                setOpenAddPopUp(false);
+    setOpenAddPopUp(false);
 
     let data = new FormData();
     data.append(
@@ -173,7 +173,7 @@ const Salelist = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -205,7 +205,7 @@ const Salelist = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -262,7 +262,7 @@ const Salelist = () => {
     } catch (error) {
       console.error("API error:", error);
       setIsLoading(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -390,7 +390,7 @@ const Salelist = () => {
               <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
                 <div className="detail flex flex-col">
                   <span className="text-gray-500 block">Start Date</span>
-                  <div className="" style={{ width: "100%", zIndex: 9999}}>
+                  <div className="" style={{ width: "100%", zIndex: 9999 }}>
                     <DatePicker
                       className="custom-datepicker"
                       selected={PdfstartDate}
@@ -399,7 +399,13 @@ const Salelist = () => {
                     />
                   </div>
                 </div>
-                <div className="detail flex flex-col">
+                <div className="detail flex flex-col"
+                  style={{
+                    
+                    position: "relative",
+                    zIndex: 9999,
+                    overflow: "visible",
+                  }}>
                   <span className="text-gray-500 block">End Date</span>
                   <div className="" style={{ width: "100%" }}>
                     <DatePicker

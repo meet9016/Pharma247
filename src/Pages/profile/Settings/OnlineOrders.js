@@ -76,7 +76,7 @@ const OnlineOrders = () => {
       }
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -107,7 +107,7 @@ const OnlineOrders = () => {
       }
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -128,6 +128,8 @@ const OnlineOrders = () => {
           <Loader />
         </div>
       ) : (
+
+
         <div>
           <Box className="cdd_mn_hdr" sx={{ display: "flex" }}>
             <ProfileView />
@@ -136,7 +138,7 @@ const OnlineOrders = () => {
                 Online Order Setting
                 <BsLightbulbFill className="ml-4 secondary hover-yellow" />
               </h1>
-              <div className="flex flex-row justify-between">
+              {/* <div className="flex flex-row justify-between">
                 <div className="flex flex-col items-start mt-6 p-4 bg-white border border-gray-300 rounded-lg shadow-lg pass_boxx_flds">
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Accept Online Orders :</span>
@@ -359,7 +361,229 @@ const OnlineOrders = () => {
                     />
                   </div>
                 </div>
+              </div> */}
+
+
+
+
+
+
+
+
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+
+                {/* Order Settings */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div className="px-6 py-4 border-b bg-gray-50">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Order Settings
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Configure order and delivery preferences
+                    </p>
+                  </div>
+
+                  <div className="p-6 space-y-5">
+
+                    <div className="flex justify-between items-center p-4 rounded-xl bg-gray-50">
+                      <div>
+                        <h4 className="font-medium">Accept Online Orders</h4>
+                        <p className="text-xs text-gray-500">
+                          Enable customers to place orders online
+                        </p>
+                      </div>
+
+                      <Switch
+                        checked={settings.accept_online_orders === 1}
+                        onChange={(e) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            accept_online_orders: e.target.checked ? 1 : 0,
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="flex justify-between items-center p-4 rounded-xl bg-gray-50">
+                      <div>
+                        <h4 className="font-medium">Home Delivery</h4>
+                        <p className="text-xs text-gray-500">
+                          Allow home delivery orders
+                        </p>
+                      </div>
+
+                      <Switch
+                        checked={settings.delivery_online_orders === 1}
+                        onChange={(e) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            delivery_online_orders: e.target.checked ? 1 : 0,
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="flex justify-between items-center p-4 rounded-xl bg-gray-50">
+                      <div>
+                        <h4 className="font-medium">Store Pickup</h4>
+                        <p className="text-xs text-gray-500">
+                          Allow pickup from store
+                        </p>
+                      </div>
+
+                      <Switch
+                        checked={settings.pickup_online_orders === 1}
+                        onChange={(e) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            pickup_online_orders: e.target.checked ? 1 : 0,
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4 pt-2">
+
+                      <TextField
+                        fullWidth
+                        label="Minimum Order Amount"
+                        value={settings.minimum_order_amount}
+                        type="number"
+                        onChange={(e) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            minimum_order_amount: e.target.value,
+                          }))
+                        }
+                      />
+
+                      <TextField
+                        fullWidth
+                        label="Delivery Charges"
+                        value={settings.order_shipping_price}
+                        type="number"
+                        onChange={(e) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            order_shipping_price: e.target.value,
+                          }))
+                        }
+                      />
+
+                      <TextField
+                        fullWidth
+                        label="Estimated Delivery Time (mins)"
+                        value={settings.delivery_estimated_time}
+                        type="number"
+                        onChange={(e) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            delivery_estimated_time: e.target.value,
+                          }))
+                        }
+                      />
+
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Settings */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div className="px-6 py-4 border-b bg-gray-50">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Contact & Delivery Details
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Manage communication and delivery information
+                    </p>
+                  </div>
+
+                  <div className="p-6 grid gap-4">
+
+                    <TextField
+                      fullWidth
+                      label="Pharmacy WhatsApp"
+                      value={settings.pharmacy_whatsapp}
+                      onChange={(e) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          pharmacy_whatsapp: e.target.value,
+                        }))
+                      }
+                    />
+
+                    <TextField
+                      fullWidth
+                      label="Pharmacy Email"
+                      value={settings.email}
+                      onChange={(e) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
+                    />
+
+                    <TextField
+                      fullWidth
+                      label="Delivery Executive"
+                      value={settings.delivery_executive}
+                      onChange={(e) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          delivery_executive: e.target.value,
+                        }))
+                      }
+                    />
+
+                    <TextField
+                      fullWidth
+                      label="Order Manager"
+                      value={settings.order_manager}
+                      onChange={(e) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          order_manager: e.target.value,
+                        }))
+                      }
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <TextField
+                        fullWidth
+                        label="Delivery Start Time"
+                        value={settings.delivery_start_time}
+                        onChange={(e) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            delivery_start_time: e.target.value,
+                          }))
+                        }
+                      />
+
+                      <TextField
+                        fullWidth
+                        label="Delivery End Time"
+                        value={settings.delivery_end_time}
+                        onChange={(e) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            delivery_end_time: e.target.value,
+                          }))
+                        }
+                      />
+                    </div>
+
+                  </div>
+                </div>
+
               </div>
+
+
+
+
+
+
 
               <div className="w-full flex">
                 <Button
@@ -378,6 +602,8 @@ const OnlineOrders = () => {
             </div>
           </Box>
         </div>
+
+
       )}
     </>
   );

@@ -858,7 +858,7 @@ const OrderList = () => {
               }}
             >
               <DialogTitle id="alert-dialog-title" className="primary">
-                Item Purchase History 
+                Item Purchase History
               </DialogTitle>
               <div className="px-6 mt-5">
                 <Alert severity="info" className="" style={{ width: "100%" }}>
@@ -911,7 +911,9 @@ const OrderList = () => {
                           ))}
                         </tr>
                       </thead>
-                      <tbody style={{ background: "#3f621217" }}>
+
+
+                      {/* <tbody style={{ background: "#3f621217" }}>
                         {purchaseHistory.map((row, index) => {
                           return (
                             <tr
@@ -952,7 +954,64 @@ const OrderList = () => {
                             </tr>
                           );
                         })}
+                      </tbody> */}
+
+                      <tbody style={{ background: "#3f621217" }}>
+                        {purchaseHistory?.length > 0 ? (
+                          purchaseHistory.map((row, index) => (
+                            <tr
+                              hover
+                              tabIndex={-1}
+                              key={row.code}
+                              onClick={() => setOpenAddPopUp(true)}
+                            >
+                              {LastPurchaseListcolumns.map(
+                                (column, colIndex) => {
+                                  const value = row[column.id];
+
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      align={column.align}
+                                      style={
+                                        colIndex === 0
+                                          ? {
+                                            borderRadius: "10px 0 0 10px",
+                                          }
+                                          : colIndex ===
+                                            LastPurchaseListcolumns.length - 1
+                                            ? {
+                                              borderRadius: "0 10px 10px 0",
+                                            }
+                                            : {}
+                                      }
+                                    >
+                                      {column.format &&
+                                        typeof value === "number"
+                                        ? column.format(value)
+                                        : value}
+                                    </td>
+                                  );
+                                }
+                              )}
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={LastPurchaseListcolumns.length}
+                              style={{
+                                textAlign: "center",
+                                padding: "10px",
+                                fontWeight: "600",
+                              }}
+                            >
+                              No Data Found
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
+
                     </table>
                   </div>
                 </DialogContentText>
@@ -968,7 +1027,7 @@ const OrderList = () => {
 
 
 
-         
+
 
 
 

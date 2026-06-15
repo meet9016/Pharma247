@@ -62,7 +62,7 @@ const Monthly_sales_Overview = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -289,13 +289,13 @@ const Monthly_sales_Overview = () => {
                         <tr>
                           <>
                             <td style={{ borderRadius: "10px 0 0 10px" }}>
-                              {monthlySaleData?.duration}
+                              {monthlySaleData?.duration || "-"}
                             </td>
-                            <td>{monthlySaleData?.total_amount}</td>{" "}
-                            <td>{monthlySaleData?.total_discount}</td>{" "}
-                            <td>{monthlySaleData?.net_sales}</td>{" "}
+                            <td>{monthlySaleData?.total_amount || "-"}</td>{" "}
+                            <td>{monthlySaleData?.total_discount || "-"}</td>{" "}
+                            <td>{monthlySaleData?.net_sales || "-"}</td>{" "}
                             <td style={{ borderRadius: "0 10px 10px 0" }}>
-                              {monthlySaleData?.count}
+                              {monthlySaleData?.count || "-"}
                             </td>
                           </>
                         </tr>

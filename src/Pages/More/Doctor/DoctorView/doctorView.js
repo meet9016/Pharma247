@@ -193,10 +193,10 @@ const DoctorView = () => {
                                 {[
                                     { label: "Doctor Name", value: doctorDetails.name },
                                     { label: "Clinic Name", value: doctorDetails.clinic },
-                                    { label: "Mobile No", value: doctorDetails.phone_number  },
+                                    { label: "Mobile No", value: doctorDetails.phone_number },
                                     { label: "License Number", value: doctorDetails.license },
-                                    { label: "Default Doctor", value: doctorDetails.default_doctor  },
-                                    { label: "Address", value: doctorDetails.address},
+                                    { label: "Default Doctor", value: doctorDetails.default_doctor },
+                                    { label: "Address", value: doctorDetails.address },
                                 ].map((item, idx, arr) => (
                                     <div
                                         key={item.label}
@@ -375,7 +375,7 @@ const DoctorView = () => {
                                                     ))}
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            {/* <tbody>
                                                 {doctorDetails?.sales?.map((item, index) => (
                                                     <tr key={index}>
                                                         {saleColumns.map((column) => (
@@ -386,9 +386,28 @@ const DoctorView = () => {
 
                                                     </tr>
                                                 ))}
+                                            </tbody> */}
+                                            <tbody>
+                                                {doctorDetails?.sales?.length > 0 ? (
+                                                    doctorDetails.sales.map((item, index) => (
+                                                        <tr key={index}>
+                                                            {saleColumns.map((column) => (
+                                                                <td key={column.id}>
+                                                                    {item[column.id]}
+                                                                </td>
+                                                            ))}
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan={saleColumns.length} style={{ textAlign: "center", padding: "10px", background: "#E0E3DC" }}>
+                                                            No Data Found
+                                                        </td>
+                                                    </tr>
+                                                )}
                                             </tbody>
                                         </table>
-                                        <TablePagination
+                                        {/* <TablePagination
                                             rowsPerPageOptions={[5, 10, 12]}
                                             component="div"
                                             count={doctorDetails?.sales?.length || 0}
@@ -396,7 +415,18 @@ const DoctorView = () => {
                                             page={page}
                                             onPageChange={handleChangePage}
                                             onRowsPerPageChange={handleChangeRowsPerPage}
-                                        />
+                                        /> */}
+                                        {doctorDetails?.sales?.length > 0 && (
+                                            <TablePagination
+                                                rowsPerPageOptions={[5, 10, 12]}
+                                                component="div"
+                                                count={doctorDetails?.sales?.length || 0}
+                                                rowsPerPage={rowsPerPage}
+                                                page={page}
+                                                onPageChange={handleChangePage}
+                                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                            />
+                                        )}
                                     </div>
                                 </div>
                             )}
@@ -417,7 +447,7 @@ const DoctorView = () => {
                                                     ))}
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            {/* <tbody>
                                                 {doctorDetails?.sales_return?.map((item, index) => (
                                                     <tr key={index}>
                                                         {saleReturnColumns.map((column) => (
@@ -428,9 +458,36 @@ const DoctorView = () => {
 
                                                     </tr>
                                                 ))}
+                                            </tbody> */}
+                                            <tbody>
+                                                {doctorDetails?.sales_return?.length > 0 ? (
+                                                    doctorDetails.sales_return.map((item, index) => (
+                                                        <tr key={index}>
+                                                            {saleReturnColumns.map((column) => (
+                                                                <td key={column.id}>
+                                                                    {item[column.id]}
+                                                                </td>
+                                                            ))}
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td
+                                                            colSpan={saleReturnColumns.length}
+                                                            style={{
+                                                                textAlign: "center",
+                                                                padding: "10px",
+                                                                fontWeight: "600",
+                                                                background: "#E0E3DC"
+                                                            }}
+                                                        >
+                                                            No Data Found
+                                                        </td>
+                                                    </tr>
+                                                )}
                                             </tbody>
                                         </table>
-                                        <TablePagination
+                                        {/* <TablePagination
                                             rowsPerPageOptions={[5, 10, 12]}
                                             component="div"
                                             count={doctorDetails?.sales?.length || 0}
@@ -438,7 +495,18 @@ const DoctorView = () => {
                                             page={page}
                                             onPageChange={handleChangePage}
                                             onRowsPerPageChange={handleChangeRowsPerPage}
-                                        />
+                                        /> */}
+                                        {doctorDetails?.sales_return?.length > 0 && (
+                                            <TablePagination
+                                                rowsPerPageOptions={[5, 10, 12]}
+                                                component="div"
+                                                count={doctorDetails?.sales_return?.length || 0}
+                                                rowsPerPage={rowsPerPage}
+                                                page={page}
+                                                onPageChange={handleChangePage}
+                                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                            />
+                                        )}
                                     </div>
                                 </div>
                             )}

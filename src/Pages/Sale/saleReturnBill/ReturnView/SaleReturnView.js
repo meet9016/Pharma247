@@ -477,17 +477,17 @@ const SaleReturnView = () => {
                     >
                       <thead>
                         <tr style={{ whiteSpace: "nowrap" }}>
-                          <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Item Name</th>
-                          <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Unit </th>
-                          <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Batch </th>
-                          <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Expiry </th>
-                          <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>MRP </th>
-                          <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Base </th>
-                          <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>GST% </th>
-                          <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>QTY </th>
+                          <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Item Name</th>
+                          <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Unit </th>
+                          <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Batch </th>
+                          <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Expiry </th>
+                          <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>MRP </th>
+                          <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Base </th>
+                          <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>GST% </th>
+                          <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>QTY </th>
                           {/* <th >Order  </th> */}
-                          <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Loc. </th>
-                          <th style={{ position: "sticky", top: 0, zIndex: 10, background: "#E0E3DC" }}>Amount </th>
+                          <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Loc. </th>
+                          <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Amount </th>
                         </tr>
                       </thead>
                       <tbody style={{ background: "#3f621217" }}>

@@ -63,13 +63,13 @@ const ReferEarn = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
         setIsLoading(false);
       });
   };
@@ -88,13 +88,13 @@ const ReferEarn = () => {
       })
       .catch((error) => {
         console.error("API Error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
   {/*<============================================================================= ui  ============================================================================> */ }
@@ -102,7 +102,7 @@ const ReferEarn = () => {
   return (
     <>
       <Header />
-        <ToastContainer
+      <ToastContainer
 
         position="top-right"
         autoClose={5000}
@@ -257,7 +257,7 @@ const ReferEarn = () => {
                 style={{ overflowX: "auto" }}
               >
                 <h2 className="text-xl flex items-center primary font-semibold  my-5 ">
-                  
+
                   Referral History
                 </h2>
                 <table
@@ -279,25 +279,40 @@ const ReferEarn = () => {
                     </tr>
                   </thead>
                   <tbody style={{ background: "#3f621217" }}>
-                    {tableData?.map((item, rowIndex) => (
-                      <tr key={rowIndex}>
-                        <td style={{ borderRadius: "10px 0 0 10px" }}>
-                          {rowIndex + 1}
-                        </td>
-                        {columns.map((column, colIndex) => (
-                          <td
-                            key={column.id}
-                            style={
-                              colIndex === columns.length - 1
-                                ? { borderRadius: "0 10px 10px 0" }
-                                : {}
-                            }
-                          >
-                            {item[column.id]}
+                    {tableData?.length > 0 ? (
+                      tableData.map((item, rowIndex) => (
+                        <tr key={rowIndex}>
+                          <td style={{ borderRadius: "10px 0 0 10px" }}>
+                            {rowIndex + 1}
                           </td>
-                        ))}
+                          {columns.map((column, colIndex) => (
+                            <td
+                              key={column.id}
+                              style={
+                                colIndex === columns.length - 1
+                                  ? { borderRadius: "0 10px 10px 0" }
+                                  : {}
+                              }
+                            >
+                              {item[column.id]}
+                            </td>
+                          ))}
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={columns.length + 1}
+                          style={{
+                            textAlign: "center",
+                            padding: "20px",
+                            fontWeight: "600",
+                          }}
+                        >
+                          No Data Found
+                        </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>

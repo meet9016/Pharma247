@@ -399,7 +399,7 @@ const StaffMember = () => {
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody style={{ background: "#3f621217" }}>
+                                {/* <tbody style={{ background: "#3f621217" }}>
                                     {tableData?.map((item, index) => (
                                         <tr key={index}>
                                             <td style={{ borderRadius: '10px 0 0 10px' }}>{index + 1}</td>
@@ -407,13 +407,13 @@ const StaffMember = () => {
                                                 const value = item[column.id];
                                                 const isStatus = column.id === 'status';
 
-                                                // Determine the display text based on numeric status
+                                               
                                                 let displayStatus = value;
                                                 if (isStatus) {
                                                     displayStatus = value === "1" ? "Active" : value === "0" ? "Inactive" : value;
                                                 }
 
-                                                // Determine class based on status
+                                             
                                                 const statusClass =
                                                     isStatus && displayStatus === "Active"
                                                         ? "orderStatus"
@@ -442,6 +442,73 @@ const StaffMember = () => {
                                             </td>
                                         </tr>
                                     ))}
+                                </tbody> */}
+
+                                <tbody style={{ background: "#3f621217" }}>
+                                    {tableData?.length > 0 ? (
+                                        tableData.map((item, index) => (
+                                            <tr key={index}>
+                                                <td style={{ borderRadius: "10px 0 0 10px" }}>
+                                                    {index + 1}
+                                                </td>
+
+                                                {StaffMemberColumns.map((column) => {
+                                                    const value = item[column.id];
+                                                    const isStatus = column.id === "status";
+
+                                                    let displayStatus = value;
+                                                    if (isStatus) {
+                                                        displayStatus =
+                                                            value === "1"
+                                                                ? "Active"
+                                                                : value === "0"
+                                                                    ? "Inactive"
+                                                                    : value;
+                                                    }
+
+                                                    const statusClass =
+                                                        isStatus && displayStatus === "Active"
+                                                            ? "orderStatus"
+                                                            : isStatus && displayStatus === "Inactive"
+                                                                ? "dueStatus"
+                                                                : "text-black";
+
+                                                    return (
+                                                        <td key={column.id} className="text-lg">
+                                                            <span className={`text ${isStatus ? statusClass : ""}`}>
+                                                                {isStatus ? displayStatus : value}
+                                                            </span>
+                                                        </td>
+                                                    );
+                                                })}
+
+                                                <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                                    <div className="flex justify-center items-center">
+                                                        {hasPermission(permissions, "staff members edit") && (
+                                                            <BorderColorIcon
+                                                                style={{ color: "var(--color1)" }}
+                                                                className="primary mr-3"
+                                                                onClick={() => handelEditOpen(item)}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td
+                                                colSpan={StaffMemberColumns.length + 2}
+                                                style={{
+                                                    textAlign: "center",
+                                                    padding: "20px",
+                                                    fontWeight: "600",
+                                                }}
+                                            >
+                                                No Data Found
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
 
                             </table>
@@ -507,13 +574,13 @@ const StaffMember = () => {
                             <div className="flex flex-col md:flex-row gap-5">
                                 <div className="flex flex-col " style={{ width: "100%" }}>
                                     <span className="label primary">Assign Role <span className="text-red-600">*</span></span>
-                                    {/* <FormControl sx={{ width: '100%' }} size="small">
+                                    <FormControl sx={{ width: '100%' }} size="small">
                                         <Select
                                             labelId="demo-select-small-label"
                                             id="demo-select-small"
                                             value={selectedAssignRole}
                                             onChange={(e) => setSelectedAssignRole(e.target.value)}
-                                            
+
                                         >
                                             <MenuItem value="" disabled>
                                                 Select Assign Role
@@ -523,41 +590,8 @@ const StaffMember = () => {
                                             )}
                                         </Select>
                                         {errors.selectedAssignRole && <span style={{ color: 'red', fontSize: '12px' }}>{errors.selectedAssignRole}</span>}
-                                    </FormControl> */}
-                                    <FormControl sx={{ width: "100%" }} size="small">
-                                        <Select
-                                            value={selectedAssignRole}
-                                            onChange={(e) => setSelectedAssignRole(e.target.value)}
-                                            displayEmpty
-                                            renderValue={(selected) => {
-                                                if (!selected) {
-                                                    return <span style={{ color: "#9ca3af" }}>Select Assign Role</span>;
-                                                }
-
-                                                const role = manageStaffRoleData.find(
-                                                    (item) => item.id === selected
-                                                );
-
-                                                return role?.role || "";
-                                            }}
-                                        >
-                                            <MenuItem value="">
-                                                <em>Select Assign Role</em>
-                                            </MenuItem>
-
-                                            {manageStaffRoleData.map((item) => (
-                                                <MenuItem key={item.id} value={item.id}>
-                                                    {item.role}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-
-                                        {errors.selectedAssignRole && (
-                                            <span style={{ color: "red", fontSize: "12px" }}>
-                                                {errors.selectedAssignRole}
-                                            </span>
-                                        )}
                                     </FormControl>
+
                                 </div>
                                 <div
                                     className="flex flex-col " style={{ width: "100%" }}

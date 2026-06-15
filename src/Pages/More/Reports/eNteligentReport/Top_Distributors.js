@@ -65,7 +65,7 @@ const Top_Distributor = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -283,11 +283,20 @@ const Top_Distributor = () => {
                               </td>
                               {TopDistributorColumns.map((column, colIndex) => {
                                 const value = row[column.id];
+                                // const formattedValue =
+                                //   typeof value === "string" && value.length > 0
+                                //     ? value.charAt(0).toUpperCase() +
+                                //     value.slice(1)
+                                //     : value;
+
                                 const formattedValue =
-                                  typeof value === "string" && value.length > 0
-                                    ? value.charAt(0).toUpperCase() +
-                                    value.slice(1)
-                                    : value;
+                                  value === null ||
+                                    value === undefined ||
+                                    value === ""
+                                    ? "-"
+                                    : typeof value === "string"
+                                      ? value.charAt(0).toUpperCase() + value.slice(1)
+                                      : value;
 
                                 return (
                                   <td

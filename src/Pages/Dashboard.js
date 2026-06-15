@@ -50,8 +50,13 @@ import {
   TableRow,
 } from "@mui/material";
 import { formatAmount } from "../utils/helper";
-// import BarChartIcon from '@mui/icons-material/BarChart';
-// import ListIcon from '@mui/icons-material/List';
+import imgae from "../Image/no-data.png";
+
+import imgae3 from "../Image/no-bill.png";
+import imgae4 from "../Image/no-staff.png";
+import imgae5 from "../Image/expiring.png";
+import imgae6 from "../Image/no-distibutor.png";
+
 const Dashboard = () => {
   const history = useHistory()
 
@@ -452,8 +457,10 @@ const Dashboard = () => {
             </div>
             <div className="dsh_card_chart grid grid-cols-1 lg:grid-cols-2 gap-6 mb-3 px-4 py-3 rounded-lg">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-3 h-full rounded-lg">
+              
                 <div
-                  className=" bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6 h-full"
+                  className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
+                  style={{ width: "100%" }}
                 >
                   <div className="flex flex-col gap-2">
                     <span className="text-gray-600 dark:text-gray-500 text-lg">
@@ -463,20 +470,32 @@ const Dashboard = () => {
                       Rs. {formatAmount(record?.total_ptr)}
                     </div>
                   </div>
-
+                  <div className="w-16 h-16 flex-shrink-0">
+                    <img
+                      src={require("../Image/stock.png")}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                 </div>
+              
                 <div
-                  className=" bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6 h-full"
+                  className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
+                  style={{ width: "100%" }}
                 >
                   <div className="flex flex-col gap-2">
                     <span className="text-gray-600 dark:text-gray-500 text-lg">
-                      STOCK BY MRP
+                      STOCK BY PTR
                     </span>
                     <div className="text-3xl font-bold text-gray-900">
                       Rs. {formatAmount(record?.total_mrp)}
                     </div>
                   </div>
-
+                  <div className="w-16 h-16 flex-shrink-0">
+                    <img
+                      src={require("../Image/profit.png")}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                 </div>
               </div>
               <div
@@ -563,13 +582,33 @@ const Dashboard = () => {
                                 </div>
                               </div>
                             )) : (
-                              <div className="flex flex-col items-center justify-center py-10 opacity-70">
-                                <div className="bg-green-50 p-4 rounded-full mb-3">
-                                  <FiUsers className="text-4xl text-green-500" />
-                                </div>
-                                <p className="text-gray-600 font-semibold text-lg">No Customers Found</p>
-                                <p className="text-gray-400 text-sm mt-1">Check back later or add new customers.</p>
+                              // <div className="flex flex-col items-center justify-center py-10 opacity-70">
+                              //   <div className="bg-green-50 p-4 rounded-full mb-3">
+                              //     <FiUsers className="text-4xl text-green-500" />
+                              //   </div>
+                              //   <p className="text-gray-600 font-semibold text-lg">No Customers Found</p>
+                              //   <p className="text-gray-400 text-sm mt-1">Check back later or add new customers.</p>
+                              // </div>
+
+
+
+                              <div className="flex flex-col items-center justify-center py-10 ">
+                                <img
+                                  src={imgae}
+                                  alt="No Customers Found"
+                                  className="w-72 h-auto object-contain mb-4"
+                                />
+
+                                <p className="text-black font-semibold text-lg">
+                                  No Customers Found
+                                </p>
+
+                                <p className="text-black text-sm mt-1">
+                                  Check back later or add new customers.
+                                </p>
                               </div>
+
+
                             )}
                           </div>
                         </div>
@@ -730,12 +769,28 @@ const Dashboard = () => {
                         </div>
                       </div>
                     )) : (
-                      <div className="flex flex-col items-center justify-center py-16 opacity-70 h-full">
-                        <div className="bg-green-50 p-5 rounded-full mb-4">
-                          <FiBox className="text-5xl text-green-500" />
-                        </div>
-                        <p className="text-gray-600 font-semibold text-lg">No Distributors Found</p>
-                        <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
+                      // <div className="flex flex-col items-center justify-center py-16 opacity-70 h-full">
+                      //   <div className="bg-green-50 p-5 rounded-full mb-4">
+                      //     <FiBox className="text-5xl text-green-500" />
+                      //   </div>
+                      //   <p className="text-gray-600 font-semibold text-lg">No Distributors Found</p>
+                      //   <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
+                      // </div>
+
+                      <div className="flex flex-col items-center justify-center py-10  mt-5">
+                        <img
+                          src={imgae6}
+                          alt="No Customers Found"
+                          className="w-72 h-auto object-contain mb-4"
+                        />
+
+                        <p className="text-black font-semibold text-lg">
+                          No Distributors Found
+                        </p>
+
+                        <p className="text-black text-sm mt-1">
+                          Check back later or adjust filters.
+                        </p>
                       </div>
                     )}
                   </div>
@@ -848,12 +903,27 @@ const Dashboard = () => {
                       </>
                     ) : (
                       // No data state
-                      <div className="flex flex-col justify-center items-center flex-1 py-12 opacity-70">
-                        <div className="bg-green-50 p-5 rounded-full mb-4">
-                          <FiFileText className="text-5xl text-green-500" />
-                        </div>
-                        <p className="text-gray-600 font-semibold text-lg">No Bills Found</p>
-                        <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
+                      // <div className="flex flex-col justify-center items-center flex-1 py-12 opacity-70">
+                      //   <div className="bg-green-50 p-5 rounded-full mb-4">
+                      //     <FiFileText className="text-5xl text-green-500" />
+                      //   </div>
+                      //   <p className="text-gray-600 font-semibold text-lg">No Bills Found</p>
+                      //   <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
+                      // </div>
+                      <div className="flex flex-col items-center justify-center py-10 ">
+                        <img
+                          src={imgae3}
+                          alt="No Customers Found"
+                          className="w-72 h-auto object-contain mb-4"
+                        />
+
+                        <p className="text-black font-semibold text-lg">
+                          No Bills Found
+                        </p>
+
+                        <p className="text-black text-sm mt-1">
+                          Check back later or adjust filters.
+                        </p>
                       </div>
                     )}
 
@@ -962,12 +1032,28 @@ const Dashboard = () => {
                               ))}
                             </div>
                           ) : (
-                            <div className="flex flex-col justify-center items-center py-12 opacity-70">
-                              <div className="bg-green-50 p-5 rounded-full mb-4">
-                                <FiUsers className="text-5xl text-green-500" />
-                              </div>
-                              <p className="text-gray-600 font-semibold text-lg">No Staff Data</p>
-                              <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
+                            // <div className="flex flex-col justify-center items-center py-12 opacity-70">
+                            //   <div className="bg-green-50 p-5 rounded-full mb-4">
+                            //     <FiUsers className="text-5xl text-green-500" />
+                            //   </div>
+                            //   <p className="text-gray-600 font-semibold text-lg">No Staff Data</p>
+                            //   <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
+                            // </div>
+
+                            <div className="flex flex-col items-center justify-center py-10 mr-10">
+                              <img
+                                src={imgae4}
+                                alt="No Customers Found"
+                                className="w-72 h-auto object-contain mb-4"
+                              />
+
+                              <p className="text-black font-semibold text-lg">
+                                No Staff Data
+                              </p>
+
+                              <p className="text-black text-sm mt-1">
+                                Check back later or adjust filters.
+                              </p>
                             </div>
                           )}
                         </div>
@@ -1042,12 +1128,28 @@ const Dashboard = () => {
                               </div>
                             </>
                           ) : (
-                            <div className="flex flex-col flex-1 justify-center items-center py-16 opacity-70">
-                              <div className="bg-green-50 p-5 rounded-full mb-4">
-                                <FiClock className="text-5xl text-green-500" />
-                              </div>
-                              <p className="text-gray-600 font-semibold text-lg">No Expiring Items</p>
-                              <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
+                            // <div className="flex flex-col flex-1 justify-center items-center py-16 opacity-70">
+                            //   <div className="bg-green-50 p-5 rounded-full mb-4">
+                            //     <FiClock className="text-5xl text-green-500" />
+                            //   </div>
+                            //   <p className="text-gray-600 font-semibold text-lg">No Expiring Items</p>
+                            //   <p className="text-gray-400 text-sm mt-1">Check back later or adjust filters.</p>
+                            // </div>
+
+                            <div className="flex flex-col items-center justify-center py-10  mt-8">
+                              <img
+                                src={imgae5}
+                                alt="No Customers Found"
+                                className="w-72 h-auto object-contain mb-4"
+                              />
+
+                              <p className="text-black font-semibold text-lg">
+                                No Expiring Items
+                              </p>
+
+                              <p className="text-black text-sm mt-1">
+                                Check back later or adjust filters.
+                              </p>
                             </div>
                           )}
                         </TabPanel>

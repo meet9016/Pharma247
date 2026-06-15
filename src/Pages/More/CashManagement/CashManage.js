@@ -357,7 +357,7 @@ const CashManage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
 
                       {/* Total In */}
-                      <div className="bg-white rounded-xl border border-green-200 shadow-sm p-4">
+                      <div className="bg-white rounded-xl border border-green-500 shadow-sm p-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100">
                             <FaArrowDown className="text-green-600 text-lg" />
@@ -372,7 +372,7 @@ const CashManage = () => {
                       </div>
 
                       {/* Total Out */}
-                      <div className="bg-white rounded-xl border border-red-200 shadow-sm p-4">
+                      <div className="bg-white rounded-xl border border-red-500 shadow-sm p-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-red-100">
                             <FaArrowUp className="text-red-600 text-lg" />

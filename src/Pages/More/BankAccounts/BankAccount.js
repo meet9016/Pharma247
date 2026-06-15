@@ -14,6 +14,7 @@ import DatePicker from "react-datepicker";
 import { addDays, format, subDays } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import { MdOutlineDoDisturb } from "react-icons/md";
+
 // import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 // import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -45,6 +46,9 @@ import axios from "axios";
 import Loader from "../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { image } from "d3";
+import image1 from "../../../Image/no-bank-data.png";
+
 
 const BankAccount = () => {
   const history = useHistory();
@@ -77,6 +81,7 @@ const BankAccount = () => {
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [openAddPopUpAdjust, setOpenAddPopUpAdjust] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+
   // const [startdate, setStartDate] = useState(dayjs().add(-30, 'day'));
   // const [enddate, setEndDate] = useState(dayjs());
   const [startDate, setStartDate] = useState(subDays(new Date(), 30));
@@ -103,6 +108,7 @@ const BankAccount = () => {
   const [details, setDetails] = useState({});
   const pdfIcon = process.env.PUBLIC_URL + "/pdf.png";
   const inputRefs = useRef([]);
+
 
 
   const handleChange = (event, newValue) => {
@@ -170,7 +176,7 @@ const BankAccount = () => {
       if (selectedAccountId !== null && selectedAccountId !== undefined) {
         BankDetailgetByID(selectedAccountId);
       }
-    }, 500); // debounce time in ms
+    }, 500);
 
     return () => clearTimeout(delayDebounce);
   }, [debouncedSearch, selectedAccountId, startDate, endDate]);
@@ -579,7 +585,9 @@ const BankAccount = () => {
             onClick={() => toggleDrawer(false)}
           >
             {/* 💰 Savings Accounts */}
-            {bankData.filter(account => account.bank_account_name === "Saving").length > 0 && (
+
+
+            {/* {bankData.filter(account => account.bank_account_name === "Saving").length > 0 && (
               <List>
                 <h1
                   className="text-lg sm:text-base md:text-lg flex justify-start p-2"
@@ -639,7 +647,88 @@ const BankAccount = () => {
                   ))}
                 <Divider style={{ borderColor: "var(--color2) !important", marginBlock: "10px" }} />
               </List>
+            )} */}
+
+
+
+            {bankData.filter(account => account.bank_account_name === "Saving").length > 0 ? (
+              <List>
+                <h1
+                  className="text-lg sm:text-base md:text-lg flex justify-start p-2"
+                  style={{ color: "var(--color1)" }}
+                >
+                  Savings Accounts
+                </h1>
+
+                {bankData
+                  .filter(account => account.bank_account_name === "Saving")
+                  .map((account, index) => (
+                    <ListItem
+                      key={account.id}
+                      className={`list-bank ${selectedAccountId === account.id ? "primary-bg text-white" : ""
+                        }`}
+                      disablePadding
+                    >
+                      <ListItemButton
+                        style={{ width: "100%", borderRadius: "10px" }}
+                        onClick={() => handleAccountClick(account.id, index)}
+                      >
+                        <div className="w-full min-w-0 flex-1">
+                          <p
+                            className={`text-xs ${selectedAccountId === account.id ? "text-white" : ""
+                              } text-gray-600 mb-1 font-mono tracking-wide`}
+                          >
+                            {account.bank_account_number || "Empty"}
+                          </p>
+
+                          <h6
+                            className={`font-semibold text-sm mb-1 ${selectedAccountId === account.id ? "text-white" : ""
+                              }`}
+                          >
+                            {account.bank_name}
+                          </h6>
+
+                          <h6
+                            className={`text-xs text-black font-semibold ${selectedAccountId === account.id ? "text-white" : ""
+                              }`}
+                          >
+                            {account.account_holder_name}
+                          </h6>
+                        </div>
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+
+                <Divider
+                  style={{
+                    borderColor: "var(--color2)",
+                    marginBlock: "10px",
+                  }}
+                />
+              </List>
+            ) : (
+              <div className="flex flex-col items-center w-full h-[400px]">
+                <img
+                  src={image1}
+                  alt="No Data"
+                  className="w-48 h-auto object-contain  select-none pointer-events-none"
+                  style={{ marginTop: "120%" }}
+                />
+
+                <p className="mt-4 text-black text-lg font-medium">
+                  No Bank Details
+                </p>
+              </div>
             )}
+
+
+
+
+
+
+
+
+
 
             {/* Current Accounts */}
             {bankData.filter(account => account.bank_account_name === "Current").length > 0 && (

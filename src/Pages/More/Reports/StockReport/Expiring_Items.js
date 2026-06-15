@@ -345,7 +345,7 @@ const Expiring_Items = () => {
                                         : {}
                                     }
                                   >
-                                    {item[column.id]}
+                                    {item[column.id] || "-"}
                                   </td>
                                 )
                               )}

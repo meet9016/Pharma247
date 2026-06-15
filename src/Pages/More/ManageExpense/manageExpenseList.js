@@ -919,6 +919,7 @@ const ManageExpense = () => {
                               <TextField
                                 autoComplete="off"
                                 required
+                                placeholder="Gst"
                                 type="number"
                                 size="small"
                                 value={gst}
@@ -945,6 +946,7 @@ const ManageExpense = () => {
                               <TextField
                                 autoComplete="off"
                                 required
+                                placeholder="GSTN Number"
                                 size="small"
                                 value={gstIN}
                                 onChange={(e) =>
@@ -969,6 +971,7 @@ const ManageExpense = () => {
                             <TextField
                               autoComplete="off"
                               required
+                              placeholder="Party Name"
                               size="small"
                               value={party}
                               onChange={(e) => setParty(e.target.value)}

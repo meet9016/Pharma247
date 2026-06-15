@@ -74,7 +74,7 @@ const SaleSummary = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -129,13 +129,13 @@ const SaleSummary = () => {
           });
       } catch (error) {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
   };
@@ -512,7 +512,14 @@ const SaleSummary = () => {
                                         : {}
                                   }
                                 >
-                                  {item[key]}
+                                  {/* {item[key]} */}
+                                  {
+                                    item[key] === null ||
+                                      item[key] === undefined ||
+                                      item[key] === ""
+                                      ? "-"
+                                      : item[key]
+                                  }
                                 </td>
                               ))}
                             </tr>

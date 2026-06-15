@@ -68,13 +68,13 @@ const Top_Selling_Items = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -103,7 +103,7 @@ const Top_Selling_Items = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -363,11 +363,19 @@ const Top_Selling_Items = () => {
                               </td>
                               {TopSallingColumns.map((column, colIndex) => {
                                 const value = row[column.id];
+                                // const formattedValue =
+                                //   typeof value === "string" && value.length > 0
+                                //     ? value.charAt(0).toUpperCase() +
+                                //     value.slice(1)
+                                //     : value;
                                 const formattedValue =
-                                  typeof value === "string" && value.length > 0
-                                    ? value.charAt(0).toUpperCase() +
-                                    value.slice(1)
-                                    : value;
+                                  value === null ||
+                                    value === undefined ||
+                                    value === ""
+                                    ? "-"
+                                    : typeof value === "string"
+                                      ? value.charAt(0).toUpperCase() + value.slice(1)
+                                      : value;
                                 return (
                                   <td
                                     key={column.id}
@@ -380,7 +388,8 @@ const Top_Selling_Items = () => {
                                   >
                                     {column.format && typeof value === "number"
                                       ? column.format(value)
-                                      : formattedValue}
+                                      : formattedValue
+                                    }
                                   </td>
                                 );
                               })}
@@ -401,8 +410,8 @@ const Top_Selling_Items = () => {
                     <button
                       onClick={handlePrevious}
                       className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                          ? "bg-gray-200 text-gray-700"
-                          : "secondary-bg text-white"
+                        ? "bg-gray-200 text-gray-700"
+                        : "secondary-bg text-white"
                         }`}
                       disabled={currentPage === 1}
                     >
@@ -413,8 +422,8 @@ const Top_Selling_Items = () => {
                         key={i}
                         onClick={() => handleClick(i + 1)}
                         className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1
-                            ? "secondary-bg text-white"
-                            : "bg-gray-200 text-gray-700"
+                          ? "secondary-bg text-white"
+                          : "bg-gray-200 text-gray-700"
                           }`}
                       >
                         {i + 1}
@@ -423,8 +432,8 @@ const Top_Selling_Items = () => {
                     <button
                       onClick={handleNext}
                       className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                          ? "bg-gray-200 text-gray-700"
-                          : "secondary-bg text-white"
+                        ? "bg-gray-200 text-gray-700"
+                        : "secondary-bg text-white"
                         }`}
                       disabled={currentPage != totalPages}
                     >

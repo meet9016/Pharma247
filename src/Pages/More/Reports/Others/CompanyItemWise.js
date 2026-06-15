@@ -78,13 +78,13 @@ const CompanyItemWise = () => {
           });
       } catch (error) {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
   };
@@ -382,9 +382,21 @@ const CompanyItemWise = () => {
                                           : {}
                                     }
                                   >
-                                    {item[column.id] &&
+                                    {/* {item[column.id] &&
                                       item[column.id].charAt(0).toUpperCase() +
-                                      item[column.id].slice(1)}
+                                      item[column.id].slice(1)} */}
+
+                                    {
+                                      item[column.id] === null ||
+                                        item[column.id] === undefined ||
+                                        item[column.id] === ""
+                                        ? "-"
+                                        : typeof item[column.id] === "string"
+                                          ? item[column.id].charAt(0).toUpperCase() +
+                                          item[column.id].slice(1)
+                                          : item[column.id]
+                                    }
+                                    
                                   </td>
                                 )
                               )}

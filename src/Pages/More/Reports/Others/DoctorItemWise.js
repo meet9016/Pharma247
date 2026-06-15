@@ -99,13 +99,13 @@ const DoctorItemWise = () => {
           });
       } catch (error) {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
   };
@@ -491,9 +491,19 @@ const DoctorItemWise = () => {
                                         : {}
                                   }
                                 >
-                                  {fieldsWithCurrency.includes(column.id)
+                                  {/* {fieldsWithCurrency.includes(column.id)
                                     ? `Rs.${item[column.id]}`
-                                    : item[column.id]}
+                                    : item[column.id]} */}
+                                  {
+                                    item[column.id] === null ||
+                                      item[column.id] === undefined ||
+                                      item[column.id] === ""
+                                      ? "-"
+                                      : fieldsWithCurrency.includes(column.id)
+                                        ? `Rs.${item[column.id]}`
+                                        : item[column.id]
+                                  }
+
                                 </td>
                               ))}
                             </tr>
@@ -534,8 +544,8 @@ const DoctorItemWise = () => {
                     <button
                       onClick={handlePrevious}
                       className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                          ? "bg-gray-200 text-gray-700"
-                          : "secondary-bg text-white"
+                        ? "bg-gray-200 text-gray-700"
+                        : "secondary-bg text-white"
                         }`}
                       disabled={currentPage === 1}
                     >
@@ -546,8 +556,8 @@ const DoctorItemWise = () => {
                         key={i}
                         onClick={() => handleClick(i + 1)}
                         className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1
-                            ? "secondary-bg text-white"
-                            : "bg-gray-200 text-gray-700"
+                          ? "secondary-bg text-white"
+                          : "bg-gray-200 text-gray-700"
                           }`}
                       >
                         {i + 1}
@@ -556,8 +566,8 @@ const DoctorItemWise = () => {
                     <button
                       onClick={handleNext}
                       className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                          ? "bg-gray-200 text-gray-700"
-                          : "secondary-bg text-white"
+                        ? "bg-gray-200 text-gray-700"
+                        : "secondary-bg text-white"
                         }`}
                       disabled={currentPage === totalPages}
                     >

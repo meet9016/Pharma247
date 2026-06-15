@@ -2216,6 +2216,7 @@ const InventoryList = () => {
                 rowsPerPageOptions={[5, 10, 15]}
                 component="div"
                 count={data?.[0].count}
+                
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

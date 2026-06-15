@@ -398,7 +398,7 @@ const Purchase_Return_Report = () => {
                                           : {}
                                     }
                                   >
-                                    {item[column.id]}
+                                    {item[column.id] ? item[column.id] : "-"}
                                   </td>
                                 )
                               )}
