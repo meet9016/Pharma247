@@ -622,7 +622,7 @@ const LoginSignup = () => {
 
           <div className="form-box register" style={{ visibility: active ? "visible" : "hidden" }}>
             {step === "register" && (
-              <form id="registerForm" onSubmit={(e) => handleValidation(e)}>
+              <form id="registerForm" onSubmit={(e) => handleValidation(e)} noValidate>                        
                 {/* <h1>Welcome !</h1> */}
                 <div className="input-box">
                   <TextField
@@ -631,13 +631,12 @@ const LoginSignup = () => {
                     id="pharmacy_name"
                     placeholder="Pharmacy Name"
                     required
-
                     value={registerData.pharmacy_name}
                     inputRef={(el) => (inputRefs.current[0] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 0)}
                     onChange={handleInputChange}
                     autoFocus />
-
+                 
                   <i className='bx bxs-store'></i>
                 </div>
                 <div className="input-box">
@@ -720,6 +719,22 @@ const LoginSignup = () => {
             {step === "otp" && (
               <form id="otpPasswordForm" onSubmit={validationOTP}>
 
+                <div
+                  onClick={() => setStep("register")}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    marginBottom: "10px",
+                    justifyContent: "flex-start",
+                    width: "100%"
+                  }}
+                >
+                  <span style={{ fontSize: "14px", fontWeight: "500", color: "#333" }}>
+                    ← Back
+                  </span>
+                </div>
+
                 <div className="input-box">
                   <TextField
                     type="text" id="otp"
@@ -767,9 +782,9 @@ const LoginSignup = () => {
                             }}
                           >
                             {showPasswordIcon ? (
-                              <VisibilityOff fontSize="small" />
-                            ) : (
                               <Visibility fontSize="small" />
+                            ) : (
+                              <VisibilityOff fontSize="small" />
                             )}
                           </IconButton>
                         </InputAdornment>
@@ -874,9 +889,9 @@ const LoginSignup = () => {
                             }}
                           >
                             {showPasswordIcon ? (
-                              <VisibilityOff fontSize="small" />
-                            ) : (
                               <Visibility fontSize="small" />
+                            ) : (
+                              <VisibilityOff fontSize="small" />
                             )}
                           </IconButton>
                         </InputAdornment>

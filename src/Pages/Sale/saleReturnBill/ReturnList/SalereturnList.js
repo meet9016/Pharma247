@@ -75,6 +75,7 @@ const SalereturnList = () => {
   const searchTimeout = useRef(null);
   const currentSearchTerms = useRef(searchTerms);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [openStartCalendar, setOpenStartCalendar] = useState(false);
 
 
   useEffect(() => {
@@ -102,6 +103,12 @@ const SalereturnList = () => {
   useEffect(() => () => {
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
   }, []);
+
+  useEffect(() => {
+    if (openAddPopUp) {
+      setOpenStartCalendar(true);
+    }
+  }, [openAddPopUp]);
 
 
   const saleReturnBillList = async (page = 1, isSearch = false) => {
@@ -134,7 +141,7 @@ const SalereturnList = () => {
       setIsSearchLoading(false);
       setTableData([]);
       setTotalRecords(0);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -257,7 +264,7 @@ const SalereturnList = () => {
     } catch (error) {
       console.error("API error:", error);
       setIsLoading(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -289,7 +296,7 @@ const SalereturnList = () => {
     } catch (error) {
       console.error("API error:", error);
       setIsLoading(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -645,17 +652,17 @@ const SalereturnList = () => {
           </div>
           <Dialog
             open={openAddPopUp}
-            // sx={{
-            //     "& .MuiDialog-container": {
-            //         "& .MuiPaper-root": {
-            //             width: "50%",
-            //             height: "50%",
-            //             maxWidth: "500px", // Set your width here
-            //             maxHeight: "80vh", // Set your height here
-            //             overflowY: "auto", // Enable vertical scrolling if content overflows
-            //         },
-            //     },
-            // }}
+            sx={{
+              "& .MuiDialog-container": {
+                "& .MuiPaper-root": {
+                  width: "50%",
+                  height: "50%",
+                  maxWidth: "500px", // Set your width here
+                  maxHeight: "80vh", // Set your height here
+                  overflowY: "auto", // Enable vertical scrolling if content overflows
+                },
+              },
+            }}
             className="order_list_ml custom-dialog"
           >
             <DialogTitle
@@ -678,6 +685,7 @@ const SalereturnList = () => {
             >
               <CloseIcon />
             </IconButton>
+
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 <div
@@ -706,6 +714,11 @@ const SalereturnList = () => {
                                   setPdfStartDate(newDate)
                                 }
                                 dateFormat="dd/MM/yyyy"
+                                open={openStartCalendar}
+                                onClickOutside={() => setOpenStartCalendar(false)}
+                                onSelect={() => setOpenStartCalendar(false)}
+                                onCalendarClose={() => setOpenStartCalendar(false)}
+                                onCalendarOpen={() => setOpenStartCalendar(true)}
                               />
                             </div>
                           </div>
@@ -731,6 +744,30 @@ const SalereturnList = () => {
                 </div>
               </DialogContentText>
             </DialogContent>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <DialogActions style={{ padding: "20px 24px" }}>
               <Button
                 autoFocus

@@ -37,6 +37,7 @@
   .abt_fld_pf {
     flex-direction: column;
   }
+
   .aboutTextField {
     width: 100%;
   }
@@ -47,9 +48,11 @@
     font-size: 14px;
     white-space: nowrap;
   }
+
   .abt_res_fldd {
     flex-direction: column-reverse;
   }
+
   .img_prv_fldd {
     display: flex;
     justify-content: end;
@@ -60,12 +63,14 @@
   .dc_cdr_ff {
     flex-direction: column;
   }
+
   .dc_imgs_fldd {
     width: 100%;
     height: 100%;
     min-height: 291px;
     object-fit: contain;
   }
+
   .dc_impt_fldd {
     width: 100%;
   }
@@ -75,12 +80,15 @@
   .cdd_mn_hdr {
     flex-direction: column;
   }
+
   .pb_mn_hdsssss_vv {
     height: 100% !important;
   }
+
   .pb_list_hedrr {
     white-space: nowrap;
   }
+
   .plans_hdr_txtsss {
     font-size: x-large;
   }
@@ -97,6 +105,7 @@
     width: 50%;
   }
 }
+
 @media (min-width: 1400px) {
   .pass_boxx_flds {
     width: 40%;
@@ -108,6 +117,7 @@
     font-size: 14px;
     white-space: nowrap;
   }
+
   .pb_list_hedrr {
     white-space: nowrap;
   }
@@ -130,4 +140,22 @@
   .plns_cds {
     flex-direction: column;
   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* fix focus white issue */
+.date-input-fix:focus {
+  background-color: #ffffff !important;
+  outline: none;
+  border-color: #3b82f6 !important;
 }

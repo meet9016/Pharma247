@@ -399,15 +399,10 @@ const Salelist = () => {
                     />
                   </div>
                 </div>
-                <div className="detail flex flex-col"
-                  style={{
-                    
-                    position: "relative",
-                    zIndex: 9999,
-                    overflow: "visible",
-                  }}>
+
+                <div className="detail flex flex-col">
                   <span className="text-gray-500 block">End Date</span>
-                  <div className="" style={{ width: "100%" }}>
+                  <div className="" style={{ width: "100%", zIndex: 9999 }}>
                     <DatePicker
                       className="custom-datepicker"
                       selected={PdfendDate}

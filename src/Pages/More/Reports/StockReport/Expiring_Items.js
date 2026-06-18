@@ -9,6 +9,7 @@ import DatePicker from "react-datepicker";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useEffect, useState } from "react";
 import { addMonths, format, set, subDays, subMonths } from "date-fns";
+import { startOfMonth, endOfMonth } from "date-fns";
 
 import {
   FormControl,
@@ -31,8 +32,10 @@ const Expiring_Items = () => {
 
   const history = useHistory();
   const token = localStorage.getItem("token");
-  const [startDate, setStartDate] = useState(addMonths(new Date(), 6));
-  const [endDate, setEndDate] = useState(addMonths(new Date(), 6));
+  // const [startDate, setStartDate] = useState(addMonths(new Date(), 6));
+  // const [endDate, setEndDate] = useState(addMonths(new Date(), 6));
+  const [startDate, setStartDate] = useState(startOfMonth(new Date()));
+  const [endDate, setEndDate] = useState(endOfMonth(new Date()));
   const [reportType, setReportType] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,31 +54,71 @@ const Expiring_Items = () => {
     { id: "name", label: "Product Name", minWidth: 200 },
     { id: "qty", label: "Quantity", minWidth: 100 },
     { id: "expiry", label: "Expiry Date", minWidth: 120 },
+    { id: "location", label: "Location", minWidth: 100 },
   ];
 
-  const exportToCSV = () => {
-    if (expiryDateData?.length == 0) {
-      toast.dismiss();
-      toast.error("Apply filter and then after download records.");
-    } else {
-      const filteredData = expiryDateData?.map(
-        ({ id, name, qty, expiry }) => ({
-          ID: id,
-          ProductName: name,
-          Quantity: qty,
-          ExpiryDate: expiry,
-        })
+  // const exportToCSV = () => {
+  //   if (expiryDateData?.length == 0) {
+  //     toast.dismiss();
+  //     toast.error("Apply filter and then after download records.");
+  //   } else {
+  //     const filteredData = expiryDateData?.map(
+  //       ({ id, name, qty, expiry }) => ({
+  //         ID: id,
+  //         ProductName: name,
+  //         Quantity: qty,
+  //         ExpiryDate: expiry,
+  //       })
+  //     );
+  //     const headers = ["ID", "ProductName", "Quantity", "ExpiryDate"];
+  //     const filteredDataRows = filteredData.map((item) =>
+  //       headers.map((header) => item[header])
+  //     );
+  //     const combinedData = [headers, ...filteredDataRows];
+  //     const csv = combinedData.map((row) => row.join(",")).join("\n");
+  //     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  //     saveAs(blob, "Expiring_Items_Report.csv");
+  //   }
+  // };
+
+
+
+  const exportToCSV = async () => {
+    try {
+      setIsLoading(true);
+
+      const formData = new FormData();
+      formData.append("start_month", format(startDate, "MM/yy"));
+      formData.append("end_month", format(endDate, "MM/yy"));
+
+      const res = await axios.post(
+        "https://testadmin.pharma247.in/api/expiry-items-excel-data-import",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      const headers = ["ID", "ProductName", "Quantity", "ExpiryDate"];
-      const filteredDataRows = filteredData.map((item) =>
-        headers.map((header) => item[header])
-      );
-      const combinedData = [headers, ...filteredDataRows];
-      const csv = combinedData.map((row) => row.join(",")).join("\n");
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      saveAs(blob, "Expiring_Items_Report.csv");
+
+      const fileUrl = res.data?.excel_url;
+
+      if (fileUrl) {
+        window.open(fileUrl, "_blank");
+      } else {
+        toast.error("File URL not found");
+      }
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+
+
 
   const handleClick = (pageNum) => {
     setCurrentPage(pageNum);
@@ -257,7 +300,6 @@ const Expiring_Items = () => {
                           onChange={(newDate) => setStartDate(newDate)}
                           dateFormat="MM/yyyy"
                           showMonthYearPicker
-
                         />
                       </div>
                     </div>
