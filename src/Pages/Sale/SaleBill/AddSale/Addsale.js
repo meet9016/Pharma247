@@ -4365,6 +4365,12 @@ const AddSale = () => {
                         size="small"
                         value={addItemName}
                         placeholder="Item Name"
+                        error={!!addItemError.addItemName}
+                        sx={{
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "red !important",
+                          },
+                        }}
                         // onChange={(e) => setAddItemName(e.target.value.toUpperCase())}
                         onChange={(e) => {
                           setAddItemName(e.target.value.toUpperCase());
@@ -4376,9 +4382,9 @@ const AddSale = () => {
                         }}
                       />
                       {addItemError.addItemName && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify" }}>
                           {addItemError.addItemName}
-                        </p>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -4404,10 +4410,17 @@ const AddSale = () => {
                         type="number"
                         inputRef={unitInputRef}
                         size="small"
-                        sx={{ minWidth: "150px" }}
+
                         value={addUnit}
                         placeholder="Unit"
+                        error={!!addItemError.addUnit}
                         // onChange={(e) => setAddUnit(e.target.value)}
+                        sx={{
+                          minWidth: "150px",
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "red !important",
+                          },
+                        }}
                         onChange={(e) => {
                           setAddUnit(e.target.value);
 
@@ -4424,9 +4437,9 @@ const AddSale = () => {
                         }}
                       />
                       {addItemError.addUnit && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify" }}>
                           {addItemError.addUnit}
-                        </p>
+                        </div>
                       )}
                     </div>
                     <div className="fields add_new_item_divv">
