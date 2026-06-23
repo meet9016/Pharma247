@@ -148,11 +148,22 @@ const BankAccount = () => {
   const handleAddBtn = () => {
     setClicked((prevState) => !prevState);
     setReduceClicked(false);
+
+    setErrors((prev) => ({
+      ...prev,
+      reduceclicked: "",
+    }));
   };
 
   const handleReduceBtn = () => {
     setReduceClicked((prevState) => !prevState);
     setClicked(false);
+
+
+    setErrors((prev) => ({
+      ...prev,
+      reduceclicked: "",
+    }));
   };
 
   const handleKeyDown = (event, index) => {
@@ -1257,11 +1268,17 @@ const BankAccount = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={bankName}
+                      error={!!errors.bankName}
                       placeholder="Bank Name"
                       onChange={(e) => {
                         // Transform to uppercase
                         const uppercasedValue = e.target.value.toUpperCase();
                         setBankName(uppercasedValue);
+
+                        setErrors((prev) => ({
+                          ...prev,
+                          bankName: "",
+                        }));
                       }}
                       inputRef={(el) => (inputRefs.current[0] = el)}
                       onKeyDown={(e) => {
@@ -1277,6 +1294,20 @@ const BankAccount = () => {
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
+                      }}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: errors.bankName ? "red" : "",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: errors.bankName ? "red" : "",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: errors.bankName ? "red" : "",
+                          },
+                        },
                       }}
                       style={{ width: "100%" }}
                       variant="outlined"
@@ -1297,6 +1328,7 @@ const BankAccount = () => {
                       size="small"
                       type="text"
                       value={accountType}
+                      error={!!errors.accountType}
                       placeholder="Account Type"
                       inputRef={(el) => (inputRefs.current[1] = el)}
                       onKeyDown={(e) => {
@@ -1318,8 +1350,25 @@ const BankAccount = () => {
                           .toLowerCase()
                           .replace(/\b\w/g, (char) => char.toUpperCase());
                         setAccountType(capitalizedValue);
+                        setErrors((prev) => ({
+                          ...prev,
+                          accountType: "",
+                        }))
                       }}
-                      style={{ width: "100%" }}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: errors.accountType ? "red" : "",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: errors.accountType ? "red" : "",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: errors.accountType ? "red" : "",
+                          },
+                        },
+                      }}
                       variant="outlined"
                       fullWidth={fullScreen}
                     />
@@ -1449,6 +1498,10 @@ const BankAccount = () => {
                         // Allow only numeric input
                         const numericValue = e.target.value.replace(/[^0-9]/g, "");
                         setReEnterAccountNumber(numericValue);
+                        setErrors((prev) => ({
+                          ...prev,
+                          accountNumber: "",
+                        }));
                       }}
                       inputRef={(el) => (inputRefs.current[4] = el)}
                       onKeyDown={(e) => {
@@ -1688,7 +1741,7 @@ const BankAccount = () => {
             <DialogContentText component="div" sx={{ margin: 0 }}>
               {/* Select Account */}
               <div className="detail mb-4 mt-4">
-                <span className="label primary">Select Account</span>
+                <span className="label primary">Select Account   <span className="text-red-600 ml-1">*</span> </span>
                 <Autocomplete
                   id="select-account-autocomplete"
                   options={[
@@ -1711,6 +1764,11 @@ const BankAccount = () => {
                   onChange={(event, newValue) => {
                     const fakeEvent = { target: { value: newValue ? newValue.value : "" } };
                     handlePaymentTypeChange(fakeEvent);
+
+                    setErrors((prev) => ({
+                      ...prev,
+                      paymentType: "",
+                    }));
                   }}
                   size="small"
                   renderInput={(params) => (
@@ -1718,11 +1776,25 @@ const BankAccount = () => {
                       autoComplete="off"
                       {...params}
                       placeholder="Select Account"
+                      error={!!errors.paymentType}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: errors.paymentType ? "red" : "",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: errors.paymentType ? "red" : "",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: errors.paymentType ? "red" : "",
+                          },
+                        },
+                      }}
                     />
                   )}
                 />
                 {errors.paymentType && (
-                  <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
+                  <div className="error" style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
                     {errors.paymentType}
                   </div>
                 )}
@@ -1730,7 +1802,7 @@ const BankAccount = () => {
 
               {/* Add or Reduce Buttons */}
               <div className="detail mb-4">
-                <span className="label primary mb-2">Add or Reduce</span>
+                <span className="label primary mb-2">Add or Reduce   <span className="text-red-600 ml-1">*</span></span>
                 <div className="flex flex-col sm:flex-row gap-3 mb-2">
                   <Button
                     autoFocus
@@ -1770,7 +1842,7 @@ const BankAccount = () => {
                   </Button>
                 </div>
                 {errors.reduceclicked && (
-                  <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
+                  <div className="error" style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
                     {errors.reduceclicked}
                   </div>
                 )}
@@ -1780,7 +1852,7 @@ const BankAccount = () => {
               <div className="detail mb-4">
                 <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                   <div>
-                    <span className="label primary">Current Balance</span>
+                    <span className="label primary">Current Balance </span>
                     <OutlinedInput
                       type="number"
                       value={currentBalance}
@@ -1819,23 +1891,38 @@ const BankAccount = () => {
               <div className="detail mb-4">
                 <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                   <div>
-                    <span className="label primary">Enter Amount</span>
+                    <span className="label primary">Enter Amount<span className="text-red-600 ml-1">*</span></span>
                     <OutlinedInput
                       type="number"
                       value={enterAmt}
-                      onChange={(e) => setEnterAmt(e.target.value)}
+                      error={!!errors.enterAmt}
+                      onChange={(e) => {
+                        setEnterAmt(e.target.value);
+
+                        setErrors((prev) => ({
+                          ...prev,
+                          enterAmt: "",
+                        }));
+                      }}
                       startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+
                       sx={{
                         width: "100%",
-                        backgroundColor: "#ffffff",
-                        '& .MuiOutlinedInput-input': {
-                          fontWeight: 500
-                        }
+                        backgroundColor: "#fff",
+
+                        "& .MuiOutlinedInput-input": {
+                          fontWeight: 500,
+                        },
+
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: errors.enterAmt ? "red !important" : "",
+                          borderWidth: errors.enterAmt ? "1px" : "",
+                        },
                       }}
                       size="small"
                     />
                     {errors.enterAmt && (
-                      <div className="error" style={{ color: "#d32f2f", fontSize: "0.75rem", marginTop: "4px" }}>
+                      <div className="error" style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
                         {errors.enterAmt}
                       </div>
                     )}

@@ -541,70 +541,116 @@ const Itemmaster = () => {
   // }
 
 
+  // const handleSubmit = () => {
+  //   if (isSubmitting) return false;
+
+  //   const newErrors = {};
+  //   if (!searchItem.trim()) {
+  //     newErrors.searchItem = "Item name is required.";
+  //     // toast.dismiss();
+  //     // toast.error(newErrors.searchItem);
+  //     // return;
+  //   } else {
+  //     const disallowedCharsRegex = /[@$]/;
+  //     if (disallowedCharsRegex.test(searchItem)) {
+  //       newErrors.searchItem = "Enter valid Item name.";
+  //       // toast.dismiss();
+  //       // toast.error("Enter valid Item name.");
+  //       // return;
+
+  //     }
+  //   }
+  //   if (weightage == 0) {
+  //     newErrors.weightage = "Unit is required.";
+  //     toast.dismiss();
+  //     toast.error(newErrors.weightage);
+  //     return;
+  //   }
+  //   // if (packaging.length == 0) {
+  //   //   newErrors.packaging = "Select any Packaging.";
+  //   // toast.dismiss();
+  //   // toast.error(newErrors.packaging);
+  //   // }
+  //   // if (!location) {
+  //   //   newErrors.location = 'Location is required.'
+  //   // toast.dismiss();
+  //   // toast.error(newErrors.location);
+  //   // }
+  //   if (!selectedCompany) {
+  //     newErrors.selectedCompany = "Select any Company.";
+  //     toast.dismiss();
+  //     toast.error(newErrors.selectedCompany);
+  //     return;
+
+  //   }
+  //   // if (!selectedSuppliers) {
+  //   //   newErrors.selectedSuppliers = 'Select any Supplier.'
+  //   // }
+  //   if (!drugGroup) {
+  //     newErrors.drugGroup = "Drug Group is required.";
+  //     toast.dismiss();
+  //     toast.error(newErrors.drugGroup);
+  //     return;
+
+  //   }
+  //   // if (!selectedCategory) {
+  //   //   newErrors.selectedCategory = "Category is required.";
+  //   // toast.dismiss();
+  //   // toast.error(newErrors.selectedCategory);
+  //   // }
+  //   setError(newErrors);
+  //   const isValid = Object.keys(newErrors).length === 0;
+  //   if (isValid) {
+  //     submitItemRecord();
+  //   }
+  //   return isValid;
+  // };
+
+
+
+
+
+
+
   const handleSubmit = () => {
     if (isSubmitting) return false;
 
     const newErrors = {};
+
     if (!searchItem.trim()) {
-      newErrors.searchItem = "Item name is required.";
-      toast.dismiss();
-      toast.error(newErrors.searchItem);
-      return;
+      newErrors.searchItem = "Item name is required";
     } else {
       const disallowedCharsRegex = /[@$]/;
       if (disallowedCharsRegex.test(searchItem)) {
-        newErrors.searchItem = "Enter valid Item name.";
-        toast.dismiss();
-        toast.error("Enter valid Item name.");
-        return;
-
+        newErrors.searchItem = "Enter valid Item name";
       }
     }
+
     if (weightage == 0) {
-      newErrors.weightage = "Unit is required.";
-      toast.dismiss();
-      toast.error(newErrors.weightage);
-      return;
+      newErrors.weightage = "Unit is required";
     }
-    // if (packaging.length == 0) {
-    //   newErrors.packaging = "Select any Packaging.";
-    // toast.dismiss();
-    // toast.error(newErrors.packaging);
-    // }
-    // if (!location) {
-    //   newErrors.location = 'Location is required.'
-    // toast.dismiss();
-    // toast.error(newErrors.location);
-    // }
+
     if (!selectedCompany) {
-      newErrors.selectedCompany = "Select any Company.";
-      toast.dismiss();
-      toast.error(newErrors.selectedCompany);
-      return;
-
+      newErrors.selectedCompany = "Select any Company";
     }
-    // if (!selectedSuppliers) {
-    //   newErrors.selectedSuppliers = 'Select any Supplier.'
-    // }
+
     if (!drugGroup) {
-      newErrors.drugGroup = "Drug Group is required.";
-      toast.dismiss();
-      toast.error(newErrors.drugGroup);
-      return;
+      newErrors.drugGroup = "Drug Group is required";
+    }
 
+    setError(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return false;
     }
-    // if (!selectedCategory) {
-    //   newErrors.selectedCategory = "Category is required.";
-    // toast.dismiss();
-    // toast.error(newErrors.selectedCategory);
-    // }
-    // setError(newErrors);
-    const isValid = Object.keys(newErrors).length === 0;
-    if (isValid) {
-      submitItemRecord();
-    }
-    return isValid;
+
+    submitItemRecord();
+    return true;
   };
+
+
+
+
 
   const submitItemRecord = async () => {
     if (isSubmitting) return;
@@ -894,7 +940,6 @@ const Itemmaster = () => {
 
 
   const handleOptionChange = async (event, newValue) => {
-
     setValue(newValue);
     if (newValue) {
       await resetData();
@@ -914,12 +959,21 @@ const Itemmaster = () => {
 
     setSearchItem(newInputValue);
     // handleSearch(newInputValue);
+    setError((prev) => ({
+      ...prev,
+      searchItem: "",
+    }));
+
 
   };
 
   const handlePack = (e) => {
     setWeightage(e.target.value);
     setPack("1*" + e.target.value);
+    setError((prev) => ({
+      ...prev,
+      weightage: "",
+    }));
   };
 
   const handleClose = () => {
@@ -1057,10 +1111,9 @@ const Itemmaster = () => {
                     <label className="label">Item Name <span className="text-red-600  ">*</span></label>
                     <Autocomplete
                       value={value}
+                      error={!!error.searchItem}
                       inputValue={(searchItem || "").toUpperCase()}
-                      // sx={{ width: 350 }}
                       size="small"
-
                       onChange={handleOptionChange}
                       onInputChange={handleInputChange} // Handles input changes while typing
                       ListboxProps={{
@@ -1083,43 +1136,68 @@ const Itemmaster = () => {
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38) "
+                            borderColor: error.searchItem
+                              ? "#d32f2f"
+                              : "rgba(0, 0, 0, 0.38)",
                           },
-                          "&:hover fieldset": {
-                            borderColor: "var(--color1)", // Hover border color
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.searchItem
+                              ? "#d32f2f"
+                              : "var(--color1)",
                           },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", // Focused border color
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.searchItem
+                              ? "#d32f2f"
+                              : "var(--color1)",
                           },
                         },
                       }}
                     />
+
+                    {error.searchItem && (
+                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {error.searchItem}
+                      </div>
+                    )}
+
                   </div>
                 </div>
                 <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields Unit_divvv itm_divv_wid">
-                    <label className="label">Unit</label>
+                    <label className="label">Unit <span className="text-red-600  ">*</span></label>
                     <TextField
                       id="outlined-number"
                       type="number"
                       size="small"
-                      // sx={{ minWidth: "150px" }}
+                      error={!!error.weightage}
                       value={weightage}
                       onChange={handlePack}
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38) "
+                            borderColor: error.weightage
+                              ? "#d32f2f"
+                              : "rgba(0, 0, 0, 0.38)",
                           },
-                          "&:hover fieldset": {
-                            borderColor: "var(--color1)", // Hover border color
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.weightage
+                              ? "#d32f2f"
+                              : "var(--color1)",
                           },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", // Focused border color
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.weightage
+                              ? "#d32f2f"
+                              : "var(--color1)",
                           },
                         },
                       }}
                     />
+
+                    {error.weightage && (
+                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                        {error.weightage}
+                      </div>
+                    )}
                   </div>
                   <div className="fields Unit_divvv itm_divv_wid">
                     <label className="label">Pack</label>
@@ -1154,7 +1232,16 @@ const Itemmaster = () => {
                         size="small"
                         value={drugGroup}
                         style={{ width: "100%" }}
-                        onChange={(e, value) => setDrugGroup(value)}
+                        // onChange={(e, value) => setDrugGroup(value)}
+
+                        onChange={(e, value) => {
+                          setDrugGroup(value);
+
+                          setError((prev) => ({
+                            ...prev,
+                            drugGroup: "",
+                          }));
+                        }}
                         onInputChange={(e, newInputValue) => {
                           setDrugGroupSearch(newInputValue);
                           if (newInputValue.trim() !== "") {
@@ -1171,18 +1258,28 @@ const Itemmaster = () => {
                         sx={{
                           "& .MuiOutlinedInput-root": {
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "rgba(0, 0, 0, 0.38)",
+                              borderColor: error.drugGroup
+                                ? "#d32f2f"
+                                : "rgba(0, 0, 0, 0.38)",
                             },
-                            "&:hover fieldset": {
-                              borderColor: "var(--color1)",
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: error.drugGroup
+                                ? "#d32f2f"
+                                : "var(--color1)",
                             },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "var(--color1)",
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              borderColor: error.drugGroup
+                                ? "#d32f2f"
+                                : "var(--color1)",
                             },
                           },
                         }}
                       />
-
+                      {error.drugGroup && (
+                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                          {error.drugGroup}
+                        </div>
+                      )}
                     </FormControl>
                   </div>
                 </div>
@@ -1248,8 +1345,16 @@ const Itemmaster = () => {
                         options={companyList}
                         size="small"
                         value={selectedCompany}
-                        onChange={(e, value) => setSelectedCompany(value)}
-                        // sx={{ width: 350 }}
+                        // onChange={(e, value) => setSelectedCompany(value)}
+                        onChange={(e, value) => {
+                          setSelectedCompany(value);
+
+                          setError((prev) => ({
+                            ...prev,
+                            selectedCompany: "",
+                          }));
+                        }}
+                        error={!!error.selectedCompany}
                         getOptionLabel={(option) => option.company_name}
                         renderInput={(params) => (
                           <TextField {...params} placeholder="Select Company" />
@@ -1257,17 +1362,29 @@ const Itemmaster = () => {
                         sx={{
                           "& .MuiOutlinedInput-root": {
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "rgba(0, 0, 0, 0.38) "
+                              borderColor: error.selectedCompany
+                                ? "#d32f2f"
+                                : "rgba(0, 0, 0, 0.38)",
                             },
-                            "&:hover fieldset": {
-                              borderColor: "var(--color1)", // Hover border color
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: error.selectedCompany
+                                ? "#d32f2f"
+                                : "var(--color1)",
                             },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "var(--color1)", // Focused border color
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              borderColor: error.selectedCompany
+                                ? "#d32f2f"
+                                : "var(--color1)",
                             },
                           },
                         }}
                       />
+
+                      {error.selectedCompany && (
+                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                          {error.selectedCompany}
+                        </div>
+                      )}
                       {/* {error.selectedCompany && <span style={{ color: 'red', fontSize: '14px' }}>{error.selectedCompany}</span>} */}
                     </Box>
                   </div>
@@ -1479,7 +1596,7 @@ const Itemmaster = () => {
 
                 <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields four_divv itm_divv_wid" style={{ width: "50%" }}>
-                    <label className="label">HSN code.</label>
+                    <label className="label">HSN code</label>
                     <TextField
                       id="outlined-number"
                       placeholder="Enter HSN Code"

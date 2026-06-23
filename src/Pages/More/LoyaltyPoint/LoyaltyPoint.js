@@ -170,27 +170,27 @@ const LoyaltyPoint = () => {
       // Validate minimum, maximum and percentage
       if (!maximumAmount) {
         newErrors.maximumAmount = "Maximum amount is required";
-        toast.dismiss();
-        toast.error(newErrors.maximumAmount);
+        // toast.dismiss();
+        // toast.error(newErrors.maximumAmount);
       }
 
       if (!minimumAmount) {
         newErrors.minimumAmount = "Minimum amount is required";
-        toast.dismiss();
-        toast.error(newErrors.minimumAmount);
+        // toast.dismiss();
+        // toast.error(newErrors.minimumAmount);
       }
 
 
       if (Number(maximumAmount) <= Number(minimumAmount)) {
         newErrors.amountMismatch = "Maximum amount must be greater than minimum amount";
-        toast.dismiss();
-        toast.error(newErrors.amountMismatch);
+        // toast.dismiss();
+        // toast.error(newErrors.amountMismatch);
       }
 
       if (!percentage) {
         newErrors.percentage = "Percentage is required";
-        toast.dismiss();
-        toast.error(newErrors.percentage);
+        // toast.dismiss();
+        // toast.error(newErrors.percentage);
       }
 
       setErrors(newErrors);
@@ -204,13 +204,13 @@ const LoyaltyPoint = () => {
       const newErrors = {};
       if (!maximumAmount) {
         newErrors.maximumAmount = "Maximum amount is required";
-        toast.dismiss();
-        toast.error(newErrors.maximumAmount);
+        // toast.dismiss();
+        // toast.error(newErrors.maximumAmount);
       }
       if (!minimumAmount) {
         newErrors.minimumAmount = "Minimum amount is required";
-        toast.dismiss();
-        toast.error(newErrors.minimumAmount);
+        // toast.dismiss();
+        // toast.error(newErrors.minimumAmount);
       }
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -644,13 +644,14 @@ const LoyaltyPoint = () => {
                         sx={{ width: "100% " }}
                       >
                         <div className="mb-2">
-                          <span className="label primary">Minimum Amount</span>
+                          <span className="label primary">Minimum Amount<span className="text-red-600 ml-1">*</span></span>
                         </div>
                         <TextField
                           autoComplete="off"
                           type="number"
                           inputRef={inputRef1}
                           onKeyDown={handleKeyDown}
+                          error={!!errors.minimumAmount || !!errors.amountMismatch}
                           value={minimumAmount}
                           placeholder="Minimun Amount"
                           onChange={(e) => {
@@ -659,6 +660,11 @@ const LoyaltyPoint = () => {
                               ""
                             );
                             setMinimumAmount(e.target.value);
+                            setErrors((prev) => ({
+                              ...prev,
+                              minimumAmount: "",
+                              amountMismatch: "",
+                            }));
                           }}
                           variant="outlined"
                           size="small"
@@ -666,8 +672,33 @@ const LoyaltyPoint = () => {
                             "& .MuiInputLabel-root.Mui-focused": {
                               color: "var(--COLOR_UI_PHARMACY)",
                             },
+
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderColor:
+                                  errors.minimumAmount || errors.amountMismatch
+                                    ? "red"
+                                    : "",
+                              },
+                              "&:hover fieldset": {
+                                borderColor:
+                                  errors.minimumAmount || errors.amountMismatch
+                                    ? "red"
+                                    : "",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor:
+                                  errors.minimumAmount || errors.amountMismatch
+                                    ? "red"
+                                    : "",
+                              },
+                            },
                           }}
+
                         />
+                        {errors.minimumAmount && (
+                          <span className="error">{errors.minimumAmount}</span>
+                        )}
                       </FormControl>
                       <FormControl
                         className="max_fld_ly"
@@ -675,7 +706,7 @@ const LoyaltyPoint = () => {
                         sx={{ width: "100%" }}
                       >
                         <div className="mb-2">
-                          <span className="label primary">Maximum Amount</span>
+                          <span className="label primary">Maximum Amount<span className="text-red-600 ml-1">*</span></span>
                         </div>
                         <TextField
                           autoComplete="off"
@@ -683,6 +714,7 @@ const LoyaltyPoint = () => {
                           inputRef={inputRef2}
                           onKeyDown={handleKeyDown}
                           value={maximumAmount}
+                          error={!!errors.maximumAmount}
                           placeholder="Maximum"
                           onChange={(e) => {
                             e.target.value = e.target.value.replace(
@@ -690,15 +722,36 @@ const LoyaltyPoint = () => {
                               ""
                             );
                             setMaximumAmount(e.target.value);
+                            setErrors((prev) => ({
+                              ...prev,
+                              maximumAmount: "",
+                              amountMismatch: "",
+                            }));
                           }}
                           variant="outlined"
                           size="small"
+
                           sx={{
                             "& .MuiInputLabel-root.Mui-focused": {
                               color: "var(--COLOR_UI_PHARMACY)",
                             },
+
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderColor: errors.maximumAmount ? "red" : "",
+                              },
+                              "&:hover fieldset": {
+                                borderColor: errors.maximumAmount ? "red" : "",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: errors.maximumAmount ? "red" : "",
+                              },
+                            },
                           }}
                         />
+                        {errors.maximumAmount && (
+                          <span className="error">{errors.maximumAmount}</span>
+                        )}
                       </FormControl>
                     </div>
                     <div className="mt-5">
@@ -707,12 +760,13 @@ const LoyaltyPoint = () => {
                         sx={{ width: "100%" }}
                       >
                         <div className="mb-2">
-                          <span className="label primary">Percentage</span>
+                          <span className="label primary">Percentage<span className="text-red-600 ml-1">*</span></span>
                         </div>
                         <TextField
                           autoComplete="off"
                           type="number"
                           inputRef={inputRef3}
+                          error={!!errors.percentage}
                           onKeyDown={(e) => {
                             handleKeyDown(e);
 
@@ -727,6 +781,10 @@ const LoyaltyPoint = () => {
                               ""
                             );
                             setPercentage(e.target.value);
+                            setErrors((prev) => ({
+                              ...prev,
+                              percentage: "",
+                            }));
                           }}
                           placeholder="Percentage %"
                           id="percentage-input"
@@ -735,8 +793,28 @@ const LoyaltyPoint = () => {
                             "& .MuiInputLabel-root.Mui-focused": {
                               color: "var(--COLOR_UI_PHARMACY)",
                             },
+
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderColor: errors.percentage ? "red" : "",
+                              },
+                              "&:hover fieldset": {
+                                borderColor: errors.percentage ? "red" : "",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: errors.percentage ? "red" : "",
+                              },
+                            },
+                          }}
+                          sx={{
+                            "& .MuiInputLabel-root.Mui-focused": {
+                              color: "var(--COLOR_UI_PHARMACY)",
+                            },
                           }}
                         />
+                        {errors.percentage && (
+                          <span className="error">{errors.percentage}</span>
+                        )}
                       </FormControl>
                     </div>
                   </div>

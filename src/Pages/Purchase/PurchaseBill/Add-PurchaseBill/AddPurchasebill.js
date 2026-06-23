@@ -149,6 +149,8 @@ const AddPurchaseBill = () => {
   const [submitTimeout, setSubmitTimeout] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [dialogMode, setDialogMode] = useState("");
+  const [addItemError, setAddItemError] = useState({});
+
 
   const optionForCsv = {
     "Skyway": "purchase-item-import",
@@ -1469,9 +1471,25 @@ const AddPurchaseBill = () => {
   /*<======================================================================== Add new item to item master  ===================================================================> */
 
   const handleAddNewItem = async () => {
-    if (!addItemName || !addUnit) {
-      toast.dismiss();
-      toast.error("Please fill required fields");
+    // if (!addItemName || !addUnit) {
+    //   toast.dismiss();
+    //   toast.error("Please fill required fields");
+    //   return;
+    // }
+
+    const errors = {};
+
+    if (!addItemName) {
+      errors.addItemName = "Item Name is required";
+    }
+
+    if (!addUnit) {
+      errors.addUnit = "Unit is required";
+    }
+
+    setAddItemError(errors);
+
+    if (Object.keys(errors).length > 0) {
       return;
     }
 
@@ -1778,17 +1796,17 @@ const AddPurchaseBill = () => {
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
-      toast.dismiss();
-      toast.error("Please select Distributor");
+      // toast.dismiss();
+      // toast.error("Please select Distributor");
     }
     if (!billNo) {
       newErrors.billNo = "Bill No is Required";
-      toast.dismiss();
-      toast.error("Bill No is Required");
+      // toast.dismiss();
+      // toast.error("Bill No is Required");
     }
     if (ItemPurchaseList?.item?.length === 0) {
-      toast.dismiss();
-      toast.error("Please add atleast one item");
+      // toast.dismiss();
+      // toast.error("Please add atleast one item");
       newErrors.item = "Please add atleast one item";
     }
 
@@ -2192,7 +2210,7 @@ const AddPurchaseBill = () => {
                   className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
                   onClick={() => history.push("/purchase")}
                 >
-                  Purchase  
+                  Purchase
                 </span>
                 <span className="w-6 h-6">
                   <ArrowForwardIosIcon
@@ -2378,6 +2396,11 @@ const AddPurchaseBill = () => {
                       selectedDistributorRef.current = finalValue;
                       setDistributor(finalValue);
                       setbillNo("");
+
+                      setError((prev) => ({
+                        ...prev,
+                        distributor: "",
+                      }));
                     }}
                     onInputChange={(event, newInputValue, reason) => {
                       if (reason === "input") {
@@ -2423,6 +2446,11 @@ const AddPurchaseBill = () => {
                       />
                     )}
                   />
+                  {error.distributor && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                      {error.distributor}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -2442,6 +2470,10 @@ const AddPurchaseBill = () => {
                     }}
                     onChange={(e) => {
                       setbillNo(e.target.value.toUpperCase());
+                      setError((prev) => ({
+                        ...prev,
+                        billNo: "",
+                      }));
                     }}
                     inputRef={(el) => (inputRefs.current[1] = el)}
                     placeholder="Bill No. / Order No."
@@ -2462,6 +2494,11 @@ const AddPurchaseBill = () => {
                     }}
 
                   />
+                  {error.billNo && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                      {error.billNo}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -4102,12 +4139,50 @@ const AddPurchaseBill = () => {
                           value={addItemName}
                           placeholder="Item Name"
                           autoFocus
-                          onChange={(e) =>
-                            setAddItemName(e.target.value.toUpperCase())
-                          }
+                          // onChange={(e) =>
+                          //   setAddItemName(e.target.value.toUpperCase())
+                          // }
+                          onChange={(e) => {
+                            setAddItemName(e.target.value.toUpperCase());
+
+                            setAddItemError((prev) => ({
+                              ...prev,
+                              addItemName: "",
+                            }));
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: addItemError.addItemName
+                                  ? "#d32f2f"
+                                  : "rgba(0, 0, 0, 0.38)",
+                              },
+                              "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#d32f2f !important",
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: addItemError.addItemName
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: addItemError.addItemName
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                            },
+                          }}
+                          error={!!addItemError.addItemName}
                           inputRef={(el) => (inputRefs.current[13] = el)}
                           onKeyDown={(e) => handleKeyDown(e, 13)}
                         />
+
+
+                        {addItemError.addItemName && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                            {addItemError.addItemName}
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -4136,15 +4211,53 @@ const AddPurchaseBill = () => {
                           size="small"
                           value={addUnit}
                           placeholder="Unit"
-                          onChange={(e) => setAddUnit(e.target.value)}
+                          // onChange={(e) => setAddUnit(e.target.value)}
+                          error={!!addItemError.addUnit}
+                          onChange={(e) => {
+                            setAddUnit(e.target.value);
+
+                            setAddItemError((prev) => ({
+                              ...prev,
+                              addUnit: "",
+                            }));
+                          }}
                           inputRef={(el) => (inputRefs.current[15] = el)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                              e.preventDefault(); // Prevent form submission
+                              e.preventDefault();
                               handleAddNewItem();
                             }
                           }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "rgba(0, 0, 0, 0.38)",
+                              },
+
+                              "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#d32f2f !important",
+                              },
+
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: !!addItemError.addUnit
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: !!addItemError.addUnit
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                            },
+                          }}
+
                         />
+                        {addItemError.addUnit && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                            {addItemError.addUnit}
+                          </div>
+                        )}
                       </div>
                       <div className="fields add_new_item_divv">
                         <label className="label secondary">Pack</label>

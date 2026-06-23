@@ -123,11 +123,11 @@ const Company = () => {
       page,
       limit: rowsPerPage,
       ...(searchTerms[0]
-        ? {name: searchTerms[0] }
+        ? { name: searchTerms[0] }
         : {}),
     };
     axios
-      .get("company-list", { 
+      .get("company-list", {
         params,
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -146,13 +146,13 @@ const Company = () => {
         setIsSearching(false);
         setCompanyData([]);
         setTotalRecords(0);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -183,8 +183,8 @@ const Company = () => {
     const newErrors = {};
     if (!companyName) {
       newErrors.companyName = "Company Name is required";
-      toast.dismiss();
-toast.error(newErrors.companyName);
+      // toast.dismiss();
+      // toast.error(newErrors.companyName);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -200,12 +200,12 @@ toast.error(newErrors.companyName);
       });
       resetAddDialog();
       companyList(currentPage);
-       toast.dismiss();
-toast.success("Company added!");
+      toast.dismiss();
+      toast.success("Company added!");
     } catch (error) {
       toast.dismiss();
-toast.error(error?.response?.data?.message || "Error");
-   if (error?.response?.status === 401) {
+      toast.error(error?.response?.data?.message || "Error");
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -224,12 +224,12 @@ toast.error(error?.response?.data?.message || "Error");
       });
       resetAddDialog();
       companyList(currentPage);
-       toast.dismiss();
-toast.success("Company updated!");
+      toast.dismiss();
+      toast.success("Company updated!");
     } catch (error) {
       toast.dismiss();
-toast.error(error?.response?.data?.message || "Error");
-   if (error?.response?.status === 401) {
+      toast.error(error?.response?.data?.message || "Error");
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -249,6 +249,12 @@ toast.error(error?.response?.data?.message || "Error");
   };
   const handleInputChange = (event, newInputValue) => {
     setCompanyName((newInputValue || "").toUpperCase());
+
+
+    setErrors((prev) => ({
+      ...prev,
+      companyName: "",
+    }));
   };
 
   // Delete
@@ -261,12 +267,12 @@ toast.error(error?.response?.data?.message || "Error");
       });
       setIsDelete(false);
       companyList(currentPage);
-       toast.dismiss();
-toast.success("Company deleted!");
+      toast.dismiss();
+      toast.success("Company deleted!");
     } catch (error) {
       toast.dismiss();
-toast.error("Error deleting company");
-   if (error?.response?.status === 401) {
+      toast.error("Error deleting company");
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -488,12 +494,13 @@ toast.error("Error deleting company");
           <DialogContentText id="alert-dialog-description">
             <div className="flex flex-col gap-5" style={{ width: "100%" }}>
               <FormControl size="small" style={{ width: "100%" }}>
-                <span className="label primary">Company Name</span>
+                <span className="label primary">Company Name <span className="text-red-600  ">*</span></span>
                 <Autocomplete
                   value={companyName}
                   sx={{ width: "100%" }}
                   size="small"
                   onChange={handleOptionChange}
+
                   onInputChange={handleInputChange}
                   getOptionLabel={(option) =>
                     typeof option === "string" ? option : option.company_name
@@ -505,10 +512,44 @@ toast.error("Error deleting company");
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField autoComplete="off" {...params} placeholder="Comapny Name"/>
+                    <TextField autoComplete="off" {...params} placeholder="Comapny Name" error={!!errors.companyName}
+                      sx={{
+                        width: "100%",
+
+                        "& .MuiOutlinedInput-root": {
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.companyName
+                              ? "#d32f2f"
+                              : "rgba(0, 0, 0, 0.23)",
+                          },
+
+                          "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#d32f2f !important",
+                          },
+
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.companyName
+                              ? "#d32f2f"
+                              : "var(--color1)",
+                          },
+
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.companyName
+                              ? "#d32f2f"
+                              : "var(--color1)",
+                          },
+                        },
+                      }}
+
+                    />
                   )}
                   freeSolo
                 />
+                {errors.companyName && (
+                  <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                    {errors.companyName}
+                  </div>
+                )}
               </FormControl>
             </div>
           </DialogContentText>

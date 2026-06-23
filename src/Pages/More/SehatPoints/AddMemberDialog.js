@@ -422,7 +422,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                     )}
                                 />
                                 {errors.planId && (
-                                    <span className="text-red-600 text-xs">{errors.planId}</span>
+                                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>{errors.planId}</div>
                                 )}
 
 
@@ -447,7 +447,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                     )}
                                 />
                                 {errors.paymentMethod && (
-                                    <span className="text-red-600 text-xs">{errors.paymentMethod}</span>
+                                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>{errors.paymentMethod}</div>
                                 )}
 
                             </div>
@@ -461,9 +461,11 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                     placeholder="Email"
                                     onChange={(e) => handleChange("email", e.target.value)}
                                     error={!!errors.email}
-                                    helperText={errors.email}
+                                // helperText={errors.email}
                                 />
-
+                                {errors.email && (
+                                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>{errors.email}</div>
+                                )}
                             </div>
                         </div>
 
@@ -493,12 +495,33 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                             error={!!errors.contacts?.[index]?.name}
                                             helperText={errors.contacts?.[index]?.name}
                                             disabled={index < disableContacts}
+                                            // onChange={(e) => {
+                                            //     const value = e.target.value;
+
+                                            //     // allow only letters & spaces
+                                            //     if (/^[A-Za-z\s]*$/.test(value)) {
+                                            //         handleContactChange(index, "name", value);
+                                            //     }
+                                            // }}
                                             onChange={(e) => {
                                                 const value = e.target.value;
 
-                                                // allow only letters & spaces
                                                 if (/^[A-Za-z\s]*$/.test(value)) {
                                                     handleContactChange(index, "name", value);
+
+                                                    setErrors((prev) => {
+                                                        const updatedContacts = [...(prev.contacts || [])];
+
+                                                        updatedContacts[index] = {
+                                                            ...updatedContacts[index],
+                                                            name: "",
+                                                        };
+
+                                                        return {
+                                                            ...prev,
+                                                            contacts: updatedContacts,
+                                                        };
+                                                    });
                                                 }
                                             }}
                                         />
@@ -518,10 +541,31 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                             helperText={errors.contacts?.[index]?.number}
                                             disabled={index < disableContacts}
 
+                                            // onChange={(e) => {
+                                            //     const value = e.target.value.replace(/\D/g, "");
+                                            //     if (value.length <= 10) {
+                                            //         handleContactChange(index, "number", value);
+                                            //     }
+                                            // }}
                                             onChange={(e) => {
                                                 const value = e.target.value.replace(/\D/g, "");
+
                                                 if (value.length <= 10) {
                                                     handleContactChange(index, "number", value);
+
+                                                    setErrors((prev) => {
+                                                        const updatedContacts = [...(prev.contacts || [])];
+
+                                                        updatedContacts[index] = {
+                                                            ...updatedContacts[index],
+                                                            number: "",
+                                                        };
+
+                                                        return {
+                                                            ...prev,
+                                                            contacts: updatedContacts,
+                                                        };
+                                                    });
                                                 }
                                             }}
                                             inputProps={{
@@ -566,6 +610,19 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                                     "relation",
                                                     newValue ? newValue.name : ""
                                                 );
+                                                setErrors((prev) => {
+                                                    const updatedContacts = [...(prev.contacts || [])];
+
+                                                    updatedContacts[index] = {
+                                                        ...updatedContacts[index],
+                                                        relation: "",
+                                                    };
+
+                                                    return {
+                                                        ...prev,
+                                                        contacts: updatedContacts,
+                                                    };
+                                                });
                                             }}
                                             renderInput={(params) => (
                                                 <TextField

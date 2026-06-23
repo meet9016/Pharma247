@@ -12,7 +12,7 @@ import ReplyAllIcon from "@mui/icons-material/ReplyAll";
 const AddDistributer = () => {
   // const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
-  const [error, setError] = useState(null);
+  const [error, setError] = useState({});
 
   const [GSTNumber, setGSTNumber] = useState("");
   const [distributorName, setDistributorName] = useState("");
@@ -78,13 +78,13 @@ const AddDistributer = () => {
         })
         .catch((error) => {
           console.error("Search failed", error);
-             if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+          if (error?.response?.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("role");
+            localStorage.clear();
+            history.push("/");
+          }
         });
     } else {
       axios
@@ -96,13 +96,13 @@ const AddDistributer = () => {
         })
         .catch((error) => {
           console.error("Fetch failed", error);
-             if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+          if (error?.response?.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("role");
+            localStorage.clear();
+            history.push("/");
+          }
         });
     }
   };
@@ -112,23 +112,23 @@ const AddDistributer = () => {
     const newErrors = {};
     if (!distributorName) {
       newErrors.distributorName = "Distributor is required";
-      toast.dismiss();
-      toast.error("Distributor is required");
+      // toast.dismiss();
+      // toast.error("Distributor is required");
     }
     if (!GSTNumber) {
       newErrors.GSTNumber = "GST Number is required";
-      toast.dismiss();
-      toast.error("GST Number is required");
+      // toast.dismiss();
+      // toast.error("GST Number is required");
     }
 
     if (!mobileno) {
       newErrors.mobileno = "Mobile No is required";
-      toast.dismiss();
-      toast.error("Mobile No is required");
+      // toast.dismiss();
+      // toast.error("Mobile No is required");
     } else if (!/^\d{10}$/.test(mobileno)) {
       newErrors.mobileno = "Mobile number must be 10 digits";
-      toast.dismiss();
-      toast.error("Mobile number must be 10 digits");
+      // toast.dismiss();
+      // toast.error("Mobile number must be 10 digits");
     }
 
     setError(newErrors);
@@ -165,7 +165,7 @@ const AddDistributer = () => {
     }
 
 
-    
+
     try {
       await axios
         .post("create-distributer", data, {
@@ -177,32 +177,32 @@ const AddDistributer = () => {
           toast.dismiss();
           toast.success(response.data.message);
 
-           setGSTNumber("");
-           setDistributorName("");
-           setDistributorId("");
-           setEmail("");
-           setMobileno("");
-           setWhatsapp("");
-           setState("");
-           setAddress("");
-           setArea("");
-           setPincode("");
-           setBankName("");
-           setAccountNo("");
-           setIfsc("");
-           setFoodLicence("");
-           setDurgLicence("");
-           setDueDays("");
-           setTimeout(() => {
-             history.push("/DistributorList");
-           }, 1000);
-         });
+          setGSTNumber("");
+          setDistributorName("");
+          setDistributorId("");
+          setEmail("");
+          setMobileno("");
+          setWhatsapp("");
+          setState("");
+          setAddress("");
+          setArea("");
+          setPincode("");
+          setBankName("");
+          setAccountNo("");
+          setIfsc("");
+          setFoodLicence("");
+          setDurgLicence("");
+          setDueDays("");
+          setTimeout(() => {
+            history.push("/DistributorList");
+          }, 1000);
+        });
     } catch (error) {
       if (error.response.data.status == 400) {
         toast.dismiss();
         toast.error(error.response.data.message);
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -293,14 +293,16 @@ const AddDistributer = () => {
                           .slice(0, 15); // max 15 characters
 
                         setGSTNumber(raw);
+                        setError((prev) => ({
+                          ...prev,
+                          GSTNumber: "",
+                        }));
                       }}
-                      error={GSTNumber.length > 0 && !gstRegex.test(GSTNumber)}
-                      helperText={
-                        GSTNumber.length > 0 && !gstRegex.test(GSTNumber)
-                          ? "Invalid GST Number"
-                          : ""
-                      }
+
+                      error={!!error.GSTNumber}
                     />
+
+
 
                     <div
                       className="cursor-pointer h-full p-[11px] text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg flex items-center justify-center"
@@ -310,6 +312,11 @@ const AddDistributer = () => {
                       <span className="sr-only">Search</span>
                     </div>
                   </div>
+                  {error.GSTNumber && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                      {error.GSTNumber}
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label
@@ -326,6 +333,10 @@ const AddDistributer = () => {
                       // Allow only alphabets and spaces
                       const filteredValue = newInputValue.replace(/[^A-Z\s]/gi, "").toUpperCase();
                       setDistributorName(filteredValue);
+                      setError((prev) => ({
+                        ...prev,
+                        distributorName: "",
+                      }));
                       const found = distributorList.find(
                         (option) => (option.distributor_name || option.name || "").toUpperCase().trim() === filteredValue.trim()
                       );
@@ -384,6 +395,7 @@ const AddDistributer = () => {
                         {...params}
                         variant="outlined"
                         autoComplete="off"
+                        error={!!error.distributorName}
                         placeholder="Distributor Name"
                         inputRef={(el) => (inputRefs.current[1] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 1)}
@@ -396,9 +408,15 @@ const AddDistributer = () => {
                         className="appearance-none border rounded-lg w-full leading-tight focus:outline-none focus:shadow-outline uppercase"
                       // label="Distributor Name *"
                       />
-                    )}
-                  />
 
+                    )}
+
+                  />
+                  {error.distributorName && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                      {error.distributorName}
+                    </div>
+                  )}
 
                 </div>
                 <div>
@@ -406,7 +424,7 @@ const AddDistributer = () => {
                     className="block text-gray-700 font-bold mb-2"
                     htmlFor="mobile_no"
                   >
-                    Mobile No. <span className="text-red-600">*</span>
+                    Mobile No <span className="text-red-600">*</span>
                   </label>
                   <TextField
                     variant="outlined"
@@ -426,14 +444,19 @@ const AddDistributer = () => {
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, "").slice(0, 10); // only digits, max 10
                       setMobileno(value);
+
+                      setError((prev) => ({
+                        ...prev,
+                        mobileno: "",
+                      }));
                     }}
-                    error={mobileno.length > 0 && !mobileRegex.test(mobileno)}
-                    helperText={
-                      mobileno.length > 0 && !mobileRegex.test(mobileno)
-                        ? "Enter a valid 10-digit mobile number starting with 6-9"
-                        : ""
-                    }
+                    error={!!error.mobileno}
                   />
+                  {error.mobileno && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                      {error.mobileno}
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label

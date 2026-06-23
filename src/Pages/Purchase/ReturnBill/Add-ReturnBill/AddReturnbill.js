@@ -677,7 +677,7 @@ const AddReturnbill = () => {
     if (selectedItem.length === 0) {
       newErrors.ItemId = "Please select at least one item";
       toast.dismiss();
-      toast.error("Please select at least one item");
+      // toast.error("Please select at least one item");
     }
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -1092,10 +1092,39 @@ const AddReturnbill = () => {
                       minWidth: "350px",
                       minHeight: "40px",
                       "@media (max-width:600px)": { minWidth: "250px" },
+
+                      "& .MuiOutlinedInput-root": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: error.distributor
+                            ? "#d32f2f"
+                            : "rgba(0, 0, 0, 0.38)",
+                        },
+                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#d32f2f !important",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          borderColor: error.distributor
+                            ? "#d32f2f"
+                            : "var(--color1)",
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: error.distributor
+                            ? "#d32f2f"
+                            : "var(--color1)",
+                        },
+                      },
                     }}
+                    error={!!error.distributor}
                     size="small"
                     options={distributorList}
-                    onChange={(e, newValue) => setDistributor(newValue)}
+                    onChange={(e, newValue) => {
+                      setDistributor(newValue);
+
+                      setError((prev) => ({
+                        ...prev,
+                        distributor: "",
+                      }));
+                    }}
                     getOptionLabel={(option) => (typeof option === "string" ? option : option?.name ?? "")}
                     renderInput={(params) => (
                       <TextField
@@ -1109,6 +1138,11 @@ const AddReturnbill = () => {
                       />
                     )}
                   />
+                  {error.distributor && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                      {error.distributor}
+                    </div>
+                  )}
                 </div>
 
                 <div >
@@ -1128,6 +1162,7 @@ const AddReturnbill = () => {
                     disabled
                     inputRef={(el) => (inputRefs.current[1] = el)}
                   />
+
                 </div>
 
 

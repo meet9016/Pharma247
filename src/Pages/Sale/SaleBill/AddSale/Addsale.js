@@ -189,6 +189,11 @@ const AddSale = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
+  const [addItemError, setAddItemError] = useState({
+    addItemName: "",
+    addUnit: "",
+  });
+
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5; // adjust as needed
 
@@ -903,23 +908,41 @@ const AddSale = () => {
 
   /*<========================================================================= add new item   ====================================================================> */
 
+  // const handleAddNewItemValidation = () => {
+  //   const newErrors = {};
+  //   if (!addItemName) {
+  //     newErrors.addItemName = "Item Name is required";
+  //     toast.dismiss();
+  //     toast.error(newErrors.addItemName);
+  //   }
+  //   if (!addUnit) {
+  //     newErrors.addUnit = "Item Unit is required";
+  //     toast.dismiss();
+  //     toast.error(newErrors.addUnit);
+  //   }
+  //   const isValid = Object.keys(newErrors).length === 0;
+  //   if (isValid) {
+  //     handleAddNewItem();
+  //   }
+  //   return isValid;
+  // };
+
   const handleAddNewItemValidation = () => {
     const newErrors = {};
+
     if (!addItemName) {
       newErrors.addItemName = "Item Name is required";
-      toast.dismiss();
-      toast.error(newErrors.addItemName);
     }
+
     if (!addUnit) {
       newErrors.addUnit = "Item Unit is required";
-      toast.dismiss();
-      toast.error(newErrors.addUnit);
     }
-    const isValid = Object.keys(newErrors).length === 0;
-    if (isValid) {
+
+    setAddItemError(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
       handleAddNewItem();
     }
-    return isValid;
   };
 
   const handleAddNewItem = async () => {
@@ -1648,41 +1671,74 @@ const AddSale = () => {
 
   /*<========================================================================= save sale bill  ====================================================================> */
 
+  // const handleSubmit = async (draft) => {
+  //   if (isSubmitting) {
+  //     toast.warning("Please wait, request in progress...");
+  //     return;
+  //   }
+
+
+  //   await new Promise(resolve => setTimeout(resolve, 0));
+
+  //   const newErrors = {};
+  //   if (!customer) {
+  //     newErrors.customer = "Please select Customer";
+  //   }
+  //   if (totalAmount < 1) {
+  //     newErrors.totalAmount = "Total Amount must be greater than 0";
+  //     toast.dismiss();
+  //     toast.error("Total Amount must be greater than 0");
+  //   }
+  //   if (loyaltyVal > totalAmount) {
+  //     newErrors.totalAmount = "Total Amount must be greater than Loyalty points";
+  //     toast.dismiss();
+  //     toast.error("Total Amount must be greater than Loyalty points");
+  //   } else if (ItemSaleList?.sales_item.length == 0) {
+  //     newErrors.item = "Please Add any Item in Sale Bill";
+  //     toast.dismiss();
+  //     toast.error("Please Add any Item in Sale Bill");
+  //   }
+  //   setError(newErrors);
+  //   if (Object.keys(newErrors).length > 0) {
+  //     return;
+  //   }
+  //   setUnsavedItems(false);
+
+  //   submitSaleData(draft);
+  // };
+
+
+
   const handleSubmit = async (draft) => {
-    if (isSubmitting) {
-      toast.warning("Please wait, request in progress...");
-      return;
-    }
-
-
-    await new Promise(resolve => setTimeout(resolve, 0));
-
     const newErrors = {};
+
     if (!customer) {
       newErrors.customer = "Please select Customer";
     }
+
     if (totalAmount < 1) {
       newErrors.totalAmount = "Total Amount must be greater than 0";
-      toast.dismiss();
-      toast.error("Total Amount must be greater than 0");
     }
+
     if (loyaltyVal > totalAmount) {
-      newErrors.totalAmount = "Total Amount must be greater than Loyalty points";
-      toast.dismiss();
-      toast.error("Total Amount must be greater than Loyalty points");
-    } else if (ItemSaleList?.sales_item.length == 0) {
-      newErrors.item = "Please Add any Item in Sale Bill";
-      toast.dismiss();
-      toast.error("Please Add any Item in Sale Bill");
+      newErrors.totalAmount =
+        "Total Amount must be greater than Loyalty points";
     }
+
+    if (ItemSaleList?.sales_item.length === 0) {
+      newErrors.item = "Please Add any Item in Sale Bill";
+    }
+
     setError(newErrors);
+
     if (Object.keys(newErrors).length > 0) {
       return;
     }
-    setUnsavedItems(false);
 
     submitSaleData(draft);
   };
+
+
 
   const submitSaleData = async (draft) => {
     if (isSubmitting) {
@@ -2692,6 +2748,13 @@ const AddSale = () => {
                   />
                 )}
               />
+
+
+              {error.customer && (
+                <span className="text-red-500 text-xs">
+                  {error.customer}
+                </span>
+              )}
             </div>
 
 
@@ -4302,9 +4365,21 @@ const AddSale = () => {
                         size="small"
                         value={addItemName}
                         placeholder="Item Name"
-                        onChange={(e) => setAddItemName(e.target.value.toUpperCase())}
-                      />
+                        // onChange={(e) => setAddItemName(e.target.value.toUpperCase())}
+                        onChange={(e) => {
+                          setAddItemName(e.target.value.toUpperCase());
 
+                          setAddItemError((prev) => ({
+                            ...prev,
+                            addItemName: "",
+                          }));
+                        }}
+                      />
+                      {addItemError.addItemName && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {addItemError.addItemName}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="row gap-3 sm:flex-nowrap flex-wrap">
@@ -4332,7 +4407,15 @@ const AddSale = () => {
                         sx={{ minWidth: "150px" }}
                         value={addUnit}
                         placeholder="Unit"
-                        onChange={(e) => setAddUnit(e.target.value)}
+                        // onChange={(e) => setAddUnit(e.target.value)}
+                        onChange={(e) => {
+                          setAddUnit(e.target.value);
+
+                          setAddItemError((prev) => ({
+                            ...prev,
+                            addUnit: "",
+                          }));
+                        }}
                         onKeyDown={(e) => {
                           handleKeyDown(e);
                           if (e.key === "Enter") {
@@ -4340,6 +4423,11 @@ const AddSale = () => {
                           }
                         }}
                       />
+                      {addItemError.addUnit && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {addItemError.addUnit}
+                        </p>
+                      )}
                     </div>
                     <div className="fields add_new_item_divv">
                       <label className="label secondary">Pack</label>
@@ -4632,7 +4720,7 @@ const AddSale = () => {
                 variant="outlined"
                 size="small"
                 sx={{
-               
+
                   "& .MuiOutlinedInput-root": {
                     color: "#ffffff",
                     "& fieldset": {
@@ -4648,7 +4736,7 @@ const AddSale = () => {
                   },
                   "& .MuiInputBase-input::placeholder": {
                     color: "#ffffff",
-                    opacity: 0.7, 
+                    opacity: 0.7,
                   },
                 }}
               />
@@ -4899,27 +4987,6 @@ const AddSale = () => {
             </DialogContentText>
           </DialogContent>
         </Dialog>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

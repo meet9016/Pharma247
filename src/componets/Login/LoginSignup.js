@@ -128,7 +128,12 @@ const LoginSignup = () => {
   {/*<=========================================================================== update register data  =================================================================> */ }
 
   const handleInputChange = (e) => {
+    const { id, value } = e.target;
     setRegisterData({ ...registerData, [e.target.id]: e.target.value });
+    setErrors((prev) => ({
+      ...prev,
+      [id]: "",
+    }));
   };
 
   {/*<=============================================================================== verify OTP =====================================================================> */ }
@@ -136,32 +141,65 @@ const LoginSignup = () => {
   const handleValidation = async (e) => {
     e.preventDefault(); // 
     const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!registerData.pharmacy_name) {
-      newErrors.pharmacy_name = "pharmacy Name is required";
-      toast.dismiss();
-      toast.error("Pharmacy Name is required");
+
+    // Regex
+    const pharmacyRegex = /^[A-Za-z0-9\s.&()-]{3,100}$/;
+    const mobileRegex = /^[6-9]\d{9}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
+    const zipRegex = /^[0-9]{6}$/;
+    const referralRegex = /^[A-Za-z0-9_-]{3,50}$/;
+
+
+
+    // Pharmacy Name
+    if (!registerData.pharmacy_name.trim()) {
+      newErrors.pharmacy_name = "Pharmacy Name is required";
+    } else if (!pharmacyRegex.test(registerData.pharmacy_name.trim())) {
+      newErrors.pharmacy_name =
+        "Enter a valid Pharmacy Name";
     }
+
+    // Mobile Number
     if (!registerData.mobile_number) {
-      newErrors.mobile_number = "mobile No is required";
-      toast.dismiss();
-      toast.error("Mobile Number is required");
-    } else if (!/^\d{10}$/.test(registerData.mobile_number)) {
-      newErrors.mobile_number = "Mobile number must 10 numbers";;
-      toast.dismiss();
-      toast.error("Mobile number must 10 numbers");
+      newErrors.mobile_number = "Mobile Number is required";
+    } else if (!mobileRegex.test(registerData.mobile_number)) {
+      newErrors.mobile_number =
+        "Enter a valid 10-digit Mobile Number";
     }
 
-    if (!registerData.email) {
-      newErrors.email = "Email Id is required";
-      toast.dismiss();
-      toast.error("Email Id is required");
-    } else if (!emailRegex.test(registerData.email)) {
-      newErrors.email = "Enter a valid email address";
-      toast.dismiss();
-      toast.error("Enter a valid email address");
+    // Email
+    if (!registerData.email.trim()) {
+      newErrors.email = "Email Address is required";
+    } else if (!emailRegex.test(registerData.email.trim())) {
+      newErrors.email = "Enter valid Email Address";
     }
+
+    // ZIP Code
+    if (!registerData.zip_code.trim()) {
+      newErrors.zip_code = "ZIP Code is required";
+    } else if (!zipRegex.test(registerData.zip_code.trim())) {
+      newErrors.zip_code = "ZIP Code must be 6 digits";
+    }
+
+    // Referral Code (Optional)
+    // if (
+    //   registerData.referral_code &&
+    //   referralRegex.test(registerData.referral_code.trim())
+    // ) {
+    //   newErrors.referral_code =
+    //     "Referral Code must be 3-20 characters";
+    // }
+
+
+    if (!registerData.referral_code.trim()) {
+      newErrors.referral_code = "Referral Code is required";
+    } else if (!referralRegex.test(registerData.referral_code.trim())) {
+      newErrors.referral_code =
+        "Referral Code must be 3-20 characters";
+    }
+
+
 
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
@@ -170,6 +208,8 @@ const LoginSignup = () => {
     }
     return;
   };
+
+
   {/*<========================================================================== submit Register data ====================================================================> */ }
 
   const submitRegisterData = async (e) => {
@@ -314,19 +354,25 @@ const LoginSignup = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     const newErrors = {};
+
+    //  Regex rules
+    const mobileRegex = /^[0-9]{10}$/;
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-]).{8,}$/;
+
+    //  Mobile validation
     if (!mobile) {
-      newErrors.mobile = "Mobile Number is required";
-      toast.dismiss();
-      toast.error("Mobile Number is required");
+      newErrors.mobile = "Mobile number is required";
+    } else if (!mobileRegex.test(mobile)) {
+      newErrors.mobile = "Mobile must be exactly 10 digits";
     }
+
+    //  Password validation
     if (!password) {
       newErrors.password = "Password is required";
-      toast.dismiss();
-      toast.error("Password is required");
-    } else if (!/^\d{10}$/.test(mobile)) {
-      newErrors.mobileNumber = "Mobile Number must be 10 digits";
-      toast.dismiss();
-      toast.error("Mobile Number must be 10 digits");
+    } else if (!passwordRegex.test(password)) {
+      newErrors.password =
+        "Password must be 8+ chars with A-Z, a-z, 0-9 & special char";
     }
 
     setErrors(newErrors);
@@ -401,6 +447,7 @@ const LoginSignup = () => {
 
   {/*<========================================================================= handle forget details ===================================================================> */ }
 
+
   const handleForgotDetails = async (event) => {
     event.preventDefault(); // Prevent form submission
     const newErrors = {};
@@ -409,20 +456,20 @@ const LoginSignup = () => {
     if (!mobile) {
       newErrors.mobile = "mobile No is required";
       toast.dismiss();
-      toast.error("Mobile Number is required");
+      // toast.error("Mobile Number is required");
     } else if (!/^\d{10}$/.test(mobile)) {
       newErrors.mobile = "Mobile number must be 10 digits";
       toast.dismiss();
-      toast.error("Mobile number must be 10 digits");
+      // toast.error("Mobile number must be 10 digits");
     }
     if (!email) {
       newErrors.email = "Email Id is required";
       toast.dismiss();
-      toast.error("Email Id is required");
+      // toast.error("Email Id is required");
     } else if (!emailRegex.test(email)) {
       newErrors.email = "Enter a valid email address";
       toast.dismiss();
-      toast.error("Enter a valid email address");
+      // toast.error("Enter a valid email address");
     }
 
     setErrors(newErrors);
@@ -622,37 +669,56 @@ const LoginSignup = () => {
 
           <div className="form-box register" style={{ visibility: active ? "visible" : "hidden" }}>
             {step === "register" && (
-              <form id="registerForm" onSubmit={(e) => handleValidation(e)} noValidate>                        
+
+              <form id="registerForm" onSubmit={(e) => handleValidation(e)} noValidate>
                 {/* <h1>Welcome !</h1> */}
                 <div className="input-box">
                   <TextField
                     size="small"
                     type="text"
                     id="pharmacy_name"
+                    label={errors.pharmacy_name ? "" : "Pharmacy Name"}
                     placeholder="Pharmacy Name"
                     required
                     value={registerData.pharmacy_name}
                     inputRef={(el) => (inputRefs.current[0] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 0)}
                     onChange={handleInputChange}
-                    autoFocus />
-                 
+                    autoFocus
+                    error={!!errors.pharmacy_name}
+                  />
+                  {errors.pharmacy_name && (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "12px",
+                        marginTop: "4px",
+
+                        textAlign: "start"
+                      }}
+                    >
+                      {errors.pharmacy_name}
+                    </div>
+                  )}
                   <i className='bx bxs-store'></i>
                 </div>
                 <div className="input-box">
                   <TextField
+                    size="small"
                     type="tel"
                     id="mobile_number"
                     placeholder="Mobile Number"
+                    label={errors.mobile_number ? "" : "Mobile Number"}
+                    error={!!errors.mobile_number}
                     required
                     value={registerData.mobile_number}
                     inputRef={(el) => (inputRefs.current[1] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 1)}
                     onChange={(e) => {
-                      const cleaned = e.target.value.replace(/\D/g, ""); // keep only digits
+                      const cleaned = e.target.value.replace(/\D/g, "");
                       if (cleaned.length <= 10) {
-                        e.target.value = cleaned; // update input value before passing
-                        handleInputChange(e);     // pass original event
+                        e.target.value = cleaned;
+                        handleInputChange(e);
                       }
                     }}
                     inputProps={{
@@ -661,14 +727,29 @@ const LoginSignup = () => {
                       pattern: "[0-9]*",
                     }}
                   />
+                  {errors.mobile_number && (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "12px",
+                        marginTop: "4px",
 
+                        textAlign: "start"
+                      }}
+                    >
+                      {errors.mobile_number}
+                    </div>
+                  )}
                   <i className='bx bxs-phone'></i>
                 </div>
                 <div className="input-box">
                   <TextField
+                    size="small"
                     type="email"
                     id="email"
                     placeholder="Email"
+                    label={errors.email ? "" : "Email"}
+                    error={!!errors.email}
                     required
                     value={registerData.email}
                     inputRef={(el) => (inputRefs.current[2] = el)}
@@ -684,24 +765,77 @@ const LoginSignup = () => {
                       inputMode: "email", // brings email keyboard on mobile
                     }}
                   />
+                  {errors.email && (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "12px",
+                        marginTop: "4px",
+
+                        textAlign: "start"
+                      }}
+                    >
+                      {errors.email}
+                    </div>
+                  )}
                   <i className='bx bxs-envelope'></i>
                 </div>
                 <div className="input-box">
                   <TextField
+                    size="small"
                     type="text"
                     id="zip_code"
                     placeholder="ZIP Code"
+                    label={errors.zip_code ? "" : "ZIP Code"}
+                    error={!!errors.zip_code}
                     required
                     value={registerData.zip_code}
+                    inputProps={{
+                      maxLength: 6,
+                      inputMode: "numeric",
+                      pattern: "[0-9]*",
+                    }}
                     inputRef={(el) => (inputRefs.current[3] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 3)}
-                    onChange={handleInputChange} />
+                    // onChange={handleInputChange}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
+
+                      if (value.length <= 6) {
+                        setRegisterData((prev) => ({
+                          ...prev,
+                          zip_code: value,
+                        }));
+
+                        setErrors((prev) => ({
+                          ...prev,
+                          zip_code: "",
+                        }));
+                      }
+                    }}
+                  />
+                  {errors.zip_code && (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "12px",
+                        marginTop: "4px",
+
+                        textAlign: "start"
+                      }}
+                    >
+                      {errors.zip_code}
+                    </div>
+                  )}
                   <i className='bx bxs-map'></i>
                 </div>
                 <div className="input-box">
                   <TextField
+                    size="small"
                     type="text"
                     id="referral_code"
+                    label={errors.referral_code ? "" : "Referral Code"}
+                    error={!!errors.referral_code}
                     placeholder="Referral Code (Optional)"
                     value={registerData.referral_code}
                     inputRef={(el) => (inputRefs.current[4] = el)}
@@ -709,10 +843,24 @@ const LoginSignup = () => {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleValidation(e);
                     }} />
+                  {errors.referral_code && (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "12px",
+                        marginTop: "4px",
+
+                        textAlign: "start"
+                      }}
+                    >
+                      {errors.referral_code}
+                    </div>
+                  )}
                   <i className='bx bxs-gift'></i>
                 </div>
                 <button type="submit" className="btn">Register</button>
               </form>
+
             )}
             {/*<==================================================================================== OTP UI =======================================================================> */}
 
@@ -818,12 +966,12 @@ const LoginSignup = () => {
           <div className="form-box login" style={{ visibility: active ? "hidden" : "visible" }}>
 
             {!active && step === "login" && (
-              <form id="loginForm" onSubmit={(e) => handleLogin(e)}>
-                {/* <h1>Welcome !</h1> */}
+              <form id="loginForm" onSubmit={(e) => handleLogin(e)} noValidate>
                 <div className="input-box">
                   <TextField
                     type="number"
                     id="login-mobile"
+                    label={errors.mobile ? "" : "Mobile No"}
                     placeholder="Mobile No"
                     required
                     fullWidth
@@ -832,15 +980,21 @@ const LoginSignup = () => {
                     value={mobile}
                     inputRef={(el) => (inputRefs.current[8] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 8)}
+                    error={!!errors.mobile}
                     onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, ""); // remove non-digits
+                      const value = e.target.value.replace(/\D/g, "");
                       if (value.length <= 10) {
                         setMobile(value);
+
+                        setErrors((prev) => ({
+                          ...prev,
+                          mobile: "",
+                        }));
                       }
                     }}
                     inputProps={{
-                      maxLength: 10, // prevent more than 10 digits
-                      inputMode: "numeric", // brings up numeric keypad on mobile
+                      maxLength: 10,
+                      inputMode: "numeric",
                       pattern: "[0-9]*",
                     }}
                     InputProps={{
@@ -850,6 +1004,11 @@ const LoginSignup = () => {
                       },
                     }}
                   />
+                  {errors.mobile && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify" }}>
+                      {errors.mobile}
+                    </div>
+                  )}
                   <i className='bx bxs-user'></i>
                 </div>
 
@@ -859,6 +1018,8 @@ const LoginSignup = () => {
                     id="login-password"
                     placeholder="Password"
                     required
+                    label={errors.password ? "" : "Password"}
+                    error={!!errors.password}
                     fullWidth
                     size="small"
                     variant="outlined"
@@ -866,7 +1027,14 @@ const LoginSignup = () => {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleLogin(e);
                     }}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+
+                      setErrors((prev) => ({
+                        ...prev,
+                        password: "",
+                      }));
+                    }}
                     InputProps={{
                       sx: {
                         backgroundColor: 'white',
@@ -898,32 +1066,72 @@ const LoginSignup = () => {
                       ),
                     }}
                   />
+                  {errors.password && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                      {errors.password}
+                    </div>
+                  )}
                   <i className='bx bxs-lock-alt'></i>
                 </div>
 
-                <div className="forgot-link">
+                <div className="forgot-link " style={{ cursor: 'pointer' }}>
                   <p onClick={() => setStep('forget')}>Forgot Password?</p>
 
                 </div>
                 <button type="submit" className="btn">Login</button>
-              </form>)}
+              </form>
+            )}
 
             {/*<=========================================================================== Forget password ======================================================================> */}
 
             {!active && step === "forget" && (
               <form id="loginForm" onSubmit={(e) => handleForgotDetails(e)}>
-                {/* <h1>Welcome !</h1> */}
+
+                <div
+                  onClick={() => setStep("login")}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    marginBottom: "15px",
+                    width: "100%",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#333",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    ← Back
+                  </span>
+                </div>
+
+
                 <div className="input-box">
                   <TextField
                     type="number"
                     placeholder="Mobile No"
                     required
                     fullWidth
+                    label={errors.mobile ? "" : "Mobile No"}
+                     error={!!errors.mobile}
                     size="small"
                     variant="outlined"
                     inputRef={(el) => (inputRefs.current[8] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 8)}
-                    onChange={(e) => setMobile(e.target.value)}
+                    onChange={(e) => {
+                      setMobile(e.target.value);
+
+                      setErrors((prev) => ({
+                        ...prev,
+                        mobile: "",
+                      }));
+                    }}
                     InputProps={{
                       sx: {
                         backgroundColor: 'white',
@@ -931,7 +1139,12 @@ const LoginSignup = () => {
                       },
                     }}
                   />
-
+                  {/* {errors.mobile} */}
+                  {errors.mobile && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                      {errors.mobile}
+                    </div>
+                  )}
                 </div>
                 <div className="input-box">
                   <TextField
@@ -939,11 +1152,20 @@ const LoginSignup = () => {
                     placeholder="Email ID"
                     required
                     fullWidth
+                    label={errors.email ? "" : "Email"}
+                    error={!!errors.email}
                     size="small"
                     variant="outlined"
                     inputRef={(el) => (inputRefs.current[9] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 9)}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+
+                      setErrors((prev) => ({
+                        ...prev,
+                        email: "",
+                      }));
+                    }}
                     InputProps={{
                       sx: {
                         backgroundColor: 'white',
@@ -951,12 +1173,19 @@ const LoginSignup = () => {
                       },
                     }}
                   />
+                  {/* {errors.email} */}
+                  {errors.email && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify" }}>
+                      {errors.email}
+                    </div>
+                  )}
                 </div>
                 <div className="forgot-link">
-                  <p onClick={() => setStep('login')}>Already have an account? Login</p>
+                  <p onClick={() => setStep('login')} style={{ cursor: 'pointer' }}>Already have an account? Login</p>
                 </div>
                 <button onClick={handleForgotDetails} className="btn">Verify</button>
-              </form>)}
+              </form>
+            )}
 
             {/*<=========================================================================== OTP verifiaction ==================================================================> */}
 

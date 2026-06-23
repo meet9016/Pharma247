@@ -104,6 +104,11 @@ const DoctorList = () => {
     const value = e.target.value;
     if (value.length <= 10) {
       setMobileNo(value);
+
+      setErrors((prev) => ({
+        ...prev,
+        mobileNo: "",
+      }));
     }
   };
 
@@ -336,9 +341,15 @@ const DoctorList = () => {
     } else {
       setDoctor(newValue);
     }
+
+    setErrors((prev) => ({
+      ...prev,
+      Doctor: "",
+    }));
   };
   const handleInputChange = (event, newInputValue) => {
     setDoctor(newInputValue);
+
   };
   const handlePrevious = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -961,6 +972,8 @@ const DoctorList = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
 
                     {/* Doctor Name - full width */}
+                    
+                    
                     <div className="flex flex-col col-span-6 ">
                       <div className="mb-1">
                         <span className="label primary mb-4">Doctor Name</span>
@@ -974,6 +987,7 @@ const DoctorList = () => {
                         getOptionLabel={(option) =>
                           typeof option === "string" ? option : option.name
                         }
+                        
                         options={tableData}
                         renderOption={(props, option) => (
                           <ListItem {...props}>
@@ -981,7 +995,21 @@ const DoctorList = () => {
                           </ListItem>
                         )}
                         renderInput={(params) => (
-                          <TextField autoComplete="off" {...params} placeholder="Enter Doctor Name" />
+                          <TextField autoComplete="off" {...params} placeholder="Enter Doctor Name"
+                            error={!!errors.doctor}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: errors.doctor
+                                    ? "#d32f2f"
+                                    : "rgba(0, 0, 0, 0.23)",
+                                },
+                                "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#d32f2f !important",
+                                },
+                              },
+                            }}       
+                          />
                         )}
                         freeSolo
                       />
@@ -1026,13 +1054,34 @@ const DoctorList = () => {
                     <div className="flex flex-col col-span-6 w-full">
                       <div className="mb-1">
                         <span className="label primary">Clinic Name</span>
+                        <span className="text-red-600 ml-1">*</span>
                       </div>
                       <TextField
                         autoComplete="off"
                         size="small"
                         placeholder="Enter Clinic Name"
                         value={clinic}
-                        onChange={(e) => setClinic(e.target.value.toUpperCase())}
+                        error={!!errors.clinic}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: errors.clinic
+                                ? "#d32f2f"
+                                : "rgba(0, 0, 0, 0.23)",
+                            },
+                            "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#d32f2f !important",
+                            },
+                          },
+                        }}
+                        onChange={(e) => {
+                          setClinic(e.target.value.toUpperCase());
+
+                          setErrors((prev) => ({
+                            ...prev,
+                            clinic: "",
+                          }));
+                        }}
                         className="w-full"
                         variant="outlined"
                       />
@@ -1072,6 +1121,7 @@ const DoctorList = () => {
                     <div className="flex flex-col col-span-6">
                       <div className="mb-1">
                         <span className="label primary">Mobile No</span>
+                        <span className="text-red-600 ml-1">*</span>
                       </div>
                       <OutlinedInput
                         type="number"
@@ -1081,6 +1131,12 @@ const DoctorList = () => {
                         startAdornment={<InputAdornment position="start">+91</InputAdornment>}
                         className="w-full"
                         size="small"
+                        error={!!errors.mobileNo}
+                        sx={{
+                          "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#d32f2f !important",
+                          },
+                        }}
                       />
                       {errors.mobileNo && (
                         <span style={{ color: "red", fontSize: "12px" }}>

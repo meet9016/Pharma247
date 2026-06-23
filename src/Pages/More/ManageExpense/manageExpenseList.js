@@ -637,7 +637,7 @@ const ManageExpense = () => {
                             {expenseColumns.map((column, colIndex) => {
                               let value = item[column.id];
 
-                              
+
                               if (!value && value !== 0) {
                                 value = "-";
                               }
@@ -676,8 +676,8 @@ const ManageExpense = () => {
               <button
                 onClick={handlePrevious}
                 className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
                   }`}
                 disabled={currentPage === 1}
               >
@@ -716,8 +716,8 @@ const ManageExpense = () => {
               <button
                 onClick={handleNext}
                 className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                    ? "bg-gray-200 text-gray-700"
-                    : "secondary-bg text-white"
+                  ? "bg-gray-200 text-gray-700"
+                  : "secondary-bg text-white"
                   }`}
                 disabled={currentPage >= totalPages}
               >
@@ -808,7 +808,14 @@ const ManageExpense = () => {
                             },
                           }}
                           value={selectedOption}
-                          onChange={(e) => setSelectedOption(e.target.value)}
+                          onChange={(e) => {
+                            setSelectedOption(e.target.value);
+
+                            setErrors((prev) => ({
+                              ...prev,
+                              selectedOption: "",
+                            }));
+                          }}
                         >
                           {catagoryList.map((category) => (
                             <FormControlLabel
@@ -992,7 +999,7 @@ const ManageExpense = () => {
                             className=""
                             style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                           >
-                            without GST Amount
+                            without GST Amount <span className="text-red-600 ml-1">*</span>
                           </span>
                           {/* <span className="ExpenseBoxSubTitle">Amount(Excluding GST)</span> */}
                           <TextField
@@ -1000,9 +1007,23 @@ const ManageExpense = () => {
                             required
                             type="number"
                             size="small"
+                            error={!!errors.amount}
                             value={amount}
                             placeholder="without GST Amount"
-                            onChange={(e) => setAmount(e.target.value)}
+                            onChange={(e) => {
+                              setAmount(e.target.value);
+
+                              setErrors((prev) => ({
+                                ...prev,
+                                amount: "",
+                              }));
+                            }}
+                            sx={{
+    "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+      borderColor: "red !important",
+      borderWidth: "1px",
+    },
+  }}
                           />
                           {errors.amount && (
                             <div className="error">{errors.amount}</div>
@@ -1064,6 +1085,11 @@ const ManageExpense = () => {
                             }
                             onChange={(event, newValue) => {
                               setPaymentType(newValue ? newValue.value : "");
+
+                              setErrors((prev) => ({
+                                ...prev,
+                                paymentType: "",
+                              }));
                             }}
                             renderInput={(params) => (
                               <TextField

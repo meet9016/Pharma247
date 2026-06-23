@@ -180,8 +180,8 @@ const DrugGroup = () => {
     const newErrors = {};
     if (!drugGroupName) {
       newErrors.drugGroupName = "Drug Group Name is required";
-      toast.dismiss();
-      toast.error(newErrors.drugGroupName);
+      // toast.dismiss();
+      // toast.error(newErrors.drugGroupName);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -248,6 +248,11 @@ const DrugGroup = () => {
   };
   const handleInputChange = (event, newInputValue) => {
     setDrugGroupName((newInputValue || "").toUpperCase());
+
+    setErrors((prev) => ({
+      ...prev,
+      drugGroupName: "",
+    }));
   };
 
   // Delete
@@ -500,7 +505,7 @@ const DrugGroup = () => {
           <DialogContentText id="alert-dialog-description">
             <div className="flex flex-col gap-5" style={{ width: "100%" }}>
               <FormControl size="small" style={{ width: "100%" }}>
-                <span className="label primary">Drug Group Name</span>
+                <span className="label primary">Drug Group Name<span className="text-red-600  ">*</span></span>
                 <Autocomplete
                   value={drugGroupName}
                   sx={{ width: "100%" }}
@@ -517,10 +522,35 @@ const DrugGroup = () => {
                     </ListItem>
                   )}
                   renderInput={(params) => (
-                    <TextField autoComplete="off" placeholder="Drug Group Name" {...params} />
+                    <TextField autoComplete="off" placeholder="Drug Group Name" {...params} sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: errors.drugGroupName
+                            ? "#d32f2f"
+                            : "rgba(0, 0, 0, 0.23)",
+                        },
+                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#d32f2f !important",
+                        },
+                      },
+                    }}
+                      error={!!errors.drugGroupName}
+                    />
                   )}
                   freeSolo
                 />
+                {errors.drugGroupName && (
+                  <p
+                    style={{
+                      color: "red",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {errors.drugGroupName}
+                  </p>
+                )}
               </FormControl>
             </div>
           </DialogContentText>

@@ -575,6 +575,10 @@ const PaymentList = () => {
   const handleDistributor = (e, value) => {
     setDistributor(value);
     setDistributorId(value?.id);
+    setErrors((prev) => ({
+      ...prev,
+      distributor: "",
+    }));
     if (value) {
       PurchasePaymentList(value?.id);
     }
@@ -1017,15 +1021,39 @@ const PaymentList = () => {
                         <Autocomplete
                           value={distributor}
                           disabled={!showTable}
-                          // sx={{ minWidth: 730 }}
                           size="small"
                           autoFocus
                           onChange={handleDistributor}
                           options={distributorList}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params}
-                            placeholder="Select Distributor " />
+                            placeholder="Select Distributor "
+                            error={!!errors.distributor}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: errors.distributor
+                                    ? "#d32f2f"
+                                    : "rgba(0, 0, 0, 0.38)",
+                                },
+                                "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#d32f2f !important",
+                                },
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: errors.distributor
+                                    ? "#d32f2f"
+                                    : "var(--color1)",
+                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: errors.distributor
+                                    ? "#d32f2f"
+                                    : "var(--color1)",
+                                },
+                              },
+                            }}
+                          />
                           }
+
                         />
                         {errors.distributor && (
                           <span style={{ color: "red", fontSize: "12px" }}>
@@ -1106,19 +1134,30 @@ const PaymentList = () => {
                       }
                       onChange={(event, newValue) => {
                         setPaymentType(newValue ? newValue.value : "");
+
+                        setErrors((prev) => ({
+                          ...prev,
+                          paymentType: "",
+                        }));
+                      }}
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#d32f2f !important",
+                        },
                       }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           placeholder="Select Payment Mode"
+                          error={!!errors.paymentType}
                         />
                       )}
                     />
 
                     {errors.paymentType && (
-                      <span style={{ color: "red", fontSize: "12px" }}>
+                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
                         {errors.paymentType}
-                      </span>
+                      </div>
                     )}
                   </div>
 

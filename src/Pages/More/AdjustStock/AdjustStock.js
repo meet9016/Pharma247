@@ -153,7 +153,7 @@ const AdjustStock = () => {
 
 
   useEffect(() => {
-    
+
     let y;
 
     if (adjustType === true) {
@@ -177,13 +177,13 @@ const AdjustStock = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -199,13 +199,13 @@ const AdjustStock = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       });
   };
 
@@ -254,7 +254,7 @@ const AdjustStock = () => {
       setAdjustStockListData([]);
       setTableData([]);
       setTotalRecords(0);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -296,7 +296,7 @@ const AdjustStock = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -311,6 +311,12 @@ const AdjustStock = () => {
   const handleOptionChange = (event, newValue) => {
     setSelectedItem(newValue || null);
     setItemId(newValue?.id || null);
+
+    setErrors((prev) => ({
+      ...prev,
+      selectedItem: "",
+    }));
+
 
     // HARD reset batch + dependent fields
     setBatch(null);
@@ -370,16 +376,16 @@ const AdjustStock = () => {
 
     if (!selectedItem) {
       newErrors.selectedItem = "select any Item Name.";
-      toast.dismiss();
-      toast.error(newErrors.selectedItem);
+      // toast.dismiss();
+      // toast.error(newErrors.selectedItem);
     } else if (!batch) {
       newErrors.batch = "Batch Number is required";
-      toast.dismiss();
-      toast.error(newErrors.batch);
+      // toast.dismiss();
+      // toast.error(newErrors.batch);
     } else if (!stockAdjust) {
       newErrors.stockAdjust = "please Enter any Adjust Stock Number";
-      toast.dismiss();
-      toast.error(newErrors.stockAdjust);
+      // toast.dismiss();
+      // toast.error(newErrors.stockAdjust);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -436,7 +442,7 @@ const AdjustStock = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -765,7 +771,8 @@ const AdjustStock = () => {
                 {/* First row: Item & Company */}
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
                   <div className="w-full">
-                    <span className="title primary mb-2">Item Name</span>
+                    <span className="title primary mb-2">Item Name   <span className="text-red-600 ml-1">*</span></span>
+                  
                     <Autocomplete
                       disablePortal
                       options={purchaseItemData}
@@ -776,9 +783,19 @@ const AdjustStock = () => {
                       isOptionEqualToValue={(option, value) => option.id === value.id}
 
                       renderInput={(params) => (
-                        <TextField autoComplete="off" {...params} placeholder="Enter Item Name" />
+                        <TextField autoComplete="off" {...params} placeholder="Enter Item Name" error={!!errors.selectedItem} sx={{
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#d32f2f !important",
+                            
+                          },
+                        }} />
                       )}
                     />
+                    {errors.selectedItem && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors.selectedItem}
+                      </span>
+                    )}
                   </div>
 
                   <div className="w-full">
@@ -824,10 +841,14 @@ const AdjustStock = () => {
                       getOptionLabel={(option) => option?.batch_number || ""}
                       isOptionEqualToValue={(option, value) => option.id === value.id}
                       renderInput={(params) => (
-                        <TextField {...params} autoComplete="off" placeholder="Batch" />
+                        <TextField {...params} autoComplete="off" placeholder="Batch   " />
                       )}
                     />
-
+                    {errors.batch && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors.batch}
+                      </span>
+                    )}
                   </div>
 
                   <div className="w-full">
@@ -910,6 +931,11 @@ const AdjustStock = () => {
                         onChange={(e) => setStockAdjust(parseFloat(e.target.value))}
                         className="w-full"
                       />
+                      {errors.stockAdjust && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          {errors.stockAdjust}
+                        </span>
+                      )}
                     </div>
 
                   </div>

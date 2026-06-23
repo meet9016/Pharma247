@@ -489,11 +489,11 @@ const Salereturn = () => {
         // }
         if (!startDate) {
             newErrors.startDate = 'startDate is required'; toast.dismiss();
-            toast.error('Start Date is required');
+            // toast.error('Start Date is required');
         }
         if (!endDate) {
             newErrors.endDate = 'endDate is required'; toast.dismiss();
-            toast.error('End Date is required');
+            // toast.error('End Date is required');
         }
 
         // setErrors(newErrors);
@@ -663,8 +663,8 @@ const Salereturn = () => {
         const newErrors = {};
         if (!customer || !customer.id) {
             newErrors.customer = 'Please select customer';
-            toast.dismiss();
-            toast.error('Please select customer');
+            // toast.dismiss();
+            // toast.error('Please select customer');
             setError(newErrors);
             return;
         }
@@ -1011,7 +1011,7 @@ const Salereturn = () => {
                                 <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                             ))}
                         </Select>
-                        <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => handleSubmit()}> Submit</Button>
+                        <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => handleSubmit()}> Submit </Button>
 
                     </div>
                 </div>

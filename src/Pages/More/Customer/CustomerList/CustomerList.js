@@ -170,6 +170,13 @@ const CustomerList = () => {
     const value = e.target.value;
     if (value.length <= 10) {
       setMobileNo(value);
+
+      if (errors.mobileNo) {
+        setErrors((prev) => ({
+          ...prev,
+          mobileNo: "",
+        }));
+      }
     }
   };
 
@@ -1056,7 +1063,27 @@ const CustomerList = () => {
                           e.target.value.charAt(0).toUpperCase() +
                           e.target.value.slice(1).toLowerCase();
                         setCustomer(cst);
+
+                        if (errors.customer) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            customer: "",
+                          }));
+                        }
                       }}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.customer
+                              ? "#d32f2f"
+                              : "rgba(0, 0, 0, 0.23)",
+                          },
+                          "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#d32f2f !important",
+                          },
+                        },
+                      }}
+                      error={!!errors.customer}
 
                       style={{ width: "100%" }}
                       variant="outlined"
@@ -1079,6 +1106,12 @@ const CustomerList = () => {
                       value={mobileNo}
                       onChange={handleChange}
                       placeholder="Mobile Number"
+                      error={!!errors.mobileNo}
+                      sx={{
+                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#d32f2f !important",
+                        },
+                      }}
                       startAdornment={
                         <InputAdornment position="start">
                           +91
