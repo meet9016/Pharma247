@@ -1811,12 +1811,12 @@ const BankAccount = () => {
                     startIcon={<AddIcon />}
                     sx={{
                       flex: 1,
-                      backgroundColor: "#3F6212",
-                      color: "#ffffffff",
-                      borderColor: "#4caf50",
+                      backgroundColor: clicked ? "#3F6212" : "transparent",
+                      color: clicked ? "#ffffff" : "#3F6212",
+                      borderColor: "#3F6212",
                       '&:hover': {
-                        backgroundColor: "#c8e6c9",
-                        borderColor: "#388e3c"
+                        backgroundColor: clicked ? "#2e480d" : "#f1f8e9",
+                        borderColor: "#3F6212"
                       }
                     }}
                   >
@@ -1829,12 +1829,12 @@ const BankAccount = () => {
                     startIcon={<RemoveIcon />}
                     sx={{
                       flex: 1,
-                      backgroundColor: "#c62828",
-                      color: "#ffffffff",
-                      borderColor: "#ef5350",
+                      backgroundColor: reduceclicked ? "#c62828" : "transparent",
+                      color: reduceclicked ? "#ffffff" : "#c62828",
+                      borderColor: "#c62828",
                       '&:hover': {
-                        backgroundColor: "#ffcdd2",
-                        borderColor: "#d32f2f"
+                        backgroundColor: reduceclicked ? "#b71c1c" : "#ffebee",
+                        borderColor: "#c62828"
                       }
                     }}
                   >
@@ -1857,7 +1857,8 @@ const BankAccount = () => {
                       type="number"
                       value={currentBalance}
                       disabled
-                      startAdornment={<InputAdornment position="start">₹0</InputAdornment>}
+                      placeholder="0"
+                      startAdornment={<InputAdornment position="start">₹</InputAdornment>}
                       sx={{
                         width: "100%",
                         backgroundColor: "#f5f5f5",
@@ -1868,6 +1869,8 @@ const BankAccount = () => {
                       }}
                       size="small"
                     />
+
+
                   </div>
                   <div>
                     <span className="label primary">Date</span>
@@ -1895,6 +1898,7 @@ const BankAccount = () => {
                     <OutlinedInput
                       type="number"
                       value={enterAmt}
+                      placeholder="0"
                       error={!!errors.enterAmt}
                       onChange={(e) => {
                         setEnterAmt(e.target.value);
@@ -1904,7 +1908,7 @@ const BankAccount = () => {
                           enterAmt: "",
                         }));
                       }}
-                      startAdornment={<InputAdornment position="start">₹0</InputAdornment>}
+                      startAdornment={<InputAdornment position="start">₹</InputAdornment>}
 
                       sx={{
                         width: "100%",
@@ -1933,7 +1937,8 @@ const BankAccount = () => {
                       type="number"
                       value={latestAmt}
                       disabled
-                      startAdornment={<InputAdornment position="start">₹0</InputAdornment>}
+                      placeholder="0"
+                      startAdornment={<InputAdornment position="start">₹</InputAdornment>}
                       sx={{
                         width: "100%",
                         backgroundColor: "#e8f5e9",
