@@ -14,6 +14,7 @@ import {
   ListItemText,
   MenuItem,
   Select,
+  OutlinedInput,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DatePicker from "react-datepicker";
@@ -537,22 +538,16 @@ const AddReturnbill = () => {
     const newErrors = {};
 
     if (!distributor) {
-      newErrors.distributor = "Distributor is required";
-      toast.dismiss();
-      toast.error("Distributor is required");
+      newErrors.distributor = "Please select Distributor";
     }
     if (!startDate) {
       newErrors.startDate = "Start date is required";
-      toast.dismiss();
-      toast.error("Start date is required");
     }
     if (!endDate) {
       newErrors.endDate = "End date is required";
-      toast.dismiss();
-      toast.error("End date is required");
     }
 
-    setErrors(newErrors);
+    setError(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
       await purcheseReturnFilter();
@@ -1082,7 +1077,7 @@ const AddReturnbill = () => {
             {/*<============================================================= Top details   ============================================================> */}
 
             <div className="flex gap-4  mt-4">
-              <div className="flex flex-row gap-4 overflow-x-auto w-full ">
+              <div className="flex flex-row gap-4 overflow-x-auto w-full items-start">
                 <div>
                   <span className="title mb-2 flex items-center gap-2">Distributor<span className="text-red-600">*</span></span>
                   <Autocomplete
@@ -1189,14 +1184,38 @@ const AddReturnbill = () => {
                     <DatePicker
                       className="custom-datepicker "
                       selected={startDate}
-                      error={!!errors.startDate}
-                      onChange={(newDate) => setStartDate(newDate)}
+                      onChange={(newDate) => {
+                        setStartDate(newDate);
+                        setError((prev) => ({
+                          ...prev,
+                          startDate: "",
+                        }));
+                      }}
                       dateFormat="MM/yyyy"
                       showMonthYearPicker
                       ref={(el) => (inputRefs.current[3] = el)}
                       onKeyDown={(e) => handleKeyDown(e, 3)}
+                      customInput={
+                        <OutlinedInput
+                          size="small"
+                          error={!!error.startDate}
+                          sx={{
+                            width: "100%",
+                            minWidth: "200px",
+                            backgroundColor: "#ffffff",
+                            "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#d32f2f !important",
+                            },
+                          }}
+                        />
+                      }
                     />
                   </div>
+                  {error.startDate && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                      {error.startDate}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -1205,16 +1224,42 @@ const AddReturnbill = () => {
                     <DatePicker
                       className="custom-datepicker "
                       selected={endDate}
-                      onChange={(newDate) => setEndDate(newDate)}
+                      onChange={(newDate) => {
+                        setEndDate(newDate);
+                        setError((prev) => ({
+                          ...prev,
+                          endDate: "",
+                        }));
+                      }}
                       dateFormat="MM/yyyy"
                       showMonthYearPicker
                       ref={(el) => (inputRefs.current[4] = el)}
                       onKeyDown={(e) => handleKeyDown(e, 4)}
+                      customInput={
+                        <OutlinedInput
+                          size="small"
+                          error={!!error.endDate}
+                          sx={{
+                            width: "100%",
+                            minWidth: "200px",
+                            backgroundColor: "#ffffff",
+                            "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#d32f2f !important",
+                            },
+                          }}
+                        />
+                      }
                     />
                   </div>
+                  {error.endDate && (
+                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                      {error.endDate}
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-end">
+                <div>
+                  <span className="title mb-2" style={{ display: "block", visibility: "hidden" }}>Spacer</span>
                   <button
                     type="button"
                     className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"

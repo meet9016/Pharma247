@@ -229,7 +229,7 @@ const BankAccount = () => {
 
   const validateAddForm = () => {
     const newErrors = {};
-    if (!paymentType) newErrors.paymentType = "Payment Type is required";
+    if (!paymentType) newErrors.paymentType = "Account is required";
     if (!(clicked || reduceclicked)) {
       newErrors.reduceclicked = "Select any Credit/Debit method";
     } else if (clicked && reduceclicked) {
@@ -689,7 +689,7 @@ const BankAccount = () => {
                             className={`text-xs ${selectedAccountId === account.id ? "text-white" : ""
                               } text-gray-600 mb-1 font-mono tracking-wide`}
                           >
-                            {account.bank_account_number || "Empty"}
+                            {account.bank_account_number || "-"}
                           </p>
 
                           <h6
@@ -1811,8 +1811,8 @@ const BankAccount = () => {
                     startIcon={<AddIcon />}
                     sx={{
                       flex: 1,
-                      backgroundColor: "#e8f5e9",
-                      color: "#2e7d32",
+                      backgroundColor: "#3F6212",
+                      color: "#ffffffff",
                       borderColor: "#4caf50",
                       '&:hover': {
                         backgroundColor: "#c8e6c9",
@@ -1829,8 +1829,8 @@ const BankAccount = () => {
                     startIcon={<RemoveIcon />}
                     sx={{
                       flex: 1,
-                      backgroundColor: "#ffebee",
-                      color: "#c62828",
+                      backgroundColor: "#c62828",
+                      color: "#ffffffff",
                       borderColor: "#ef5350",
                       '&:hover': {
                         backgroundColor: "#ffcdd2",
@@ -1857,7 +1857,7 @@ const BankAccount = () => {
                       type="number"
                       value={currentBalance}
                       disabled
-                      startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+                      startAdornment={<InputAdornment position="start">₹0</InputAdornment>}
                       sx={{
                         width: "100%",
                         backgroundColor: "#f5f5f5",
@@ -1904,7 +1904,7 @@ const BankAccount = () => {
                           enterAmt: "",
                         }));
                       }}
-                      startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+                      startAdornment={<InputAdornment position="start">₹0</InputAdornment>}
 
                       sx={{
                         width: "100%",
@@ -1933,7 +1933,7 @@ const BankAccount = () => {
                       type="number"
                       value={latestAmt}
                       disabled
-                      startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+                      startAdornment={<InputAdornment position="start">₹0</InputAdornment>}
                       sx={{
                         width: "100%",
                         backgroundColor: "#e8f5e9",

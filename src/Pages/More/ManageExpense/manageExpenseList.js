@@ -1009,7 +1009,7 @@ const ManageExpense = () => {
                             size="small"
                             error={!!errors.amount}
                             value={amount}
-                            placeholder="without GST Amount"
+                            placeholder="Without GST Amount"
                             onChange={(e) => {
                               setAmount(e.target.value);
 
@@ -1019,11 +1019,11 @@ const ManageExpense = () => {
                               }));
                             }}
                             sx={{
-    "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-      borderColor: "red !important",
-      borderWidth: "1px",
-    },
-  }}
+                              "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "red !important",
+                                borderWidth: "1px",
+                              },
+                            }}
                           />
                           {errors.amount && (
                             <div className="error">{errors.amount}</div>
@@ -1096,6 +1096,24 @@ const ManageExpense = () => {
                                 {...params}
                                 size="small"
                                 placeholder="Select Payment Mode"
+                                error={!!errors.paymentType}
+                                sx={{
+                                  "& .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: errors.paymentType
+                                      ? "#d32f2f !important"
+                                      : "rgba(0,0,0,0.23)",
+                                  },
+                                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: errors.paymentType
+                                      ? "#d32f2f !important"
+                                      : "rgba(0,0,0,0.87)",
+                                  },
+                                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: errors.paymentType
+                                      ? "#d32f2f !important"
+                                      : "#1976d2",
+                                  },
+                                }}
                               />
                             )}
                           />

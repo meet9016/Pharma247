@@ -224,12 +224,12 @@ const DoctorList = () => {
     } else {
       const newErrors = {};
       if (!doctor) newErrors.Doctor = "Doctor is required";
-      // if (!mobileNo) {
-      //     newErrors.mobileNo = 'Mobile No is required';
-      // } else if (!/^\d{10}$/.test(mobileNo)) {
-      //     newErrors.mobileNo = 'Mobile number must be 10 digits';
-      // }
-      // if (!clinic) newErrors.clinic = 'Clinic is required';
+      if (!mobileNo) {
+        newErrors.mobileNo = 'Mobile No is required';
+      } else if (!/^\d{10}$/.test(mobileNo)) {
+        newErrors.mobileNo = 'Mobile number must be 10 digits';
+      }
+      if (!clinic) newErrors.clinic = 'Clinic is required';
 
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -349,7 +349,10 @@ const DoctorList = () => {
   };
   const handleInputChange = (event, newInputValue) => {
     setDoctor(newInputValue);
-
+    setErrors((prev) => ({
+      ...prev,
+      Doctor: "",
+    }));
   };
   const handlePrevious = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -972,8 +975,8 @@ const DoctorList = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
 
                     {/* Doctor Name - full width */}
-                    
-                    
+
+
                     <div className="flex flex-col col-span-6 ">
                       <div className="mb-1">
                         <span className="label primary mb-4">Doctor Name</span>
@@ -987,7 +990,6 @@ const DoctorList = () => {
                         getOptionLabel={(option) =>
                           typeof option === "string" ? option : option.name
                         }
-                        
                         options={tableData}
                         renderOption={(props, option) => (
                           <ListItem {...props}>
@@ -995,20 +997,24 @@ const DoctorList = () => {
                           </ListItem>
                         )}
                         renderInput={(params) => (
-                          <TextField autoComplete="off" {...params} placeholder="Enter Doctor Name"
-                            error={!!errors.doctor}
+                          <TextField
+                            {...params}
+                            autoComplete="off"
+                            placeholder="Enter Doctor Name"
+                            error={!!errors.Doctor}
                             sx={{
-                              "& .MuiOutlinedInput-root": {
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: errors.doctor
-                                    ? "#d32f2f"
-                                    : "rgba(0, 0, 0, 0.23)",
-                                },
-                                "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#d32f2f !important",
-                                },
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: errors.Doctor ? "#d32f2f !important" : "rgba(0,0,0,0.23)",
                               },
-                            }}       
+
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: errors.Doctor ? "#d32f2f !important" : "rgba(0,0,0,0.87)",
+                              },
+
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: errors.Doctor ? "#d32f2f !important" : "#1976d2",
+                              },
+                            }}
                           />
                         )}
                         freeSolo
@@ -1018,7 +1024,6 @@ const DoctorList = () => {
                           {errors.Doctor}
                         </span>
                       )}
-
                     </div>
 
 

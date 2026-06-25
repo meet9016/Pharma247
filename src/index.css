@@ -427,13 +427,13 @@
 }
 
 .MuiAutocomplete-root .MuiOutlinedInput-input {
-    padding: 0 14px !important;
+    padding: 0 0px !important;
     height: 40px !important;
     line-height: 40px !important;
 }
 
 .react-datepicker__input-container input {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 /* NEW CSS END */

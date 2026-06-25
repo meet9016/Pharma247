@@ -1305,6 +1305,7 @@ const Itemmaster = () => {
                       sx={{
                         ".MuiSelect-select": {
                           color: packaging ? "inherit" : "rgba(0, 0, 0, 0.38)",
+                          padding: "8.5px 6px !important",
                         },
                       }}
                     >
@@ -1462,6 +1463,7 @@ const Itemmaster = () => {
                       sx={{
                         ".MuiSelect-select": {
                           color: gst ? "inherit" : "rgba(0, 0, 0, 0.38)",
+                          padding: "8.5px 6px !important",
                         },
                       }}
                     >
