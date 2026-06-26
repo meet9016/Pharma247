@@ -95,6 +95,9 @@ const LoginSignup = () => {
         referral_code: referralCode || "",
         type: 0,
       });
+      setOtp("");
+      setPassword("");
+      setShowOTP(false);
     } else {
       setMobile("");
       setEmail("");
@@ -508,10 +511,11 @@ const LoginSignup = () => {
         if (response.data.status === 200) {
           toast.success(response.data.message);
           setShowOTP(true);
+          setTimer(30);
+          setResendEnabled(false);
           setPassword("");
           setEmail("");
-          setMobile("");
-          setStep("ForgetOTP");
+          // Mobile number remains filled and step remains "forget"
         } else {
           toast.error(response.data.message);
         }
@@ -971,9 +975,9 @@ const LoginSignup = () => {
                             }}
                           >
                             {showPasswordIcon ? (
-                              <Visibility fontSize="small" />
-                            ) : (
                               <VisibilityOff fontSize="small" />
+                            ) : (
+                              <Visibility fontSize="small" />
                             )}
                           </IconButton>
                         </InputAdornment>
@@ -1121,9 +1125,9 @@ const LoginSignup = () => {
                             }}
                           >
                             {showPasswordIcon ? (
-                              <Visibility fontSize="small" />
-                            ) : (
                               <VisibilityOff fontSize="small" />
+                            ) : (
+                              <Visibility fontSize="small" />
                             )}
                           </IconButton>
                         </InputAdornment>
@@ -1149,10 +1153,25 @@ const LoginSignup = () => {
             {/*<=========================================================================== Forget password ======================================================================> */}
 
             {!active && step === "forget" && (
-              <form id="loginForm" onSubmit={(e) => handleForgotDetails(e)}>
+              <form id="loginForm" onSubmit={(e) => {
+                if (showOTP) {
+                  handleUpdatePassword(e);
+                } else {
+                  handleForgotDetails(e);
+                }
+              }} noValidate >
 
                 <div
-                  onClick={() => setStep("login")}
+                  onClick={() => {
+                    if (showOTP) {
+                      setShowOTP(false);
+                      setOtp("");
+                      setPassword("");
+                      setErrors({});
+                    } else {
+                      setStep("login");
+                    }
+                  }}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -1188,13 +1207,20 @@ const LoginSignup = () => {
                     variant="outlined"
                     inputRef={(el) => (inputRefs.current[8] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 8)}
+                    value={mobile}
                     onChange={(e) => {
                       setMobile(e.target.value);
+                      setShowOTP(false);
+                      setOtp("");
+                      setPassword("");
 
                       setErrors((prev) => ({
                         ...prev,
                         mobile: "",
                       }));
+                    }}
+                    InputLabelProps={{
+                      shrink: !!mobile,
                     }}
                     InputProps={{
                       sx: {
@@ -1209,193 +1235,160 @@ const LoginSignup = () => {
                     </div>
                   )}
                 </div>
-                <div className="forgot-link">
-                  <p onClick={() => setStep('login')} style={{ cursor: 'pointer' }}>Already have an account? Login</p>
-                </div>
-                <button onClick={handleForgotDetails} className="btn">Verify</button>
-              </form>
-            )}
 
-            {/*<=========================================================================== OTP verifiaction ==================================================================> */}
-
-            {step === "ForgetOTP" && (
-              <form id="otpPasswordForm" onSubmit={handleUpdatePassword} noValidate>
-
-
-
-                <div
-                  onClick={() => {
-                    setStep("forget");
-                    setOtp("");
-                    setPassword("");
-                    setErrors({});
-                  }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    marginBottom: "15px",
-                    justifyContent: "flex-start",
-                    width: "100%",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#333",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "5px",
-                    }}
-                  >
-                    ← Back
-                  </span>
-                </div>
-
-                <div className="input-box">
-                  <TextField
-                    type="text"
-                    id="otp"
-                    placeholder="Enter OTP"
-                    label={errors.otp ? "" : "Enter OTP"}
-                    error={!!errors.otp}
-                    required
-                    value={otp}
-                    inputRef={(el) => (inputRefs.current[5] = el)}
-                    InputLabelProps={{
-                      shrink: !!otp,
-                      sx: {
-                        top: "50%",
-                        transform: "translate(14px, -50%) scale(1)",
-                        "&.MuiInputLabel-shrink": {
-                          top: 0,
-                          transform: "translate(14px, -9px) scale(0.75)",
-                        },
-                      },
-                    }}
-                    onKeyDown={(e) => handleKeyDown(e, 5)}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, "");
-                      if (value.length <= 6) {
-                        setOtp(value);
-                        setErrors((prev) => ({
-                          ...prev,
-                          otp: "",
-                        }));
-                      }
-                    }}
-                  />
-                  {errors.otp && (
-                    <div
-                      style={{
-                        color: "red",
-                        fontSize: "12px",
-                        marginTop: "4px",
-                        textAlign: "start",
-                      }}
-                    >
-                      {errors.otp}
+                {showOTP && (
+                  <>
+                    <div className="input-box" style={{ marginTop: "15px" }}>
+                      <TextField
+                        type="text"
+                        id="otp"
+                        placeholder="Enter OTP"
+                        label={errors.otp ? "" : "Enter OTP"}
+                        error={!!errors.otp}
+                        required
+                        value={otp}
+                        inputRef={(el) => (inputRefs.current[5] = el)}
+                        InputLabelProps={{
+                          shrink: !!otp,
+                          sx: {
+                            top: "50%",
+                            transform: "translate(14px, -50%) scale(1)",
+                            "&.MuiInputLabel-shrink": {
+                              top: 0,
+                              transform: "translate(14px, -9px) scale(0.75)",
+                            },
+                          },
+                        }}
+                        onKeyDown={(e) => handleKeyDown(e, 5)}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, "");
+                          if (value.length <= 6) {
+                            setOtp(value);
+                            setErrors((prev) => ({
+                              ...prev,
+                              otp: "",
+                            }));
+                          }
+                        }}
+                      />
+                      {errors.otp && (
+                        <div
+                          style={{
+                            color: "red",
+                            fontSize: "12px",
+                            marginTop: "4px",
+                            textAlign: "start",
+                          }}
+                        >
+                          {errors.otp}
+                        </div>
+                      )}
+                      <i className='bx bxs-lock' style={{ top: "30%" }}></i>
                     </div>
-                  )}
-                  <i className='bx bxs-lock'></i>
-                </div>
 
-                <div className="input-box">
-                  <TextField
-                    type={showPasswordIcon ? "text" : "password"}
-                    id="password"
-                    placeholder="Set Password"
-                    label={errors.password ? "" : "Set Password"}
-                    error={!!errors.password}
-                    required
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: !!password,
-                      sx: {
-                        top: "50%",
-                        transform: "translate(14px, -50%) scale(1)",
-                        "&.MuiInputLabel-shrink": {
-                          top: 0,
-                          transform: "translate(14px, -9px) scale(0.75)",
-                        },
-                      },
-                    }}
-                    value={password}
-                    inputRef={(el) => (inputRefs.current[6] = el)}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setErrors((prev) => ({
-                        ...prev,
-                        password: "",
-                      }));
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") handleUpdatePassword(event);
-                    }}
-                    InputProps={{
-                      sx: {
-                        backgroundColor: 'white',
-                        borderRadius: '4px',
-                      },
-                      endAdornment: (
-                        <InputAdornment position="end" sx={{ pr: '8px' }}>
-                          <IconButton
-                            onClick={() => setShowPasswordIcon((prev) => !prev)}
-                            edge="end"
-                            size="small"
-
-                            style={{
-                              position: "absolute",
-                              right: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                              padding: 4,
-                              zIndex: 2,
-                            }}
-                          >
-                            {showPasswordIcon ? (
-                              <Visibility fontSize="small" />
-                            ) : (
-                              <VisibilityOff fontSize="small" />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                  {errors.password && (
-                    <div
-                      style={{
-                        color: "red",
-                        fontSize: "12px",
-                        marginTop: "4px",
-                        textAlign: "start",
-                      }}
-                    >
-                      {errors.password}
+                    <div className="input-box" style={{ marginTop: "15px" }}>
+                      <TextField
+                        type={showPasswordIcon ? "text" : "password"}
+                        id="password"
+                        placeholder="Set Password"
+                        label={errors.password ? "" : "Set Password"}
+                        error={!!errors.password}
+                        required
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: !!password,
+                          sx: {
+                            top: "50%",
+                            transform: "translate(14px, -50%) scale(1)",
+                            "&.MuiInputLabel-shrink": {
+                              top: 0,
+                              transform: "translate(14px, -9px) scale(0.75)",
+                            },
+                          },
+                        }}
+                        value={password}
+                        inputRef={(el) => (inputRefs.current[6] = el)}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                          setErrors((prev) => ({
+                            ...prev,
+                            password: "",
+                          }));
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") handleUpdatePassword(event);
+                        }}
+                        InputProps={{
+                          sx: {
+                            backgroundColor: 'white',
+                            borderRadius: '4px',
+                          },
+                          endAdornment: (
+                            <InputAdornment position="end" sx={{ pr: '8px' }}>
+                              <IconButton
+                                onClick={() => setShowPasswordIcon((prev) => !prev)}
+                                edge="end"
+                                size="small"
+                                style={{
+                                  position: "absolute",
+                                  right: "10px",
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                  padding: 4,
+                                  zIndex: 2,
+                                }}
+                              >
+                                {showPasswordIcon ? (
+                                  <VisibilityOff fontSize="small" />
+                                ) : (
+                                  <Visibility fontSize="small" />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      {errors.password && (
+                        <div
+                          style={{
+                            color: "red",
+                            fontSize: "12px",
+                            marginTop: "4px",
+                            textAlign: "start",
+                          }}
+                        >
+                          {errors.password}
+                        </div>
+                      )}
+                      <i className='bx bxs-key' style={{ top: "30%" }}></i>
                     </div>
-                  )}
-                  {/* <PasswordRules password={password} /> */}
-                  <i className='bx bxs-key'></i>
-                </div>
 
-                <div className="forgot-link">
-                  <p
-                    style={{
-                      color: resendEnabled ? "" : "gray",
-                      fontWeight: 500,
-                      cursor: "pointer",
-                    }}
-                    onClick={resendEnabled ? handleResendOtp : null}
-                  >
-                    {resendEnabled
-                      ? "Resend OTP"
-                      : `Re-send otp in ${timer}s`}
-                  </p>
+                    <div className="forgot-link">
+                      <p
+                        style={{
+                          color: resendEnabled ? "" : "gray",
+                          fontWeight: 500,
+                          cursor: "pointer",
+                        }}
+                        onClick={resendEnabled ? handleResendOtp : null}
+                      >
+                        {resendEnabled
+                          ? "Resend OTP"
+                          : `Re-send otp in ${timer}s`}
+                      </p>
+                    </div>
+                  </>
+                )}
 
-                </div>
-                <button type="submit" className="btn">Submit</button>
+                {!showOTP && (
+                  <div className="forgot-link">
+                    <p onClick={() => setStep('login')} style={{ cursor: 'pointer' }}>Already have an account? Login</p>
+                  </div>
+                )}
+
+                <button type="submit" className="btn">
+                  {showOTP ? "Submit" : "Verify"}
+                </button>
               </form>
             )}
 
