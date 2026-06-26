@@ -2028,13 +2028,13 @@ const InventoryList = () => {
                         Category
                         <SwapVertIcon />
                       </th>
-                      <th
+                      {/* <th
                         className="cursor-pointer"
                         onClick={() => sortByColumn("discount")}
                       >
                         Disc
                         <SwapVertIcon />
-                      </th>
+                      </th> */}
                       <th
                         className="cursor-pointer"
                         onClick={() => sortByColumn("barcode")}
@@ -2188,7 +2188,7 @@ const InventoryList = () => {
                             ? "-"
                             : item.item_category_id}
                         </td>
-                        <td
+                        {/* <td
                           onClick={() => {
                             history.push(`/inventoryView/${item.id}`);
                           }}
@@ -2196,7 +2196,7 @@ const InventoryList = () => {
                           {item.discount === "null" || item.discount === ""
                             ? "-"
                             : item.discount}
-                        </td>
+                        </td> */}
                         <td
                           style={{ borderRadius: "0 10px 10px 0" }}
                           onClick={() => {
@@ -2216,7 +2216,7 @@ const InventoryList = () => {
                 rowsPerPageOptions={[5, 10, 15]}
                 component="div"
                 count={data?.[0].count}
-                
+
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
