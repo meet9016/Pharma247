@@ -272,3 +272,37 @@
     font-size: 30px;
   }
 }
+
+/* ====================================================
+   Chrome Autofill Label Overlap Fix for MUI TextField
+   ==================================================== */
+
+/* Jab Chrome input autofill kare, label upar shrink ho jaye */
+#loginForm input:-webkit-autofill ~ .MuiOutlinedInput-notchedOutline legend,
+#loginForm input:-webkit-autofill:hover ~ .MuiOutlinedInput-notchedOutline legend,
+#loginForm input:-webkit-autofill:focus ~ .MuiOutlinedInput-notchedOutline legend {
+  max-width: 100% !important;
+}
+
+/* Modern Chrome - :has() selector se label ko force shrink */
+#loginForm .MuiFormControl-root:has(input:-webkit-autofill) .MuiInputLabel-root {
+  transform: translate(14px, -9px) scale(0.75) !important;
+  color: rgba(0, 0, 0, 0.6) !important;
+  background-color: white;
+  padding: 0 4px;
+}
+
+#loginForm .MuiFormControl-root:has(input:-webkit-autofill) .MuiOutlinedInput-notchedOutline legend {
+  max-width: 100% !important;
+}
+
+/* Chrome autofill background override - white background maintain karo */
+#loginForm input:-webkit-autofill,
+#loginForm input:-webkit-autofill:hover,
+#loginForm input:-webkit-autofill:focus,
+#loginForm input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #333 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}

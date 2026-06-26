@@ -4,6 +4,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { TextField } from "@mui/material";
 import axios from "axios";
 import {
@@ -83,6 +84,28 @@ const LoginSignup = () => {
       setRegisterData((prev) => ({ ...prev, referral_code: referralCode }));
     }
   }, [referralCode]);
+
+  useEffect(() => {
+    setErrors({});
+    if (!active) {
+      setRegisterData({
+        pharmacy_name: "",
+        mobile_number: "",
+        email: "",
+        zip_code: "",
+        referral_code: referralCode || "",
+        type: 0,
+      });
+    } else {
+      setMobile("");
+      setEmail("");
+      if (step === "register") {
+        setOtp("");
+        setPassword("");
+      }
+    }
+    // toast.dismiss();
+  }, [step, active, referralCode]);
   {/*<=========================================================================== resend  code  ====================================================================> */ }
 
   useEffect(() => {
@@ -182,22 +205,15 @@ const LoginSignup = () => {
       newErrors.zip_code = "ZIP Code must be 6 digits";
     }
 
-    // Referral Code (Optional)
-    // if (
-    //   registerData.referral_code &&
-    //   referralRegex.test(registerData.referral_code.trim())
-    // ) {
+
+
+
+    // if (!registerData.referral_code.trim()) {
+    //   newErrors.referral_code = "Referral Code is required";
+    // } else if (!referralRegex.test(registerData.referral_code.trim())) {
     //   newErrors.referral_code =
     //     "Referral Code must be 3-20 characters";
     // }
-
-
-    if (!registerData.referral_code.trim()) {
-      newErrors.referral_code = "Referral Code is required";
-    } else if (!referralRegex.test(registerData.referral_code.trim())) {
-      newErrors.referral_code =
-        "Referral Code must be 3-20 characters";
-    }
 
 
 
@@ -222,75 +238,100 @@ const LoginSignup = () => {
       data.append("email", registerData.email);
       data.append("zip_code", registerData.zip_code);
       data.append("referral_code", registerData.referral_code);
-      data.append("coupon_code", registerData.referral_code);
+      // data.append("coupon_code", registerData.referral_code);
       data.append("type", registerData.type);
       const response = await axios.post("resgiter", data);
       if (response.data.status === 200) {
-        toast.dismiss();
         toast.success(response.data.message);
         setUserID(response.data.data.id);
         setStep("otp");
         setPassword("");
 
       } else {
-        toast.dismiss();
         toast.error(response.data.message);
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        toast.dismiss();
         toast.error(error.response.data.message);
       } else {
-        toast.dismiss();
         toast.error("An unexpected error occurred. Please try again later.");
         console.error("API error:", error);
       }
     }
   };
   {/*<=============================================================================== register OTP validation ======================================================================> */ }
-  const validationOTP = () => {
+  // const validationOTP = () => {
+  //   const newErrors = {};
+
+  //   if (!otp) {
+  //     newErrors.otp = "OTP is required";
+  //     toast.dismiss();
+  //     toast.error(newErrors.otp);
+  //   }
+
+  //   if (!password) {
+  //     newErrors.password = "Password is required";
+  //     toast.dismiss();
+  //     toast.error(newErrors.password);
+  //   } else if (password.length < 8) {
+  //     newErrors.password = "Password must be at least 8 characters";
+  //     toast.dismiss();
+  //     toast.error(newErrors.password);
+  //   } else if (!/[A-Z]/.test(password)) {
+  //     newErrors.password =
+  //       "Password must contain at least one uppercase letter";
+  //     toast.dismiss();
+  //     toast.error(newErrors.password);
+  //   } else if (!/[a-z]/.test(password)) {
+  //     newErrors.password =
+  //       "Password must contain at least one lowercase letter";
+  //     toast.dismiss();
+  //     toast.error(newErrors.password);
+  //   } else if (!/[0-9]/.test(password)) {
+  //     newErrors.password = "Password must contain at least one digit";
+  //     toast.dismiss();
+  //     toast.error(newErrors.password);
+  //   } else if (!/[!@#$%^&*]/.test(password)) {
+  //     newErrors.password =
+  //       "Password must contain at least one special character";
+  //     toast.dismiss();
+  //     toast.error(newErrors.password);
+  //   }
+  //   setErrors(newErrors);
+  //   const isValid = Object.keys(newErrors).length === 0;
+  //   if (isValid) {
+  //     handleSubmitOtp();
+  //   }
+  //   return;
+  // };
+  const validationOTP = (e) => {
+    if (e) e.preventDefault();
+
     const newErrors = {};
 
-    if (!otp) {
+    if (!otp.trim()) {
       newErrors.otp = "OTP is required";
-      toast.dismiss();
-      toast.error(newErrors.otp);
     }
 
-    if (!password) {
+    if (!password.trim()) {
       newErrors.password = "Password is required";
-      toast.dismiss();
-      toast.error(newErrors.password);
     } else if (password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
-      toast.dismiss();
-      toast.error(newErrors.password);
     } else if (!/[A-Z]/.test(password)) {
-      newErrors.password =
-        "Password must contain at least one uppercase letter";
-      toast.dismiss();
-      toast.error(newErrors.password);
+      newErrors.password = "Password must contain at least one uppercase letter";
     } else if (!/[a-z]/.test(password)) {
-      newErrors.password =
-        "Password must contain at least one lowercase letter";
-      toast.dismiss();
-      toast.error(newErrors.password);
+      newErrors.password = "Password must contain at least one lowercase letter";
     } else if (!/[0-9]/.test(password)) {
       newErrors.password = "Password must contain at least one digit";
-      toast.dismiss();
-      toast.error(newErrors.password);
     } else if (!/[!@#$%^&*]/.test(password)) {
-      newErrors.password =
-        "Password must contain at least one special character";
-      toast.dismiss();
-      toast.error(newErrors.password);
+      newErrors.password = "Password must contain at least one special character";
     }
+
     setErrors(newErrors);
-    const isValid = Object.keys(newErrors).length === 0;
-    if (isValid) {
+
+    if (Object.keys(newErrors).length === 0) {
       handleSubmitOtp();
     }
-    return;
   };
 
 
@@ -307,20 +348,17 @@ const LoginSignup = () => {
       const response = await axios.post("resgiter", data);
 
       if (response.data.status === 200 && response.data.message) {
-        toast.dismiss();
         toast.success(response.data.message);
         localStorage.setItem("userId", userID);
         setPassword("");
         setOtp("")
-        setTimeout(() => {
-          history.push("/", { NewUser: "NewUser" });
-        }, 3000);
+        setActive(false);
+        setStep("login");
+        history.push("/", { NewUser: "NewUser" });
       } else {
-        toast.dismiss();
         toast.error(response.data.message || "Something went wrong");
       }
     } catch (error) {
-      toast.dismiss();
       toast.error(error.response?.data?.message || "An error occurred");
       console.error("API error:", error);
     }
@@ -395,7 +433,6 @@ const LoginSignup = () => {
           localStorage.setItem("role", role);
           localStorage.setItem("email", email);
 
-          toast.dismiss();
           toast.success(response.data.message);
 
           await userPermission(token)
@@ -430,12 +467,10 @@ const LoginSignup = () => {
             history.push("/adminDashboard");
           }
         } else {
-          toast.dismiss();
           toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          toast.dismiss();
           toast.error(error.response.data.message);
         }
         console.error("API error:", error);
@@ -451,25 +486,13 @@ const LoginSignup = () => {
   const handleForgotDetails = async (event) => {
     event.preventDefault(); // Prevent form submission
     const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!mobile) {
       newErrors.mobile = "mobile No is required";
       toast.dismiss();
-      // toast.error("Mobile Number is required");
     } else if (!/^\d{10}$/.test(mobile)) {
       newErrors.mobile = "Mobile number must be 10 digits";
       toast.dismiss();
-      // toast.error("Mobile number must be 10 digits");
-    }
-    if (!email) {
-      newErrors.email = "Email Id is required";
-      toast.dismiss();
-      // toast.error("Email Id is required");
-    } else if (!emailRegex.test(email)) {
-      newErrors.email = "Enter a valid email address";
-      toast.dismiss();
-      // toast.error("Enter a valid email address");
     }
 
     setErrors(newErrors);
@@ -484,7 +507,6 @@ const LoginSignup = () => {
         const response = await axios.post("forget-password", userData);
         localStorage.setItem("userId", response.data.data.user_id);
         if (response.data.status === 200) {
-          toast.dismiss();
           toast.success(response.data.message);
           setShowOTP(true);
           setPassword("");
@@ -492,12 +514,10 @@ const LoginSignup = () => {
           setMobile("");
           setStep("ForgetOTP");
         } else {
-          toast.dismiss();
           toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          toast.dismiss();
           toast.error(error.response.data.message);
         }
         console.error("API error:", error);
@@ -513,28 +533,16 @@ const LoginSignup = () => {
     if (!otp) errors.otp = "OTP is required";
     if (!password) {
       errors.password = "Password is required";
-      toast.dismiss();
-      toast.error(errors.password);
     } else if (password.length < 8) {
       errors.password = "Password must be at least 8 characters";
-      toast.dismiss();
-      toast.error(errors.password);
     } else if (!/[A-Z]/.test(password)) {
       errors.password = "Password must contain at least one uppercase letter";
-      toast.dismiss();
-      toast.error(errors.password);
     } else if (!/[a-z]/.test(password)) {
       errors.password = "Password must contain at least one lowercase letter";
-      toast.dismiss();
-      toast.error(errors.password);
     } else if (!/[0-9]/.test(password)) {
       errors.password = "Password must contain at least one digit";
-      toast.dismiss();
-      toast.error(errors.password);
     } else if (!/[!@#$%^&*]/.test(password)) {
       errors.password = "Password must contain at least one special character";
-      toast.dismiss();
-      toast.error(errors.password);
     }
     setErrors(errors);
     const isValid = Object.keys(errors).length === 0;
@@ -548,19 +556,17 @@ const LoginSignup = () => {
       try {
         const response = await axios.post("forget-password", userData);
         if (response.data.status === 200) {
-          toast.dismiss();
           toast.success(response.data.message);
-          setShowOTP(true);
-          setTimeout(() => {
-            history.push("/");
-          }, 3000);
+          setShowOTP(false);
+          setPassword("");
+          setOtp("");
+          setStep("login");
+          history.push("/");
         } else {
-          toast.dismiss();
           toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          toast.dismiss();
           toast.error(error.response.data.message);
         }
         console.error("API error:", error);
@@ -654,7 +660,7 @@ const LoginSignup = () => {
       <div id="#login-body" >
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={8000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -835,11 +841,12 @@ const LoginSignup = () => {
                     type="text"
                     id="referral_code"
                     label={errors.referral_code ? "" : "Referral Code"}
-                    error={!!errors.referral_code}
-                    placeholder="Referral Code (Optional)"
+                    // error={!!errors.referral_code}
+                    placeholder="Referral Code"
                     value={registerData.referral_code}
                     inputRef={(el) => (inputRefs.current[4] = el)}
                     onChange={handleInputChange}
+                    inputProps={{ maxLength: 6 }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleValidation(e);
                     }} />
@@ -865,7 +872,7 @@ const LoginSignup = () => {
             {/*<==================================================================================== OTP UI =======================================================================> */}
 
             {step === "otp" && (
-              <form id="otpPasswordForm" onSubmit={validationOTP}>
+              <form id="otpPasswordForm" onSubmit={validationOTP} noValidate>
 
                 <div
                   onClick={() => setStep("register")}
@@ -889,9 +896,35 @@ const LoginSignup = () => {
                     placeholder="Enter OTP"
                     required
                     value={otp}
+                    error={!!errors.otp}
                     inputRef={(el) => (inputRefs.current[5] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 5)}
-                    onChange={(e) => setOtp(e.target.value)} />
+
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
+                      if (value.length <= 6) {
+                        setOtp(value);
+
+                        setErrors((prev) => ({
+                          ...prev,
+                          otp: "",
+                        }));
+                      }
+                    }}
+                  />
+
+                  {errors.otp && (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "12px",
+                        marginTop: "4px",
+                        textAlign: "start",
+                      }}
+                    >
+                      {errors.otp}
+                    </div>
+                  )}
                   <i className='bx bxs-lock'></i>
                 </div>
 
@@ -901,10 +934,19 @@ const LoginSignup = () => {
                     id="password"
                     placeholder="Set Password"
                     required
+                    error={!!errors.password}
                     fullWidth
                     value={password}
                     inputRef={(el) => (inputRefs.current[6] = el)}
-                    onChange={(e) => setPassword(e.target.value)}
+                    // onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+
+                      setErrors((prev) => ({
+                        ...prev,
+                        password: "",
+                      }));
+                    }}
                     onKeyDown={(event) => {
                       if (event.key === "Enter") validationOTP();
                     }}
@@ -939,7 +981,20 @@ const LoginSignup = () => {
                       ),
                     }}
                   />
-                  <PasswordRules password={password} />
+                  {errors.password && (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "12px",
+                        marginTop: "4px",
+                        textAlign: "start",
+                      }}
+                    >
+                      {errors.password}
+                    </div>
+                  )}
+
+                  {/* <PasswordRules password={password} /> */}
                   <i className='bx bxs-key'></i>
                   <div className="forgot-link">
                     <p
@@ -951,7 +1006,7 @@ const LoginSignup = () => {
                       onClick={resendEnabled ? handleResendOtp : null}
                     >
                       {resendEnabled
-                        ? "Resend OTP"
+                        ? "Resend OTP "
                         : `Re-send otp in ${timer}s`}
                     </p>
                   </div>
@@ -959,6 +1014,8 @@ const LoginSignup = () => {
                 <button type="submit" className="btn">Submit</button>
               </form>
             )}
+
+
           </div>
 
           {/*<============================================================================ Logn UI & Forget UI ===================================================================> */}
@@ -969,7 +1026,7 @@ const LoginSignup = () => {
               <form id="loginForm" onSubmit={(e) => handleLogin(e)} noValidate>
                 <div className="input-box">
                   <TextField
-                    type="number"
+                    type="tel"
                     id="login-mobile"
                     label={errors.mobile ? "" : "Mobile No"}
                     placeholder="Mobile No"
@@ -981,6 +1038,10 @@ const LoginSignup = () => {
                     inputRef={(el) => (inputRefs.current[8] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 8)}
                     error={!!errors.mobile}
+                    autoComplete="tel"
+                    InputLabelProps={{
+                      shrink: !!mobile,
+                    }}
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, "");
                       if (value.length <= 10) {
@@ -1024,6 +1085,10 @@ const LoginSignup = () => {
                     size="small"
                     variant="outlined"
                     inputRef={(el) => (inputRefs.current[9] = el)}
+                    autoComplete="current-password"
+                    InputLabelProps={{
+                      shrink: !!password,
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleLogin(e);
                     }}
@@ -1119,7 +1184,7 @@ const LoginSignup = () => {
                     required
                     fullWidth
                     label={errors.mobile ? "" : "Mobile No"}
-                     error={!!errors.mobile}
+                    error={!!errors.mobile}
                     size="small"
                     variant="outlined"
                     inputRef={(el) => (inputRefs.current[8] = el)}
@@ -1139,44 +1204,9 @@ const LoginSignup = () => {
                       },
                     }}
                   />
-                  {/* {errors.mobile} */}
                   {errors.mobile && (
                     <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
                       {errors.mobile}
-                    </div>
-                  )}
-                </div>
-                <div className="input-box">
-                  <TextField
-                    type="email"
-                    placeholder="Email ID"
-                    required
-                    fullWidth
-                    label={errors.email ? "" : "Email"}
-                    error={!!errors.email}
-                    size="small"
-                    variant="outlined"
-                    inputRef={(el) => (inputRefs.current[9] = el)}
-                    onKeyDown={(e) => handleKeyDown(e, 9)}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-
-                      setErrors((prev) => ({
-                        ...prev,
-                        email: "",
-                      }));
-                    }}
-                    InputProps={{
-                      sx: {
-                        backgroundColor: 'white',
-                        borderRadius: '4px',
-                      },
-                    }}
-                  />
-                  {/* {errors.email} */}
-                  {errors.email && (
-                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify" }}>
-                      {errors.email}
                     </div>
                   )}
                 </div>
@@ -1190,17 +1220,85 @@ const LoginSignup = () => {
             {/*<=========================================================================== OTP verifiaction ==================================================================> */}
 
             {step === "ForgetOTP" && (
-              <form id="otpPasswordForm" >
+              <form id="otpPasswordForm" onSubmit={handleUpdatePassword} noValidate>
+
+
+
+                <div
+                  onClick={() => {
+                    setStep("forget");
+                    setOtp("");
+                    setPassword("");
+                    setErrors({});
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    marginBottom: "15px",
+                    justifyContent: "flex-start",
+                    width: "100%",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#333",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    ← Back
+                  </span>
+                </div>
 
                 <div className="input-box">
                   <TextField
-                    type="text" id="otp"
+                    type="text"
+                    id="otp"
                     placeholder="Enter OTP"
+                    label={errors.otp ? "" : "Enter OTP"}
+                    error={!!errors.otp}
                     required
                     value={otp}
                     inputRef={(el) => (inputRefs.current[5] = el)}
+                    InputLabelProps={{
+                      shrink: !!otp,
+                      sx: {
+                        top: "50%",
+                        transform: "translate(14px, -50%) scale(1)",
+                        "&.MuiInputLabel-shrink": {
+                          top: 0,
+                          transform: "translate(14px, -9px) scale(0.75)",
+                        },
+                      },
+                    }}
                     onKeyDown={(e) => handleKeyDown(e, 5)}
-                    onChange={(e) => setOtp(e.target.value)} />
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
+                      if (value.length <= 6) {
+                        setOtp(value);
+                        setErrors((prev) => ({
+                          ...prev,
+                          otp: "",
+                        }));
+                      }
+                    }}
+                  />
+                  {errors.otp && (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "12px",
+                        marginTop: "4px",
+                        textAlign: "start",
+                      }}
+                    >
+                      {errors.otp}
+                    </div>
+                  )}
                   <i className='bx bxs-lock'></i>
                 </div>
 
@@ -1209,12 +1307,30 @@ const LoginSignup = () => {
                     type={showPasswordIcon ? "text" : "password"}
                     id="password"
                     placeholder="Set Password"
+                    label={errors.password ? "" : "Set Password"}
+                    error={!!errors.password}
                     required
                     fullWidth
-
+                    InputLabelProps={{
+                      shrink: !!password,
+                      sx: {
+                        top: "50%",
+                        transform: "translate(14px, -50%) scale(1)",
+                        "&.MuiInputLabel-shrink": {
+                          top: 0,
+                          transform: "translate(14px, -9px) scale(0.75)",
+                        },
+                      },
+                    }}
                     value={password}
                     inputRef={(el) => (inputRefs.current[6] = el)}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setErrors((prev) => ({
+                        ...prev,
+                        password: "",
+                      }));
+                    }}
                     onKeyDown={(event) => {
                       if (event.key === "Enter") handleUpdatePassword(event);
                     }}
@@ -1240,16 +1356,28 @@ const LoginSignup = () => {
                             }}
                           >
                             {showPasswordIcon ? (
-                              <VisibilityOff fontSize="small" />
-                            ) : (
                               <Visibility fontSize="small" />
+                            ) : (
+                              <VisibilityOff fontSize="small" />
                             )}
                           </IconButton>
                         </InputAdornment>
                       ),
                     }}
                   />
-                  <PasswordRules password={password} />
+                  {errors.password && (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "12px",
+                        marginTop: "4px",
+                        textAlign: "start",
+                      }}
+                    >
+                      {errors.password}
+                    </div>
+                  )}
+                  {/* <PasswordRules password={password} /> */}
                   <i className='bx bxs-key'></i>
                 </div>
 
@@ -1263,12 +1391,12 @@ const LoginSignup = () => {
                     onClick={resendEnabled ? handleResendOtp : null}
                   >
                     {resendEnabled
-                      ? "Re-send otp"
+                      ? "Resend OTP"
                       : `Re-send otp in ${timer}s`}
                   </p>
 
                 </div>
-                <button onClick={(event) => handleUpdatePassword(event)} className="btn">Submit</button>
+                <button type="submit" className="btn">Submit</button>
               </form>
             )}
 
