@@ -660,63 +660,127 @@ const BankAccount = () => {
               </List>
             )} */}
 
-
-
-            {bankData.filter(account => account.bank_account_name === "Saving").length > 0 ? (
-              <List>
-                <h1
-                  className="text-lg sm:text-base md:text-lg flex justify-start p-2"
-                  style={{ color: "var(--color1)" }}
-                >
-                  Savings Accounts
-                </h1>
-
-                {bankData
-                  .filter(account => account.bank_account_name === "Saving")
-                  .map((account, index) => (
-                    <ListItem
-                      key={account.id}
-                      className={`list-bank ${selectedAccountId === account.id ? "primary-bg text-white" : ""
-                        }`}
-                      disablePadding
+            {!bankData.length > 0 ? (
+              <>
+                {/* Savings Accounts */}
+                {bankData.filter(account => account.bank_account_name === "Saving").length > 0 && (
+                  <List>
+                    <h1
+                      className="text-lg sm:text-base md:text-lg flex justify-start p-2"
+                      style={{ color: "var(--color1)" }}
                     >
-                      <ListItemButton
-                        style={{ width: "100%", borderRadius: "10px" }}
-                        onClick={() => handleAccountClick(account.id, index)}
-                      >
-                        <div className="w-full min-w-0 flex-1">
-                          <p
-                            className={`text-xs ${selectedAccountId === account.id ? "text-white" : ""
-                              } text-gray-600 mb-1 font-mono tracking-wide`}
-                          >
-                            {account.bank_account_number || "-"}
-                          </p>
+                      Savings Accounts
+                    </h1>
 
-                          <h6
-                            className={`font-semibold text-sm mb-1 ${selectedAccountId === account.id ? "text-white" : ""
-                              }`}
+                    {bankData
+                      .filter(account => account.bank_account_name === "Saving")
+                      .map((account, index) => (
+                        <ListItem
+                          key={account.id}
+                          className={`list-bank ${selectedAccountId === account.id ? "primary-bg text-white" : ""
+                            }`}
+                          disablePadding
+                        >
+                          <ListItemButton
+                            style={{ width: "100%", borderRadius: "10px" }}
+                            onClick={() => handleAccountClick(account.id, index)}
                           >
-                            {account.bank_name}
-                          </h6>
+                            <div className="w-full min-w-0 flex-1">
+                              <p
+                                className={`text-xs ${selectedAccountId === account.id ? "text-white" : ""
+                                  } text-gray-600 mb-1 font-mono tracking-wide`}
+                              >
+                                {account.bank_account_number || "-"}
+                              </p>
 
-                          <h6
-                            className={`text-xs text-black font-semibold ${selectedAccountId === account.id ? "text-white" : ""
-                              }`}
+                              <h6
+                                className={`font-semibold text-sm mb-1 ${selectedAccountId === account.id ? "text-white" : ""
+                                  }`}
+                              >
+                                {account.bank_name}
+                              </h6>
+
+                              <h6
+                                className={`text-xs text-black font-semibold ${selectedAccountId === account.id ? "text-white" : ""
+                                  }`}
+                              >
+                                {account.account_holder_name}
+                              </h6>
+                            </div>
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+
+                    <Divider
+                      style={{
+                        borderColor: "var(--color2)",
+                        marginBlock: "10px",
+                      }}
+                    />
+                  </List>
+                )}
+
+                {/* Current Accounts */}
+                {bankData.filter(account => account.bank_account_name === "Current").length > 0 && (
+                  <List>
+                    <h1
+                      className="text-lg sm:text-base md:text-lg flex justify-start p-2"
+                      style={{ color: "var(--color1)" }}
+                    >
+                      Current Accounts
+                    </h1>
+                    {bankData
+                      .filter(account => account.bank_account_name === "Current")
+                      .map((account, index) => (
+                        <ListItem
+                          key={account.id}
+                          className={`list-bank  ${selectedAccountId === account.id ? " text-white primary-bg" : ""}`}
+                          disablePadding
+                        >
+                          <ListItemButton
+                            style={{ width: "100%", borderRadius: "10px" }}
+                            onClick={() => handleAccountClick(account.id, index)}
                           >
-                            {account.account_holder_name}
-                          </h6>
-                        </div>
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-
-                <Divider
-                  style={{
-                    borderColor: "var(--color2)",
-                    marginBlock: "10px",
-                  }}
-                />
-              </List>
+                            <div className={`w-full min-w-0 flex-1  ${selectedAccountId === account.id ? " text-white" : ""}`}>
+                              <p
+                                className={`text-xs text-gray-600 mb-1 font-mono tracking-wide  ${selectedAccountId === account.id ? " text-white" : ""}`}
+                                style={{
+                                  wordBreak: "break-all",
+                                  lineHeight: "1.2"
+                                }}
+                              >
+                                {account.bank_account_number || "Empty"}
+                              </p>
+                              <h6
+                                className={`font-semibold text-sm mb-1 ${selectedAccountId === account.id ? " text-white" : ""}`}
+                                style={{
+                                  wordWrap: "break-word",
+                                  lineHeight: "1.3",
+                                  hyphens: "auto"
+                                }}
+                              >{account.bank_name}
+                              </h6>
+                              <h6
+                                className={`font-medium text-xs text-gray-700 ${selectedAccountId === account.id ? " text-white" : ""}`}
+                                style={{
+                                  wordWrap: "break-word",
+                                  lineHeight: "1.4",
+                                  hyphens: "auto",
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden"
+                                }}
+                              >{account.account_holder_name}
+                              </h6>
+                            </div>
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    <Divider style={{ borderColor: "var(--color2) !important", marginBlock: "10px" }} />
+                  </List>
+                )}
+              </>
             ) : (
               <div className="flex flex-col items-center w-full h-[400px]">
                 <img
@@ -730,76 +794,6 @@ const BankAccount = () => {
                   No Bank Details
                 </p>
               </div>
-            )}
-
-
-
-
-
-
-
-
-
-
-            {/* Current Accounts */}
-            {bankData.filter(account => account.bank_account_name === "Current").length > 0 && (
-              <List>
-                <h1
-                  className="text-lg sm:text-base md:text-lg flex justify-start p-2"
-                  style={{ color: "var(--color1)" }}
-                >
-                  Current Accounts
-                </h1>
-                {bankData
-                  .filter(account => account.bank_account_name === "Current")
-                  .map((account, index) => (
-                    <ListItem
-                      key={account.id}
-                      className={`list-bank  ${selectedAccountId === account.id ? " text-white primary-bg" : ""}`}
-                      disablePadding
-                    >
-                      <ListItemButton
-                        style={{ width: "100%", borderRadius: "10px" }}
-                        onClick={() => handleAccountClick(account.id, index)}
-                      >
-                        <div className={`w-full min-w-0 flex-1  ${selectedAccountId === account.id ? " text-white" : ""}`}>
-                          <p
-                            className={`text-xs text-gray-600 mb-1 font-mono tracking-wide  ${selectedAccountId === account.id ? " text-white" : ""}`}
-                            style={{
-                              wordBreak: "break-all",
-                              lineHeight: "1.2"
-                            }}
-                          >
-                            {account.bank_account_number || "Empty"}
-                          </p>
-                          <h6
-                            className={`font-semibold text-sm mb-1 ${selectedAccountId === account.id ? " text-white" : ""}`}
-                            style={{
-                              wordWrap: "break-word",
-                              lineHeight: "1.3",
-                              hyphens: "auto"
-                            }}
-                          >{account.bank_name}
-                          </h6>
-                          <h6
-                            className={`font-medium text-xs text-gray-700 ${selectedAccountId === account.id ? " text-white" : ""}`}
-                            style={{
-                              wordWrap: "break-word",
-                              lineHeight: "1.4",
-                              hyphens: "auto",
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden"
-                            }}
-                          >{account.account_holder_name}
-                          </h6>
-                        </div>
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                <Divider style={{ borderColor: "var(--color2) !important", marginBlock: "10px" }} />
-              </List>
             )}
           </Box>
 
@@ -1963,7 +1957,7 @@ const BankAccount = () => {
                     width: "100%",
                     backgroundColor: "#ffffff",
                     '& .MuiOutlinedInput-input': {
-                      padding: "8.5px 14px"
+                      padding: "8.5px 0px"
                     }
                   }}
                   size="small"

@@ -1119,7 +1119,13 @@ const OrderList = () => {
                         );
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Item Name" placeholder="Select Items" size="small" />
+                        <TextField {...params} label="Item Name" placeholder="Select Items" size="small"
+                          sx={{
+                            width: "100%",
+                            "& .MuiOutlinedInput-root": {
+                              padding: "8px !important",
+                            },
+                          }} />
                       )}
                       sx={{ width: "100%" }}
                     />
@@ -1140,7 +1146,14 @@ const OrderList = () => {
                         }
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Status" placeholder="Select Status" size="small" />
+                        <TextField {...params} label="Status" placeholder="Select Status" size="small" sx={{
+                          "& .MuiOutlinedInput-root": {
+                            padding: "8px",
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            padding: "8px",
+                          },
+                        }} />
                       )}
                       sx={{ width: "100%" }}
                     />

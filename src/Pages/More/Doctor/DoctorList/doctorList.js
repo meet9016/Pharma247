@@ -1003,6 +1003,10 @@ const DoctorList = () => {
                             placeholder="Enter Doctor Name"
                             error={!!errors.Doctor}
                             sx={{
+                              "& .MuiOutlinedInput-input": {
+                                paddingLeft: "0px !important",
+                              },
+
                               "& .MuiOutlinedInput-notchedOutline": {
                                 borderColor: errors.Doctor ? "#d32f2f !important" : "rgba(0,0,0,0.23)",
                               },

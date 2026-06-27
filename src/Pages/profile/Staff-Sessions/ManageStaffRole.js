@@ -236,6 +236,7 @@ const ManageStaffRole = () => {
                                     <tbody style={{ background: "#3f621217" }}>
                                         {manageStaffRoleData?.length > 0 ? (
                                             manageStaffRoleData.map((item, index) => {
+                                                const displayStatus = item.status === "1" ? "Active" : item.status === "0" ? "Inactive" : item.status;
                                                 return (
                                                     <tr key={index}>
                                                         <td style={{ borderRadius: "10px 0 0 10px" }}>{index + 1}</td>

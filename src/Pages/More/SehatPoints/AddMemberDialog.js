@@ -461,7 +461,12 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                     placeholder="Email"
                                     onChange={(e) => handleChange("email", e.target.value)}
                                     error={!!errors.email}
-                                // helperText={errors.email}
+                                    // helperText={errors.email}
+                                    sx={{
+                                        "& .MuiOutlinedInput-input": {
+                                            padding: "8.5px 5px !important",
+                                        },
+                                    }}
                                 />
                                 {errors.email && (
                                     <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>{errors.email}</div>

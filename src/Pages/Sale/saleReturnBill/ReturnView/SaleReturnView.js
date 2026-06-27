@@ -496,22 +496,25 @@ const SaleReturnView = () => {
                             <td style={{ borderRadius: "10px 0 0 10px" }}>
                               <div className="itemName">{item.iteam_name}</div>
                             </td>
-                            <td>{item.unit}</td>
-                            <td>{item.batch}</td>
-                            <td>{item.exp}</td>
-                            <td>{item.mrp}</td>
-                            <td>{item.base}</td>
-                            <td>{item.gst}</td>
-                            <td>{item.qty}</td>
+                            <td>{item.unit || "-"}</td>
+                            <td>{item.batch || "-"}</td>
+                            <td>{item.exp || "-"}</td>
+                            <td>{item.mrp || "-"}</td>
+                            <td>{item.base || "-"}</td>
+                            <td>{item.gst || "-"}</td>
+                            <td>{item.qty || "-"}</td>
                             {/* <td>{item.order}</td> */}
-                            <td>{item.location}</td>
+                            <td>{item.location || "-"}</td>
                             <td
                               className="amount"
                               style={{ borderRadius: "0 10px 10px 0" }}
                             >
-                              {item.net_rate}
+                              {item.net_rate || "-"}
                             </td>
                           </tr>
+
+
+
                         ))}
                       </tbody>
                     </table>

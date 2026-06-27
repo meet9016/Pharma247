@@ -253,7 +253,7 @@ const Inventory_Reconciliation = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -283,7 +283,7 @@ const Inventory_Reconciliation = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -324,7 +324,7 @@ const Inventory_Reconciliation = () => {
       }
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -669,8 +669,8 @@ const Inventory_Reconciliation = () => {
                 <button
                   onClick={handlePrevious}
                   className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
                     }`}
                   disabled={currentPage === 1}
                 >
@@ -709,8 +709,8 @@ const Inventory_Reconciliation = () => {
                 <button
                   onClick={handleNext}
                   className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
-                      ? "bg-gray-200 text-gray-700"
-                      : "secondary-bg text-white"
+                    ? "bg-gray-200 text-gray-700"
+                    : "secondary-bg text-white"
                     }`}
                 //    disabled={filteredList.length === 0}
                 >

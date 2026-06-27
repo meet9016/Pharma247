@@ -657,7 +657,7 @@ const Itemmaster = () => {
     setIsSubmitting(true);
     let formData = new FormData();
 
-    formData.append("item_id", value.id ? value.id : "");
+    formData.append("item_id", value?.id ? value.id : "");
 
     formData.append("item_name", searchItem ? searchItem : "");
     formData.append("packaging_id", packaging ? packaging : "");

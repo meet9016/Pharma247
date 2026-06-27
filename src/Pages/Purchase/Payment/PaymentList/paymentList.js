@@ -1177,7 +1177,12 @@ const PaymentList = () => {
                       const formatted = input.replace(/\b\w/g, (char) => char.toUpperCase());
                       setNote(formatted);
                     }}
-                    style={{ width: "100%" }}
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        padding: "8px",
+                      },
+                    }}
                     rows={2}
                     variant="outlined"
                   />

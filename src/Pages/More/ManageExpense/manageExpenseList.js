@@ -1019,11 +1019,18 @@ const ManageExpense = () => {
                               }));
                             }}
                             sx={{
+                              "& .MuiOutlinedInput-root": {
+                                padding: "5px",
+                              },
+                              "& .MuiOutlinedInput-input": {
+                                padding: "5px",
+                              },
                               "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
                                 borderColor: "red !important",
                                 borderWidth: "1px",
                               },
                             }}
+
                           />
                           {errors.amount && (
                             <div className="error">{errors.amount}</div>
@@ -1047,6 +1054,14 @@ const ManageExpense = () => {
                             value={total}
                             placeholder="Total"
                             onChange={(e) => setTotal(e.target.value)}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                padding: "5px",
+                              },
+                              "& .MuiOutlinedInput-input": {
+                                padding: "5px",
+                              },
+                            }}
                           />
                           {errors.total && (
                             <div className="error">{errors.total}</div>
@@ -1139,6 +1154,14 @@ const ManageExpense = () => {
                             value={refNo}
                             placeholder="Reference Number"
                             onChange={(e) => setRefNo(e.target.value)}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                padding: "5px",
+                              },
+                              "& .MuiOutlinedInput-input": {
+                                padding: "5px",
+                              },
+                            }}
                           />
                           {errors.refNo && (
                             <div className="error">{errors.refNo}</div>
@@ -1163,6 +1186,14 @@ const ManageExpense = () => {
                             value={remark}
                             placeholder="Remark"
                             onChange={(e) => setRemark(e.target.value)}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                padding: "5px",
+                              },
+                              "& .MuiOutlinedInput-input": {
+                                padding: "5px",
+                              },
+                            }}
                           />
                           {errors.remark && (
                             <div className="error">{errors.remark}</div>
