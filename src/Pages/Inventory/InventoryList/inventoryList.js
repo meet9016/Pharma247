@@ -934,7 +934,17 @@ const InventoryList = () => {
     setExpiry(newValue?.expiry_date);
     setMrp(newValue?.mrp);
     setStock(newValue?.qty);
-    setSelectedCompany(newValue?.company_name);
+    if (newValue) {
+      const company = companyList.find(
+        (x) => x.id == newValue.company_id || x.company_name === newValue.company_name
+      ) || {
+        id: newValue.company_id,
+        company_name: newValue.company_name,
+      };
+      setSelectedCompany(company);
+    } else {
+      setSelectedCompany(null);
+    }
   };
   const validateForm = async () => {
     const newErrors = {};
@@ -2848,8 +2858,8 @@ const InventoryList = () => {
 
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {/* First row: Item & Company */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
+            {/* First row: Item, Adjustment Date & Batch */}
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-5">
               <div className="w-full">
                 <span className="title primary mb-2">Item Name</span>
                 <Autocomplete
@@ -2863,23 +2873,19 @@ const InventoryList = () => {
                   renderInput={(params) => <TextField autoComplete="off" {...params} />}
                 />
               </div>
-
               <div className="w-full">
-                <span className="title primary mb-2">Company</span>
+                <span className="title primary mb-2">Batch</span>
                 <Autocomplete
                   disablePortal
-                  options={companyList}
+                  options={batchListData}
                   size="small"
-                  value={selectedCompany}
-                  disabled
-                  getOptionLabel={(option) => option.company_name}
-                  renderInput={(params) => <TextField autoComplete="off" {...params} />}
+                  value={batchListData.find((opt) => opt.batch_name === batch || opt.batch_number === batch) || null}
+                  onChange={handleBatchData}
+                  getOptionLabel={(option) => option.batch_number || option.batch_name || ""}
+                  isOptionEqualToValue={(option, value) => option.batch_name === value.batch_name || option.batch_number === value.batch_number}
+                  renderInput={(params) => <TextField autoComplete="off" {...params}  placeholder="Select Batch" />}
                 />
               </div>
-            </div>
-
-            {/* Other fields in grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
               <div className="w-full">
                 <span className="title primary mb-2">Adjustment Date</span>
                 <DatePicker
@@ -2891,37 +2897,42 @@ const InventoryList = () => {
                 />
               </div>
 
+            </div>
+            {/* Other fields in grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
               <div className="w-full">
-                <span className="title primary mb-2">Batch</span>
-                <Autocomplete
-                  disablePortal
-                  options={batchListData}
+                <span className="title primary mb-2">Company</span>
+                <TextField
+                  autoComplete="off"
+                  disabled
                   size="small"
-                  value={batch}
-                  onChange={handleBatchData}
-                  getOptionLabel={(option) => option.batch_number}
-                  renderInput={(params) => <TextField autoComplete="off" {...params} />}
+                  placeholder="Company Name"
+                  value={
+                    typeof selectedCompany === "string"
+                      ? selectedCompany
+                      : (selectedCompany?.company_name || "")
+                  }
                 />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">Unit</span>
-                <TextField autoComplete="off" disabled size="small" value={unit} />
+                <TextField autoComplete="off" disabled size="small" value={unit} placeholder="Unit" />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">Expiry</span>
-                <TextField autoComplete="off" disabled size="small" value={expiry} />
+                <TextField autoComplete="off" disabled size="small" value={expiry} placeholder="Expiry" />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">MRP</span>
-                <TextField autoComplete="off" disabled size="small" type="number" value={mrp} />
+                <TextField autoComplete="off" disabled size="small" type="number" value={mrp} placeholder="MRP" />
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">Current Stock</span>
-                <TextField autoComplete="off" disabled size="small" type="number" value={stock} />
+                <TextField autoComplete="off" disabled size="small" type="number" value={stock} placeholder="0" />
               </div>
 
               <div className="w-full">
@@ -2931,17 +2942,17 @@ const InventoryList = () => {
                   size="small"
                   type="number"
                   value={stockAdjust}
+                  placeholder="0" 
                   onChange={(e) => {
                     const val = e.target.value;
                     setStockAdjust(val === "" ? "" : parseFloat(val));
                   }}
                 />
-
               </div>
 
               <div className="w-full">
                 <span className="title primary mb-2">Stock Adjust</span>
-                <TextField autoComplete="off" disabled size="small" type="number" value={remainingStock} />
+                <TextField autoComplete="off" disabled size="small" type="number" value={remainingStock} placeholder="0"/>
               </div>
             </div>
           </DialogContentText>
