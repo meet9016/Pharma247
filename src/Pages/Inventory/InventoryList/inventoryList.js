@@ -2883,7 +2883,7 @@ const InventoryList = () => {
                   onChange={handleBatchData}
                   getOptionLabel={(option) => option.batch_number || option.batch_name || ""}
                   isOptionEqualToValue={(option, value) => option.batch_name === value.batch_name || option.batch_number === value.batch_number}
-                  renderInput={(params) => <TextField autoComplete="off" {...params}  placeholder="Select Batch" />}
+                  renderInput={(params) => <TextField autoComplete="off" {...params} placeholder="Select Batch" />}
                 />
               </div>
               <div className="w-full">
@@ -2942,7 +2942,7 @@ const InventoryList = () => {
                   size="small"
                   type="number"
                   value={stockAdjust}
-                  placeholder="0" 
+                  placeholder="0"
                   onChange={(e) => {
                     const val = e.target.value;
                     setStockAdjust(val === "" ? "" : parseFloat(val));
@@ -2952,7 +2952,7 @@ const InventoryList = () => {
 
               <div className="w-full">
                 <span className="title primary mb-2">Stock Adjust</span>
-                <TextField autoComplete="off" disabled size="small" type="number" value={remainingStock} placeholder="0"/>
+                <TextField autoComplete="off" disabled size="small" type="number" value={remainingStock} placeholder="0" />
               </div>
             </div>
           </DialogContentText>

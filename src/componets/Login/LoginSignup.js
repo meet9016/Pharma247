@@ -1404,7 +1404,7 @@ const LoginSignup = () => {
 
                 </a>
               </div>
-              <p>Don't have an account?</p>
+              <p style={{ color: "#fff" }}>Don't have an account?</p>
               <button className="btn register-btn" onClick={() => { setActive(true); setStep("register") }}>Register</button>
             </div>
 

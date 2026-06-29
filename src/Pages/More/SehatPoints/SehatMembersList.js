@@ -90,13 +90,13 @@ const SehatMembersList = () => {
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     };
 
@@ -119,13 +119,13 @@ const SehatMembersList = () => {
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
-              if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     };
     /*<======================================================================== fetch plan list ====================================================================> */
@@ -213,55 +213,55 @@ const SehatMembersList = () => {
     };
 
     const DistList = async (page) => {
-    if (!page) return;
+        if (!page) return;
 
-    const params = {
-        page: page,
-    };
+        const params = {
+            page: page,
+        };
 
-    currentSearchTerms.current.forEach((term, index) => {
-        if (term && term.trim()) {
-            params[searchKeys[index]] = term.trim();
-        }
-    });
-
-    setIsSearchLoading(true);
-
-    try {
-        const response = await axios.get(
-            "customer-sehat-membership-plan-list?",
-            {
-                params,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+        currentSearchTerms.current.forEach((term, index) => {
+            if (term && term.trim()) {
+                params[searchKeys[index]] = term.trim();
             }
-        );
+        });
 
-        if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-            return;
+        setIsSearchLoading(true);
+
+        try {
+            const response = await axios.get(
+                "customer-sehat-membership-plan-list?",
+                {
+                    params,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (response.data.status === 401) {
+                history.push("/");
+                localStorage.clear();
+                return;
+            }
+
+            setTableData(response.data.data || []);
+            setTotalRecords(response.data.total_records || 0);
+
+        } catch (error) {
+            console.error("API error:", error);
+            setTableData([]);
+            setTotalRecords(0);
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
+        } finally {
+            setIsSearchLoading(false);
         }
-
-        setTableData(response.data.data || []);
-        setTotalRecords(response.data.total_records || 0);
-
-    } catch (error) {
-        console.error("API error:", error);
-        setTableData([]);
-        setTotalRecords(0);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
-    } finally {
-        setIsSearchLoading(false);
-    }
-};
+    };
 
 
     const handlePrevious = () => {
@@ -481,11 +481,11 @@ const SehatMembersList = () => {
                                                                         }}
                                                                         key={column.id}
                                                                         className={`capitalize ${tdClass}`}
-                                                               
+
                                                                     >
                                                                         {column.format && typeof value === "number"
                                                                             ? column.format(value)
-                                                                            : value}
+                                                                            : (value !== null && value !== undefined && value !== "" ? value : "-")}
                                                                     </td>
                                                                 );
                                                             })}
@@ -512,7 +512,8 @@ const SehatMembersList = () => {
                                                         </tr>
                                                     ))
                                                 )}
-                                            </tbody>)}
+                                            </tbody>
+                                        )}
                                     </table>
                                 </div>
                             </div>
@@ -590,7 +591,7 @@ const SehatMembersList = () => {
             {addMember && <AddMemberDialog addMember={addMember} setAddMember={setAddMember} customerId={customerId} />}
             {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} setAddMember={setAddMember} />}
             {viewMember && <MemberView viewMember={viewMember} setViewMember={setViewMember} memberDetails={memberDetails} />}
-            
+
         </>
     );
 };

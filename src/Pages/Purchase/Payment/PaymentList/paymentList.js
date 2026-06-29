@@ -669,7 +669,7 @@ const PaymentList = () => {
                       variant="contained"
                       className="sale_add_btns gap-2"
                       size="small"
-                      style={{ fontSize: "14px", background: "var(--color1)" }}
+                      style={{ fontSize: "14px", background: "var(--color1)", }}
                       onClick={handelAddOpen}
                     >
                       <AddIcon />
