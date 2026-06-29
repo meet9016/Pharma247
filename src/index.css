@@ -427,8 +427,8 @@
 }
 
 .MuiAutocomplete-root .MuiOutlinedInput-input {
-    padding: 0 0px !important;
-    height: 40px !important;
+    padding: 12px 8px !important;
+    height: 0px !important;
     line-height: 40px !important;
 }
 

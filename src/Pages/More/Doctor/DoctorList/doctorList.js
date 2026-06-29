@@ -1004,7 +1004,7 @@ const DoctorList = () => {
                             error={!!errors.Doctor}
                             sx={{
                               "& .MuiOutlinedInput-input": {
-                                paddingLeft: "0px !important",
+                                paddingLeft: "8px !important",
                               },
 
                               "& .MuiOutlinedInput-notchedOutline": {

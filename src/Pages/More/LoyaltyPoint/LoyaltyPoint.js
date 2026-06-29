@@ -435,6 +435,7 @@ const LoyaltyPoint = () => {
                       style={{
                         backgroundColor: "var(--COLOR_UI_PHARMACY)",
                         color: "white",
+                        padding: "7px"
                       }}
                       className="add_lyl_btn"
                       variant="contained"

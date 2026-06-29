@@ -301,7 +301,7 @@ const CashManage = () => {
                           className="mt-4 md:mt-0 min-h-[41px] h-[41px]  text-white flex items-center justify-center"
                           // style={{ background: "var(--COLOR_UI_PHARMACY)" }}
                           style={{
-                            minHeight: "45px",
+                            minHeight: "40px",
                             alignItems: "center",
                             marginTop: "23px",
                             background: "var(--color1)",

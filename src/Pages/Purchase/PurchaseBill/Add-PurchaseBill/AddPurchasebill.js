@@ -67,6 +67,9 @@ const AddPurchaseBill = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [purchasePage, setPurchasePage] = useState(1);
+  const [purchaseHasMore, setPurchaseHasMore] = useState(true);
+  const [isFetchingPurchaseMore, setIsFetchingPurchaseMore] = useState(false);
   const [distributor, setDistributor] = useState(null);
   const [billNo, setbillNo] = useState("");
   const [dueDate, setDueDate] = useState(addDays(new Date(), 15));
@@ -1046,30 +1049,52 @@ const AddPurchaseBill = () => {
 
   /*<=============================================================== Get Item purchase List   ================================================================> */
 
-  const itemPurchaseList = async () => {
+  const itemPurchaseList = async (pageNumber = 1) => {
     let data = new FormData();
     data.append("random_number", localStorage.getItem("RandomNumber"));
+    data.append("page", pageNumber);
 
-    setIsLoading(true);
-    setLoading(true)
+    if (pageNumber === 1) {
+      setIsLoading(true);
+      setLoading(true);
+      setPurchasePage(1);
+      setPurchaseHasMore(true);
+    } else {
+      setIsFetchingPurchaseMore(true);
+    }
 
     try {
-      const response = await axios
-        .post("item-purchase-list?", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setItemPurchaseList(response.data.data);
-          setFinalTotalAmount(response.data.data.new_total_price);
-          setTotalGst(response.data.data.total_gst);
-          setTotalQty(response.data.data.total_qty);
-          setTotalNetRate(response.data.data.total_net_rate);
-          handleCalNetAmount(response.data.data.new_total_price);
-          setTotalBase(response.data.data.total_base);
-          setTotalFRee(response.data.data.total_free);
-        });
+      const response = await axios.post("item-purchase-list?", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const resData = response.data.data;
+      const newItems = resData?.item || [];
+
+      if (pageNumber === 1) {
+        setItemPurchaseList(resData);
+      } else {
+        setItemPurchaseList((prev) => ({
+          ...resData,
+          item: [...(prev?.item || []), ...newItems],
+        }));
+      }
+
+      setFinalTotalAmount(resData.new_total_price);
+      setTotalGst(resData.total_gst);
+      setTotalQty(resData.total_qty);
+      setTotalNetRate(resData.total_net_rate);
+      handleCalNetAmount(resData.new_total_price);
+      setTotalBase(resData.total_base);
+      setTotalFRee(resData.total_free);
+
+      if (newItems.length < 20) {
+        setPurchaseHasMore(false);
+      } else {
+        setPurchaseHasMore(true);
+      }
     } catch (error) {
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
@@ -1082,8 +1107,8 @@ const AddPurchaseBill = () => {
       setUnsavedItems(false);
     } finally {
       setIsLoading(false);
-      setLoading(false)
-
+      setLoading(false);
+      setIsFetchingPurchaseMore(false);
     }
   };
 
@@ -2563,7 +2588,21 @@ const AddPurchaseBill = () => {
             </div>
             {/*<=====================================================Item Table ====================================================> */}
 
-            <div className="table-container">
+            <div
+              className="table-container"
+              onScroll={(e) => {
+                const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+                if (
+                  scrollTop + clientHeight >= scrollHeight - 50 &&
+                  purchaseHasMore &&
+                  !isFetchingPurchaseMore
+                ) {
+                  const nextPage = purchasePage + 1;
+                  setPurchasePage(nextPage);
+                  itemPurchaseList(nextPage);
+                }
+              }}
+            >
               <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
                 <thead>
                   <tr className="input-row">
@@ -3371,6 +3410,15 @@ const AddPurchaseBill = () => {
                       </td>
                     </tr>
                   ))
+                  )}
+                  {isFetchingPurchaseMore && (
+                    <tr>
+                      <td colSpan={15} style={{ padding: "12px", textAlign: "center" }}>
+                        <div className="loader-container">
+                          <Loader />
+                        </div>
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>

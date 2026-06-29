@@ -1023,7 +1023,7 @@ const ManageExpense = () => {
                                 padding: "5px",
                               },
                               "& .MuiOutlinedInput-input": {
-                                padding: "5px",
+                                padding: "5px 10px",
                               },
                               "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
                                 borderColor: "red !important",

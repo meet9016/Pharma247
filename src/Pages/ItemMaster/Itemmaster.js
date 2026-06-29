@@ -1189,6 +1189,10 @@ const Itemmaster = () => {
                               ? "#d32f2f"
                               : "var(--color1)",
                           },
+                          "& .MuiOutlinedInput-input": {
+                            padding: "12px 8px !important",
+                         
+                          },
                         },
                       }}
                     />
@@ -1305,7 +1309,7 @@ const Itemmaster = () => {
                       sx={{
                         ".MuiSelect-select": {
                           color: packaging ? "inherit" : "rgba(0, 0, 0, 0.38)",
-                          padding: "8.5px 6px !important",
+                          padding: "8.5px 12px !important",
                         },
                       }}
                     >
@@ -1463,7 +1467,7 @@ const Itemmaster = () => {
                       sx={{
                         ".MuiSelect-select": {
                           color: gst ? "inherit" : "rgba(0, 0, 0, 0.38)",
-                          padding: "8.5px 6px !important",
+                          padding: "8.5px 12px !important",
                         },
                       }}
                     >

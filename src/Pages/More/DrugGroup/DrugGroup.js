@@ -322,6 +322,9 @@ const DrugGroup = () => {
                   style={{ background: "var(--color1)" }}
                   size="small"
                   onClick={handelAddOpen}
+                  sx={{
+                    padding: "8px 12px",
+                  }}
                 >
                   <AddIcon />
                   Add Drug Group

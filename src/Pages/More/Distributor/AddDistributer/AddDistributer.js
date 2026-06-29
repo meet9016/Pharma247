@@ -401,7 +401,7 @@ const AddDistributer = () => {
                         onKeyDown={(e) => handleKeyDown(e, 1)}
                         sx={{
                           ".MuiInputBase-input": {
-                            padding: "10px 12px",
+                            padding: "10px 3px !important",
                             height: "10px",
                           },
                         }}

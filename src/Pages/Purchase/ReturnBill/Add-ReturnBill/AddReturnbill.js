@@ -1206,6 +1206,10 @@ const AddReturnbill = () => {
                             "&.Mui-error .MuiOutlinedInput-notchedOutline": {
                               borderColor: "#d32f2f !important",
                             },
+                            "& .MuiOutlinedInput-input": {
+                              padding: "0px !important",
+                              paddingTop: "0px !important"  // or "8px 12px"
+                            },
                           }}
                         />
                       }
@@ -1245,6 +1249,10 @@ const AddReturnbill = () => {
                             backgroundColor: "#ffffff",
                             "&.Mui-error .MuiOutlinedInput-notchedOutline": {
                               borderColor: "#d32f2f !important",
+                            },
+                            "& .MuiOutlinedInput-input": {
+                              padding: "0px !important",
+                              paddingTop: "0px !important"    // or "8px 12px"
                             },
                           }}
                         />

@@ -660,7 +660,7 @@ const BankAccount = () => {
               </List>
             )} */}
 
-            {!bankData.length > 0 ? (
+            {bankData.length > 0 ? (
               <>
                 {/* Savings Accounts */}
                 {bankData.filter(account => account.bank_account_name === "Saving").length > 0 && (
@@ -1713,7 +1713,7 @@ const BankAccount = () => {
               fontWeight: 600
             }}
           >
-            Adjust Balance
+            Adjust Balance  
             <IconButton
               aria-label="close"
               onClick={resetAdjustDialog}
@@ -1876,7 +1876,7 @@ const BankAccount = () => {
                       customInput={
                         <OutlinedInput
                           size="small"
-                          sx={{ width: "100%", backgroundColor: "#ffffff" }}
+                          sx={{ width: "100%", backgroundColor: "#ffffff", padding: "0px !important" }}
                         />
                       }
                     />

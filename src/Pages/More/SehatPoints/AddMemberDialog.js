@@ -379,6 +379,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                         right: 12,
                         top: 8,
                         color: "#ffffff",
+                        padding: "8.5px 12px !important"
                     }}
                 >
                     <CloseIcon />

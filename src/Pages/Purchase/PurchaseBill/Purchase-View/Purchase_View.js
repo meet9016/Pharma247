@@ -45,7 +45,9 @@ const PurchaseView = () => {
   const [header, setHeader] = useState("");
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [roundOffAmount, setRoundOffAmount] = useState("");
-
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   {/*<=================================================================== get initial data  ===================================================================> */ }
@@ -88,7 +90,10 @@ const PurchaseView = () => {
       const index = tableData.findIndex((item) => item.id == parseInt(id));
       if (index !== -1) {
         setCurrentIndex(index);
-        purchaseBillGetByID(parseInt(id));
+        // purchaseBillGetByID(parseInt(id));
+        setPage(1);
+        setHasMore(true);
+        purchaseBillGetByID(parseInt(id), 1);
       }
     }
   }, [id, tableData]);
@@ -176,9 +181,13 @@ const PurchaseView = () => {
 
   {/*<===================================================================== get bill details  =====================================================================> */ }
 
-  const purchaseBillGetByID = async (billId = id) => {
+  const purchaseBillGetByID = async (
+    billId = id,
+    pageNumber = 1
+  ) => {
     let data = new FormData();
     data.append("id", billId);
+    data.append("page", pageNumber);
     const params = {
       id: billId,
     };
@@ -191,10 +200,58 @@ const PurchaseView = () => {
             Authorization: `Bearer ${token}`,
           },
         })
+        // .then((response) => {
+        //   // setData(response.data.data);
+        //   const res = response.data.data;
+
+        //   if (pageNumber === 1) {
+
+        //     setData(res);
+
+        //   } else {
+
+        //     setData(prev => ({
+        //       ...prev,
+        //       ...res,
+        //       item_list: [
+        //         ...prev.item_list,
+        //         ...res.item_list
+        //       ]
+        //     }));
+
+        //   }
+        //   setRoundOffAmount(response.data.data.round_off);
+        //   setIsLoading(false);
+        // });
         .then((response) => {
-          setData(response.data.data);
-          setRoundOffAmount(response.data.data.round_off);
+
+          const res = response.data.data;
+
+          if (pageNumber === 1) {
+
+            setData(res);
+
+          } else {
+
+            setData(prev => ({
+              ...prev,
+              ...res,
+              item_list: [
+                ...prev.item_list,
+                ...res.item_list
+              ]
+            }));
+
+          }
+
+          // <-- Step 5 yahi add karna hai
+          if (res.item_list.length < 20) {
+            setHasMore(false);
+          }
+
+          setRoundOffAmount(res.round_off);
           setIsLoading(false);
+
         });
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -206,6 +263,27 @@ const PurchaseView = () => {
       }
       console.error("API error:", error);
     }
+  };
+
+
+  const handleTableScroll = (e) => {
+
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+
+    if (
+      scrollTop + clientHeight >= scrollHeight - 20 &&
+      hasMore &&
+      !isFetchingMore
+    ) {
+
+      const nextPage = page + 1;
+
+      setPage(nextPage);
+
+      purchaseBillGetByID(id, nextPage);
+
+    }
+
   };
 
   {/*<====================================================================== total details  ======================================================================> */ }
@@ -507,6 +585,7 @@ const PurchaseView = () => {
 
           <div
             className="overflow-x-auto mt-5"
+            onScroll={handleTableScroll}
             style={{
               maxHeight: "670px",
               overflowY: "auto",
