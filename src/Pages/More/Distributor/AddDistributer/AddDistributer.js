@@ -36,6 +36,7 @@ const AddDistributer = () => {
   /*<================================================================================ Input ref on keydown enter  =======================================================================> */
 
   const inputRefs = useRef([]);
+  const addButtonRef = useRef(null);
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -48,16 +49,19 @@ const AddDistributer = () => {
     }
   };
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.altKey && e.key.toLowerCase() === "s") {
-        e.preventDefault();
-        handleSubmit();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  // useEffect(() => {
+  //   const handleKeyDown = (e) => {
+  //     if (e.altKey && e.key.toLowerCase() === "s") {
+  //       e.preventDefault();
+  //       handleSubmit();
+  //     }
+  //   };
+  //   document.addEventListener("keydown", handleKeyDown);
+  //   return () => document.removeEventListener("keydown", handleKeyDown);
+  // }, []);
+
+
+
 
   /*<================================================================================ Search distributor  =======================================================================> */
 
@@ -137,6 +141,25 @@ const AddDistributer = () => {
       AddDistributor();
     }
   };
+
+
+
+  useEffect(() => {
+    const handleShortcut = (e) => {
+      if (e.altKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        handleSubmit(); // directly call instead of addButtonRef.current?.click()
+      }
+    };
+
+    window.addEventListener("keydown", handleShortcut);
+
+    return () => {
+      window.removeEventListener("keydown", handleShortcut);
+    };
+  }, [GSTNumber, distributorName, mobileno]); // dependencies add karna zaroori hai
+
+
 
   const AddDistributor = async () => {
     const token = localStorage.getItem("token");
@@ -886,6 +909,7 @@ const AddDistributer = () => {
                   </div>
                   <div className="text-end my-8">
                     <button
+                      ref={addButtonRef}
                       type="submit"
                       className="py-2 min-w-16 px-5 h-10 text-white rounded-md primary-bg ml-2"
                       onClick={handleSubmit}

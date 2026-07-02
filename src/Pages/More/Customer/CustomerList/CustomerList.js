@@ -228,7 +228,7 @@ const CustomerList = () => {
       //  Add Customer
       const newErrors = {};
       if (!customer) newErrors.customer = "Customer Name is required";
-      if (!state) newErrors.state = "State is required";
+      // if (!state) newErrors.state = "State is required";
 
       if (!mobileNo) {
         newErrors.mobileNo = "Mobile No is required";

@@ -337,7 +337,7 @@ const ManageExpense = () => {
     }
   };
 
-  const handleAddExpense = async () => {
+  const  handleAddExpense = async () => {
     if (validateForm()) {
       // Proceed with saving the expense
       let data = new FormData();
@@ -423,7 +423,9 @@ const ManageExpense = () => {
     setCurrentPage(pageNum);
   };
 
-  useSubmitShortcut(validateForm, openAddPopUp);
+  useSubmitShortcut(handleAddExpense, openAddPopUp);
+
+
 
   return (
     <>

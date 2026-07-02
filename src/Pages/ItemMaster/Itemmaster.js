@@ -102,10 +102,16 @@ const Itemmaster = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [file, setFile] = useState(null);
   const [error, setError] = useState({ searchItem: "", unit: "", weightage: "", pack: "", packaging: "", selectedCompany: "", selectedSuppliers: "", drugGroup: "", selectedCategory: "", selectedFrontFile: "", selectedMRPFile: "", selectedBackFile: "", });
-
   const [drugGroupSearch, setDrugGroupSearch] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [companyError, setCompanyError] = useState("");
+  const [distributorError, setDistributorError] = useState({
+    distributorName: "",
+    distributorMobileNo: "",
+    distributorGSTNumber: "",
+  });
+  const [drugGroupError, setDrugGroupError] = useState("");
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -386,6 +392,13 @@ const Itemmaster = () => {
   };
 
   const submitDrugGroup = () => {
+    if (!drugGroupName.trim()) {
+      setDrugGroupError("Drug Group Name is required");
+      return;
+    }
+
+    setDrugGroupError("");
+
     let data = new FormData();
     data.append("name", drugGroupName);
     try {
@@ -417,124 +430,165 @@ const Itemmaster = () => {
     }
   };
 
+  // const submitCompany = async () => {
+  //   let data = new FormData();
+  //   if (!companyName) {
+  //     toast.dismiss();
+  //     toast.error("enter company name")
+  //     return;
+  //   }
+  //   data.append("company_name", companyName);
+  //   try {
+  //     await axios
+  //       .post("company-store", data, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         setOpenCompany(false);
+  //         setCompanyName("");
+  //         listOfCompany();
+  //         setIsLoading(false);
+  //       });
+  //   } catch (error) {
+  //     console.error("API error:", error);
+  //     if (error?.response?.status === 401) {
+  //       localStorage.removeItem("token");
+  //       localStorage.removeItem("userId");
+  //       localStorage.removeItem("role");
+  //       localStorage.clear();
+  //       history.push("/");
+  //     }
+  //   }
+  // };
   const submitCompany = async () => {
     let data = new FormData();
-    if (!companyName) {
-      toast.dismiss();
-      toast.error("enter company name")
+
+    if (!companyName.trim()) {
+      setCompanyError("Company Name is required");
       return;
     }
+
+    setCompanyError("");
+
     data.append("company_name", companyName);
+
     try {
-      await axios
-        .post("company-store", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setOpenCompany(false);
-          setCompanyName("");
-          listOfCompany();
-          setIsLoading(false);
-        });
+      const response = await axios.post("company-store", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success(response.data.message);
+
+      setOpenCompany(false);
+      setCompanyName("");
+      setCompanyError("");
+      listOfCompany();
+      setIsLoading(false);
+
     } catch (error) {
       console.error("API error:", error);
+
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
-      }
-    }
-  };
-
-  const submitDistributor = async () => {
-    if (!distributorName) {
-      toast.dismiss();
-      toast.error("Distributor Name is required");
-      return;
-    }
-    if (!distributorMobileNo) {
-      toast.dismiss();
-      toast.error("Mobile Number is required");
-      return;
-    } else if (!/^\d{10}$/.test(distributorMobileNo)) {
-      toast.dismiss();
-      toast.error("Mobile number must be 10 digits");
-      return;
-    }
-    if (!distributorGSTNumber) {
-      toast.dismiss();
-      toast.error("GST Number is required");
-      return;
-    }
-
-    let finalDistributorVal = selectedDistributorId;
-    if (!finalDistributorVal && distributorName) {
-      const exactMatch = suppliersList.find(d =>
-        (d.name || d.distributor_name || "").toUpperCase() === distributorName.trim().toUpperCase()
-      );
-      if (exactMatch) {
-        finalDistributorVal = exactMatch.id;
-      }
-    }
-    const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-    if (!gstRegex.test(distributorGSTNumber)) {
-      toast.dismiss();
-      toast.error("Please enter a valid GST Number");
-      return;
-    }
-
-    let data = new FormData();
-    data.append("gst_number", distributorGSTNumber);
-    data.append("mobile_no", distributorMobileNo);
-    data.append("address", distributorAddress);
-    data.append("payment_due_days", "15");
-    if (finalDistributorVal) {
-      data.append("distributor_id", finalDistributorVal);
-      data.append("distributor_name", "");
-    } else {
-      data.append("distributor_id", "");
-      data.append("distributor_name", distributorName);
-    }
-    const nameToSelect = distributorName;
-    try {
-      await axios
-        .post("create-distributer", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          toast.dismiss();
-          toast.success(response.data.message);
-          setOpenDistributor(false);
-          setDistributorGSTNumber("");
-          setDistributorName("");
-          setDistributorMobileNo("");
-          setDistributorAddress("");
-          setSelectedDistributorId("");
-          listSuppliers(nameToSelect);
-        });
-    } catch (error) {
-      console.error("API error:", error);
-      toast.dismiss();
-      if (error?.response?.data?.message) {
-        toast.error(error.response.data.message);
       } else {
-        toast.error("Failed to add distributor");
-      }
-      if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
+        toast.error(error?.response?.data?.message || "Something went wrong");
       }
     }
   };
+
+  // const submitDistributor = async () => {
+  //   if (!distributorName) {
+  //     toast.dismiss();
+  //     toast.error("Distributor Name is required");
+  //     return;
+  //   }
+  //   if (!distributorMobileNo) {
+  //     toast.dismiss();
+  //     toast.error("Mobile Number is required");
+  //     return;
+  //   } else if (!/^\d{10}$/.test(distributorMobileNo)) {
+  //     toast.dismiss();
+  //     toast.error("Mobile number must be 10 digits");
+  //     return;
+  //   }
+  //   if (!distributorGSTNumber) {
+  //     toast.dismiss();
+  //     toast.error("GST Number is required");
+  //     return;
+  //   }
+
+  //   let finalDistributorVal = selectedDistributorId;
+  //   if (!finalDistributorVal && distributorName) {
+  //     const exactMatch = suppliersList.find(d =>
+  //       (d.name || d.distributor_name || "").toUpperCase() === distributorName.trim().toUpperCase()
+  //     );
+  //     if (exactMatch) {
+  //       finalDistributorVal = exactMatch.id;
+  //     }
+  //   }
+  //   const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+  //   if (!gstRegex.test(distributorGSTNumber)) {
+  //     toast.dismiss();
+  //     toast.error("Please enter a valid GST Number");
+  //     return;
+  //   }
+
+  //   let data = new FormData();
+  //   data.append("gst_number", distributorGSTNumber);
+  //   data.append("mobile_no", distributorMobileNo);
+  //   data.append("address", distributorAddress);
+  //   data.append("payment_due_days", "15");
+  //   if (finalDistributorVal) {
+  //     data.append("distributor_id", finalDistributorVal);
+  //     data.append("distributor_name", "");
+  //   } else {
+  //     data.append("distributor_id", "");
+  //     data.append("distributor_name", distributorName);
+  //   }
+  //   const nameToSelect = distributorName;
+  //   try {
+  //     await axios
+  //       .post("create-distributer", data, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         toast.dismiss();
+  //         toast.success(response.data.message);
+  //         setOpenDistributor(false);
+  //         setDistributorGSTNumber("");
+  //         setDistributorName("");
+  //         setDistributorMobileNo("");
+  //         setDistributorAddress("");
+  //         setSelectedDistributorId("");
+  //         listSuppliers(nameToSelect);
+  //       });
+  //   } catch (error) {
+  //     console.error("API error:", error);
+  //     toast.dismiss();
+  //     if (error?.response?.data?.message) {
+  //       toast.error(error.response.data.message);
+  //     } else {
+  //       toast.error("Failed to add distributor");
+  //     }
+  //     if (error?.response?.status === 401) {
+  //       localStorage.removeItem("token");
+  //       localStorage.removeItem("userId");
+  //       localStorage.removeItem("role");
+  //       localStorage.clear();
+  //       history.push("/");
+  //     }
+  //   }
+  // };
 
   // const handle = () => {
   //   setOnlineOrderChecked(!onlineorderChecked)
@@ -607,7 +661,116 @@ const Itemmaster = () => {
   // };
 
 
+  const submitDistributor = async () => {
+    const newErrors = {};
 
+    // Validation
+    if (!distributorName.trim()) {
+      newErrors.distributorName = "Distributor Name is required";
+    }
+
+    if (!distributorMobileNo.trim()) {
+      newErrors.distributorMobileNo = "Mobile Number is required";
+    } else if (!/^\d{10}$/.test(distributorMobileNo)) {
+      newErrors.distributorMobileNo = "Mobile Number must be 10 digits";
+    }
+
+    const gstRegex =
+      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+    if (!distributorGSTNumber.trim()) {
+      newErrors.distributorGSTNumber = "GST Number is required";
+    } else if (!gstRegex.test(distributorGSTNumber)) {
+      newErrors.distributorGSTNumber = "Please enter a valid GST Number";
+    }
+
+    setDistributorError(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    let finalDistributorVal = selectedDistributorId;
+
+    if (!finalDistributorVal && distributorName) {
+      const exactMatch = suppliersList.find(
+        (d) =>
+          (d.name || d.distributor_name || "")
+            .toUpperCase()
+            .trim() === distributorName.trim().toUpperCase()
+      );
+
+      if (exactMatch) {
+        finalDistributorVal = exactMatch.id;
+      }
+    }
+
+    let data = new FormData();
+
+    data.append("gst_number", distributorGSTNumber);
+    data.append("mobile_no", distributorMobileNo);
+    data.append("address", distributorAddress);
+    data.append("payment_due_days", "15");
+
+    if (finalDistributorVal) {
+      data.append("distributor_id", finalDistributorVal);
+      data.append("distributor_name", "");
+    } else {
+      data.append("distributor_id", "");
+      data.append("distributor_name", distributorName);
+    }
+
+    const nameToSelect = distributorName;
+
+    try {
+      const response = await axios.post(
+        "create-distributer",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.dismiss();
+      toast.success(response.data.message);
+
+      setOpenDistributor(false);
+
+      setDistributorName("");
+      setDistributorMobileNo("");
+      setDistributorGSTNumber("");
+      setDistributorAddress("");
+      setSelectedDistributorId("");
+
+      // Clear Validation Errors
+      setDistributorError({
+        distributorName: "",
+        distributorMobileNo: "",
+        distributorGSTNumber: "",
+      });
+
+      listSuppliers(nameToSelect);
+
+    } catch (error) {
+      console.error("API error:", error);
+
+      toast.dismiss();
+
+      toast.error(
+        error?.response?.data?.message || "Failed to add distributor"
+      );
+
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
+    }
+  };
 
 
 
@@ -1191,7 +1354,7 @@ const Itemmaster = () => {
                           },
                           "& .MuiOutlinedInput-input": {
                             padding: "12px 8px !important",
-                         
+
                           },
                         },
                       }}
@@ -1943,8 +2106,10 @@ const Itemmaster = () => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <div className="dialog pt-4">
-            <label className="mb-2">Drug Group Name</label>
+          <div className="dialog pt-4" style={{
+            padding: "0px 0px",
+          }}>
+            <label className="mb-2">  Drug Group Name <span style={{ color: "red" }}>*</span></label>
 
             <TextField
               id="outlined-number"
@@ -1958,18 +2123,49 @@ const Itemmaster = () => {
                 const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
 
                 setDrugGroupName(capitalized);
-
+                setDrugGroupError("");
               }}
 
 
               required
-
+              error={!!drugGroupError}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   submitDrugGroup();
                 }
               }}
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: drugGroupError
+                      ? "#d32f2f !important"
+                      : "rgba(0,0,0,0.38)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: drugGroupError
+                      ? "#d32f2f"
+                      : "var(--color1)",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: drugGroupError
+                      ? "#d32f2f"
+                      : "var(--color1)",
+                  },
+                },
+              }}
             />
+            {drugGroupError && (
+              <div
+                style={{
+                  color: "red",
+                  fontSize: "12px",
+                  marginTop: "4px",
+                }}
+              >
+                {drugGroupError}
+              </div>
+            )}
           </div>
         </DialogContent>
         <DialogActions>
@@ -2014,9 +2210,9 @@ const Itemmaster = () => {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent>
+        <DialogContent sx={{ padding: "0px 24px !important" }}>
           <div className="dialog pt-4">
-            <label className="mb-2">Company Name</label>
+            <label className="mb-2">Company Name <span style={{ color: "red" }}>*</span></label>
             <TextField
               id="outlined-number"
               placeholder="Enter Company Name"
@@ -2024,11 +2220,19 @@ const Itemmaster = () => {
               size="small"
               style={{ width: "100%" }}
               value={companyName}
+              // onChange={(e) => {
+              //   const value = e.target.value;
+              //   const capitalized =
+              //     value.charAt(0).toUpperCase() + value.slice(1);
+              //   setCompanyName(capitalized);
+              // }}
               onChange={(e) => {
                 const value = e.target.value;
                 const capitalized =
                   value.charAt(0).toUpperCase() + value.slice(1);
+
                 setCompanyName(capitalized);
+                setCompanyError("");
               }}
 
               onKeyDown={(e) => {
@@ -2036,8 +2240,31 @@ const Itemmaster = () => {
                   submitCompany();
                 }
               }}
+              error={!!companyError}
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-error fieldset": {
+                    borderColor: "red !important",
+                  },
+                  "&.Mui-focused.Mui-error fieldset": {
+                    borderColor: "red !important",
+                  },
+                },
+              }}
               required
             />
+            {companyError && (
+              <div
+                style={{
+                  color: "red",
+                  fontSize: "12px",
+                  marginTop: "4px",
+                }}
+              >
+                {companyError}
+              </div>
+            )}
           </div>
         </DialogContent>
         <DialogActions style={{ padding: "20px 24px" }}>
@@ -2115,6 +2342,11 @@ const Itemmaster = () => {
                       onInputChange={(e, newValue) => {
                         const uppercased = newValue.toUpperCase();
                         setDistributorName(uppercased);
+
+                        setDistributorError((prev) => ({
+                          ...prev,
+                          distributorName: "",
+                        }));
                         const found = suppliersList.find(d =>
                           (d.name || d.distributor_name || "").toUpperCase().trim() === uppercased.trim()
                         );
@@ -2163,9 +2395,35 @@ const Itemmaster = () => {
                             style: { textTransform: "uppercase" },
                             autoComplete: "off",
                           }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: distributorError.distributorName
+                                  ? "#d32f2f !important"
+                                  : "rgba(0,0,0,0.38)",
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: distributorError.distributorName
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: distributorError.distributorName
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                            },
+                          }}
                         />
+
                       )}
+
                     />
+                    {distributorError.distributorName && (
+                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {distributorError.distributorName}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -2181,6 +2439,11 @@ const Itemmaster = () => {
                         const numericValue = newValue.replace(/[^0-9]/g, "").slice(0, 10);
                         setDistributorMobileNo(numericValue);
                         setSelectedDistributorId("");
+
+                        setDistributorError((prev) => ({
+                          ...prev,
+                          distributorMobileNo: "",
+                        }));
                       }}
                       onChange={(e, selectedValue) => {
                         if (selectedValue) {
@@ -2207,9 +2470,33 @@ const Itemmaster = () => {
                             inputMode: "numeric",
                             maxLength: 10,
                           }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: distributorError.distributorName
+                                  ? "#d32f2f !important"
+                                  : "rgba(0,0,0,0.38)",
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: distributorError.distributorName
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: distributorError.distributorName
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                            },
+                          }}
                         />
                       )}
                     />
+                    {distributorError.distributorMobileNo && (
+                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {distributorError.distributorMobileNo}
+                      </div>
+                    )}
                   </div>
                   <div className="fields add_new_item_divv" style={{ width: "50%" }}>
                     <label className="label secondary">Distributor GSTIN Number<span className="text-red-600">*</span></label>
@@ -2222,6 +2509,10 @@ const Itemmaster = () => {
                         setSelectedDistributorId("");
                       }}
                       onChange={(e, selectedValue) => {
+                        setDistributorError((prev) => ({
+                          ...prev,
+                          distributorGSTNumber: "",
+                        }));
                         if (selectedValue) {
                           const found = suppliersList.find(d =>
                             (d.gst || d.gst_number || "").toUpperCase() === selectedValue.toUpperCase()
@@ -2246,9 +2537,33 @@ const Itemmaster = () => {
                             autoComplete: "off",
                             maxLength: 15,
                           }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: distributorError.distributorName
+                                  ? "#d32f2f !important"
+                                  : "rgba(0,0,0,0.38)",
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: distributorError.distributorName
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: distributorError.distributorName
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                            },
+                          }}
                         />
                       )}
                     />
+                    {distributorError.distributorGSTNumber && (
+                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {distributorError.distributorGSTNumber}
+                      </div>
+                    )}
                   </div>
                 </div>
 

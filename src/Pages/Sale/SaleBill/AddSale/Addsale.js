@@ -188,6 +188,11 @@ const AddSale = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [errors, setErrors] = useState({
+    doctorName: "",
+    clinic: "",
+  });
+
 
   const [addItemError, setAddItemError] = useState({
     addItemName: "",
@@ -1305,46 +1310,88 @@ const AddSale = () => {
 
   /*<========================================================================= add doctor   ====================================================================> */
 
+  // const AddDoctorRecord = async () => {
+  //   if (!doctorName || !clinic) {
+  //     toast.dismiss();
+  //     toast.error("Please fill all required fields");
+  //     return;
+  //   }
+
+  //   let data = new FormData();
+  //   data.append("name", doctorName);
+  //   data.append("clinic", clinic);
+
+  //   try {
+  //     await axios
+  //       .post("doctor-create", data, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         setOpenAddPopUp(false);
+  //         setDoctorName("");
+  //         setClinic("");
+  //         toast.dismiss();
+  //         toast.success(response.data.message);
+  //       });
+  //   } catch (error) {
+  //     // setIsLoading(false);
+  //     if (error.response?.data?.status === 400) {
+  //       toast.dismiss();
+  //       toast.error(error.response.data.message);
+  //     } else {
+  //       toast.dismiss();
+  //       toast.error("An unexpected error occurred");
+  //     }
+  //     if (error?.response?.status === 401) {
+  //       localStorage.removeItem("token");
+  //       localStorage.removeItem("userId");
+  //       localStorage.removeItem("role");
+  //       localStorage.clear();
+  //       history.push("/");
+  //     }
+  //   }
+  // };
   const AddDoctorRecord = async () => {
-    if (!doctorName || !clinic) {
-      toast.dismiss();
-      toast.error("Please fill all required fields");
-      return;
+    let tempErrors = { doctorName: "", clinic: "" };
+    let isValid = true;
+
+    if (!doctorName) {
+      tempErrors.doctorName = "Doctor name is required";
+      isValid = false;
     }
+
+    if (!clinic) {
+      tempErrors.clinic = "Clinic name is required";
+      isValid = false;
+    }
+
+    setErrors(tempErrors);
+
+    if (!isValid) return;
 
     let data = new FormData();
     data.append("name", doctorName);
     data.append("clinic", clinic);
 
     try {
-      await axios
-        .post("doctor-create", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setOpenAddPopUp(false);
-          setDoctorName("");
-          setClinic("");
-          toast.dismiss();
-          toast.success(response.data.message);
-        });
+      const response = await axios.post("doctor-create", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setOpenAddPopUp(false);
+      setDoctorName("");
+      setClinic("");
+      setErrors({ doctorName: "", clinic: "" });
+
+      toast.success(response.data.message);
     } catch (error) {
-      // setIsLoading(false);
-      if (error.response?.data?.status === 400) {
-        toast.dismiss();
-        toast.error(error.response.data.message);
-      } else {
-        toast.dismiss();
-        toast.error("An unexpected error occurred");
-      }
       if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
+      } else {
+        toast.error("Something went wrong");
       }
     }
   };
@@ -3000,13 +3047,13 @@ const AddSale = () => {
                         )}
 
                         <tr className="customtable">
-                          <th>Item Name</th>
-                          <th>Batch Number</th>
-                          <th>Unit</th>
-                          <th>Expiry Date</th>
-                          <th>MRP</th>
-                          <th>QTY</th>
-                          <th>Loc</th>
+                          <th style={{ textAlign: "left" }}>Item Name</th>
+                          <th style={{ textAlign: "left" }}>Batch Number</th>
+                          <th style={{ textAlign: "left" }}>Unit</th>
+                          <th style={{ textAlign: "left" }}>Expiry Date</th>
+                          <th style={{ textAlign: "left" }}>MRP</th>
+                          <th style={{ textAlign: "left" }}>QTY</th>
+                          <th style={{ textAlign: "left" }}>Loc</th>
                         </tr>
                       </thead>
 
@@ -3040,25 +3087,25 @@ const AddSale = () => {
 
                               >
                                 <td className="text-base font-semibold">
-                                  {item.iteam_name}
+                                  {item.iteam_name ? item.iteam_name : "-"}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.batch_number}
+                                  {item.batch_number ? item.batch_number : "-"}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.unit}
+                                  {item.unit ? item.unit : "-"}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.expiry_date}
+                                  {item.expiry_date ? item.expiry_date : "-"}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.mrp}
+                                  {item.mrp ? item.mrp : "-"}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.qty}
+                                  {item.qty ? item.qty : "-"}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.location}
+                                  {item.location ? item.location : "-"}
                                 </td>
                               </tr>
                             ))}
@@ -4095,9 +4142,11 @@ const AddSale = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={doctorName}
+                      error={!!errors.doctorName}
                       onChange={(e) => {
                         setDoctorName(e.target.value);
                         setUnsavedItems(true);
+                        setErrors({ ...errors, doctorName: "" });
                       }}
                       style={{ minWidth: 300 }}
                       inputRef={(el) => (inputRefs.current[0] = el)}
@@ -4106,7 +4155,17 @@ const AddSale = () => {
                         style: { textTransform: "uppercase" },
                         autoComplete: "off",
                       }}
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "red !important",
+                        },
+                      }}
                     />
+                    {errors.doctorName && (
+                      <p style={{ color: "red", fontSize: "12px" }}>
+                        {errors.doctorName}
+                      </p>
+                    )}
                   </div>
 
                   {/* Clinic Name */}
@@ -4118,9 +4177,11 @@ const AddSale = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={clinic}
+                      error={!!errors.clinic}
                       onChange={(e) => {
                         setClinic(e.target.value);
                         setUnsavedItems(true);
+                        setErrors({ ...errors, clinic: "" });
                       }}
                       style={{ minWidth: 300 }}
                       inputRef={(el) => (inputRefs.current[1] = el)}
@@ -4128,7 +4189,17 @@ const AddSale = () => {
                       inputProps={{
                         autoComplete: "off",
                       }}
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "red !important",
+                        },
+                      }}
                     />
+                    {errors.clinic && (
+                      <p style={{ color: "red", fontSize: "12px" }}>
+                        {errors.clinic}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

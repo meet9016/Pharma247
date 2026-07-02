@@ -227,7 +227,7 @@ const Purchasebill = () => {
 
     // Use different loading states for search vs regular operations
     if (isSearch) {
-      if (page !== 1) return setCurrentPage(1); // 👈 Ensure `setCurrentPage(1)` happens outside the render cycle
+      if (page !== 1) return setCurrentPage(1); // Ensure `setCurrentPage(1)` happens outside the render cycle
       setIsSearchLoading(true);
     }
     else {
@@ -514,7 +514,7 @@ const Purchasebill = () => {
               <div className="detail flex flex-col">
                 <span className="text-gray-500 block">
                   End Date</span>
-                <div style={{ zIndex: 9999 }}>
+                <div style={{ zIndex: 9 }}>
                   <DatePicker
                     className="custom-datepicker"
                     selected={endDate}

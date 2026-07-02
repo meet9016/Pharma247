@@ -340,6 +340,10 @@ const AdjustStock = () => {
 
 
     setBatch(newValue);
+    setErrors((prev) => ({
+      ...prev,
+      batch: "",
+    }));
     setUnit(newValue?.unit);
     setExpiry(newValue?.expiry_date);
     setMrp(newValue?.mrp);
@@ -371,27 +375,48 @@ const AdjustStock = () => {
     }
   };
 
-  const validateForm = async () => {
-    const newErrors = {};
+  // const validateForm = async () => {
+  //   const newErrors = {};
 
+  //   if (!selectedItem) {
+  //     newErrors.selectedItem = "select any Item Name.";
+  //     // toast.dismiss();
+  //     // toast.error(newErrors.selectedItem);
+  //   } else if (!batch) {
+  //     newErrors.batch = "Batch Number is required";
+  //     // toast.dismiss();
+  //     // toast.error(newErrors.batch);
+  //   } else if (!stockAdjust) {
+  //     newErrors.stockAdjust = "please Enter any Adjust Stock Number";
+  //     // toast.dismiss();
+  //     // toast.error(newErrors.stockAdjust);
+  //   }
+  //   setErrors(newErrors);
+  //   if (Object.keys(newErrors).length === 0) {
+  //     adjustStockAddData();
+  //   } else {
+  //     return Object.keys(newErrors).length === 0;
+  //   }
+  // };
+
+  const validateForm = () => {
+    const newErrors = {};
     if (!selectedItem) {
-      newErrors.selectedItem = "select any Item Name.";
-      // toast.dismiss();
-      // toast.error(newErrors.selectedItem);
-    } else if (!batch) {
-      newErrors.batch = "Batch Number is required";
-      // toast.dismiss();
-      // toast.error(newErrors.batch);
-    } else if (!stockAdjust) {
-      newErrors.stockAdjust = "please Enter any Adjust Stock Number";
-      // toast.dismiss();
-      // toast.error(newErrors.stockAdjust);
+      newErrors.selectedItem = "Item Name is required";
+    }
+    if (!batch) {
+      newErrors.batch = "Batch is required";
+    }
+    if (
+      stockAdjust === "" ||
+      stockAdjust === null ||
+      stockAdjust === undefined
+    ) {
+      newErrors.stockAdjust = "Stock Adjusted is required";
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
       adjustStockAddData();
-    } else {
-      return Object.keys(newErrors).length === 0;
     }
   };
 
@@ -402,7 +427,11 @@ const AdjustStock = () => {
       "adjustment_date",
       adjustmentDate ? format(adjustmentDate, "yyyy-MM-dd") : ""
     );
-    data.append("item_name", selectedItem ? selectedItem : "");
+    // data.append("item_name", selectedItem ? selectedItem : "");
+    data.append(
+      "item_name",
+      selectedItem?.iteam_name ? selectedItem.iteam_name : ""
+    );
     data.append("batch", batch ? batch.batch_name : "");
     data.append("company", selectedCompany?.id ? selectedCompany?.id : "");
     data.append("unit", unit ? unit : "");
@@ -661,7 +690,12 @@ const AdjustStock = () => {
                               </td>
 
                               {stockList.map((column, colIndex) => {
-                                const value = row[column.id];
+                                // const value = row[column.id];
+                                let value = row[column.id];
+
+                                if (column.id === "iteam_name" && typeof value === "object" && value !== null) {
+                                  value = value.iteam_name || value.name || value.item_name || "";
+                                }
                                 const tdClass = "px-4 py-2 font-semibold text-center";
                                 return (
                                   <td
@@ -670,7 +704,12 @@ const AdjustStock = () => {
                                   >
                                     {column.format && typeof value === "number"
                                       ? column.format(value)
-                                      : value}
+                                      : (value !== null &&
+                                        value !== undefined &&
+                                        value !== "" &&
+                                        value !== "[object Object]"
+                                        ? value
+                                        : "-")}
                                   </td>
                                 );
                               })}
@@ -766,13 +805,14 @@ const AdjustStock = () => {
             >
               <CloseIcon />
             </IconButton>
+
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 {/* First row: Item & Company */}
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
                   <div className="w-full">
                     <span className="title primary mb-2">Item Name   <span className="text-red-600 ml-1">*</span></span>
-                  
+
                     <Autocomplete
                       disablePortal
                       options={purchaseItemData}
@@ -786,7 +826,7 @@ const AdjustStock = () => {
                         <TextField autoComplete="off" {...params} placeholder="Enter Item Name" error={!!errors.selectedItem} sx={{
                           "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
                             borderColor: "#d32f2f !important",
-                            
+
                           },
                         }} />
                       )}
@@ -831,17 +871,25 @@ const AdjustStock = () => {
                   </div>
 
                   <div className="w-full">
-                    <span className="title primary mb-2">Batch</span>
+                    <span className="title primary mb-2"> Batch <span className="text-red-600">*</span></span>
                     <Autocomplete
                       disablePortal
                       options={batchListData}
                       size="small"
                       value={batch || null}
                       onChange={handleBatchData}
+                      error={!!errors.batch}
                       getOptionLabel={(option) => option?.batch_number || ""}
                       isOptionEqualToValue={(option, value) => option.id === value.id}
                       renderInput={(params) => (
-                        <TextField {...params} autoComplete="off" placeholder="Batch   " />
+                        <TextField {...params} autoComplete="off" placeholder="Batch"
+                          error={!!errors.batch}
+                          sx={{
+                            "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#d32f2f !important",
+                            },
+                          }}
+                        />
                       )}
                     />
                     {errors.batch && (
@@ -906,7 +954,7 @@ const AdjustStock = () => {
                   </div>
 
                   <div className="w-full">
-                    <span className="title primary mb-2">Stock Adjusted</span>
+                    <span className="title primary mb-2">Stock Adjusted <span className="text-red-600">*</span></span>
                     <div className="flex flex-row gap-3">
 
 
@@ -928,15 +976,25 @@ const AdjustStock = () => {
                         size="small"
                         value={stockAdjust}
                         placeholder="No."
-                        onChange={(e) => setStockAdjust(parseFloat(e.target.value))}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setStockAdjust(value === "" ? "" : parseFloat(value));
+
+                          if (errors.stockAdjust) {
+                            setErrors((prev) => ({
+                              ...prev,
+                              stockAdjust: "",
+                            }));
+                          }
+                        }}
                         className="w-full"
                       />
-                      {errors.stockAdjust && (
-                        <span style={{ color: "red", fontSize: "12px" }}>
-                          {errors.stockAdjust}
-                        </span>
-                      )}
                     </div>
+                    {errors.stockAdjust && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors.stockAdjust}
+                      </span>
+                    )}
 
                   </div>
 

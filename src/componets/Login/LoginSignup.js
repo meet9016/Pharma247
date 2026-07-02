@@ -644,6 +644,14 @@ const LoginSignup = () => {
         },
       });
       if (response.data.status == 200) {
+        toast.success(response.data.message);   // ✅ THIS IS REQUIRED
+
+
+
+
+
+
+
         setOtpSent(true);
         setResendDisabled(true);
         setCountdown(60);
@@ -877,7 +885,7 @@ const LoginSignup = () => {
             {step === "otp" && (
               <form id="otpPasswordForm" onSubmit={validationOTP} noValidate>
 
-                <div
+                {/* <div
                   onClick={() => setStep("register")}
                   style={{
                     display: "flex",
@@ -891,6 +899,40 @@ const LoginSignup = () => {
                   <span style={{ fontSize: "14px", fontWeight: "500", color: "#333" }}>
                     ← Back
                   </span>
+                </div> */}
+                <div
+                  onClick={() => setStep("register")}
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    width: "100%",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "6px 14px",
+                      backgroundColor: "#f3f7e8",
+                      color: "#3f6212",
+                      borderRadius: "6px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      border: "1px solid #d9e6b8",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#e9f2d2";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#f3f7e8";
+                    }}
+                  >
+                    ← Back
+                  </div>
                 </div>
 
                 <div className="input-box">
@@ -1161,7 +1203,7 @@ const LoginSignup = () => {
                 }
               }} noValidate >
 
-                <div
+                {/* <div
                   onClick={() => {
                     if (showOTP) {
                       setShowOTP(false);
@@ -1192,7 +1234,53 @@ const LoginSignup = () => {
                   >
                     ← Back
                   </span>
+                </div> */}
+
+
+                <div
+                  onClick={() => {
+                    if (showOTP) {
+                      setShowOTP(false);
+                      setOtp("");
+                      setPassword("");
+                      setErrors({});
+                    } else {
+                      setStep("login");
+                    }
+                  }}
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    width: "100%",
+                    marginBottom: "15px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "6px 14px",
+                      backgroundColor: "#f3f7e8",
+                      color: "#3f6212",
+                      borderRadius: "6px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      border: "1px solid #d9e6b8",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#e9f2d2";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#f3f7e8";
+                    }}
+                  >
+                    ← Back
+                  </div>
                 </div>
+
 
 
                 <div className="input-box">
@@ -1208,6 +1296,16 @@ const LoginSignup = () => {
                     inputRef={(el) => (inputRefs.current[8] = el)}
                     onKeyDown={(e) => handleKeyDown(e, 8)}
                     value={mobile}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (showOTP) {
+                          handleUpdatePassword(e);
+                        } else {
+                          handleForgotDetails(e);
+                        }
+                      }
+                    }}
                     onChange={(e) => {
                       setMobile(e.target.value);
                       setShowOTP(false);
@@ -1401,7 +1499,6 @@ const LoginSignup = () => {
               <div className="header-logo1">
                 <a href='index.html'>
                   <img src={loginlogo} alt="logo" width="150px" />
-
                 </a>
               </div>
               <p style={{ color: "#fff" }}>Don't have an account?</p>

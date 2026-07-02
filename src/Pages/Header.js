@@ -25,6 +25,7 @@ import { toast, ToastContainer } from "react-toastify";
 import Search from "./Search";
 import { Typography } from "@mui/material";
 import { encryptData } from "../componets/cryptoUtils";
+import emptyNotificationsImg from "./empty_notifications.png";
 
 const Header = () => {
   const history = useHistory();
@@ -96,10 +97,11 @@ const Header = () => {
 
 
   const fetchNotification = () => {
+    const currentToken = localStorage.getItem("token");
     axios
       .get("chemist_notification_list", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${currentToken || token}`,
         },
       })
       .then((response) => {
@@ -107,7 +109,7 @@ const Header = () => {
       })
       .catch((error) => {
         console.error("API Error:", error);
-        if (error.response.status == 401) {
+        if (error?.response?.status == 401) {
           setIsClear(true)
         }
       });
@@ -169,6 +171,9 @@ const Header = () => {
       return;
     }
     setNotifications(open);
+    if (open) {
+      fetchNotification();
+    }
   };
 
   /*<==================================================================================== UI  ===========================================================================> */
@@ -684,76 +689,150 @@ const Header = () => {
                     anchor="right"
                     open={notifications}
                     onClose={toggleDrawerNotifications(false)}
+                    PaperProps={{
+                      sx: {
+                        borderRadius: "16px 0 0 16px",
+                        boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.1)",
+                      }
+                    }}
                   >
-
-                    {
+                    <Box
+                      sx={{
+                        width: 400,
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        backgroundColor: "#fcfdfa"
+                      }}
+                      role="presentation"
+                      onKeyDown={toggleDrawerNotifications(false)}
+                    >
                       <Box
-                        sx={{ width: 400 }}
-                        role="presentation"
-                        onClick={toggleDrawerNotifications(false)}
-                        onKeyDown={toggleDrawerNotifications(false)}
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        sx={{
+                          padding: "20px 24px",
+                          borderBottom: "1px solid #e2ebd5",
+                          backgroundColor: "#ffffff"
+                        }}
                       >
-                        <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          borderBottom="1px solid #628a2f"
+                        <h1 className="text-xl font-bold primary flex items-center gap-2">
+                          <FaBell className="text-[var(--color1)]" /> Notifications
+                        </h1>
+                        <IconButton
+                          onClick={toggleDrawerNotifications(false)}
+                          sx={{
+                            backgroundColor: "#f5f9f0",
+                            color: "var(--color1)",
+                            "&:hover": {
+                              backgroundColor: "var(--color1)",
+                              color: "#ffffff"
+                            }
+                          }}
                         >
-                          <h1 className="text-2xl p-2 primary">
-                            Notifications
-                          </h1>
-                          <div
-                            className="flex gap-2"
-                            style={{ alignItems: "center" }}
-                          >
-                            <div>
+                          <CloseIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
 
-                            </div>
-                            <IconButton
-                              onClick={toggleDrawerNotifications(false)}
-                              className="close-button"
-                            >
-                              <CloseIcon className="primary" />
-                            </IconButton>
-                          </div>
-                        </Box>
-                        <List sx={{ p: 1 }}>
-                          {notificationsList.map((notification) => (
-                            <ListItem key={notification.id} disablePadding sx={{ mb: 1 }}>
-                              <ListItemButton
-                                sx={{
-                                  alignItems: "start",
-                                  backgroundColor: "#f9f9f9",
-                                  borderRadius: 2,
-                                  px: 2,
-                                  py: 1.5,
-                                  boxShadow: 1,
-                                  "&:hover": {
-                                    backgroundColor: "#eef6e9",
-                                    boxShadow: 3,
-                                  },
-                                }}
-                              >
-                                <Box>
-                                  <Typography variant="body1" className="text-black font-medium" gutterBottom>
+                      <Box sx={{ flexGrow: 1, overflowY: "auto", p: 3 }}>
+                        {notificationsList && notificationsList.length > 0 ? (
+                          <List disablePadding>
+                            {notificationsList.map((notification) => (
+                              <ListItem key={notification.id} disablePadding sx={{ mb: 2 }}>
+                                <Box
+                                  sx={{
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: 1,
+                                    backgroundColor: "#ffffff",
+                                    borderRadius: "12px",
+                                    p: 2,
+                                    border: "1px solid #eaf2e1",
+                                    borderLeft: "4px solid var(--color1)",
+                                    boxShadow: "0 2px 8px rgba(98, 138, 47, 0.04)",
+                                    transition: "all 0.3s ease",
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      color: "#2c3e1e",
+                                      fontWeight: "600",
+                                      lineHeight: 1.5,
+                                      fontSize: "14px"
+                                    }}
+                                  >
                                     {notification.description}
                                   </Typography>
                                   <Typography
                                     variant="caption"
-                                    className="text-gray-500 flex items-center"
+                                    sx={{
+                                      color: "#8a9a7d",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "4px",
+                                      fontSize: "12px",
+                                      fontWeight: "500"
+                                    }}
                                   >
-                                    <MdWatchLater className="mr-1" /> {notification.date}
+                                    <MdWatchLater size={14} /> {notification.date}
                                   </Typography>
                                 </Box>
-                              </ListItemButton>
-                            </ListItem>
-                          ))}
-                        </List>
-
-
-                        <Divider />
+                              </ListItem>
+                            ))}
+                          </List>
+                        ) : (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              height: "100%",
+                              textAlign: "center",
+                              py: 6,
+                              px: 2
+                            }}
+                          >
+                            <img
+                              src={emptyNotificationsImg}
+                              alt="No Notifications"
+                              style={{
+                                width: "220px",
+                                height: "auto",
+                                marginBottom: "24px",
+                                opacity: 0.9,
+                                filter: "drop-shadow(0px 8px 16px rgba(98,138,47,0.06))"
+                              }}
+                            />
+                            {/* <Typography
+                              variant="h6"
+                              sx={{
+                                color: "#3f6212",
+                                fontWeight: "700",
+                                mb: 1,
+                                fontSize: "18px"
+                              }}
+                            >
+                              No Notifications Yet
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "#8a9a7d",
+                                maxWidth: "260px",
+                                lineHeight: 1.6,
+                                fontSize: "13px"
+                              }}
+                            >
+                              We'll notify you when there's an update on your orders or account activity.
+                            </Typography> */}
+                          </Box>
+                        )}
                       </Box>
-                    }
+                    </Box>
                   </Drawer>
                 </div>
               </div>

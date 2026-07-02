@@ -504,7 +504,7 @@ const PurchaseView = () => {
                   { label: "Bill Date", value: data.bill_date },
                   { label: "Due Date", value: data.due_date, },
                   { label: "Distributor", value: data.distributor_name, cap: true },
-                  { label: "Payment Type", value: data.payment_type, pill: true },
+                  { label: "Payment Type", value: data.payment_type,  },
                   { label: "Entry By", value: localStorage.getItem("UserName"), cap: true },
                 ].map((item, idx, arr) => (
                   <div

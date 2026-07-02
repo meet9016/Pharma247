@@ -447,7 +447,8 @@ const InventoryList = () => {
         } else {
           console.error("Invalid URL for the PDF");
         }
-
+        setOpenQR(false);
+        setSelectedItems([]);
       }
     } catch (error) {
       console.error("QR code API error:", error);
@@ -809,6 +810,7 @@ const InventoryList = () => {
     setOpenEdit(false);
     setBarcode("");
     setLocationBulk("");
+
   };
 
   const validateBulkOrder = async () => {
@@ -853,6 +855,7 @@ const InventoryList = () => {
           toast.success(response.data.message);
           handleSearch();
           setBulkOrder(false);
+          setSelectedItems([]);
 
           // setLocationBulk('');
           // setBarcode('');
@@ -871,25 +874,43 @@ const InventoryList = () => {
 
   /*<====================================================================================== bulk edit  =============================================================================> */
 
-  const validateBulkForm = async () => {
+  // const validateBulkForm = async () => {
+  //   const newErrors = {};
+  //   if (!barcode || barcode == "" || barcode == undefined &&  !locationBulk) {
+  //     newErrors.locationBulk = "Please add Location or Barcode.";
+  //     toast.dismiss();
+  //     toast.error(newErrors.locationBulk);
+  //   }
+  //   setErrors(newErrors);
+  //   if (Object.keys(newErrors).length === 0) {
+  //     bulkEdit();
+  //   } else {
+  //     return Object.keys(newErrors).length === 0;
+  //   }
+  // };
+
+
+  const validateBulkForm = () => {
     const newErrors = {};
-    if (selectedItems.length == 0) {
-      newErrors.selectedItems = "Please First Select any Item.";
-      toast.dismiss();
-      toast.error(newErrors.selectedItems);
-    } else if (!barcode && !locationBulk) {
-      newErrors.locationBulk = "Please add Location or Barcode.";
-      toast.dismiss();
-      toast.error(newErrors.locationBulk);
+
+    const isLocationValid = /\S/.test(locationBulk || "");
+    const isBarcodeValid = /\S/.test(barcode || "");
+
+    if (!isLocationValid && !isBarcodeValid) {
+      newErrors.locationBulk = "Please select a location.";
+      newErrors.barcode = "Please enter a barcode.";
     }
 
     setErrors(newErrors);
-    if (Object.keys(newErrors).length === 0) {
-      bulkEdit();
-    } else {
-      return Object.keys(newErrors).length === 0;
+
+    if (Object.keys(newErrors).length > 0) {
+      return false;
     }
+
+    bulkEdit();
+    return true;
   };
+
 
   const bulkEdit = async () => {
     let data = new FormData();
@@ -911,6 +932,7 @@ const InventoryList = () => {
           toast.success(response.data.message);
           handleSearch();
           setOpenEdit(false);
+          setSelectedItems([]);
           setLocationBulk("");
           listLocation();
           setBarcode("");
@@ -1090,6 +1112,15 @@ const InventoryList = () => {
     const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
     saveAs(blob, "item_batch_data.csv");
   };
+
+
+  useEffect(() => {
+    if (openEdit) {
+      setErrors({});
+      setLocationBulk("");
+      setBarcode("");
+    }
+  }, [openEdit]);
 
   /*<=============================================================================== ui ======================================================================> */
 
@@ -2235,14 +2266,14 @@ const InventoryList = () => {
             </TableContainer>
           ) : (
             <div>
-              <div className="vector-image">
+              {/* <div className="vector-image">
                 <div className="inventory-gif">
                   <img src="../inventory_screen.png" alt="screen"></img>
                 </div>
                 <span className="text-gray-500 font-medium mt-5">
                   Apply filters and explore your inventory
                 </span>
-              </div>
+              </div> */}
             </div>
           )}
         </Box>
@@ -3001,7 +3032,7 @@ const InventoryList = () => {
                     <th>Sr NO.</th>
                     <th>Item ID</th>
                     <th>Item Name</th>
-                    <th>Batch ID</th>
+                    <th>Batch Name</th>
                     <th>Qty</th>
                   </tr>
                 </thead>
@@ -3024,9 +3055,9 @@ const InventoryList = () => {
                     QRBatch.map((row, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{row.item_id}</td>
-                        <td>{row.item_name}</td>
-                        <td>{row.batch_id}</td>
+                        <td>{row.item_id ? row.item_id : "-"}</td>
+                        <td>{row.item_name ? row.item_name : "-"}</td>
+                        <td>{row.batch_name ? row.batch_name : "-"}</td>
                         <td>
                           <OutlinedInput
                             type="number"
@@ -3084,8 +3115,8 @@ const InventoryList = () => {
           <DialogContentText id="alert-dialog-description">
             {/* <div className="flex" style={{ flexDirection: 'column', gap: '19px' }}> */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div className="flex gap-4 flex-col">
-                <span className="title mb-2">Location</span>
+              <div className="flex gap-0 flex-col">
+                <span className="title mb-2">  Location <span style={{ color: "red" }}>*</span></span>
 
                 <Autocomplete
                   value={locationBulk ?? ""}
@@ -3095,12 +3126,31 @@ const InventoryList = () => {
                   // sx={{ width: 200 }}
                   className="w-full"
                   size="small"
-                  onChange={(event, newValue) => setLocationBulk(
-                    typeof newValue === "string" ? newValue.toUpperCase() : newValue
-                  )}
-                  onInputChange={(event, newInputValue) =>
-                    setLocationBulk(newInputValue.toUpperCase())
-                  }
+                  // onChange={(event, newValue) => setLocationBulk(
+                  //   typeof newValue === "string" ? newValue.toUpperCase() : newValue  )}
+                  onChange={(event, newValue) => {
+                    setLocationBulk(
+                      typeof newValue === "string" ? newValue.toUpperCase() : newValue
+                    );
+
+                    setErrors((prev) => ({
+                      ...prev,
+                      locationBulk: "",
+                      barcode: "",
+                    }));
+                  }}
+                  // onInputChange={(event, newInputValue) =>
+                  //   setLocationBulk(newInputValue.toUpperCase())
+                  // }
+                  onInputChange={(event, newInputValue) => {
+                    setLocationBulk(newInputValue.toUpperCase());
+
+                    setErrors((prev) => ({
+                      ...prev,
+                      locationBulk: "",
+                      barcode: "",
+                    }));
+                  }}
                   getOptionLabel={(option) =>
                     typeof option === "string" ? option : option
                   }
@@ -3114,14 +3164,32 @@ const InventoryList = () => {
                     <TextField
                       autoComplete="off"
                       {...params}
-                      label="Select Location"
+                      placeholder="Select Location"
+                      error={!!errors.locationBulk}
+                      sx={{
+                        "& .MuiInputLabel-root.Mui-error": {
+                          color: "#c5bfbf",
+                        },
+                        "& .MuiOutlinedInput-input": {
+                          color: "#000",
+                        },
+                        "& .MuiOutlinedInput-input::placeholder": {
+                          color: "#999",
+                          opacity: 1,
+                        },
+                      }}
                     />
                   )}
                   freeSolo
                 />
+                {errors.locationBulk && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.locationBulk}
+                  </p>
+                )}
               </div>
-              <div className="flex gap-4 flex-col">
-                <span className="title mb-2">Barcode</span>
+              <div className="flex gap-0 flex-col">
+                <span className="title mb-2">  Barcode <span style={{ color: "red" }}>*</span></span>
                 <TextField
                   autoComplete="off"
                   id="outlined-number"
@@ -3132,8 +3200,20 @@ const InventoryList = () => {
                   value={barcode}
                   onChange={(e) => {
                     setBarcode(e.target.value.toUpperCase());
+
+                    setErrors((prev) => ({
+                      ...prev,
+                      locationBulk: "",
+                      barcode: "",
+                    }));
                   }}
+                  error={!!errors.barcode}
                 />
+                {errors.barcode && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.barcode}
+                  </p>
+                )}
               </div>
             </div>
 

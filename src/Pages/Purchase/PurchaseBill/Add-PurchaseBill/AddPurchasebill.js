@@ -54,6 +54,8 @@ import TipsModal from "../../../../componets/Tips/TipsModal";
 import Loader from "../../../../componets/loader/Loader";
 import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 
+const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
 const AddPurchaseBill = () => {
   const timeoutRef = useRef(null);
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
@@ -153,6 +155,10 @@ const AddPurchaseBill = () => {
   const [showModal, setShowModal] = useState(false);
   const [dialogMode, setDialogMode] = useState("");
   const [addItemError, setAddItemError] = useState({});
+  const [errors, setErrors] = useState({});
+  const [addDistributorError, setAddDistributorError] = useState({});
+  const [error, setError] = useState({});
+
 
 
   const optionForCsv = {
@@ -165,7 +171,7 @@ const AddPurchaseBill = () => {
     "Visual": "visual-item-purchase-import",
   };
 
-  const [error, setError] = useState({});
+
   const [paymentType, setPaymentType] = useState("credit");
   const [bankData, setBankData] = useState([]);
   const [id, setId] = useState(null);
@@ -275,11 +281,7 @@ const AddPurchaseBill = () => {
       event.preventDefault();
 
       switch (key) {
-        case "s":
-          if (isSubmitting) return;
-          setBillSaveDraft("1");
-          handleSubmit("1");
-          break;
+
         case "g":
           handleSubmit();
           break;
@@ -294,7 +296,8 @@ const AddPurchaseBill = () => {
             inputRefs.current[2]?.focus();
           }, 10);
           break;
-
+        default:
+          break;
       }
     };
 
@@ -373,8 +376,6 @@ const AddPurchaseBill = () => {
     ) {
       if (Number(ptr) >= Number(mrp)) {
         newErrors.ptr = "PTR must be less than MRP";
-        toast.dismiss();
-        toast.error(newErrors.ptr);
       }
     }
 
@@ -572,6 +573,7 @@ const AddPurchaseBill = () => {
     }
 
     setExpiryDate(inputValue);
+    setError((prev) => ({ ...prev, expiryDate: false }));
   };
 
   /*<================================================================ select file to upload ========================================================> */
@@ -1195,96 +1197,94 @@ const AddPurchaseBill = () => {
 
   /*<========================================================================= Add and Edit validation  ====================================================================> */
 
+  const isItemRowActive = () => {
+    if (!ItemPurchaseList?.item || ItemPurchaseList.item.length === 0) {
+      return true;
+    }
+    if (
+      selectedOption ||
+      unit ||
+      batch ||
+      expiryDate ||
+      mrp ||
+      ptr ||
+      (gst !== "" && gst !== null && gst !== undefined)
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const validateItemRow = () => {
+    const newErrors = {};
+    const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+
+    if (!selectedOption) {
+      newErrors.searchItem = true;
+    }
+    if (!unit) {
+      newErrors.unit = true;
+    }
+    if (!batch) {
+      newErrors.batch = true;
+    }
+    if (!expiryDate) {
+      newErrors.expiryDate = true;
+    } else if (!expiryDateRegex.test(expiryDate)) {
+      newErrors.expiryDate = true;
+    } else {
+      const [expMonth, expYear] = expiryDate.split("/").map(Number);
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear() % 100;
+      if (
+        expYear < currentYear ||
+        (expYear === currentYear && expMonth <= currentMonth)
+      ) {
+        newErrors.expiryDate = true;
+      }
+    }
+    if (!mrp || Number(mrp) <= 0) {
+      newErrors.mrp = true;
+    }
+    if (!ptr || Number(ptr) <= 0 || (Number(mrp) && Number(ptr) >= Number(mrp))) {
+      newErrors.ptr = true;
+    }
+    const allowedGST = [0, 5, 18];
+    if (gst === undefined || gst === null || gst === "" || !allowedGST.includes(Number(gst))) {
+      newErrors.gst = true;
+    }
+
+    setError((prev) => {
+      const updated = { ...prev };
+      delete updated.searchItem;
+      delete updated.unit;
+      delete updated.batch;
+      delete updated.expiryDate;
+      delete updated.mrp;
+      delete updated.ptr;
+      delete updated.gst;
+      return {
+        ...updated,
+        ...newErrors,
+      };
+    });
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleAddButtonClick = async () => {
     // Prevent multiple submissions
     setFocusedField("item");
     setAutocompleteKey((prevKey) => prevKey + 1); // Re-render item Autocomplete
 
     generateRandomNumber();
-    const newErrors = {};
-    const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
-    const numericQty = parseFloat(qty) || 0;
-    const numericFree = parseFloat(free) || 0;
-
-    if (numericQty === 0 && numericFree === 0) {
-      toast.dismiss();
-      toast.error("Free and Qty cannot both be 0");
-      newErrors.qty = "Free and Qty cannot both be 0";
-    }
-    if (!unit) newErrors.unit = "Unit is required";
-
-    if (
-      (!numericFree || Number(numericFree) === 0) &&
-      (!numericQty || Number(numericQty) === 0)
-    ) {
-      newErrors.quantity = "Qty is required";
-    }
-
-    if (!batch) {
-      newErrors.batch = "Batch is required";
-      toast.dismiss();
-      toast.error(newErrors.batch);
-    }
-    if (!expiryDate) {
-      newErrors.expiryDate = "Expiry date is required";
-      toast.dismiss();
-      toast.error(newErrors.expiryDate);
-    } else if (!expiryDateRegex.test(expiryDate)) {
-      newErrors.expiryDate = "Expiry date must be in MM/YY format";
-      toast.dismiss();
-      toast.error(newErrors.expiryDate);
-    } else {
-      const [expMonth, expYear] = expiryDate.split("/").map(Number);
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1;
-      const currentYear = currentDate.getFullYear() % 100;
-
-      if (
-        expYear < currentYear ||
-        (expYear === currentYear && expMonth <= currentMonth)
-      ) {
-        newErrors.expiryDate =
-          "Expiry date must be in the future and cannot be the current month";
-        toast.dismiss();
-        toast.error(newErrors.expiryDate);
-      }
-    }
-    if (!mrp) {
-      newErrors.mrp = "MRP is required";
-      toast.dismiss();
-      toast.error(newErrors.mrp);
-    }
-    // if (!ptr) {
-    //   newErrors.ptr = "PTR is required";
-    // } else if (ptr && parseFloat(ptr) >= parseFloat(mrp)) {
-    //   newErrors.ptr = "PTR must be less than or equal to MRP";
-    //   toast.dismiss();
-    // toast.error("PTR must be less than or equal to MRP");
-    // }
-    if (gst === undefined || gst === null || gst === "") {
-      newErrors.gst = "GST is required";
-      toast.dismiss();
-      toast.error(newErrors.gst);
-    }
-    if (gst != 12 && gst != 18 && gst != 5 && gst != 28 && gst != 0) {
-      newErrors.gst = "Enter valid GST";
-      toast.dismiss();
-      toast.error("Enter valid GST");
-    }
-
-    if (!searchItem) {
-      toast.dismiss();
-      toast.error("Please Select any Item Name");
-      newErrors.searchItem = "Select any Item Name";
-    }
-
-    setError(newErrors);
-    const isValid = Object.keys(newErrors).length === 0;
+    const isValid = validateItemRow();
 
     if (isValid) {
-      if (isSubmitting) return; // ⛔ Block if already submitting
+      if (isSubmitting) return; // Block if already submitting
       else {
-        await handleAddItem(); // Call handleEditItem if validation passes
+        await handleAddItem(); // Call handleAddItem if validation passes
       }
     }
 
@@ -1417,21 +1417,40 @@ const AddPurchaseBill = () => {
   };
   /*<================================================================= Add new disrtibutor to item master  ============================================================> */
 
+
+
+
   const handleAddNewDistributor = async () => {
-    if (
-      !addDistributorName ||
-      !addDistributorNo ||
-      !addDistributorMobile
-    ) {
-      toast.dismiss();
-      toast.error("Please fill all the fields");
-      return;
+    // if (
+    //   !addDistributorName ||
+    //   !addDistributorNo ||
+    //   !addDistributorMobile
+    // ) {
+    //   toast.dismiss();
+    //   toast.error("Please fill all the fields");
+    //   return;
+    // }
+
+
+    const newErrors = {};
+
+    if (!addDistributorName) {
+      newErrors.addDistributorName = "Distributor Name is required";
+    }
+    if (!addDistributorMobile) {
+      newErrors.addDistributorMobile = "Mobile Number is required";
+    }
+    if (!addDistributorNo) {
+      newErrors.addDistributorNo = "GSTIN Number is required";
+    } else if (!gstRegex.test(addDistributorNo)) {
+      newErrors.addDistributorNo = "Please enter a valid GST Number";
     }
 
-    const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-    if (!gstRegex.test(addDistributorNo)) {
-      toast.dismiss();
-      toast.error("Please enter a valid GST Number");
+    setAddDistributorError(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      // toast.dismiss();
+      // toast.error("Please fill all the required fields");
       return;
     }
 
@@ -1819,20 +1838,21 @@ const AddPurchaseBill = () => {
     }
 
     const newErrors = {};
-    if (!distributor) {
+    if (!distributor || !distributor.name) {
       newErrors.distributor = "Please select Distributor";
-      // toast.dismiss();
-      // toast.error("Please select Distributor");
     }
-    if (!billNo) {
+    if (!billNo || !billNo.trim()) {
       newErrors.billNo = "Bill No is Required";
-      // toast.dismiss();
-      // toast.error("Bill No is Required");
     }
-    if (ItemPurchaseList?.item?.length === 0) {
-      // toast.dismiss();
-      // toast.error("Please add atleast one item");
-      newErrors.item = "Please add atleast one item";
+
+    if (!newErrors.distributor && !newErrors.billNo) {
+      if (!ItemPurchaseList?.item || ItemPurchaseList.item.length === 0) {
+        if (!selectedOption) {
+          toast.dismiss();
+          toast.error("Please select at least one item");
+        }
+        newErrors.item = "Please select at least one item";
+      }
     }
 
     setError(newErrors);
@@ -2205,6 +2225,29 @@ const AddPurchaseBill = () => {
   useSubmitShortcut(handleFileUpload, openFile);
   useSubmitShortcut(handleAddNewItem, openAddItemPopUp);
   useSubmitShortcut(handleAddNewDistributor, openAddDistributorPopUp);
+
+
+
+
+  const validateRow = () => {
+    let isValid = true;
+
+    const fields = document.querySelectorAll(".req-field");
+
+    fields.forEach((el) => {
+      if (!el.value || el.value.trim() === "") {
+        el.style.border = "1px solid red";
+        isValid = false;
+      } else {
+        el.style.border = "";
+      }
+    });
+
+    return isValid;
+  };
+
+
+
 
   return (
     <>
@@ -2687,12 +2730,22 @@ const AddPurchaseBill = () => {
                               inputRef={(el) => (inputRefs.current[2] = el)}
                               onFocus={() => setSelectedIndex(-1)}
                               fullWidth
+                              error={!!error.searchItem}
                               sx={{
                                 minWidth: 400,
                                 width: "100%",
                                 '& .MuiInputBase-input': {
                                   // textAlign: 'center',
                                   // textTransform: 'uppercase',
+                                },
+                                "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#ff0000 !important",
+                                },
+                                "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: error.searchItem ? "#ff0000" : "",
+                                },
+                                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: error.searchItem ? "#ff0000" : "",
                                 },
                               }}
 
@@ -2784,10 +2837,7 @@ const AddPurchaseBill = () => {
 
                                   if (!selectedOption) {
                                     e.preventDefault();
-                                    setTimeout(() => {
-                                      toast.dismiss();
-                                      toast.error("Please select an Item")
-                                    }, 100);
+                                    setError((prev) => ({ ...prev, searchItem: true }));
                                   } else {
                                     setTimeout(() => inputRefs?.current[3].focus(), 100);
                                   }
@@ -2815,13 +2865,21 @@ const AddPurchaseBill = () => {
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
-
-
+                          },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.unit ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.unit ? "#ff0000" : "",
                           },
                         }}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setUnit(value ? Number(value) : "");
+                          setError((prev) => ({ ...prev, unit: false }));
                         }}
                         onKeyDown={(e) => {
                           const isInvalidKey = ["e", "E", ".", "+", "-", ","].includes(e.key);
@@ -2840,8 +2898,7 @@ const AddPurchaseBill = () => {
                             handleKeyDown(e, 3);
                           } else if (isTab || isEnter) {
                             e.preventDefault();
-                            toast.dismiss();
-                            toast.error("Unit is Required");
+                            setError((prev) => ({ ...prev, unit: true }));
                           }
                         }}
                         inputRef={(el) => (inputRefs.current[3] = el)}
@@ -2863,9 +2920,19 @@ const AddPurchaseBill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.batch ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.batch ? "#ff0000" : "",
+                          },
                         }}
                         onChange={(e) => {
                           setBatch((e.target.value).toUpperCase());
+                          setError((prev) => ({ ...prev, batch: false }));
                         }}
                         inputRef={(el) => (inputRefs.current[4] = el)}
                         onKeyDown={(e) => {
@@ -2873,8 +2940,7 @@ const AddPurchaseBill = () => {
                             handleKeyDown(e, 4);
                           } else if (e.key === 'Tab' || e.key === 'Enter') {
                             e.preventDefault();
-                            toast.dismiss();
-                            toast.error("Batch is Required");
+                            setError((prev) => ({ ...prev, batch: true }));
                           }
                         }}
                       />
@@ -2891,6 +2957,15 @@ const AddPurchaseBill = () => {
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
+                          },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.expiryDate ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.expiryDate ? "#ff0000" : "",
                           },
                         }}
                         error={!!error.expiryDate}
@@ -2909,15 +2984,13 @@ const AddPurchaseBill = () => {
                           if (isTab || isEnter) {
                             if (!expiryDate) {
                               e.preventDefault();
-                              toast.dismiss();
-                              toast.error("Expiry is required");
+                              setError((prev) => ({ ...prev, expiryDate: true }));
                               return;
                             }
 
                             if (!expiryDateRegex.test(expiryDate)) {
                               e.preventDefault();
-                              toast.dismiss();
-                              toast.error("Expiry must be in MM/YY format");
+                              setError((prev) => ({ ...prev, expiryDate: true }));
                               return;
                             }
 
@@ -2929,10 +3002,8 @@ const AddPurchaseBill = () => {
 
                             if (expiry < now) {
                               e.preventDefault();
-                              toast.dismiss();
-                              toast.error("Product has expired");
+                              setError((prev) => ({ ...prev, expiryDate: true }));
                             } else if (expiry < sixMonthsLater) {
-
                               toast.warning("Product will expire within 6 months");
                               handleKeyDown(e, 5);
                             } else {
@@ -2956,6 +3027,15 @@ const AddPurchaseBill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.mrp ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.mrp ? "#ff0000" : "",
+                          },
                         }}
                         size="small"
                         error={!!error.mrp}
@@ -2964,6 +3044,7 @@ const AddPurchaseBill = () => {
                           const value = e.target.value;
                           if (/^\d*\.?\d*$/.test(value)) {
                             setMRP(value ? Number(value) : "");
+                            setError((prev) => ({ ...prev, mrp: false }));
                           }
                         }}
                         onKeyDown={(e) => {
@@ -2981,8 +3062,7 @@ const AddPurchaseBill = () => {
 
                           if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
                             e.preventDefault();
-                            toast.dismiss();
-                            toast.error("MRP is required and must be greater than 0");
+                            setError((prev) => ({ ...prev, mrp: true }));
                             return;
                           }
 
@@ -3059,7 +3139,6 @@ const AddPurchaseBill = () => {
                             e.preventDefault();
                             return;
                           }
-
                           if (e.key === "Enter") {
                             e.preventDefault();
                             handleKeyDown(e, 8);
@@ -3082,6 +3161,15 @@ const AddPurchaseBill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.ptr ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.ptr ? "#ff0000" : "",
+                          },
                         }}
                         size="small"
                         value={ptr}
@@ -3090,6 +3178,7 @@ const AddPurchaseBill = () => {
                           const value = e.target.value;
                           if (/^\d*\.?\d*$/.test(value)) {
                             setPTR(value ? Number(value) : "");
+                            setError((prev) => ({ ...prev, ptr: false }));
                           }
                         }}
                         onKeyDown={(e) => {
@@ -3106,17 +3195,9 @@ const AddPurchaseBill = () => {
                           if (isShiftTab) return;
 
                           if (isEnter || isTab) {
-                            // if (!ptr || ptr === 0) {
-                            //   e.preventDefault();
-                            // toast.dismiss();
-                            // toast.error("PTR is required and must be greater than 0");
-                            //   return;
-                            // }
-
-                            if (Number(mrp) && Number(ptr) >= Number(mrp)) {
+                            if (!ptr || ptr === 0 || (Number(mrp) && Number(ptr) >= Number(mrp))) {
                               e.preventDefault();
-                              toast.dismiss();
-                              toast.error("PTR must be less than MRP");
+                              setError((prev) => ({ ...prev, ptr: true }));
                               return;
                             }
                           }
@@ -3191,25 +3272,33 @@ const AddPurchaseBill = () => {
                     </td>
 
                     <td>
-                      <TextField
-                        variant="outlined"
+                      <Select
                         size="small"
                         value={gst}
-                        placeholder="Gst"
+                        displayEmpty
+                        renderValue={(value) => (value === "" || value === undefined || value === null ? "Gst" : value)}
                         sx={{
-                          minWidth: "40px",
+                          minWidth: "60px",
                           width: "100%",
-                          '& .MuiInputBase-input': {
+                          '& .MuiSelect-select': {
                             textAlign: 'center',
+                            paddingY: '8.5px',
+                          },
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.gst ? "#ff0000 !important" : "",
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.gst ? "#ff0000 !important" : "",
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: error.gst ? "#ff0000 !important" : "",
                           },
                         }}
                         error={!!error.gst}
                         inputRef={(el) => (inputRefs.current[11] = el)}
                         onChange={(e) => {
-                          const value = e.target.value;
-                          if (/^\d*$/.test(value)) {
-                            setGst(value ? Number(value) : "");
-                          }
+                          setGst(e.target.value !== "" ? Number(e.target.value) : "");
+                          setError((prev) => ({ ...prev, gst: false }));
                         }}
                         onKeyDown={(e) => {
                           const isTab = e.key === "Tab";
@@ -3221,24 +3310,22 @@ const AddPurchaseBill = () => {
                           if (isEnter || isTab) {
                             const allowedGST = [0, 5, 18];
 
-                            if (gst === "" || gst === null || gst === undefined) {
+                            if (gst === "" || gst === null || gst === undefined || !allowedGST.includes(Number(gst))) {
                               e.preventDefault();
-                              toast.dismiss();
-                              toast.error("GST is required !");
+                              setError((prev) => ({ ...prev, gst: true }));
                               return;
                             }
-
-                            if (!allowedGST.includes(Number(gst))) {
-                              e.preventDefault();
-                              toast.dismiss();
-                              toast.error("Only 0%, 5%, 18% GST is allowed");
-                              return;
-                            }
+                            e.preventDefault();
+                            setTimeout(() => {
+                              inputRefs.current[12]?.focus();
+                            }, 100);
                           }
-
-                          handleKeyDown(e, 11);
                         }}
-                      />
+                      >
+                        <MenuItem value={0}>0</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                        <MenuItem value={18}>18</MenuItem>
+                      </Select>
                     </td>
 
                     <td>
@@ -3363,50 +3450,50 @@ const AddPurchaseBill = () => {
                           />
                         </div>
                         <span style={{ alignSelf: "center" }}>
-                          {item.iteam_name ? item.iteam_name : "-----"}
+                          {item.iteam_name ? item.iteam_name : "-"}
                         </span>
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.weightage ? item.weightage : "-----"}
+                        {item.weightage ? item.weightage : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.batch_number ? item.batch_number : "-----"}
+                        {item.batch_number ? item.batch_number : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.expiry ? item.expiry : "-----"}
+                        {item.expiry ? item.expiry : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.mrp ? item.mrp : "-----"}
+                        {item.mrp ? item.mrp : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.qty ? item.qty : "-----"}
+                        {item.qty ? item.qty : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.free_qty ? item.free_qty : "-----"}
+                        {item.free_qty ? item.free_qty : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.ptr ? item.ptr : "-----"}
+                        {item.ptr ? item.ptr : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.discount ? item.discount : "-----"}
+                        {item.discount ? item.discount : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.base_price ? item.base_price : "-----"}
+                        {item.base_price ? item.base_price : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.gst ? item.gst : "-----"}
+                        {item.gst ? item.gst : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.location ? item.location : "-----"}
+                        {item.location ? item.location : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.net_rate ? item.net_rate : "-----"}
+                        {item.net_rate ? item.net_rate : "-"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.margin ? item.margin : "-----"}
+                        {item.margin ? item.margin : "-"}
                       </td>
                       <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>
-                        {item.total_amount ? item.total_amount : "-----"}
+                        {item.total_amount ? item.total_amount : "-"}
                       </td>
                     </tr>
                   ))
@@ -3945,6 +4032,7 @@ const AddPurchaseBill = () => {
                           onInputChange={(e, newValue) => {
                             const uppercased = newValue.toUpperCase();
                             setAddDistributorName(uppercased);
+                            setAddDistributorError((prev) => ({ ...prev, addDistributorName: "" }));
                             const found = distributorList.find(d =>
                               (d.name || "").toUpperCase().trim() === uppercased.trim()
                             );
@@ -3963,6 +4051,7 @@ const AddPurchaseBill = () => {
                             }
                           }}
                           onChange={(e, selectedValue) => {
+
                             if (selectedValue) {
                               const valString = String(selectedValue).toUpperCase().trim();
                               const found = distributorList.find(d =>
@@ -3988,16 +4077,37 @@ const AddPurchaseBill = () => {
                               {...params}
                               placeholder="Distributor Name"
                               size="small"
+                              variant="outlined"
+                              error={!!addDistributorError.addDistributorName}
                               inputRef={(el) => (inputRefs.current[16] = el)}
                               onKeyDown={(e) => handleKeyDown(e, 16)}
                               inputProps={{
                                 ...params.inputProps,
-                                // style: { textTransform: "uppercase" },
                                 autoComplete: "off",
+                              }}
+                              sx={{
+                                "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#ff0000 !important",
+                                },
+                                "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: addDistributorError.addDistributorName
+                                    ? "#ff0000"
+                                    : "",
+                                },
+                                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: addDistributorError.addDistributorName
+                                    ? "#ff0000"
+                                    : "",
+                                },
                               }}
                             />
                           )}
                         />
+                        {addDistributorError.addDistributorName && (
+                          <span className="text-[#ff0000] text-[12px]">
+                            {addDistributorError.addDistributorName}
+                          </span>
+                        )}
                       </div>
 
                     </div>
@@ -4021,6 +4131,8 @@ const AddPurchaseBill = () => {
                             }
 
                             setAddDistributorMobile(numericValue);
+
+                            setAddDistributorError((prev) => ({ ...prev, addDistributorMobile: "" }));
                           }}
                           onChange={(e, selectedValue) => {
                             const found = distributorList.find(d => d.phone_number === selectedValue);
@@ -4051,11 +4163,25 @@ const AddPurchaseBill = () => {
                                   e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
                                 }
                               }}
-                              error={distributorList.some(d => d.phone_number === addDistributorMobile)}
-                            // helperText={distributorList.some(d => d.phone_number === addDistributorMobile) ? "This number already exists" : ""}
+                              error={!!addDistributorError.addDistributorMobile || distributorList.some(d => d.phone_number === addDistributorMobile)}
+                              sx={{
+                                "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#ff0000 !important",
+                                },
+                              }}
                             />
                           )}
                         />
+                        {/* Helper text replacement */}
+                        {addDistributorError.addDistributorMobile ? (
+                          <span className="text-[#ff0000] text-[12px]">
+                            {addDistributorError.addDistributorMobile}
+                          </span>
+                        ) : distributorList.some(d => d.phone_number === addDistributorMobile) ? (
+                          <span className="text-[#ff0000] text-[12px]">
+                            This number already exists
+                          </span>
+                        ) : null}
                       </div>
                       {/* GST Number */}
                       <div className="fields add_new_item_divv">
@@ -4067,6 +4193,7 @@ const AddPurchaseBill = () => {
                           value={addDistributorNo}
                           onInputChange={(e, newValue) => {
                             setAddDistributorNo(newValue.toUpperCase());
+                            setAddDistributorError((prev) => ({ ...prev, addDistributorNo: "" }));
                           }}
                           onChange={(e, selectedValue) => {
                             const found = distributorList.find(d => d.gst === selectedValue);
@@ -4092,12 +4219,27 @@ const AddPurchaseBill = () => {
                                 autoComplete: "off",
                                 maxLength: 15,
                               }}
-                              error={addDistributorNo.length > 0 && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(addDistributorNo)}
-                              helperText={addDistributorNo.length > 0 && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(addDistributorNo) ? "Invalid GST Number" : ""}
+                              // error={addDistributorNo.length > 0 && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(addDistributorNo)}
+                              // helperText={addDistributorNo.length > 0 && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(addDistributorNo) ? "Invalid GST Number" : ""}
+                              error={!!addDistributorError.addDistributorNo || (addDistributorNo.length > 0 && !gstRegex.test(addDistributorNo))}
+                              sx={{
+                                "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#ff0000 !important",
+                                },
+                              }}
                             />
                           )}
                         />
 
+                        {addDistributorError.addDistributorNo ? (
+                          <span className="text-[#ff0000] text-[12px]">
+                            {addDistributorError.addDistributorNo}
+                          </span>
+                        ) : addDistributorNo.length > 0 && !gstRegex.test(addDistributorNo) ? (
+                          <span className="text-[#ff0000] text-[12px]">
+                            Invalid GST Number
+                          </span>
+                        ) : null}
                       </div>
                     </div>
 

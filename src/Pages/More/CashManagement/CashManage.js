@@ -35,8 +35,8 @@ const CashManage = () => {
   const cashManageDetailscolumns = [
     { id: "date", label: "Date", minWidth: 150 },
     // { id: 'opining_balance', label: 'Opening Balance', minWidth: 100 },
-    { id: "description", label: "Voucher", minWidth: 150 },
-    { id: "description", label: "Ref. No", minWidth: 150 },
+    { id: "voucher", label: "Voucher", minWidth: 150 },
+    { id: "reference_no", label: "Ref. No", minWidth: 150 },
     { id: "credit", label: "Credit", minWidth: 150 },
     { id: "debit", label: "Debit", minWidth: 150 },
     { id: "amount", label: "Total Balance", minWidth: 150 },
@@ -499,7 +499,7 @@ const CashManage = () => {
                               {cashManageDetailscolumns.map((column, colIndex) => {
                                 let value = row[column.id];
 
-                              
+
                                 if (!value && value !== 0) {
                                   value = "-";
                                 }
@@ -509,10 +509,10 @@ const CashManage = () => {
                                     key={column.id}
                                     align={column.align}
                                     className={`px-4 py-2 whitespace-nowrap ${column.id === "debit"
-                                        ? "debit-cell"
-                                        : column.id === "credit"
-                                          ? "credit-cell"
-                                          : ""
+                                      ? "debit-cell"
+                                      : column.id === "credit"
+                                        ? "credit-cell"
+                                        : ""
                                       }`}
                                     style={
                                       colIndex === 0

@@ -559,6 +559,7 @@ const AddReturnbill = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
+    setErrors((prev) => ({ ...prev, searchItem: false }));
 
     if (!value.trim()) {
       return;
@@ -1077,7 +1078,7 @@ const AddReturnbill = () => {
             {/*<============================================================= Top details   ============================================================> */}
 
             <div className="flex gap-4  mt-4">
-              <div className="flex flex-row gap-4 overflow-x-auto w-full items-start">
+              <div className="flex flex-row gap-4 overflow-x-auto w-full items-start" style={{ zIndex: "1" }}>
                 <div>
                   <span className="title mb-2 flex items-center gap-2">Distributor<span className="text-red-600">*</span></span>
                   <Autocomplete
@@ -1126,7 +1127,7 @@ const AddReturnbill = () => {
                         autoFocus
                         autoComplete="off"
                         variant="outlined"
-                        placeholder="Distributor"
+                        placeholder="Select Distributor"
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 0)}
@@ -1197,6 +1198,7 @@ const AddReturnbill = () => {
                       onKeyDown={(e) => handleKeyDown(e, 3)}
                       customInput={
                         <OutlinedInput
+
                           size="small"
                           error={!!error.startDate}
                           sx={{
@@ -1208,7 +1210,7 @@ const AddReturnbill = () => {
                             },
                             "& .MuiOutlinedInput-input": {
                               padding: "0px !important",
-                              paddingTop: "0px !important"  // or "8px 12px"
+                              paddingTop: "0px !important"
                             },
                           }}
                         />
@@ -1333,11 +1335,19 @@ const AddReturnbill = () => {
                           id="outlined-basic"
                           size="small"
                           fullWidth
+                          error={!!errors.searchItem}
                           sx={{
                             minWidth: 400,
                             width: "100%",
-                            // textTransform: 'uppercase',
-
+                            "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#ff0000 !important",
+                            },
+                            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: errors.searchItem ? "#ff0000" : "",
+                            },
+                            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              borderColor: errors.searchItem ? "#ff0000" : "",
+                            },
                           }}
                           value={searchQuery.toUpperCase()}
                           onChange={handleInputChange}
@@ -1346,9 +1356,8 @@ const AddReturnbill = () => {
                           inputRef={(el) => (inputRefs.current[5] = el)}
                           onKeyDown={e => {
                             if (e.key === "Enter" && !searchQuery) {
-                              toast.dismiss();
-                              toast.error("Please search any items..");
                               e.preventDefault();
+                              setErrors((prev) => ({ ...prev, searchItem: true }));
                             }
                           }}
 
@@ -1372,7 +1381,6 @@ const AddReturnbill = () => {
                         size="small"
                         placeholder="Unit"
                         error={!!errors.unit}
-                        helperText={errors.unit}
                         value={unit}
                         sx={{
                           minWidth: "40px",
@@ -1380,10 +1388,20 @@ const AddReturnbill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.unit ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.unit ? "#ff0000" : "",
+                          },
                         }}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setUnit(value ? Number(value) : "");
+                          setErrors((prev) => ({ ...prev, unit: false }));
                         }}
                         inputRef={(el) => (inputRefs.current[6] = el)}
                         onKeyDown={(e) => {
@@ -1391,9 +1409,8 @@ const AddReturnbill = () => {
                             if (unit && unit !== 0) {
                               handleKeyDown(e, 6);
                             } else {
-                              toast.dismiss();
-                              toast.error("Please enter unit");
                               e.preventDefault();
+                              setErrors((prev) => ({ ...prev, unit: true }));
                             }
                           }
                         }}
@@ -1408,13 +1425,21 @@ const AddReturnbill = () => {
                         disabled
                         placeholder="Batch"
                         error={!!errors.batch}
-                        helperText={errors.batch}
                         value={batch}
                         sx={{
                           minWidth: "100px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
+                          },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.batch ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.batch ? "#ff0000" : "",
                           },
                         }}
                         onChange={(e) => {
@@ -1440,9 +1465,17 @@ const AddReturnbill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.expiryDate ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.expiryDate ? "#ff0000" : "",
+                          },
                         }}
                         error={!!errors.expiryDate}
-                        helperText={errors.expiryDate}
                         value={expiryDate}
                         onChange={handleExpiryDateChange}
                         placeholder="MM/YY"
@@ -1465,12 +1498,20 @@ const AddReturnbill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.mrp ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.mrp ? "#ff0000" : "",
+                          },
                         }}
                         size="small"
                         placeholder="Mrp"
                         disabled
                         error={!!errors.mrp}
-                        helperText={errors.mrp}
                         value={mrp}
                         onChange={(e) => {
                           const value = e.target.value;
@@ -1502,24 +1543,32 @@ const AddReturnbill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.qty ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.qty ? "#ff0000" : "",
+                          },
                         }}
                         size="small"
                         error={!!errors.qty}
-                        helperText={errors.qty}
                         value={qty}
                         inputRef={(el) => (inputRefs.current[7] = el)}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           handleQtyChange(value ? Number(value) : "");
+                          setErrors((prev) => ({ ...prev, qty: false }));
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             if (qty && qty !== 0) {
                               handleKeyDown(e, 7);
                             } else {
-                              toast.dismiss();
-                              toast.error("Please enter quantity");
                               e.preventDefault();
+                              setErrors((prev) => ({ ...prev, qty: true }));
                             }
                           }
                         }}
@@ -1547,12 +1596,7 @@ const AddReturnbill = () => {
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
-                            if (free !== "") {
-                              handleKeyDown(e, 8);
-                            } else {
-                              toast.dismiss();
-                              toast.error("Please enter free quantity");
-                            }
+                            handleKeyDown(e, 8);
                           }
                         }}
                       />
@@ -1570,20 +1614,31 @@ const AddReturnbill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.ptr ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.ptr ? "#ff0000" : "",
+                          },
                         }}
                         size="small"
                         value={ptr}
+                        error={!!errors.ptr}
                         inputRef={(el) => (inputRefs.current[9] = el)}
                         onChange={(e) => {
                           setPTR(e.target.value);
+                          setErrors((prev) => ({ ...prev, ptr: false }));
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             if (ptr && ptr !== 0) {
                               handleKeyDown(e, 9);
                             } else {
-                              toast.dismiss();
-                              toast.error("Please enter PTR");
+                              e.preventDefault();
+                              setErrors((prev) => ({ ...prev, ptr: true }));
                             }
                           }
                         }}
@@ -1611,12 +1666,7 @@ const AddReturnbill = () => {
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
-                            if (disc !== "") {
-                              handleKeyDown(e, 10);
-                            } else {
-                              toast.dismiss();
-                              toast.error("Please enter CD");
-                            }
+                            handleKeyDown(e, 10);
                           }
                         }}
                       />
@@ -1634,23 +1684,38 @@ const AddReturnbill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
+                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#ff0000 !important",
+                          },
+                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.gst ? "#ff0000" : "",
+                          },
+                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.gst ? "#ff0000" : "",
+                          },
                         }}
                         onKeyDown={(e) => {
                           if (["e", "E", "+", "-", ","].includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
                             e.preventDefault();
                           }
                           if (e.key === "Enter") {
-                            handleKeyDown(e, 11);
+                            const allowedGST = [0, 5, 12, 18, 28];
+                            if (gst === "" || gst === null || gst === undefined || !allowedGST.includes(Number(gst))) {
+                              e.preventDefault();
+                              setErrors((prev) => ({ ...prev, gst: true }));
+                            } else {
+                              handleKeyDown(e, 11);
+                            }
                           }
                         }}
                         onChange={(e) => {
                           setGst(e.target.value);
+                          setErrors((prev) => ({ ...prev, gst: false }));
                         }}
                         inputRef={(el) => (inputRefs.current[11] = el)}
                         size="small"
                         displayEmpty
                         error={!!errors.gst}
-                        helperText={errors.gst}
                       ></TextField>
                     </td>
 

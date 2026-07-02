@@ -198,11 +198,11 @@ const BankAccount = () => {
 
   useEffect(() => {
     if (bankData.length > 0) {
-      if (selectedAccountId === null) {
-        setSelectedAccountId(bankData[0].id);
-      } else {
+      if (selectedAccountId !== null && selectedAccountId !== undefined) {
         const selectedDetails = bankData.find((x) => x.id === selectedAccountId);
-        setDetails(selectedDetails);
+        setDetails(selectedDetails || {});
+      } else {
+        setDetails({});
       }
     }
   }, [bankData, selectedAccountId]);
@@ -297,20 +297,28 @@ const BankAccount = () => {
 
     if (!bankName) newErrors.bankName = "Bank Name is required";
     if (!accountType) newErrors.accountType = "Account Type is required";
-    if (switchCheck) {
-      if (!accountNumber) {
-        newErrors.accountNumber = "Account Number is required";
-      } else if (!reEnterAccountNumber) {
-        newErrors.reEnterAccountNumber = "Re Enter Account Number is required";
-      } else if (accountNumber !== reEnterAccountNumber) {
-        newErrors.accountNumber = "Account Numbers do not match";
-        newErrors.reEnterAccountNumber = "Account Numbers do not match";
-      }
-      if (!ifscCode) newErrors.ifscCode = "IFSC Code is required";
-      if (!accountHolderName)
-        newErrors.accountHolderName = "Account Holder Name is required";
-      if (!branchName) newErrors.branchName = "Branch Name is required";
+    // if (switchCheck) {
+    if (!accountNumber) {
+      newErrors.accountNumber = "Account Number is required";
     }
+
+    if (!reEnterAccountNumber) {
+      newErrors.reEnterAccountNumber = "Re-Enter Account Number is required";
+    }
+
+    if (
+      accountNumber &&
+      reEnterAccountNumber &&
+      accountNumber !== reEnterAccountNumber
+    ) {
+      newErrors.accountNumber = "Account Numbers do not match";
+      newErrors.reEnterAccountNumber = "Account Numbers do not match";
+    }
+    if (!ifscCode) newErrors.ifscCode = "IFSC Code is required";
+    if (!accountHolderName)
+      newErrors.accountHolderName = "Account Holder Name is required";
+    if (!branchName) newErrors.branchName = "Branch Name is required";
+    // }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -544,22 +552,49 @@ const BankAccount = () => {
 
   const handleStartDate = (newDate) => {
     setStartDate(newDate);
-    BankDetailgetByID(selectedAccountId);
+    if (selectedAccountId !== null && selectedAccountId !== undefined) {
+      BankDetailgetByID(selectedAccountId);
+    }
   };
 
   const handleEndDate = (newDate) => {
     setEndDate(newDate);
-    BankDetailgetByID(selectedAccountId);
+    if (selectedAccountId !== null && selectedAccountId !== undefined) {
+      BankDetailgetByID(selectedAccountId);
+    }
   };
 
   const handleSearch = (search) => {
     setSearch(search);
-    BankDetailgetByID(selectedAccountId);
+    if (selectedAccountId !== null && selectedAccountId !== undefined) {
+      BankDetailgetByID(selectedAccountId);
+    }
   };
 
 
   useSubmitShortcut(validateForm, openAddPopUp);
   useSubmitShortcut(handleAdjustBalance, openAddPopUpAdjust);
+
+
+
+  useEffect(() => {
+    const handleShortcut = (e) => {
+      if (e.altKey && (e.key === "s" || e.key === "S")) {
+        e.preventDefault();
+
+        // Dialog open ho tabhi save chale
+        if (openAddPopUp) {
+          handleAddBank();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleShortcut);
+
+    return () => {
+      window.removeEventListener("keydown", handleShortcut);
+    };
+  }, [openAddPopUp, bankName, accountType, accountNumber, reEnterAccountNumber, ifscCode, branchName, accountHolderName, upiId]);
 
   return (
     <>
@@ -777,7 +812,7 @@ const BankAccount = () => {
                           </ListItemButton>
                         </ListItem>
                       ))}
-                    <Divider style={{ borderColor: "var(--color2) !important", marginBlock: "10px" }} />
+                    {/* <Divider style={{ borderColor: "var(--color2) !important", marginBlock: "10px" }} /> */}
                   </List>
                 )}
               </>
@@ -1219,13 +1254,10 @@ const BankAccount = () => {
                       </table>
                     </div>
                   </div>
-
                 </>
               )}
             </Box>
           </Box>
-
-
         </Box>
 
 
@@ -1312,11 +1344,23 @@ const BankAccount = () => {
                     )}
                   </div>
                   <div style={{ width: "100%" }}>
+
+
+
+
+
+
                     <div className="mb-2">
                       <span className="label primary">Account Type</span>
                       <span className="text-red-600 ml-1">*</span>
                     </div>
-                    <TextField
+
+
+
+
+
+
+                    {/* <TextField
                       autoComplete="off"
                       id="outlined-multiline-static"
                       size="small"
@@ -1365,7 +1409,37 @@ const BankAccount = () => {
                       }}
                       variant="outlined"
                       fullWidth={fullScreen}
-                    />
+                    /> */}
+
+                    <Select
+                      value={accountType}
+                      size="small"
+                      displayEmpty
+                      error={!!errors.accountType}
+                      onChange={(e) => {
+                        setAccountType(e.target.value);
+                        setErrors((prev) => ({
+                          ...prev,
+                          accountType: "",
+                        }));
+                      }}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: errors.accountType ? "red" : "",
+                        },
+                      }}
+                    >
+                      <MenuItem value="" disabled>
+                        Select Account Type
+                      </MenuItem>
+
+                      <MenuItem value="Saving">Saving</MenuItem>
+                      <MenuItem value="Current">Current</MenuItem>
+                    </Select>
+
+
+
                     {errors.accountType && (
                       <span className="error">{errors.accountType}</span>
                     )}
@@ -1443,13 +1517,19 @@ const BankAccount = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={accountNumber}
+                      error={!!errors.accountNumber}
                       placeholder="Bank Account Number"
                       onChange={(e) => {
                         const numericValue = e.target.value.replace(
                           /[^0-9]/g,
                           ""
-                        ); // Remove non-numeric characters
-
+                        );
+                        if (errors.accountNumber) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            accountNumber: "",
+                          }));
+                        }
                         setAccountNumber(numericValue);
                       }}
                       inputRef={(el) => (inputRefs.current[3] = el)}
@@ -1475,6 +1555,7 @@ const BankAccount = () => {
                       <span className="error">{errors.accountNumber}</span>
                     )}
                   </div>
+
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
                       <span className="label primary">
@@ -1487,14 +1568,16 @@ const BankAccount = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={reEnterAccountNumber}
+                      error={!!errors.reEnterAccountNumber}
                       placeholder="Re-Enter Account Number"
                       onChange={(e) => {
                         // Allow only numeric input
                         const numericValue = e.target.value.replace(/[^0-9]/g, "");
                         setReEnterAccountNumber(numericValue);
+                        // Remove error while typing
                         setErrors((prev) => ({
                           ...prev,
-                          accountNumber: "",
+                          reEnterAccountNumber: "",
                         }));
                       }}
                       inputRef={(el) => (inputRefs.current[4] = el)}
@@ -1544,6 +1627,11 @@ const BankAccount = () => {
                       onChange={(e) => {
                         const uppercasedValue = e.target.value.toUpperCase();
                         setIfscCode(uppercasedValue);
+                        // Remove error while typing
+                        setErrors((prev) => ({
+                          ...prev,
+                          ifscCode: "",
+                        }));
                       }}
                       inputRef={(el) => (inputRefs.current[5] = el)}
                       onKeyDown={(e) => {
@@ -1560,7 +1648,20 @@ const BankAccount = () => {
                           // Shift + Tab is allowed by default; do not prevent it
                         }
                       }}
-                      style={{ width: "100%" }}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: errors.ifscCode ? "#d32f2f" : "",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: errors.ifscCode ? "#d32f2f" : "",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: errors.ifscCode ? "#d32f2f" : "",
+                          },
+                        },
+                      }}
                       variant="outlined"
                       fullWidth={fullScreen}
                     />
@@ -1582,6 +1683,11 @@ const BankAccount = () => {
                         placeholder="Branch Name"
                         onChange={(e) => {
                           setBranchName(e.target.value);
+
+                          setErrors((prev) => ({
+                            ...prev,
+                            branchName: "",
+                          }));
                         }}
                         inputRef={(el) => (inputRefs.current[6] = el)}
                         onKeyDown={(e) => {
@@ -1598,7 +1704,20 @@ const BankAccount = () => {
                             // Shift + Tab is allowed by default; do not prevent it
                           }
                         }}
-                        style={{ width: "100%" }}
+                        sx={{
+                          width: "100%",
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": {
+                              borderColor: errors.branchName ? "#d32f2f" : "",
+                            },
+                            "&:hover fieldset": {
+                              borderColor: errors.branchName ? "#d32f2f" : "",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: errors.branchName ? "#d32f2f" : "",
+                            },
+                          },
+                        }}
                         variant="outlined"
                         fullWidth={fullScreen}
                       />
@@ -1627,6 +1746,11 @@ const BankAccount = () => {
                           .toLowerCase()
                           .replace(/\b\w/g, (char) => char.toUpperCase());
                         setAccountHolderName(capitalizedValue);
+                        // Remove error while typing
+                        setErrors((prev) => ({
+                          ...prev,
+                          accountHolderName: "",
+                        }));
                       }}
                       inputRef={(el) => (inputRefs.current[7] = el)}
                       onKeyDown={(e) => {
@@ -1643,7 +1767,20 @@ const BankAccount = () => {
                           // Shift + Tab is allowed by default; do not prevent it
                         }
                       }}
-                      style={{ width: "100%" }}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: errors.accountHolderName ? "#d32f2f" : "",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: errors.accountHolderName ? "#d32f2f" : "",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: errors.accountHolderName ? "#d32f2f" : "",
+                          },
+                        },
+                      }}
                       variant="outlined"
                       fullWidth={fullScreen}
                     />
@@ -1713,7 +1850,7 @@ const BankAccount = () => {
               fontWeight: 600
             }}
           >
-            Adjust Balance  
+            Adjust Balance
             <IconButton
               aria-label="close"
               onClick={resetAdjustDialog}
@@ -1738,22 +1875,39 @@ const BankAccount = () => {
                 <span className="label primary">Select Account   <span className="text-red-600 ml-1">*</span> </span>
                 <Autocomplete
                   id="select-account-autocomplete"
-                  options={[
-                    { value: "cash", label: "Cash" },
-                    ...(bankData || []).map((option) => ({
-                      value: option.id,
-                      label: `${option.bank_user_name} (${option.bank_account_name})`
-                    }))
-                  ]}
+                  // options={[
+                  //   { value: "cash", label: "Cash" },
+                  //   ...(bankData || []).map((option) => ({
+                  //     value: option.id,
+                  //     label: `${option.bank_user_name} (${option.bank_account_name})`
+                  //   }))
+                  // ]}
+                  options={(bankData || []).map((option) => ({
+                    value: option.id === 0 ? "cash" : option.id,
+                    label: option.bank_user_name === "Cash"
+                      ? "Cash"
+                      : `${option.bank_user_name} (${option.bank_account_name})`
+                  }))}
                   getOptionLabel={(option) => option.label || ""}
+                  // value={
+                  //   [
+                  //     { value: "cash", label: "Cash" },
+                  //     ...(bankData || []).map((option) => ({
+                  //       value: option.id,
+                  //       label: `${option.bank_user_name} (${option.bank_account_name})`
+                  //     }))
+                  //   ].find((option) => option.value === paymentType) || null
+                  // }
                   value={
-                    [
-                      { value: "cash", label: "Cash" },
-                      ...(bankData || []).map((option) => ({
-                        value: option.id,
-                        label: `${option.bank_user_name} (${option.bank_account_name})`
+                    (bankData || [])
+                      .map((option) => ({
+                        value: option.id === 0 ? "cash" : option.id,
+                        label:
+                          option.bank_user_name === "Cash"
+                            ? "Cash"
+                            : `${option.bank_user_name} (${option.bank_account_name})`,
                       }))
-                    ].find((option) => option.value === paymentType) || null
+                      .find((option) => option.value === paymentType) || null
                   }
                   onChange={(event, newValue) => {
                     const fakeEvent = { target: { value: newValue ? newValue.value : "" } };
@@ -1809,8 +1963,8 @@ const BankAccount = () => {
                       color: clicked ? "#ffffff" : "#3F6212",
                       borderColor: "#3F6212",
                       '&:hover': {
-                        backgroundColor: clicked ? "#2e480d" : "#f1f8e9",
-                        borderColor: "#3F6212"
+                        backgroundColor: clicked ? "#2e480d !important" : "#f1f8e9 !important",
+                        borderColor: "#3F6212 !important"
                       }
                     }}
                   >
@@ -1827,8 +1981,8 @@ const BankAccount = () => {
                       color: reduceclicked ? "#ffffff" : "#c62828",
                       borderColor: "#c62828",
                       '&:hover': {
-                        backgroundColor: reduceclicked ? "#b71c1c" : "#ffebee",
-                        borderColor: "#c62828"
+                        backgroundColor: reduceclicked ? "#b71c1c !important" : "#ffebee !important",
+                        borderColor: "#c62828 !important"
                       }
                     }}
                   >
