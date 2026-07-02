@@ -36,6 +36,7 @@ import usePermissions, {
   hasPermission,
 } from "../../../../componets/permission";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const CustomerList = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -728,6 +729,15 @@ const CustomerList = () => {
                             style={{ cursor: "pointer" }}
                             onClick={() => sortByColumn(column.id)}
                           />
+                          {/* <TextField
+                            variant="outlined"
+                            autoComplete="off"
+                            label="Type Here"
+                            size="small"
+                            sx={{ width: "150px" }}
+                            value={searchTerms[index]}
+                            onChange={e => handleSearchChange(index, e.target.value)}
+                          /> */}
                           <TextField
                             variant="outlined"
                             autoComplete="off"
@@ -736,6 +746,19 @@ const CustomerList = () => {
                             sx={{ width: "150px" }}
                             value={searchTerms[index]}
                             onChange={e => handleSearchChange(index, e.target.value)}
+                            InputProps={{
+                              endAdornment: searchTerms[index] ? (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => handleSearchChange(index, "")}
+                                    edge="end"
+                                  >
+                                    <ClearIcon fontSize="small" />
+                                  </IconButton>
+                                </InputAdornment>
+                              ) : null,
+                            }}
                           />
                           {column.label == "Amount" && (
                             <div className="flex mx-2 flex-wrap gap-6">

@@ -24,6 +24,8 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import Loader from "../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
+import ClearIcon from "@mui/icons-material/Clear";
+import { InputAdornment } from "@mui/material";
 
 const drugGroupColumns = [
   { id: "name", label: "Drug Group Name", minWidth: 100 },
@@ -349,6 +351,16 @@ const DrugGroup = () => {
                         <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
                           <span>{column.label}</span>
                           <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {/* <TextField
+                              autoComplete="off"
+                              label="Type Here"
+                              size="small"
+                              sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                              value={searchTerms[colIndex]}
+                              onChange={e => handleSearchChange(colIndex, e.target.value)}
+                              onKeyDown={handleKeyDown}
+                            /> */}
+
                             <TextField
                               autoComplete="off"
                               label="Type Here"
@@ -357,6 +369,19 @@ const DrugGroup = () => {
                               value={searchTerms[colIndex]}
                               onChange={e => handleSearchChange(colIndex, e.target.value)}
                               onKeyDown={handleKeyDown}
+                              InputProps={{
+                                endAdornment: searchTerms[colIndex] ? (
+                                  <InputAdornment position="end">
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => handleSearchChange(colIndex, "")}
+                                      edge="end"
+                                    >
+                                      <ClearIcon fontSize="small" />
+                                    </IconButton>
+                                  </InputAdornment>
+                                ) : null,
+                              }}
                             />
                           </div>
                         </div>

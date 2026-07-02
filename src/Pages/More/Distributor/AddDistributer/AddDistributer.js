@@ -327,13 +327,13 @@ const AddDistributer = () => {
 
 
 
-                    <div
+                    {/* <div
                       className="cursor-pointer h-full p-[11px] text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg flex items-center justify-center"
                       style={{ borderRadius: "0px 4px 4px 0px", minWidth: "80px" }}
                     >
                       <span>Change</span>
                       <span className="sr-only">Search</span>
-                    </div>
+                    </div> */}
                   </div>
                   {error.GSTNumber && (
                     <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
@@ -810,7 +810,7 @@ const AddDistributer = () => {
                           }}
                         />
 
-                        <div
+                        {/* <div
                           className="absolute top-0 end-0 h-full p-3.5  px-4 text-sm font-medium text-white hover:secondary-bg focus:ring-4 primary-bg  cursor-pointer"
                           style={{ borderRadius: "0px 4px 4px 0px" }}
                         >
@@ -829,7 +829,7 @@ const AddDistributer = () => {
                               d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                             />
                           </svg>
-                        </div>
+                        </div> */}
                       </div>
                       <div name="bank_name" />
                     </div>
@@ -918,6 +918,7 @@ const AddDistributer = () => {
                     </button>
                     <button
                       type="button"
+                      onClick={() => history.push("/DistributorList")}
                       className="py-2 min-w-16 px-5 h-10 text-white rounded-md bg-red-600 ml-2"
                     >
                       Cancel

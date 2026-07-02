@@ -65,21 +65,33 @@ const DistributerView = () => {
     setOpenAddPopUp(false);
   };
 
+  // const validData = () => {
+  //   const newErrors = {};
+  //   if (!companyName) {
+  //     newErrors.companyName = "Company Name is required";
+  //     toast.dismiss();
+  //     toast.error(newErrors.companyName);
+  //   }
+  //   setErrors(newErrors);
+  //   const isValid = Object.keys(newErrors).length === 0;
+  //   if (isValid) {
+  //     AddCompany();
+  //   }
+  //   return isValid;
+  // };
+
   const validData = () => {
-    //  Add Package
     const newErrors = {};
+
     if (!companyName) {
       newErrors.companyName = "Company Name is required";
-      toast.dismiss();
-      toast.error(newErrors.companyName);
     }
-    setErrors(newErrors);
-    const isValid = Object.keys(newErrors).length === 0;
-    if (isValid) {
-      AddCompany();
-    }
-    return isValid;
 
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
+    AddCompany();
   };
 
   const AddCompany = (id) => {
@@ -268,6 +280,21 @@ const DistributerView = () => {
     printWindow.print();
   };
 
+  useEffect(() => {
+    const handleShortcut = (e) => {
+      if (e.altKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        validData();   //  same function as Save button
+      }
+    };
+
+    window.addEventListener("keydown", handleShortcut);
+
+    return () => {
+      window.removeEventListener("keydown", handleShortcut);
+    };
+  }, [companyName]);
+
   /*<============================================================================== UI  ==============================================================================> */
 
   return (
@@ -344,7 +371,7 @@ const DistributerView = () => {
               <div className="flex gap-2">
 
 
-                <Button
+                {/* <Button
                   variant="contained"
                   className="order_list_btn"
                   style={{ background: "var(--color1)" }}
@@ -353,7 +380,7 @@ const DistributerView = () => {
                 >
                   <AddIcon />
                   Add Company
-                </Button>
+                </Button> */}
 
                 <Button
                   className="gap-7"
@@ -770,9 +797,31 @@ const DistributerView = () => {
                     <TextField
                       value={companyName}
                       placeholder="Company Name"
-                      onChange={(e) => setCompanyName(e.target.value)}
-                      error={!!errors.companyName}
-                      helperText={errors.companyName}
+                      // onChange={(e) => setCompanyName(e.target.value)}
+                      onChange={(e) => {
+                        setCompanyName(e.target.value);
+
+                        if (e.target.value) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            companyName: ""
+                          }));
+                        }
+                      }}
+                      // error={!!errors.companyName}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: errors.companyName ? "red !important" : "",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: errors.companyName ? "red !important" : "",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: errors.companyName ? "red !important" : "",
+                          },
+                        },
+                      }}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           validData();
@@ -789,6 +838,11 @@ const DistributerView = () => {
                       }}
                     >
                     </TextField>
+                    {errors.companyName && (
+                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.companyName}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

@@ -103,6 +103,7 @@ const AdjustStock = () => {
     setStockAdjust("");
     setRemainingStock("");
     setAdjustDate(new Date());
+    setErrors({});
   };
 
   useEffect(() => {
