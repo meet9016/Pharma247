@@ -68,6 +68,30 @@ const DoctorList = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [header, setHeader] = useState("");
   const [doctorId, setDoctorId] = useState("");
+  const [popupSearchOptions, setPopupSearchOptions] = useState([]);
+
+  const searchDoctorsForPopup = async (query) => {
+    if (!query) {
+      setPopupSearchOptions([]);
+      return;
+    }
+    let data = new FormData();
+    data.append("page", 1);
+    data.append("name", query);
+
+    try {
+      const response = await axios.post("doctor-list?", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.data && response.data.data) {
+        setPopupSearchOptions(response.data.data);
+      } else {
+        setPopupSearchOptions([]);
+      }
+    } catch (error) {
+      console.error("Popup doctor search API error:", error);
+    }
+  };
   const excelIcon = process.env.PUBLIC_URL + "/excel.png";
 
   const columns = [
@@ -141,6 +165,9 @@ const DoctorList = () => {
     setCity("");
     setDefaultDr("");
     setErrors({});
+    setPopupSearchOptions([]);
+    setDoctorId("");
+    setIsEditMode(false);
     setOpenAddPopUp(false);
   };
 
@@ -347,9 +374,34 @@ const DoctorList = () => {
     if (newValue && typeof newValue === "object") {
       setDoctor(newValue.name);
       setSelectedDoctorId(newValue.id);
+      setDoctorId(newValue.id);
+      setIsEditMode(true);
+      setHeader("Edit Doctor");
+      setButtonLabel("Update");
+
+      // Auto-populate:
+      setMobileNo(newValue.phone_number || "");
+      setEmailId(newValue.email || "");
+      setLicence(newValue.license || "");
+      setClinic(newValue.clinic || "");
+      setAddress(newValue.address || "");
+      setDefaultDr(newValue.default_doctor !== undefined && newValue.default_doctor !== null ? newValue.default_doctor.toString() : "0");
     } else {
       setDoctor(newValue);
       setSelectedDoctorId("");
+      setDoctorId("");
+      
+      if (!newValue) {
+        setIsEditMode(false);
+        setHeader("Add Doctor");
+        setButtonLabel("Save");
+        setMobileNo("");
+        setEmailId("");
+        setLicence("");
+        setClinic("");
+        setAddress("");
+        setDefaultDr("");
+      }
     }
 
     setErrors((prev) => ({
@@ -358,12 +410,14 @@ const DoctorList = () => {
     }));
   };
   const handleInputChange = (event, newInputValue) => {
-    setDoctor(newInputValue);
+    const formatted = newInputValue.toUpperCase();
+    setDoctor(formatted);
     setSelectedDoctorId("");
     setErrors((prev) => ({
       ...prev,
       Doctor: "",
     }));
+    searchDoctorsForPopup(formatted);
   };
   const handlePrevious = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -1035,7 +1089,7 @@ const DoctorList = () => {
                         getOptionLabel={(option) =>
                           typeof option === "string" ? option : option.name
                         }
-                        options={tableData}
+                        options={popupSearchOptions}
                         renderOption={(props, option) => (
                           <ListItem {...props}>
                             <ListItemText primary={option.name} />

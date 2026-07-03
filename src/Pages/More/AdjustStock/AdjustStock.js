@@ -839,7 +839,7 @@ const AdjustStock = () => {
                     )}
                   </div>
 
-                  <div className="w-full">
+                  {/* <div className="w-full">
                     <span className="title primary mb-2">Company</span>
                     <Autocomplete
                       disablePortal
@@ -853,23 +853,8 @@ const AdjustStock = () => {
                         <TextField autoComplete="off" {...params} placeholder="Enter Company Name" />
                       )}
                     />
-                  </div>
-                </div>
+                  </div> */}
 
-                {/* Other fields */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
-                  <div className="w-full">
-                    <span className="title primary mb-2">Adjustment Date</span>
-                    <DatePicker
-                      className="custom-datepicker w-full"
-                      selected={adjustmentDate}
-                      onChange={(newDate) => setAdjustDate(newDate)}
-                      dateFormat="dd/MM/yyyy"
-                      minDate={subDays(new Date(), 15)}
-                      disabled
-                    />
-
-                  </div>
 
                   <div className="w-full">
                     <span className="title primary mb-2"> Batch <span className="text-red-600">*</span></span>
@@ -898,6 +883,66 @@ const AdjustStock = () => {
                         {errors.batch}
                       </span>
                     )}
+                  </div>
+                </div>
+
+                {/* Other fields */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+                  <div className="w-full">
+                    <span className="title primary mb-2">Adjustment Date</span>
+                    <DatePicker
+                      className="custom-datepicker w-full"
+                      selected={adjustmentDate}
+                      onChange={(newDate) => setAdjustDate(newDate)}
+                      dateFormat="dd/MM/yyyy"
+                      minDate={subDays(new Date(), 15)}
+                      disabled
+                    />
+
+                  </div>
+
+                  {/* <div className="w-full">
+                    <span className="title primary mb-2"> Batch <span className="text-red-600">*</span></span>
+                    <Autocomplete
+                      disablePortal
+                      options={batchListData}
+                      size="small"
+                      value={batch || null}
+                      onChange={handleBatchData}
+                      error={!!errors.batch}
+                      getOptionLabel={(option) => option?.batch_number || ""}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      renderInput={(params) => (
+                        <TextField {...params} autoComplete="off" placeholder="Batch"
+                          error={!!errors.batch}
+                          sx={{
+                            "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#d32f2f !important",
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.batch && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors.batch}
+                      </span>
+                    )}
+                  </div> */}
+                  <div className="w-full">
+                    <span className="title primary mb-2">Company</span>
+                    <Autocomplete
+                      disablePortal
+                      options={companyList}
+                      size="small"
+                      value={selectedCompany}
+                      onChange={(e, value) => setSelectedCompany(value)}
+                      getOptionLabel={(option) => option.company_name}
+                      disabled
+                      renderInput={(params) => (
+                        <TextField autoComplete="off" {...params} placeholder="Enter Company Name" />
+                      )}
+                    />
                   </div>
 
                   <div className="w-full">

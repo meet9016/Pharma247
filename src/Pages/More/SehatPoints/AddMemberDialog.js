@@ -365,21 +365,46 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
             maxWidth="md"
             fullWidth
             className="custom-dialog"
+            PaperProps={{
+                sx: {
+                    borderRadius: "16px",
+                    boxShadow: "0 12px 40px rgba(0, 0, 0, 0.12)",
+                    overflow: "hidden",
+                }
+            }}
         >
             {/* HEADER */}
-            <DialogTitle id="alert-dialog-title" className="secondary">
-
-                {customerId ? "Edit Membership" : "Add Membership"}
+            <DialogTitle
+                id="alert-dialog-title"
+                sx={{
+                    background: "linear-gradient(135deg, #3f6212 0%, #4d7c0f 100%) !important",
+                    color: "#ffffff !important",
+                    position: "relative",
+                    py: 2.2,
+                    px: 3,
+                    fontWeight: 600,
+                    fontSize: "1.15rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                }}
+            >
+                <span>{customerId ? "Edit Membership" : "Add Membership"}</span>
                 <IconButton
                     aria-label="close"
                     onClick={() => setAddMember(false)}
-                    className="text-gray-500"
                     sx={{
                         position: "absolute",
                         right: 12,
-                        top: 8,
-                        color: "#ffffff",
-                        padding: "8.5px 12px !important"
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        color: "rgba(255, 255, 255, 0.85)",
+                        padding: "8.5px 12px !important",
+                        "&:hover": {
+                            color: "#ffffff",
+                            backgroundColor: "rgba(255, 255, 255, 0.15)",
+                            transform: "translateY(-50%) scale(1.05)",
+                        }
                     }}
                 >
                     <CloseIcon />
@@ -387,241 +412,134 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
             </DialogTitle>
 
             {/* CONTENT */}
-            <DialogContent sx={{ py: 4 }}>
+            <DialogContent sx={{ p: 3, backgroundColor: "#fafbfa" }}>
                 <div
                     style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                        gap: "24px",
+                        backgroundColor: "#ffffff",
+                        border: "1px solid rgba(98, 138, 47, 0.15)",
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.02)",
+                        padding: "24px",
+                        marginTop: "16px"
                     }}
                 >
-                    <div
-                        className="bg-white rounded-lg mt-4 mb-5 p-4 item_inner_box"
-                        style={{
-                            border: "1px solid #628a2f73",
-                            boxShadow: "rgb(184 202 161 / 7%) 11px 12px 20px"
-                        }}
-                    >
-                        {/* Plan Selection Row */}
-                        <div className="flex justify-between gap-5 my-5">
-                            <div className="flex flex-col w-full">
-                                <label className="label">Select Plan <span className="text-red-600 ">*</span></label>
-                                <Autocomplete
-                                    id="plan-autocomplete"
-                                    options={planList}
-                                    size="small"
-                                    value={planList.find(plan => String(plan.id) === String(formData.planId)) || null}
-                                    onChange={(e, newValue) => handleChange("planId", newValue ? newValue.id : "")}
-                                    getOptionLabel={(option) => option.plan_name ? `${option.plan_name} ₹${option.price}` : ""}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            autoComplete="off"
-                                            {...params}
-                                            placeholder="Select Plan"
-                                            error={!!errors.planId}
-                                        />
-                                    )}
-                                />
-                                {errors.planId && (
-                                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>{errors.planId}</div>
+                    {/* Plan Selection Row */}
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginBottom: "24px" }}>
+                        <div className="flex flex-col w-full">
+                            <label className="label" style={{ fontWeight: 600, marginBottom: "6px", color: "#374151" }}>Select Plan <span className="text-red-600">*</span></label>
+                            <Autocomplete
+                                id="plan-autocomplete"
+                                options={planList}
+                                size="small"
+                                value={planList.find(plan => String(plan.id) === String(formData.planId)) || null}
+                                onChange={(e, newValue) => handleChange("planId", newValue ? newValue.id : "")}
+                                getOptionLabel={(option) => option.plan_name ? `${option.plan_name} ₹${option.price}` : ""}
+                                renderInput={(params) => (
+                                    <TextField
+                                        autoComplete="off"
+                                        {...params}
+                                        placeholder="Select Plan"
+                                        error={!!errors.planId}
+                                    />
                                 )}
-
-
-                            </div>
-
-                            <div className="flex flex-col w-full">
-                                <label className="label">Payment Method <span className="text-red-600 ">*</span></label>
-                                <Autocomplete
-                                    id="payment-method-autocomplete"
-                                    options={paymentTypes}
-                                    size="small"
-                                    value={paymentTypes.find(item => item.type === formData.paymentMethod) || null}
-                                    onChange={(e, newValue) => handleChange("paymentMethod", newValue ? newValue.type : "")}
-                                    getOptionLabel={(option) => option.type || ""}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            autoComplete="off"
-                                            {...params}
-                                            placeholder="Select Payment Method"
-                                            error={!!errors.paymentMethod}
-                                        />
-                                    )}
-                                />
-                                {errors.paymentMethod && (
-                                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>{errors.paymentMethod}</div>
-                                )}
-
-                            </div>
-
-                            <div className="flex flex-col w-full">
-                                <label className="label">Email <span className="text-red-600 ">*</span></label>
-                                <TextField
-                                    size="small"
-                                    type="email"
-                                    value={formData.email}
-                                    placeholder="Email"
-                                    onChange={(e) => handleChange("email", e.target.value)}
-                                    error={!!errors.email}
-                                    // helperText={errors.email}
-                                    sx={{
-                                        "& .MuiOutlinedInput-input": {
-                                            padding: "8.5px 5px !important",
-                                        },
-                                    }}
-                                />
-                                {errors.email && (
-                                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>{errors.email}</div>
-                                )}
-                            </div>
+                            />
+                            {errors.planId && (
+                                <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify" }}>{errors.planId}</div>
+                            )}
                         </div>
 
-                        {/* Dynamic Contact Forms */}
-                        {selectedPlanData && formData.contacts.map((contact, index) => (
-                            <React.Fragment key={index}>
-                                <h3 className="font-semibold text-[16px]">
-                                    Contact {index + 1}
-                                    {index === 0 && (
-                                        <span className="text-red-600"> *</span>
-                                    )}
-                                </h3>
+                        <div className="flex flex-col w-full">
+                            <label className="label" style={{ fontWeight: 600, marginBottom: "6px", color: "#374151" }}>Payment Method <span className="text-red-600">*</span></label>
+                            <Autocomplete
+                                id="payment-method-autocomplete"
+                                options={paymentTypes}
+                                size="small"
+                                value={paymentTypes.find(item => item.type === formData.paymentMethod) || null}
+                                onChange={(e, newValue) => handleChange("paymentMethod", newValue ? newValue.type : "")}
+                                getOptionLabel={(option) => option.type || ""}
+                                renderInput={(params) => (
+                                    <TextField
+                                        autoComplete="off"
+                                        {...params}
+                                        placeholder="Select Payment Method"
+                                        error={!!errors.paymentMethod}
+                                    />
+                                )}
+                            />
+                            {errors.paymentMethod && (
+                                <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify" }}>{errors.paymentMethod}</div>
+                            )}
+                        </div>
 
-                                <div
-                                    className="flex justify-between gap-5 mb-6 border p-4 rounded-md"
-                                    style={{ borderColor: "var(--color2)" }}
-                                >
-                                    <div className="flex flex-col w-full">
-                                        <label className="label">Contact Name    {index === 0 && (
-                                            <span className="text-red-600"> *</span>
-                                        )}</label>
-                                        <TextField
-                                            size="small"
-                                            type="text"
-                                            value={contact.name}
-                                            placeholder="Contact Name"
-                                            error={!!errors.contacts?.[index]?.name}
-                                            helperText={errors.contacts?.[index]?.name}
-                                            disabled={index < disableContacts}
-                                            // onChange={(e) => {
-                                            //     const value = e.target.value;
+                        <div className="flex flex-col w-full">
+                            <label className="label" style={{ fontWeight: 600, marginBottom: "6px", color: "#374151" }}>Email <span className="text-red-600">*</span></label>
+                            <TextField
+                                size="small"
+                                type="email"
+                                value={formData.email}
+                                placeholder="Email"
+                                onChange={(e) => handleChange("email", e.target.value)}
+                                error={!!errors.email}
+                                sx={{
+                                    "& .MuiOutlinedInput-input": {
+                                        padding: "8.5px 12px !important",
+                                    },
+                                }}
+                            />
+                            {errors.email && (
+                                <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify" }}>{errors.email}</div>
+                            )}
+                        </div>
+                    </div>
 
-                                            //     // allow only letters & spaces
-                                            //     if (/^[A-Za-z\s]*$/.test(value)) {
-                                            //         handleContactChange(index, "name", value);
-                                            //     }
-                                            // }}
-                                            onChange={(e) => {
-                                                const value = e.target.value;
+                    {/* Dynamic Contact Forms */}
+                    {selectedPlanData && formData.contacts.map((contact, index) => (
+                        <React.Fragment key={index}>
+                            <h3 style={{ fontWeight: 600, fontSize: "15px", color: "#1f2937", marginBottom: "8px", marginTop: index > 0 ? "20px" : "0px" }}>
+                                Contact {index + 1}
+                                {index === 0 && (
+                                    <span className="text-red-600"> *</span>
+                                )}
+                            </h3>
 
-                                                if (/^[A-Za-z\s]*$/.test(value)) {
-                                                    handleContactChange(index, "name", value);
+                            <div
+                                style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                                    gap: "20px",
+                                    border: "1px solid rgba(98, 138, 47, 0.15)",
+                                    borderLeft: "4px solid #3f6212",
+                                    padding: "20px",
+                                    borderRadius: "10px",
+                                    backgroundColor: "#fafcf8",
+                                    marginBottom: "16px",
+                                    boxShadow: "0 2px 8px rgba(98, 138, 47, 0.02)"
+                                }}
+                            >
+                                <div className="flex flex-col w-full">
+                                    <label className="label" style={{ fontWeight: 500, marginBottom: "6px", color: "#4b5563" }}>
+                                        Contact Name {index === 0 && <span className="text-red-600"> *</span>}
+                                    </label>
+                                    <TextField
+                                        size="small"
+                                        type="text"
+                                        value={contact.name}
+                                        placeholder="Contact Name"
+                                        error={!!errors.contacts?.[index]?.name}
+                                        helperText={errors.contacts?.[index]?.name}
+                                        disabled={index < disableContacts}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
 
-                                                    setErrors((prev) => {
-                                                        const updatedContacts = [...(prev.contacts || [])];
+                                            if (/^[A-Za-z\s]*$/.test(value)) {
+                                                handleContactChange(index, "name", value);
 
-                                                        updatedContacts[index] = {
-                                                            ...updatedContacts[index],
-                                                            name: "",
-                                                        };
-
-                                                        return {
-                                                            ...prev,
-                                                            contacts: updatedContacts,
-                                                        };
-                                                    });
-                                                }
-                                            }}
-                                        />
-
-                                    </div>
-
-                                    <div className="flex flex-col w-full">
-                                        <label className="label">Mobile No    {index === 0 && (
-                                            <span className="text-red-600"> *</span>
-                                        )}</label>
-                                        <TextField
-                                            size="small"
-                                            type="tel"
-                                            value={contact.number}
-                                            placeholder="Mobile Number"
-                                            error={!!errors.contacts?.[index]?.number}
-                                            helperText={errors.contacts?.[index]?.number}
-                                            disabled={index < disableContacts}
-
-                                            // onChange={(e) => {
-                                            //     const value = e.target.value.replace(/\D/g, "");
-                                            //     if (value.length <= 10) {
-                                            //         handleContactChange(index, "number", value);
-                                            //     }
-                                            // }}
-                                            onChange={(e) => {
-                                                const value = e.target.value.replace(/\D/g, "");
-
-                                                if (value.length <= 10) {
-                                                    handleContactChange(index, "number", value);
-
-                                                    setErrors((prev) => {
-                                                        const updatedContacts = [...(prev.contacts || [])];
-
-                                                        updatedContacts[index] = {
-                                                            ...updatedContacts[index],
-                                                            number: "",
-                                                        };
-
-                                                        return {
-                                                            ...prev,
-                                                            contacts: updatedContacts,
-                                                        };
-                                                    });
-                                                }
-                                            }}
-                                            inputProps={{
-                                                maxLength: 10,
-                                                pattern: "[0-9]*"
-                                            }}
-                                        />
-
-                                    </div>
-
-                                    <div className="flex flex-col w-full">
-                                        <label className="label">Relation    {index === 0 && (
-                                            <span className="text-red-600"> *</span>
-                                        )}</label>
-                                        {/* <Select
-                                            size="small"
-                                            value={contact.relation}
-                                            error={!!errors.contacts?.[index]?.relation}
-                                            disabled={index < disableContacts}
-
-                                            onChange={(e) => handleContactChange(index, "relation", e.target.value)}
-                                            displayEmpty
-                                        >
-                                            <MenuItem value="" disabled>Select Relation </MenuItem>
-                                            {relations.map(item => (
-                                                <MenuItem key={item.id} value={item.name}>
-                                                    {item.name}
-                                                </MenuItem>
-                                            ))}
-                                        </Select> */}
-                                        <Autocomplete
-                                            size="small"
-                                            options={relations || []}
-                                            getOptionLabel={(option) => option.name || ""}
-                                            value={
-                                                relations.find((item) => item.name === contact.relation) || null
-                                            }
-                                            disabled={index < disableContacts}
-                                            onChange={(event, newValue) => {
-                                                handleContactChange(
-                                                    index,
-                                                    "relation",
-                                                    newValue ? newValue.name : ""
-                                                );
                                                 setErrors((prev) => {
                                                     const updatedContacts = [...(prev.contacts || [])];
 
                                                     updatedContacts[index] = {
                                                         ...updatedContacts[index],
-                                                        relation: "",
+                                                        name: "",
                                                     };
 
                                                     return {
@@ -629,32 +547,137 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                                         contacts: updatedContacts,
                                                     };
                                                 });
-                                            }}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    placeholder="Select Relation"
-                                                    error={!!errors.contacts?.[index]?.relation}
-                                                    helperText={errors.contacts?.[index]?.relation}
-                                                />
-                                            )}
-                                        />
-                                    </div>
+                                            }
+                                        }}
+                                    />
                                 </div>
-                            </React.Fragment>
-                        ))}
-                        <div className="flex justify-end mt-4">
-                            <Button
-                                variant="contained"
-                                sx={{ backgroundColor: "#3f6212" }}
-                                onClick={handleSubmit}
-                            >
-                                Submit
-                            </Button>
-                        </div>
-                    </div>
-                    {/* Submit Button */}
 
+                                <div className="flex flex-col w-full">
+                                    <label className="label" style={{ fontWeight: 500, marginBottom: "6px", color: "#4b5563" }}>
+                                        Mobile No {index === 0 && <span className="text-red-600"> *</span>}
+                                    </label>
+                                    <TextField
+                                        size="small"
+                                        type="tel"
+                                        value={contact.number}
+                                        placeholder="Mobile Number"
+                                        error={!!errors.contacts?.[index]?.number}
+                                        helperText={errors.contacts?.[index]?.number}
+                                        disabled={index < disableContacts}
+                                        onChange={(e) => {
+                                            const value = e.target.value.replace(/\D/g, "");
+
+                                            if (value.length <= 10) {
+                                                handleContactChange(index, "number", value);
+
+                                                setErrors((prev) => {
+                                                    const updatedContacts = [...(prev.contacts || [])];
+
+                                                    updatedContacts[index] = {
+                                                        ...updatedContacts[index],
+                                                        number: "",
+                                                    };
+
+                                                    return {
+                                                        ...prev,
+                                                        contacts: updatedContacts,
+                                                    };
+                                                });
+                                            }
+                                        }}
+                                        inputProps={{
+                                            maxLength: 10,
+                                            pattern: "[0-9]*"
+                                        }}
+                                    />
+                                </div>
+
+                                <div className="flex flex-col w-full">
+                                    <label className="label" style={{ fontWeight: 500, marginBottom: "6px", color: "#4b5563" }}>
+                                        Relation {index === 0 && <span className="text-red-600"> *</span>}
+                                    </label>
+                                    <Autocomplete
+                                        size="small"
+                                        options={relations || []}
+                                        getOptionLabel={(option) => option.name || ""}
+                                        value={
+                                            relations.find((item) => item.name === contact.relation) || null
+                                        }
+                                        disabled={index < disableContacts}
+                                        onChange={(event, newValue) => {
+                                            handleContactChange(
+                                                index,
+                                                "relation",
+                                                newValue ? newValue.name : ""
+                                            );
+                                            setErrors((prev) => {
+                                                const updatedContacts = [...(prev.contacts || [])];
+
+                                                updatedContacts[index] = {
+                                                    ...updatedContacts[index],
+                                                    relation: "",
+                                                };
+
+                                                return {
+                                                    ...prev,
+                                                    contacts: updatedContacts,
+                                                };
+                                            });
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                placeholder="Select Relation"
+                                                error={!!errors.contacts?.[index]?.relation}
+                                                helperText={errors.contacts?.[index]?.relation}
+                                            />
+                                        )}
+                                    />
+                                </div>
+                            </div>
+                        </React.Fragment>
+                    ))}
+
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setAddMember(false)}
+                            sx={{
+                                borderColor: "#cbd5e1",
+                                color: "#475569",
+                                borderRadius: "8px",
+                                px: 4,
+                                py: 1,
+                                textTransform: "none",
+                                fontWeight: 500,
+                                "&:hover": {
+                                    borderColor: "#94a3b8",
+                                    backgroundColor: "#f8fafc"
+                                }
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            sx={{
+                                backgroundColor: "#3f6212",
+                                borderRadius: "8px",
+                                px: 4,
+                                py: 1,
+                                textTransform: "none",
+                                fontWeight: 600,
+                                boxShadow: "0 4px 12px rgba(63, 98, 18, 0.15)",
+                                "&:hover": {
+                                    backgroundColor: "#314d0e",
+                                    boxShadow: "0 6px 16px rgba(63, 98, 18, 0.25)",
+                                }
+                            }}
+                            onClick={handleSubmit}
+                        >
+                            Submit
+                        </Button>
+                    </div>
                 </div>
             </DialogContent>
         </Dialog>

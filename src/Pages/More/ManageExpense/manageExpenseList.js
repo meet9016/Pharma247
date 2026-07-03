@@ -337,7 +337,7 @@ const ManageExpense = () => {
     }
   };
 
-  const  handleAddExpense = async () => {
+  const handleAddExpense = async () => {
     if (validateForm()) {
       // Proceed with saving the expense
       let data = new FormData();
@@ -498,7 +498,7 @@ const ManageExpense = () => {
                     >
                       {" "}
                       <AddIcon className="" />
-                      Add
+                      Add  Expense
                     </Button>
                     <Button
                       variant="contained"

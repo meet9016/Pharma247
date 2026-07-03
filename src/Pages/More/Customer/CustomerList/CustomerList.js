@@ -9,6 +9,7 @@ import {
   InputAdornment,
   OutlinedInput,
   TextField,
+  Autocomplete,
 } from "@mui/material";
 import {
   Dialog,
@@ -60,6 +61,31 @@ const CustomerList = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [header, setHeader] = useState("");
   const [customerID, setCustomerID] = useState(null);
+  const [popupSearchOptions, setPopupSearchOptions] = useState([]);
+
+  const searchCustomersForPopup = async (query) => {
+    if (!query) {
+      setPopupSearchOptions([]);
+      return;
+    }
+    let data = new FormData();
+    data.append("page", 1);
+    data.append("iss_value", "search");
+    data.append("customer_name", query);
+
+    try {
+      const response = await axios.post("list-customer?", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.data && response.data.data) {
+        setPopupSearchOptions(response.data.data);
+      } else {
+        setPopupSearchOptions([]);
+      }
+    } catch (error) {
+      console.error("Popup search API error:", error);
+    }
+  };
   const permissions = usePermissions();
   const [chipState, setChipState] = useState({
     variant: "default",
@@ -198,6 +224,9 @@ const CustomerList = () => {
     setCity("");
     setState("");
     setErrors({});
+    setPopupSearchOptions([]);
+    setCustomerID(null);
+    setIsEditMode(false);
     setOpenAddPopUp(false);
   };
 
@@ -661,7 +690,7 @@ const CustomerList = () => {
                 className="gap-2"
                 onClick={handelAddOpen}
               >
-                <AddIcon /> Add
+                <AddIcon /> Add Customer
               </Button>
             )}
             {hasPermission(permissions, "customer download") && (
@@ -1074,18 +1103,20 @@ const CustomerList = () => {
                       </span>
                       <span className="text-red-600 ml-1">*</span>
                     </div>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-multiline-static"
-                      size="small"
-                      type="name"
+                    <Autocomplete
+                      freeSolo
+                      id="customer-autocomplete"
+                      options={popupSearchOptions}
+                      getOptionLabel={(option) => {
+                        if (typeof option === "string") return option;
+                        return option.name || "";
+                      }}
                       value={customer}
-                      placeholder="Customer Name"
-                      onChange={(e) => {
-                        const cst =
-                          e.target.value.charAt(0).toUpperCase() +
-                          e.target.value.slice(1).toLowerCase();
-                        setCustomer(cst);
+                      onInputChange={(event, newInputValue) => {
+                        const formattedVal =
+                          newInputValue.charAt(0).toUpperCase() +
+                          newInputValue.slice(1).toLowerCase();
+                        setCustomer(formattedVal);
 
                         if (errors.customer) {
                           setErrors((prev) => ({
@@ -1093,23 +1124,61 @@ const CustomerList = () => {
                             customer: "",
                           }));
                         }
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.customer
-                              ? "#d32f2f"
-                              : "rgba(0, 0, 0, 0.23)",
-                          },
-                          "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#d32f2f !important",
-                          },
-                        },
-                      }}
-                      error={!!errors.customer}
 
-                      style={{ width: "100%" }}
-                      variant="outlined"
+                        searchCustomersForPopup(formattedVal);
+                      }}
+                      onChange={(event, newValue) => {
+                        if (newValue && typeof newValue === "object") {
+                          setCustomerID(newValue.id);
+                          setIsEditMode(true);
+                          setHeader("Edit Customer");
+                          setButtonLabel("Update");
+                          setCustomer(newValue.name || "");
+                          setMobileNo(newValue.phone_number || "");
+                          setEmailId(newValue.email || "");
+                          setAmount(newValue.balance || 0);
+                          setArea(newValue.area || "");
+                          setCity(newValue.city || "");
+                          setState(newValue.state || "");
+                          setAddress(newValue.address || "");
+                        } else if (!newValue) {
+                          setCustomerID(null);
+                          setIsEditMode(false);
+                          setHeader("Add Customer");
+                          setButtonLabel("Save");
+                          setCustomer("");
+                          setMobileNo("");
+                          setEmailId("");
+                          setAmount(0);
+                          setArea("");
+                          setCity("");
+                          setState("");
+                          setAddress("");
+                        }
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          autoComplete="off"
+                          size="small"
+                          placeholder="Customer Name"
+                          error={!!errors.customer}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: errors.customer
+                                  ? "#d32f2f"
+                                  : "rgba(0, 0, 0, 0.23)",
+                              },
+                              "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#d32f2f !important",
+                              },
+                            },
+                          }}
+                          style={{ width: "100%" }}
+                          variant="outlined"
+                        />
+                      )}
                     />
                     {errors.customer && (
                       <span style={{ color: "red", fontSize: "12px" }}>

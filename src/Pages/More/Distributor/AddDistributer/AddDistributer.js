@@ -110,6 +110,24 @@ const AddDistributer = () => {
         });
     }
   };
+
+  const clearDistributorFields = () => {
+    setDistributorId("");
+    setGSTNumber("");
+    setMobileno("");
+    setEmail("");
+    setWhatsapp("");
+    setAddress("");
+    setArea("");
+    setPincode("");
+    setState("");
+    setBankName("");
+    setAccountNo("");
+    setIfsc("");
+    setFoodLicence("");
+    setDurgLicence("");
+    setDueDays("");
+  };
   /*<================================================================================ form submit  =======================================================================> */
 
   const handleSubmit = () => {
@@ -157,7 +175,24 @@ const AddDistributer = () => {
     return () => {
       window.removeEventListener("keydown", handleShortcut);
     };
-  }, [GSTNumber, distributorName, mobileno]); // dependencies add karna zaroori hai
+  }, [
+    GSTNumber,
+    distributorName,
+    mobileno,
+    email,
+    whatsapp,
+    state,
+    address,
+    area,
+    pincode,
+    bankName,
+    accountNo,
+    ifsc,
+    foodLicence,
+    durgLicence,
+    dueDays,
+    distributorId
+  ]); // dependencies add karna zaroori hai
 
 
 
@@ -179,12 +214,11 @@ const AddDistributer = () => {
     data.append("food_licence_no", foodLicence);
     data.append("distributor_durg_distributor", durgLicence);
     data.append("payment_due_days", dueDays);
+    data.append("distributor_name", distributorName);
     if (distributorId) {
       data.append("distributor_id", distributorId);
-      data.append("distributor_name", "");
     } else {
       data.append("distributor_id", "");
-      data.append("distributor_name", distributorName);
     }
 
 
@@ -350,67 +384,73 @@ const AddDistributer = () => {
                   </label>
                   <Autocomplete
                     freeSolo
-                    options={Array.from(new Set(distributorList.map(d => (d.distributor_name || d.name || "").toUpperCase().trim()).filter(Boolean)))}
-                    inputValue={distributorName}
-                    onInputChange={(event, newInputValue) => {
-                      // Allow only alphabets and spaces
+                    options={distributorList}
+                    getOptionLabel={(option) => {
+                      if (typeof option === "string") return option;
+                      return (option.distributor_name || option.name || "").toUpperCase().trim();
+                    }}
+                    value={distributorName}
+                    onInputChange={(event, newInputValue, reason) => {
                       const filteredValue = newInputValue.replace(/[^A-Z\s]/gi, "").toUpperCase();
                       setDistributorName(filteredValue);
                       setError((prev) => ({
                         ...prev,
                         distributorName: "",
                       }));
-                      const found = distributorList.find(
-                        (option) => (option.distributor_name || option.name || "").toUpperCase().trim() === filteredValue.trim()
-                      );
-                      if (found) {
-                        setDistributorId(found.id || "");
-                        setGSTNumber(found.gst || "");
-                        setMobileno(found.phone_number || "");
-                        setAddress(found.address || "");
-                        setArea(found.area || "");
-                        setPincode(found.pincode || "");
-                        setState(found.state || "");
-                      } else {
-                        setDistributorId("");
-                        if (!newInputValue) {
-                          setGSTNumber("");
-                          setMobileno("");
-                          setAddress("");
-                          setArea("");
-                          setPincode("");
-                          setState("");
+
+                      if (reason === "input") {
+                        if (filteredValue) {
+                          listDistributor({ search: filteredValue });
                         }
-                      }
-                      if (!found && filteredValue) {
-                        listDistributor({ search: filteredValue });
+                      } else if (reason === "clear") {
+                        clearDistributorFields();
                       }
                     }}
                     onChange={(event, selectedValue) => {
-                      if (selectedValue) {
-                        const valString = String(selectedValue).toUpperCase().trim();
+                      if (selectedValue && typeof selectedValue === "object") {
+                        setDistributorName((selectedValue.distributor_name || selectedValue.name || "").toUpperCase().trim());
+                        setDistributorId(selectedValue.id || "");
+                        setGSTNumber(selectedValue.gst || "");
+                        setMobileno(selectedValue.phone_number || "");
+                        setEmail(selectedValue.email || "");
+                        setWhatsapp(selectedValue.whatsapp_number || "");
+                        setAddress(selectedValue.address || "");
+                        setArea(selectedValue.area || "");
+                        setPincode(selectedValue.pincode || "");
+                        setState(selectedValue.state || "");
+                        setBankName(selectedValue.bank_name || "");
+                        setAccountNo(selectedValue.account_no || "");
+                        setIfsc(selectedValue.ifsc_code || "");
+                        setFoodLicence(selectedValue.food_licence_number || "");
+                        setDurgLicence(selectedValue.distributer_drug_licence_no || "");
+                        setDueDays(selectedValue.payment_drug_days || "");
+                      } else if (selectedValue && typeof selectedValue === "string") {
+                        const valString = selectedValue.toUpperCase().trim();
                         const found = distributorList.find(
                           (option) => (option.distributor_name || option.name || "").toUpperCase().trim() === valString
                         );
                         if (found) {
                           setDistributorName((found.distributor_name || found.name || "").toUpperCase().trim());
+                          setDistributorId(found.id || "");
                           setGSTNumber(found.gst || "");
                           setMobileno(found.phone_number || "");
+                          setEmail(found.email || "");
+                          setWhatsapp(found.whatsapp_number || "");
                           setAddress(found.address || "");
                           setArea(found.area || "");
                           setPincode(found.pincode || "");
                           setState(found.state || "");
-                          setDistributorId(found.id || "");
+                          setBankName(found.bank_name || "");
+                          setAccountNo(found.account_no || "");
+                          setIfsc(found.ifsc_code || "");
+                          setFoodLicence(found.food_licence_number || "");
+                          setDurgLicence(found.distributer_drug_licence_no || "");
+                          setDueDays(found.payment_drug_days || "");
+                        } else {
+                          setDistributorId("");
                         }
                       } else {
-                        setDistributorId("");
-                        setDistributorName("");
-                        setGSTNumber("");
-                        setMobileno("");
-                        setAddress("");
-                        setArea("");
-                        setPincode("");
-                        setState("");
+                        clearDistributorFields();
                       }
                     }}
                     renderInput={(params) => (

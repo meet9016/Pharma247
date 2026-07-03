@@ -84,6 +84,7 @@ const DistributerList = () => {
   const excelIcon = process.env.PUBLIC_URL + "/excel.png";
   const [openUpload, setOpenUpload] = useState(false);
   const [file, setFile] = useState(null);
+  const [fileError, setFileError] = useState("");
   const [switchCheck, setSwitchChecked] = useState(false);
 
   const searchKeys = ["search_name", "search_email", "search_gst", "search_phone_number"];
@@ -94,6 +95,7 @@ const DistributerList = () => {
   const [isSearching, setIsSearching] = useState(false);
   const searchTimeout = useRef(null);
   const currentSearchTerms = useRef(searchTerms);
+
 
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
   useEffect(() => {
@@ -147,6 +149,7 @@ const DistributerList = () => {
   const resetAddDialog = () => {
     setOpenEdit(false);
   };
+
 
   const handleEditOpen = (row) => {
     setHeader("Edit Distributor");
@@ -280,18 +283,36 @@ const DistributerList = () => {
     }
   };
 
+  // const handleFileChange = (e) => {
+  //   const selectedFile = e.target.files[0];
+  //   if (selectedFile) {
+  //     const fileType = selectedFile.type;
+  //     if (fileType === "text/csv") {
+  //       setFile(selectedFile);
+  //     } else {
+  //       toast.dismiss();
+  //       toast.error("Please select an Excel or CSV file.");
+  //     }
+  //   }
+  // };
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      const fileType = selectedFile.type;
-      if (fileType === "text/csv") {
-        setFile(selectedFile);
-      } else {
-        toast.dismiss();
-        toast.error("Please select an Excel or CSV file.");
-      }
+
+    if (!selectedFile) {
+      setFile(null);
+      return;
+    }
+
+    if (selectedFile.name.toLowerCase().endsWith(".csv")) {
+      setFile(selectedFile);
+      setFileError("");
+    } else {
+      setFile(null);
+      setFileError("Please select only CSV file.");
     }
   };
+
 
   const handleDownload = () => {
     const link = document.createElement("a");
@@ -303,6 +324,10 @@ const DistributerList = () => {
   };
 
   const uploadDistributorFile = async () => {
+    if (!file) {
+      setFileError("Please select CSV file.");
+      return;
+    }
     let data = new FormData();
     data.append("file", file);
     try {
@@ -315,6 +340,8 @@ const DistributerList = () => {
         .then((response) => {
           DistList(currentPage);
           setOpenUpload(false);
+          setFile(null);
+          setFileError("");
           toast.dismiss();
           toast.success(response.data.message);
         });
@@ -443,6 +470,8 @@ const DistributerList = () => {
 
   const openFilePopUP = () => {
     setOpenUpload(true);
+    setFile(null);
+    setFileError("");
   };
   const handlePrevious = () => {
     if (currentPage > 1) {
@@ -475,6 +504,9 @@ const DistributerList = () => {
   };
   useSubmitShortcut(editDistributor, openEdit);
   useSubmitShortcut(uploadDistributorFile, openUpload);
+
+
+
 
   return (
     <>
@@ -670,7 +702,7 @@ const DistributerList = () => {
 
                               {columns.map((column, colIndex) => {
                                 let value = row[column.id];
-                    
+
                                 if (!value || value === "") {
                                   value = "-";
                                 }
@@ -1156,75 +1188,206 @@ const DistributerList = () => {
           </Dialog>
           {/*<====================================================================== upload import distributor  =====================================================================> */}
 
-          <Dialog open={openUpload} className="custom-dialog">
-            <DialogTitle id="alert-dialog-title " className="primary">
-              Import Distributor
-            </DialogTitle>
-            <Alert severity="warning" className="">
-              <AlertTitle>Warning</AlertTitle>
-              Please Make Sure Repeated Email ID record is not accepted.
-            </Alert>
-            <div className="px-6 ">
-            </div>
-            <IconButton
-              aria-label="close"
-              onClick={() => setOpenUpload(false)}
+          <Dialog
+            open={openUpload}
+            className="custom-dialog"
+            PaperProps={{
+              sx: {
+                borderRadius: "16px",
+                boxShadow: "0 12px 40px rgba(0, 0, 0, 0.12)",
+                border: "1px solid rgba(0, 0, 0, 0.05)",
+                overflow: "hidden",
+                maxWidth: "480px",
+                width: "100%",
+                marginTop: "12px"
+              }
+            }}
+          >
+            <DialogTitle
+              id="alert-dialog-title"
               sx={{
-                position: "absolute",
-                right: 8,
-                top: 8,
-                color: "#ffffff",
+                background: "#3F6212",
+                color: "#ffffff !important",
+                position: "relative",
+                py: 2.2,
+                px: 3,
+                fontWeight: 600,
+                fontSize: "1.15rem",
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                boxShadow: "0 4px 12px rgba(63, 98, 18, 0.1)"
               }}
             >
-              <CloseIcon />
-            </IconButton>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                <div className="primary">Item File Upload</div>
+              <CloudUploadIcon sx={{ fontSize: 24 }} />
+              <span>Import Distributor</span>
+              <IconButton
+                aria-label="close"
+                onClick={() => {
+                  setOpenUpload(false);
+                  setFile(null);
+                  setFileError("");
+                }}
+                sx={{
+                  position: "absolute",
+                  right: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "rgba(255, 255, 255, 0.85)",
+                  padding: "8px !important",
+                  "&:hover": {
+                    color: "#ffffff",
+                    backgroundColor: "rgba(255, 255, 255, 0.15)",
+                    transform: "translateY(-50%) scale(1.05)",
+                  }
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </DialogTitle>
+
+            <DialogContent sx={{ p: 3, backgroundColor: "#fafbfa", }}>
+              <Alert
+                severity="warning"
+                sx={{
+                  borderRadius: "10px",
+                  mb: 3,
+                  marginTop: "12px",
+                  border: "1px solid #ffeeba",
+                  backgroundColor: "#fffdf5",
+                  "& .MuiAlert-icon": {
+                    color: "#ffc107"
+                  }
+                }}
+              >
+                <AlertTitle sx={{ fontWeight: 600 }}>Important Note</AlertTitle>
+                Please make sure repeated Email ID records are not accepted.
+              </Alert>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                {/* Upload Area */}
                 <div
                   style={{
+                    border: "2px dashed #cbd5e1",
+                    borderRadius: "12px",
+                    padding: "24px",
+                    textAlign: "center",
+                    backgroundColor: file ? "#f8fafc" : "#ffffff",
+                    borderColor: file ? "var(--COLOR_UI_PHARMACY, #3f6212)" : "#cbd5e1",
+                    transition: "all 0.2s ease-in-out",
+                    position: "relative",
+                    cursor: "pointer",
                     display: "flex",
-                    gap: "15px",
                     flexDirection: "column",
+                    alignItems: "center",
+                    gap: "10px"
                   }}
+                  onClick={() => document.getElementById("file-upload").click()}
                 >
-                  <div className="mt-2">
-                    <input
-                      className="File-upload"
-                      type="file"
-                      accept=".csv"
-                      id="file-upload"
-                      onChange={handleFileChange}
-                    />
-                    <span className="errorFile" style={{ fontSize: "small" }}>
-                      *select only .csv File
-                    </span>
-                  </div>
-                  <div className="mt-2">
-                    <Button
-                      onClick={handleDownload}
-                      style={{
-                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                        color: "white",
-                      }}
-                    >
-                      <CloudDownloadIcon className="mr-2" />
-                      Download Sample File
-                    </Button>
-                  </div>
+                  <input
+                    type="file"
+                    accept=".csv"
+                    id="file-upload"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                  />
+                  <CloudUploadIcon sx={{ fontSize: 44, color: file ? "var(--COLOR_UI_PHARMACY, #3f6212)" : "#94a3b8" }} />
+                  {file ? (
+                    <div>
+                      <div style={{ fontWeight: 600, color: "#1e293b", fontSize: "14px", wordBreak: "break-all" }}>
+                        {file.name}
+                      </div>
+                      <div style={{ fontSize: "12px", color: "#64748b", marginTop: "2px" }}>
+                        {(file.size / 1024).toFixed(2)} KB
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div style={{ fontWeight: 500, color: "#475569", fontSize: "14px" }}>
+                        Click to select CSV File
+                      </div>
+                      <div style={{ fontSize: "12px", color: "#94a3b8", marginTop: "2px" }}>
+                        *Select only .csv format files
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </DialogContentText>
+
+                {fileError && (
+                  <div style={{ color: "#e53e3e", fontSize: "12.5px", fontWeight: 500, textAlign: "center" }}>
+                    {fileError}
+                  </div>
+                )}
+
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <Button
+                    variant="outlined"
+                    onClick={handleDownload}
+                    sx={{
+                      borderColor: "#cbd5e1",
+                      color: "#475569",
+                      borderRadius: "8px",
+                      px: 3,
+                      py: 0.8,
+                      textTransform: "none",
+                      fontWeight: 500,
+                      fontSize: "13px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      "&:hover": {
+                        borderColor: "#94a3b8",
+                        backgroundColor: "#f8fafc !important"
+                      }
+                    }}
+                  >
+                    <CloudDownloadIcon sx={{ fontSize: 18 }} />
+                    Download Sample File
+                  </Button>
+                </div>
+              </div>
             </DialogContent>
-            <DialogActions style={{ padding: "20px 24px" }}>
+
+            <DialogActions sx={{ px: 3, pb: 3, pt: 1, backgroundColor: "#fafbfa", display: "flex", gap: "12px" }}>
               <Button
-                autoFocus
-                style={{
-                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                  color: "white",
-                  width: "100%",
+                variant="outlined"
+                onClick={() => {
+                  setOpenUpload(false);
+                  setFile(null);
+                  setFileError("");
                 }}
+                sx={{
+                  flex: 1,
+                  borderColor: "#cbd5e1",
+                  color: "#475569",
+                  borderRadius: "8px",
+                  py: 1,
+                  textTransform: "none",
+                  fontWeight: 500,
+                  "&:hover": {
+                    borderColor: "#94a3b8",
+                    backgroundColor: "#f8fafc"
+                  }
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
                 variant="contained"
                 onClick={uploadDistributorFile}
+                sx={{
+                  flex: 2,
+                  backgroundColor: "var(--COLOR_UI_PHARMACY, #3f6212)",
+                  borderRadius: "8px",
+                  py: 1,
+                  textTransform: "none",
+                  fontWeight: 600,
+                  boxShadow: "0 4px 12px rgba(63, 98, 18, 0.15)",
+                  "&:hover": {
+                    backgroundColor: "#314d0e",
+                    boxShadow: "0 6px 16px rgba(63, 98, 18, 0.25)",
+                  }
+                }}
               >
                 Save
               </Button>
