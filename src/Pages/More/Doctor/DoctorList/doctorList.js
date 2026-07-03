@@ -2,7 +2,6 @@ import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 import Header from "../../../Header";
 import Loader from "../../../../componets/loader/Loader";
 import React, { useEffect, useState, useRef } from "react";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { BsLightbulbFill } from "react-icons/bs";
 import {
   Alert,
@@ -44,7 +43,7 @@ import usePermissions, {
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 
 const DoctorList = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [openUpload, setOpenUpload] = useState(false);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [doctor, setDoctor] = useState(null);
@@ -56,6 +55,7 @@ const DoctorList = () => {
   const [emailId, setEmailId] = useState("");
   const [defaultDr, setDefaultDr] = useState("");
   const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [selectedDoctorId, setSelectedDoctorId] = useState("");
 
   const history = useHistory();
   const rowsPerPage = 10;
@@ -81,8 +81,12 @@ const DoctorList = () => {
   const initialSearchTerms = columns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
   const currentSearchTerms = useRef(searchTerms);
+  const lastSearchTerms = useRef(initialSearchTerms);
+  const debounceTimeout = useRef(null);
 
   const [tableData, setTableData] = useState([]);
+  console.log(tableData, "qq");
+
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
   const [totalRecords, setTotalRecords] = useState(0);
@@ -128,6 +132,7 @@ const DoctorList = () => {
 
   const resetAddDialog = () => {
     setDoctor("");
+    setSelectedDoctorId("");
     setMobileNo("");
     setEmailId("");
     setAddress("");
@@ -146,6 +151,7 @@ const DoctorList = () => {
     setButtonLabel("Update");
     setDoctorId(row.id);
     setDoctor(row.name);
+    setSelectedDoctorId(row.id);
     setEmailId(row.email);
     setMobileNo(row.phone_number);
     setLicence(row.license);
@@ -242,7 +248,7 @@ const DoctorList = () => {
 
   const AddDoctorRecord = async () => {
     let data = new FormData();
-    data.append("name", doctor);
+    data.append("name", selectedDoctorId || doctor);
     data.append("email", emailId);
     data.append("mobile", mobileNo);
     data.append("license", licence);
@@ -260,6 +266,7 @@ const DoctorList = () => {
           ListOfDoctor();
           setOpenAddPopUp(false);
           setDoctor("");
+          setSelectedDoctorId("");
           setEmailId("");
           setMobileNo("");
           setLicence("");
@@ -289,7 +296,7 @@ const DoctorList = () => {
   const EditDoctorRecord = async () => {
     let data = new FormData();
     data.append("id", doctorId);
-    data.append("name", doctor);
+    data.append("name", selectedDoctorId || doctor);
     data.append("email", emailId);
     data.append("mobile", mobileNo);
     data.append("license", licence);
@@ -308,6 +315,7 @@ const DoctorList = () => {
           ListOfDoctor();
           setOpenAddPopUp(false);
           setDoctor("");
+          setSelectedDoctorId("");
           setEmailId("");
           setMobileNo("");
           setLicence("");
@@ -338,8 +346,10 @@ const DoctorList = () => {
   const handleOptionChange = (event, newValue) => {
     if (newValue && typeof newValue === "object") {
       setDoctor(newValue.name);
+      setSelectedDoctorId(newValue.id);
     } else {
       setDoctor(newValue);
+      setSelectedDoctorId("");
     }
 
     setErrors((prev) => ({
@@ -349,6 +359,7 @@ const DoctorList = () => {
   };
   const handleInputChange = (event, newInputValue) => {
     setDoctor(newInputValue);
+    setSelectedDoctorId("");
     setErrors((prev) => ({
       ...prev,
       Doctor: "",
@@ -419,13 +430,37 @@ const DoctorList = () => {
     setSearchTerms(newSearchTerms);
     currentSearchTerms.current = newSearchTerms;
     setCurrentPage(1);        // reset to first page when search changes
-    ListOfDoctor(1, newSearchTerms); // pass the new search terms
   };
 
 
   useEffect(() => {
-    ListOfDoctor(currentPage, searchTerms);
-  }, [currentPage]);
+    const searchTermsChanged = searchTerms.some((term, i) => term !== lastSearchTerms.current[i]);
+
+    if (searchTermsChanged) {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+
+      const hasSearchTerms = searchTerms.some(term => term && term.trim());
+      if (!hasSearchTerms) {
+        lastSearchTerms.current = searchTerms;
+        ListOfDoctor(currentPage, searchTerms);
+      } else {
+        debounceTimeout.current = setTimeout(() => {
+          lastSearchTerms.current = searchTerms;
+          ListOfDoctor(currentPage, searchTerms);
+        }, 500);
+      }
+    } else {
+      ListOfDoctor(currentPage, searchTerms);
+    }
+
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, [currentPage, searchTerms]);
 
 
   const convertToCSV = (data) => {
@@ -462,6 +497,8 @@ const DoctorList = () => {
           },
         })
         .then((response) => {
+          console.log(response.data.data, "aaa");
+
           setTableData(response.data.data);
           setTotalRecords(response.data.total_records); // <-- Like in DistributerList
 
@@ -477,7 +514,7 @@ const DoctorList = () => {
       }
     } finally {
       setIsSearchLoading(false);
-
+      setIsLoading(false);
     }
   };
 
@@ -684,123 +721,131 @@ const DoctorList = () => {
                         <th>Action</th>
                       </tr>
                     </thead>
-                    {isSearchLoading ? (
-                      <div className="loader-container ">
-                        <Loader />
-                      </div>
-                    ) : (
-                      <tbody style={{ backgroundColor: "#3f621217" }}>
-                        {tableData.length === 0 ? (
-                          <tr>
-                            <td
-                              colSpan={columns.length + 2}
-                              style={{
-                                textAlign: "center",
-                                color: "gray",
-                                borderRadius: "10px 10px 10px 10px",
-                              }}
+                    <tbody style={{ backgroundColor: "#3f621217" }}>
+                      {isSearchLoading ? (
+                        <tr>
+                          <td
+                            colSpan={columns.length + 2}
+                            style={{
+                              textAlign: "center",
+                              padding: "40px",
+                            }}
+                          >
+                            <div className="flex justify-center items-center w-full">
+                              <Loader />
+                            </div>
+                          </td>
+                        </tr>
+                      ) : tableData.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={columns.length + 2}
+                            style={{
+                              textAlign: "center",
+                              color: "gray",
+                              borderRadius: "10px 10px 10px 10px",
+                            }}
+                          >
+                            No data found
+                          </td>
+                        </tr>
+                      ) : (
+                        tableData.map((row, index) => {
+                          return (
+                            <tr
+                              hover
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={row.code}
                             >
-                              No data found
-                            </td>
-                          </tr>
-                        ) : (
-                          tableData.map((row, index) => {
-                            return (
-                              <tr
-                                hover
-                                role="checkbox"
-                                tabIndex={-1}
-                                key={row.code}
-                              >
-                                <td style={{ borderRadius: "10px 0 0 10px" }}>
-                                  {startIndex + index}
-                                </td>
-                                {columns.map((column) => {
-                                  let value = row[column.id];
+                              <td style={{ borderRadius: "10px 0 0 10px" }}>
+                                {startIndex + index}
+                              </td>
+                              {columns.map((column) => {
+                                let value = row[column.id];
 
-                                  // Show '-' if value is null, undefined, or empty string
-                                  if (!value && value !== 0) {
-                                    value = "-";
+                                // Show '-' if value is null, undefined, or empty string
+                                if (!value && value !== 0) {
+                                  value = "-";
+                                }
+
+                                if (column.id === "email") {
+                                  if (
+                                    value &&
+                                    value[0] !== value[0].toLowerCase()
+                                  ) {
+                                    value = value.toLowerCase();
                                   }
+                                }
 
-                                  if (column.id === "email") {
-                                    if (
-                                      value &&
-                                      value[0] !== value[0].toLowerCase()
-                                    ) {
-                                      value = value.toLowerCase();
-                                    }
-                                  }
-
-                                  if (column.id === "name") {
-                                    return (
-                                      <td
-                                        key={column.id}
-                                        align={column.align}
-                                        onClick={() => history.push(`/doctor/${row.id}`)}
-                                      >
-                                        <div className="flex items-center gap-2">
-                                          <span>{value}</span>
-                                          {row.default_doctor === "1" && (
-                                            <span className="cursor-pointer text-xs text-white bg-[var(--color2)] px-2 py-1 rounded-2xl">
-                                              default
-                                            </span>
-                                          )}
-                                        </div>
-                                      </td>
-                                    );
-                                  }
-
-
+                                if (column.id === "name") {
                                   return (
                                     <td
                                       key={column.id}
                                       align={column.align}
-                                      onClick={() => {
-                                        history.push(`/doctor/${row.id}`);
-                                      }}
-                                      style={
-                                        column.id === "email"
-                                          ? { textTransform: "none" }
-                                          : {}
-                                      }
+                                      onClick={() => history.push(`/doctor/${row.id}`)}
                                     >
-                                      {column.format && typeof value === "number"
-                                        ? column.format(value)
-                                        : value}
+                                      <div className="flex items-center gap-2">
+                                        <span>{value}</span>
+                                        {row.default_doctor === "1" && (
+                                          <span className="cursor-pointer text-xs text-white bg-[var(--color2)] px-2 py-1 rounded-2xl">
+                                            default
+                                          </span>
+                                        )}
+                                      </div>
                                     </td>
                                   );
-                                })}
-                                <td style={{ borderRadius: "0 10px 10px 0" }}>
-                                  <div
-                                    style={{
-                                      fontSize: "15px",
-                                      display: "flex",
-                                      gap: "5px",
-                                      color: "gray",
-                                      cursor: "pointer",
+                                }
+
+
+                                return (
+                                  <td
+                                    key={column.id}
+                                    align={column.align}
+                                    onClick={() => {
+                                      history.push(`/doctor/${row.id}`);
                                     }}
+                                    style={
+                                      column.id === "email"
+                                        ? { textTransform: "none" }
+                                        : {}
+                                    }
                                   >
-                                    <VisibilityIcon
+                                    {column.format && typeof value === "number"
+                                      ? column.format(value)
+                                      : value}
+                                  </td>
+                                );
+                              })}
+                              <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                <div
+                                  style={{
+                                    fontSize: "15px",
+                                    display: "flex",
+                                    gap: "5px",
+                                    color: "gray",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <VisibilityIcon
+                                    style={{ color: "var(--color1)" }}
+                                    onClick={() => {
+                                      history.push(`/doctor/${row.id}`);
+                                    }}
+                                  />
+                                  {hasPermission(permissions, "doctor edit") && (
+                                    <BorderColorIcon
                                       style={{ color: "var(--color1)" }}
-                                      onClick={() => {
-                                        history.push(`/doctor/${row.id}`);
-                                      }}
+                                      onClick={() => handleEditOpen(row)}
                                     />
-                                    {hasPermission(permissions, "doctor edit") && (
-                                      <BorderColorIcon
-                                        style={{ color: "var(--color1)" }}
-                                        onClick={() => handleEditOpen(row)}
-                                      />
-                                    )}
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        )}
-                      </tbody>
-                    )}
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
                   </table>
                 </div>
               </div>

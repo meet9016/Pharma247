@@ -104,7 +104,7 @@ const Company = () => {
         setIsSearching(true);
         searchTimeout.current = setTimeout(() => {
           companyList(1, true);
-        }, 200);
+        }, 500);
       }
     }
     // eslint-disable-next-line

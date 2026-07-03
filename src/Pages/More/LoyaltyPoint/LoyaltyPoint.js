@@ -156,7 +156,7 @@ const LoyaltyPoint = () => {
       for (let i = 0; i < existingLoyaltyPoints.length; i++) {
         const item = existingLoyaltyPoints[i];
         if (
-          (Number(minimumAmount) >= Number(item.minimum) &&
+          (Number(`minimumAmount`) >= Number(item.minimum) &&
             Number(minimumAmount) <= Number(item.maximum)) ||
           (Number(maximumAmount) >= Number(item.minimum) &&
             Number(maximumAmount) <= Number(item.maximum))

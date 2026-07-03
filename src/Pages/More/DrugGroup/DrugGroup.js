@@ -103,7 +103,7 @@ const DrugGroup = () => {
         setIsSearching(true);
         searchTimeout.current = setTimeout(() => {
           DrugGroupList(1, true);
-        }, 200);
+        }, 500);
       }
     }
     // eslint-disable-next-line

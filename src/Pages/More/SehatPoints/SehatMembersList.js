@@ -160,7 +160,7 @@ const SehatMembersList = () => {
                 // Debounce the search to avoid too many API calls
                 searchTimeout.current = setTimeout(() => {
                     DistList(1, true);
-                }, 150);
+                }, 500);
             }
         }
     }, [searchTrigger]);

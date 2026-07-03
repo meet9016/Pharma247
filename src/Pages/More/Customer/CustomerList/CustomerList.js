@@ -500,7 +500,7 @@ const CustomerList = () => {
       } else {
         searchTimeout.current = setTimeout(() => {
           customerAllData(1, currentSearchTerms.current);
-        }, 300); // ✅ DEBOUNCE
+        }, 500); // ✅ DEBOUNCE
       }
     }
     return () => {
