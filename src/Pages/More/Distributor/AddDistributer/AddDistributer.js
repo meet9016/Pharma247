@@ -137,10 +137,15 @@ const AddDistributer = () => {
       // toast.dismiss();
       // toast.error("Distributor is required");
     }
+    // if (!GSTNumber) {
+    //   newErrors.GSTNumber = "GST Number is required";
+    //   // toast.dismiss();
+    //   // toast.error("GST Number is required");
+    // }
     if (!GSTNumber) {
       newErrors.GSTNumber = "GST Number is required";
-      // toast.dismiss();
-      // toast.error("GST Number is required");
+    } else if (!gstRegex.test(GSTNumber)) {
+      newErrors.GSTNumber = "Enter a valid GSTIN (e.g. 27AAACR5055K1Z7)";
     }
 
     if (!mobileno) {

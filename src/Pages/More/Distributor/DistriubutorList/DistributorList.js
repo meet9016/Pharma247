@@ -148,6 +148,7 @@ const DistributerList = () => {
 
   const resetAddDialog = () => {
     setOpenEdit(false);
+    setErrors({});
   };
 
 
@@ -214,10 +215,67 @@ const DistributerList = () => {
     const value = e.target.value;
     if (value.length <= 10) {
       setMobileNo(value);
+      setErrors((prev) => ({
+        ...prev,
+        mobileNo: "",
+      }));
     }
   };
 
   const editDistributor = async () => {
+    const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    const mobileRegex = /^[6-9][0-9]{9}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const pincodeRegex = /^[1-9][0-9]{5}$/;
+    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    const accountRegex = /^[0-9]{9,18}$/;
+
+    const newErrors = {};
+
+    if (!gstNumber) {
+      newErrors.gstNumber = "GST/IN Number is required";
+    } else if (!gstRegex.test(gstNumber)) {
+      newErrors.gstNumber = "Enter a valid 15-character GSTIN (e.g. 27AAACR5055K1Z7)";
+    }
+
+    if (!distributerName) {
+      newErrors.distributerName = "Distributor Name is required";
+    }
+
+    if (!mobileNo) {
+      newErrors.mobileNo = "Mobile number is required";
+    } else if (!mobileRegex.test(mobileNo)) {
+      newErrors.mobileNo = "Mobile number must be a valid 10-digit number";
+    }
+
+    if (email && !emailRegex.test(email)) {
+      newErrors.email = "Enter a valid email address";
+    }
+
+    if (whatsapp && !mobileRegex.test(whatsapp)) {
+      newErrors.whatsapp = "WhatsApp number must be a valid 10-digit number";
+    }
+
+    if (pincode && !pincodeRegex.test(pincode)) {
+      newErrors.pincode = "Pincode must be 6 digits";
+    }
+
+    if (switchCheck) {
+      if (ifscCode && !ifscRegex.test(ifscCode)) {
+        newErrors.ifscCode = "Enter a valid 11-character IFSC code";
+      }
+
+      if (accountNo && !accountRegex.test(accountNo)) {
+        newErrors.accountNo = "Account number must be 9 to 18 digits";
+      }
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
     let data = new FormData();
 
     data.append("id", distributerId);
@@ -265,6 +323,7 @@ const DistributerList = () => {
           setLicenceNo("");
           setDistributorDrugLicenseNo("");
           setCreditDuedays("");
+          setErrors({});
           // setIsEditMode(false)
           toast.dismiss();
           toast.success(response.data.message);
@@ -866,13 +925,17 @@ const DistributerList = () => {
                                 .toUpperCase()
                                 .replace(/[^A-Z0-9]/g, "");
                               setGstnumber(value);
+                              setErrors((prev) => ({
+                                ...prev,
+                                gstNumber: "",
+                              }));
                             }}
                             className="w-full"
                             variant="outlined"
                           />
-                          {errors.Doctor && (
+                          {errors.gstNumber && (
                             <span className="text-red-600 text-xs">
-                              {errors.Doctor}
+                              {errors.gstNumber}
                             </span>
                           )}
                         </div>
@@ -892,13 +955,17 @@ const DistributerList = () => {
                             value={distributerName}
                             onChange={(e) => {
                               setDistributerName(e.target.value.toUpperCase());
+                              setErrors((prev) => ({
+                                ...prev,
+                                distributerName: "",
+                              }));
                             }}
                             className="w-full"
                             variant="outlined"
                           />
-                          {errors.clinic && (
+                          {errors.distributerName && (
                             <span className="text-red-600 text-xs">
-                              {errors.clinic}
+                              {errors.distributerName}
                             </span>
                           )}
                         </div>
@@ -913,10 +980,21 @@ const DistributerList = () => {
                             size="small"
                             type="email"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                              setErrors((prev) => ({
+                                ...prev,
+                                email: "",
+                              }));
+                            }}
                             className="w-full"
                             variant="outlined"
                           />
+                          {errors.email && (
+                            <span className="text-red-600 text-xs">
+                              {errors.email}
+                            </span>
+                          )}
                         </div>
                         <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                           <div className="mb-1">
@@ -958,11 +1036,20 @@ const DistributerList = () => {
                               const value = e.target.value;
                               if (value.length <= 10) {
                                 setWhatsApp(value);
+                                setErrors((prev) => ({
+                                  ...prev,
+                                  whatsapp: "",
+                                }));
                               }
                             }}
                             className="w-full"
                             variant="outlined"
                           />
+                          {errors.whatsapp && (
+                            <span className="text-red-600 text-xs">
+                              {errors.whatsapp}
+                            </span>
+                          )}
                         </div>
                         <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                           <span className="label primary"> Address</span>
@@ -999,10 +1086,21 @@ const DistributerList = () => {
                             placeholder="Pincode"
                             type="number"
                             value={pincode}
-                            onChange={(e) => setPincode(e.target.value)}
+                            onChange={(e) => {
+                              setPincode(e.target.value);
+                              setErrors((prev) => ({
+                                ...prev,
+                                pincode: "",
+                              }));
+                            }}
                             className="w-full"
                             variant="outlined"
                           />
+                          {errors.pincode && (
+                            <span className="text-red-600 text-xs">
+                              {errors.pincode}
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="flex flex-col md:flex-row gap-5">
@@ -1132,7 +1230,13 @@ const DistributerList = () => {
                             <TextField
                               autoComplete="off"
                               value={ifscCode}
-                              onChange={(e) => setIfscCode(e.target.value)}
+                              onChange={(e) => {
+                                setIfscCode(e.target.value);
+                                setErrors((prev) => ({
+                                  ...prev,
+                                  ifscCode: "",
+                                }));
+                              }}
                               // type="text"
                               // onChange={(e) => {
                               //     const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -1141,6 +1245,11 @@ const DistributerList = () => {
                               className="w-full"
                               size="small"
                             />
+                            {errors.ifscCode && (
+                              <span className="text-red-600 text-xs">
+                                {errors.ifscCode}
+                              </span>
+                            )}
                           </div>
                         </div>
                         <div className="flex flex-col md:flex-row gap-5">
@@ -1152,10 +1261,21 @@ const DistributerList = () => {
                               size="small"
                               type="number"
                               value={accountNo}
-                              onChange={(e) => setAccountNo(e.target.value)}
+                              onChange={(e) => {
+                                setAccountNo(e.target.value);
+                                setErrors((prev) => ({
+                                  ...prev,
+                                  accountNo: "",
+                                }));
+                              }}
                               className="w-full"
                               variant="outlined"
                             />
+                            {errors.accountNo && (
+                              <span className="text-red-600 text-xs">
+                                {errors.accountNo}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>

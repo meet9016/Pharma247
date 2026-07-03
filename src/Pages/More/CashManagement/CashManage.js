@@ -204,11 +204,7 @@ const CashManage = () => {
     <>
       <div>
         <Header />
-        {isLoading ? (
-          <div className="loader-container ">
-            <Loader />
-          </div>
-        ) : (
+
           <div
             style={{
               minHeight: 'calc(100vh - 64px)',
@@ -357,7 +353,7 @@ const CashManage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
 
                       {/* Total In */}
-                      <div className="bg-white rounded-xl border border-green-500 shadow-sm p-4">
+                      <div className="bg-white rounded-xl border border-gray-500 shadow-sm p-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100">
                             <FaArrowDown className="text-green-600 text-lg" />
@@ -489,7 +485,21 @@ const CashManage = () => {
                       </tbody> */}
 
                       <tbody style={{ backgroundColor: "#3f621217" }}>
-                        {cashManageDetails?.cash_list && cashManageDetails.cash_list.length > 0 ? (
+                        {isLoading ? (
+                          <tr>
+                            <td
+                              colSpan={cashManageDetailscolumns.length}
+                              style={{
+                                textAlign: "center",
+                                padding: "40px",
+                              }}
+                            >
+                              <div className="flex justify-center items-center">
+                                <Loader />
+                              </div>
+                            </td>
+                          </tr>
+                        ) : cashManageDetails?.cash_list && cashManageDetails.cash_list.length > 0 ? (
                           cashManageDetails.cash_list.map((row) => (
                             <tr
                               key={row.code}
@@ -627,7 +637,6 @@ const CashManage = () => {
               </Alert>
             </Dialog>
           </div>
-        )}
       </div>
     </>
   );

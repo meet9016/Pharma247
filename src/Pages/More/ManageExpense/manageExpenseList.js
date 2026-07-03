@@ -185,7 +185,7 @@ const ManageExpense = () => {
     setTotal(null);
     setPaymentType(null);
     setRefNo(null);
-    setErrors("");
+    setErrors({});
     setRemark(null);
   };
 
@@ -194,13 +194,17 @@ const ManageExpense = () => {
     setGST(null);
     setGstIN(null);
     setParty(null);
-    setErrors("");
+    setErrors({});
   };
 
   const handleGSTChange = (e) => {
     const value = e.target.value;
     if (value === "" || (Number(value) >= 0 && Number(value) <= 100)) {
       setGST(value);
+      setErrors((prev) => ({
+        ...prev,
+        gst: "",
+      }));
     }
   };
 
@@ -233,16 +237,54 @@ const ManageExpense = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!selectedOption) newErrors.selectedOption = "Category is required";
-    if (selectedGSTOption === "with_GST") {
-      if (!gst) newErrors.gst = "GST is required";
-      if (!gstIN) newErrors.gstIN = "GSTN Number is required";
-      if (!party) newErrors.party = "Party Name is required";
-      if (!amount) newErrors.amount = "Amount is required";
-    } else {
-      if (!amount) newErrors.amount = "Amount is required";
+
+    const gstINRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    const amountRegex = /^\d+(\.\d{1,2})?$/;
+    const gstPercentRegex = /^\d+(\.\d{1,2})?$/;
+    const partyRegex = /^[a-zA-Z0-9\s.,&'-]{2,100}$/;
+
+    if (!selectedOption) {
+      newErrors.selectedOption = "Category is required";
     }
-    if (!paymentType) newErrors.paymentType = "Payment Mode is required";
+
+    if (!expenseDate) {
+      newErrors.expenseDate = "Expense Date is required";
+    }
+
+    if (!paymentdate) {
+      newErrors.paymentdate = "Payment Date is required";
+    }
+
+    if (!paymentType) {
+      newErrors.paymentType = "Payment Mode is required";
+    }
+
+    if (!amount) {
+      newErrors.amount = "Amount is required";
+    } else if (!amountRegex.test(amount.toString()) || Number(amount) <= 0) {
+      newErrors.amount = "Enter a valid positive amount";
+    }
+
+    if (selectedGSTOption === "with_GST") {
+      if (!gst) {
+        newErrors.gst = "GST is required";
+      } else if (!gstPercentRegex.test(gst.toString()) || Number(gst) < 0 || Number(gst) > 100) {
+        newErrors.gst = "Enter a valid GST percentage (0-100)";
+      }
+
+      if (!gstIN) {
+        newErrors.gstIN = "GSTN Number is required";
+      } else if (!gstINRegex.test(gstIN.toUpperCase().trim())) {
+        newErrors.gstIN = "Enter a valid 15-character GSTIN (e.g. 27AAACR5055K1Z7)";
+      }
+
+      if (!party) {
+        newErrors.party = "Party Name is required";
+      } else if (!partyRegex.test(party.trim())) {
+        newErrors.party = "Enter a valid Party Name (min 2 characters)";
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -381,7 +423,7 @@ const ManageExpense = () => {
             setTotal(null);
             setPaymentType(null);
             setRefNo(null);
-            setErrors("");
+            setErrors({});
             setRemark(null);
             toast.dismiss();
             toast.success(response.data.message);
@@ -794,7 +836,7 @@ const ManageExpense = () => {
                         width: "inherit",
                       }}
                     >
-                      <span className="primary">Category</span>
+                      <span className="primary">Category <span className="text-red-600 ml-1">*</span></span>
                       <FormControl style={{ whiteSpace: "nowrap" }}>
                         <RadioGroup
                           aria-labelledby="demo-radio-buttons-group-label"
@@ -831,7 +873,7 @@ const ManageExpense = () => {
                         </RadioGroup>
                       </FormControl>
                       {errors.selectedOption && (
-                        <div className="error">{errors.selectedOption}</div>
+                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.selectedOption}</div>
                       )}
                     </div>
                     <div className="w-full lg:w-2/3 flex flex-col gap-5">
@@ -841,16 +883,22 @@ const ManageExpense = () => {
                             className=""
                             style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                           >
-                            Expense Date
+                            Expense Date <span className="text-red-600 ml-1">*</span>
                           </span>
                           <DatePicker
                             className="custom-datepicker w-[170px]"
                             selected={expenseDate}
-                            onChange={(newDate) => setExpenseDate(newDate)}
+                            onChange={(newDate) => {
+                              setExpenseDate(newDate);
+                              setErrors((prev) => ({
+                                ...prev,
+                                expenseDate: "",
+                              }));
+                            }}
                             dateFormat="dd/MM/yyyy"
                           />
                           {errors.expenseDate && (
-                            <div className="error">{errors.expenseDate}</div>
+                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.expenseDate}</div>
                           )}
                         </div>
                         <div className="w-full md:w-1/2">
@@ -858,16 +906,22 @@ const ManageExpense = () => {
                             className=""
                             style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                           >
-                            Payment Date
+                            Payment Date <span className="text-red-600 ml-1">*</span>
                           </span>
                           <DatePicker
                             className="custom-datepicker w-[170px]"
                             selected={paymentdate}
-                            onChange={(newDate) => setPaymentDate(newDate)}
+                            onChange={(newDate) => {
+                              setPaymentDate(newDate);
+                              setErrors((prev) => ({
+                                ...prev,
+                                paymentdate: "",
+                              }));
+                            }}
                             dateFormat="dd/MM/yyyy"
                           />
                           {errors.paymentdate && (
-                            <div className="error">{errors.paymentdate}</div>
+                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.paymentdate}</div>
                           )}
                         </div>
                       </div>
@@ -923,7 +977,7 @@ const ManageExpense = () => {
                                 className=""
                                 style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                               >
-                                GST(%)
+                                GST(%) <span className="text-red-600 ml-1">*</span>
                               </span>
                               <TextField
                                 autoComplete="off"
@@ -932,11 +986,12 @@ const ManageExpense = () => {
                                 type="number"
                                 size="small"
                                 value={gst}
+                                error={!!errors.gst}
                                 onChange={handleGSTChange}
                               // inputProps={{ min: 0, max: 100 }}
                               />
                               {errors.gst && (
-                                <div className="error">{errors.gst}</div>
+                                <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.gst}</div>
                               )}
                             </div>
                             <div
@@ -950,7 +1005,7 @@ const ManageExpense = () => {
                                 className=""
                                 style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                               >
-                                GSTN Number
+                                GSTN Number <span className="text-red-600 ml-1">*</span>
                               </span>
                               <TextField
                                 autoComplete="off"
@@ -958,12 +1013,17 @@ const ManageExpense = () => {
                                 placeholder="GSTN Number"
                                 size="small"
                                 value={gstIN}
-                                onChange={(e) =>
-                                  setGstIN(e.target.value.toUpperCase())
-                                }
+                                error={!!errors.gstIN}
+                                onChange={(e) => {
+                                  setGstIN(e.target.value.toUpperCase());
+                                  setErrors((prev) => ({
+                                    ...prev,
+                                    gstIN: "",
+                                  }));
+                                }}
                               />
                               {errors.gstIN && (
-                                <div className="error">{errors.gstIN}</div>
+                                <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.gstIN}</div>
                               )}
                             </div>
                           </div>
@@ -975,7 +1035,7 @@ const ManageExpense = () => {
                               className=""
                               style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                             >
-                              Party Name
+                              Party Name <span className="text-red-600 ml-1">*</span>
                             </span>
                             <TextField
                               autoComplete="off"
@@ -983,10 +1043,17 @@ const ManageExpense = () => {
                               placeholder="Party Name"
                               size="small"
                               value={party}
-                              onChange={(e) => setParty(e.target.value)}
+                              error={!!errors.party}
+                              onChange={(e) => {
+                                setParty(e.target.value);
+                                setErrors((prev) => ({
+                                  ...prev,
+                                  party: "",
+                                }));
+                              }}
                             />
                             {errors.party && (
-                              <div className="error">{errors.party}</div>
+                              <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.party}</div>
                             )}
                           </div>
                         </>
@@ -1035,7 +1102,7 @@ const ManageExpense = () => {
 
                           />
                           {errors.amount && (
-                            <div className="error">{errors.amount}</div>
+                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.amount}</div>
                           )}
                         </div>
                         <div
@@ -1066,7 +1133,7 @@ const ManageExpense = () => {
                             }}
                           />
                           {errors.total && (
-                            <div className="error">{errors.total}</div>
+                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.total}</div>
                           )}
                         </div>
                       </div>
@@ -1080,7 +1147,7 @@ const ManageExpense = () => {
                             className=""
                             style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                           >
-                            Payment Mode
+                            Payment Mode <span className="text-red-600 ml-1">*</span>
                           </span>
                           <Autocomplete
                             options={[
@@ -1135,7 +1202,7 @@ const ManageExpense = () => {
                             )}
                           />
                           {errors.paymentType && (
-                            <div className="error">{errors.paymentType}</div>
+                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.paymentType}</div>
                           )}
                         </div>
                         <div
@@ -1166,7 +1233,7 @@ const ManageExpense = () => {
                             }}
                           />
                           {errors.refNo && (
-                            <div className="error">{errors.refNo}</div>
+                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.refNo}</div>
                           )}
                         </div>
                       </div>
@@ -1198,7 +1265,7 @@ const ManageExpense = () => {
                             }}
                           />
                           {errors.remark && (
-                            <div className="error">{errors.remark}</div>
+                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.remark}</div>
                           )}
                         </div>
                       </div>

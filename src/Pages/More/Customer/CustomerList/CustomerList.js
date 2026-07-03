@@ -253,39 +253,79 @@ const CustomerList = () => {
     setButtonLabel("Save");
   };
 
-  const Addcustomer = () => {
-    if (isEditMode == false) {
-      //  Add Customer
-      const newErrors = {};
-      if (!customer) newErrors.customer = "Customer Name is required";
-      // if (!state) newErrors.state = "State is required";
+  const validateForm = () => {
+    const newErrors = {};
 
-      if (!mobileNo) {
-        newErrors.mobileNo = "Mobile No is required";
-      } else if (!/^\d{10}$/.test(mobileNo)) {
-        newErrors.mobileNo = "Mobile number must be 10 digits";
+    // 1. Customer Name validation (Compulsory *)
+    if (!customer) {
+      newErrors.customer = "Customer Name is required";
+    } else if (!/^[a-zA-Z0-9\s.,&'-]{2,100}$/.test(customer)) {
+      newErrors.customer = "Enter a valid Customer Name (2-100 characters)";
+    }
+
+    // 2. Mobile No validation (Compulsory *)
+    if (!mobileNo) {
+      newErrors.mobileNo = "Mobile No is required";
+    } else if (!/^[6-9]\d{9}$/.test(mobileNo)) {
+      newErrors.mobileNo = "Enter a valid 10-digit mobile number starting with 6-9";
+    }
+
+    // 3. Email ID validation (Optional)
+    if (emailId && emailId.trim()) {
+      if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(emailId)) {
+        newErrors.emailId = "Enter a valid email address";
       }
-      setErrors(newErrors);
-      const isValid = Object.keys(newErrors).length === 0;
-      if (isValid) {
+    }
+
+    // 4. Amount validation (Optional)
+    if (amount !== "" && amount !== null && amount !== undefined) {
+      if (!/^\d+(\.\d{1,2})?$/.test(amount.toString()) || Number(amount) < 0) {
+        newErrors.amount = "Enter a valid positive amount";
+      }
+    }
+
+    // 5. Area validation (Optional)
+    if (area && area.trim()) {
+      if (!/^[a-zA-Z0-9\s.,'-]{2,50}$/.test(area)) {
+        newErrors.area = "Enter a valid Area (2-50 characters)";
+      }
+    }
+
+    // 6. City validation (Optional)
+    if (city && city.trim()) {
+      if (!/^[a-zA-Z\s.'-]{2,50}$/.test(city)) {
+        newErrors.city = "Enter a valid City (2-50 characters)";
+      }
+    }
+
+    // 7. State validation (Optional)
+    if (state && state.trim()) {
+      if (!/^[a-zA-Z\s.'-]{2,50}$/.test(state)) {
+        newErrors.state = "Enter a valid State (2-50 characters)";
+      }
+    }
+
+    // 8. Address validation (Optional)
+    if (address && address.trim()) {
+      if (address.length > 200) {
+        newErrors.address = "Address must be under 200 characters";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const Addcustomer = () => {
+    const isValid = validateForm();
+    if (isValid) {
+      if (isEditMode === false) {
         AddCustomerRecord();
-      }
-      return isValid;
-    } else {
-      const newErrors = {};
-      if (!customer) newErrors.customer = "Customer Name is required";
-      if (!mobileNo) {
-        newErrors.mobileNo = "Mobile No is required";
-      } else if (!/^\d{10}$/.test(mobileNo)) {
-        newErrors.mobileNo = "Mobile number must be 10 digits";
-      }
-      setErrors(newErrors);
-      const isValid = Object.keys(newErrors).length === 0;
-      if (isValid) {
+      } else {
         EditCustomerRecord();
       }
-      return isValid;
     }
+    return isValid;
   };
 
   const AddCustomerRecord = async () => {
@@ -1141,6 +1181,7 @@ const CustomerList = () => {
                           setCity(newValue.city || "");
                           setState(newValue.state || "");
                           setAddress(newValue.address || "");
+                          setErrors({});
                         } else if (!newValue) {
                           setCustomerID(null);
                           setIsEditMode(false);
@@ -1154,6 +1195,7 @@ const CustomerList = () => {
                           setCity("");
                           setState("");
                           setAddress("");
+                          setErrors({});
                         }
                       }}
                       renderInput={(params) => (
@@ -1229,12 +1271,24 @@ const CustomerList = () => {
                       size="small"
                       value={emailId}
                       placeholder="Email"
+                      error={!!errors.emailId}
                       onChange={(e) => {
                         setEmailId(e.target.value);
+                        if (errors.emailId) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            emailId: "",
+                          }));
+                        }
                       }}
                       style={{ width: "100%" }}
                       variant="outlined"
                     />
+                    {errors.emailId && (
+                      <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.emailId}
+                      </span>
+                    )}
                   </div>
                   <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                     <span className="label primary">Amount</span>
@@ -1245,12 +1299,24 @@ const CustomerList = () => {
                       type="number"
                       value={amount}
                       placeholder="Amount"
+                      error={!!errors.amount}
                       onChange={(e) => {
                         setAmount(e.target.value);
+                        if (errors.amount) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            amount: "",
+                          }));
+                        }
                       }}
                       style={{ width: "100%" }}
                       variant="outlined"
                     />
+                    {errors.amount && (
+                      <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.amount}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -1263,15 +1329,27 @@ const CustomerList = () => {
                       size="small"
                       value={area}
                       placeholder="Area"
+                      error={!!errors.area}
                       onChange={(e) => {
                         const amt =
                           e.target.value.charAt(0).toUpperCase() +
                           e.target.value.slice(1).toLowerCase();
                         setArea(amt);
+                        if (errors.area) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            area: "",
+                          }));
+                        }
                       }}
                       style={{ width: "100%" }}
                       variant="outlined"
                     />
+                    {errors.area && (
+                      <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.area}
+                      </span>
+                    )}
                   </div>
                   <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                     <span className="label primary">City</span>
@@ -1281,15 +1359,27 @@ const CustomerList = () => {
                       size="small"
                       value={city}
                       placeholder="City"
+                      error={!!errors.city}
                       onChange={(e) => {
-                        const city =
+                        const cityVal =
                           e.target.value.charAt(0).toUpperCase() +
                           e.target.value.slice(1).toLowerCase();
-                        setCity(city);
+                        setCity(cityVal);
+                        if (errors.city) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            city: "",
+                          }));
+                        }
                       }}
                       style={{ width: "100%" }}
                       variant="outlined"
                     />
+                    {errors.city && (
+                      <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.city}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -1302,15 +1392,27 @@ const CustomerList = () => {
                       size="small"
                       value={address}
                       placeholder="Address"
+                      error={!!errors.address}
                       onChange={(e) => {
-                        const add =
+                        const addVal =
                           e.target.value.charAt(0).toUpperCase() +
                           e.target.value.slice(1).toLowerCase();
-                        setAddress(add);
+                        setAddress(addVal);
+                        if (errors.address) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            address: "",
+                          }));
+                        }
                       }}
                       style={{ width: "100%" }}
                       variant="outlined"
                     />
+                    {errors.address && (
+                      <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.address}
+                      </span>
+                    )}
                   </div>
                   <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
                     <span className="label primary">State</span>
@@ -1320,15 +1422,27 @@ const CustomerList = () => {
                       size="small"
                       value={state}
                       placeholder="State"
+                      error={!!errors.state}
                       onChange={(e) => {
-                        const state =
+                        const stateVal =
                           e.target.value.charAt(0).toUpperCase() +
                           e.target.value.slice(1).toLowerCase();
-                        setState(state);
+                        setState(stateVal);
+                        if (errors.state) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            state: "",
+                          }));
+                        }
                       }}
                       style={{ width: "100%" }}
                       variant="outlined"
                     />
+                    {errors.state && (
+                      <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.state}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

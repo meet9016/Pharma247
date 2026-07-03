@@ -812,7 +812,6 @@ const BankAccount = () => {
                           </ListItemButton>
                         </ListItem>
                       ))}
-                    {/* <Divider style={{ borderColor: "var(--color2) !important", marginBlock: "10px" }} /> */}
                   </List>
                 )}
               </>
@@ -1430,7 +1429,7 @@ const BankAccount = () => {
                         },
                       }}
                     >
-                      <MenuItem value="" disabled>
+                      <MenuItem value="" disabled >
                         Select Account Type
                       </MenuItem>
 
@@ -2152,7 +2151,7 @@ const BankAccount = () => {
                 borderColor: "#ccc",
                 '&:hover': {
                   borderColor: "#999",
-                  backgroundColor: "#f5f5f5"
+                  backgroundColor: "#f5f5f5 !important"
                 }
               }}
             >

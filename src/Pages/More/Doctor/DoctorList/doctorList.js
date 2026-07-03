@@ -235,42 +235,65 @@ const DoctorList = () => {
     setButtonLabel("Save");
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    // 1. Doctor Name validation (Compulsory *)
+    if (!doctor) {
+      newErrors.Doctor = "Doctor Name is required";
+    } else if (!/^[a-zA-Z0-9\s.,&'-]{2,100}$/.test(doctor)) {
+      newErrors.Doctor = "Enter a valid Doctor Name (2-100 characters)";
+    }
+
+    // 2. Clinic Name validation (Compulsory *)
+    if (!clinic) {
+      newErrors.clinic = "Clinic Name is required";
+    } else if (!/^[a-zA-Z0-9\s.,&'-]{2,100}$/.test(clinic)) {
+      newErrors.clinic = "Enter a valid Clinic Name (2-100 characters)";
+    }
+
+    // 3. Mobile No validation (Compulsory *)
+    if (!mobileNo) {
+      newErrors.mobileNo = "Mobile No is required";
+    } else if (!/^[6-9]\d{9}$/.test(mobileNo)) {
+      newErrors.mobileNo = "Enter a valid 10-digit mobile number starting with 6-9";
+    }
+
+    // 4. Email ID validation (Optional)
+    if (emailId && emailId.trim()) {
+      if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(emailId)) {
+        newErrors.emailId = "Enter a valid email address";
+      }
+    }
+
+    // 5. Licence No. validation (Optional)
+    if (licence && licence.trim()) {
+      if (!/^[a-zA-Z0-9/-]{2,50}$/.test(licence)) {
+        newErrors.licence = "Enter a valid Licence No. (2-50 characters)";
+      }
+    }
+
+    // 6. Address validation (Optional)
+    if (address && address.trim()) {
+      if (address.length > 200) {
+        newErrors.address = "Address must be under 200 characters";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const AddDoctor = () => {
-    if (isEditMode == false) {
-      //  Add Doctor
-      const newErrors = {};
-      if (!doctor) newErrors.Doctor = "Doctor is required";
-      if (!mobileNo) {
-        newErrors.mobileNo = 'Mobile No is required';
-      } else
-        if (!/^\d{10}$/.test(mobileNo)) {
-          newErrors.mobileNo = 'Mobile number must be 10 digits';
-        }
-      if (!clinic) newErrors.clinic = 'Clinic is required';
-
-      setErrors(newErrors);
-      const isValid = Object.keys(newErrors).length === 0;
-      if (isValid) {
+    const isValid = validateForm();
+    if (isValid) {
+      if (isEditMode === false) {
         AddDoctorRecord();
-      }
-      return isValid;
-    } else {
-      const newErrors = {};
-      if (!doctor) newErrors.Doctor = "Doctor is required";
-      if (!mobileNo) {
-        newErrors.mobileNo = 'Mobile No is required';
-      } else if (!/^\d{10}$/.test(mobileNo)) {
-        newErrors.mobileNo = 'Mobile number must be 10 digits';
-      }
-      if (!clinic) newErrors.clinic = 'Clinic is required';
-
-      setErrors(newErrors);
-      const isValid = Object.keys(newErrors).length === 0;
-      if (isValid) {
+      } else {
         EditDoctorRecord();
       }
-      return isValid;
     }
+    return isValid;
   };
 
   const AddDoctorRecord = async () => {
@@ -386,11 +409,12 @@ const DoctorList = () => {
       setClinic(newValue.clinic || "");
       setAddress(newValue.address || "");
       setDefaultDr(newValue.default_doctor !== undefined && newValue.default_doctor !== null ? newValue.default_doctor.toString() : "0");
+      setErrors({});
     } else {
       setDoctor(newValue);
       setSelectedDoctorId("");
       setDoctorId("");
-      
+
       if (!newValue) {
         setIsEditMode(false);
         setHeader("Add Doctor");
@@ -402,12 +426,8 @@ const DoctorList = () => {
         setAddress("");
         setDefaultDr("");
       }
+      setErrors({});
     }
-
-    setErrors((prev) => ({
-      ...prev,
-      Doctor: "",
-    }));
   };
   const handleInputChange = (event, newInputValue) => {
     const formatted = newInputValue.toUpperCase();
@@ -1209,19 +1229,24 @@ const DoctorList = () => {
                         placeholder="Enter Email ID"
                         value={emailId}
                         onChange={(e) => {
-                          // Remove spaces instantly
                           const value = e.target.value.replace(/\s/g, "");
                           setEmailId(value);
+                          if (errors.emailId) {
+                            setErrors((prev) => ({
+                              ...prev,
+                              emailId: "",
+                            }));
+                          }
                         }}
                         className="w-full"
                         variant="outlined"
-                        error={emailId !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailId)}
-                        helperText={
-                          emailId !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailId)
-                            ? "Enter a valid email address"
-                            : ""
-                        }
+                        error={!!errors.emailId}
                       />
+                      {errors.emailId && (
+                        <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                          {errors.emailId}
+                        </span>
+                      )}
                     </div>
 
 
@@ -1260,10 +1285,29 @@ const DoctorList = () => {
                         type="text"
                         placeholder="Enter Licence No."
                         value={licence}
-                        onChange={(e) => setLicence(e.target.value.toUpperCase())}
+                        error={!!errors.licence}
+                        onChange={(e) => {
+                          setLicence(e.target.value.toUpperCase());
+                          if (errors.licence) {
+                            setErrors((prev) => ({
+                              ...prev,
+                              licence: "",
+                            }));
+                          }
+                        }}
                         className="w-full"
                         size="small"
+                        sx={{
+                          "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#d32f2f !important",
+                          },
+                        }}
                       />
+                      {errors.licence && (
+                        <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                          {errors.licence}
+                        </span>
+                      )}
                     </div>
 
                     {/* Address - full width */}
@@ -1274,10 +1318,24 @@ const DoctorList = () => {
                         size="small"
                         placeholder="Enter Address"
                         value={address}
-                        onChange={(e) => setAddress(e.target.value.toUpperCase())}
+                        error={!!errors.address}
+                        onChange={(e) => {
+                          setAddress(e.target.value.toUpperCase());
+                          if (errors.address) {
+                            setErrors((prev) => ({
+                              ...prev,
+                              address: "",
+                            }));
+                          }
+                        }}
                         className="w-full"
                         variant="outlined"
                       />
+                      {errors.address && (
+                        <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                          {errors.address}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
