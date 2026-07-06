@@ -643,19 +643,14 @@ const DoctorList = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
-        <div
-          style={{
-            minHeight: 'calc(100vh - 64px)',
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-          }}
-        >
+      <div
+        style={{
+          minHeight: 'calc(100vh - 64px)',
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+        }}
+      >
           <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
             <div className="paddin12-8">
               <div className="px-4 py-3">
@@ -798,7 +793,7 @@ const DoctorList = () => {
                       </tr>
                     </thead>
                     <tbody style={{ backgroundColor: "#3f621217" }}>
-                      {isSearchLoading ? (
+                      {(isLoading || isSearchLoading) ? (
                         <tr>
                           <td
                             colSpan={columns.length + 2}
@@ -1393,8 +1388,7 @@ const DoctorList = () => {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
-      )}
+      </div>
     </>
   );
 };

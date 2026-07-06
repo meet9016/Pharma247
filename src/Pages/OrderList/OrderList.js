@@ -857,21 +857,6 @@ const OrderList = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             <Dialog
               className="order_list_ml custom-dialog"
               open={openAddPopUp}
@@ -890,7 +875,6 @@ const OrderList = () => {
               <div className="px-6 mt-5">
                 <Alert severity="info" className="" style={{ width: "100%" }}>
                   <AlertTitle>Info</AlertTitle>
-                  Lastest 5 Purchase History.
                 </Alert>
               </div>
               <IconButton

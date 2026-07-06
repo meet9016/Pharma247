@@ -40,7 +40,7 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import ClearIcon from "@mui/icons-material/Clear";
 
 const CustomerList = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [openUpload, setOpenUpload] = useState(false);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [paymentMode, setPaymentMode] = useState([]);
@@ -853,111 +853,119 @@ const CustomerList = () => {
                     <th>Action</th>
                   </tr>
                 </thead>
-                {isLoading ? (
-                  <div className="loader-container ">
-                    <Loader />
-                  </div>
-                ) : (
-                  <tbody style={{ backgroundColor: "#3f621217" }}>
-                    {tableData.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan={columns.length + 2}
-                          style={{
-                            textAlign: "center",
-                            color: "gray",
-                            borderRadius: "10px 10px 10px 10px",
-                          }}
-                        >
-                          No data found
-                        </td>
-                      </tr>
-                    ) : (
-                      tableData.map((row, index) => {
-                        return (
-                          <tr hover role="checkbox" tabIndex={-1} key={row.code}>
-                            <td style={{ borderRadius: "10px 0 0 10px" }}>
-                              {currentPage == 1 ? index : startIndex + index}
+                <tbody style={{ backgroundColor: "#3f621217" }}>
+                  {isLoading ? (
+                    <tr>
+                      <td
+                        colSpan={columns.length + 2}
+                        style={{
+                          textAlign: "center",
+                          padding: "40px",
+                        }}
+                      >
+                        <div className="flex justify-center items-center w-full">
+                          <Loader />
+                        </div>
+                      </td>
+                    </tr>
+                  ) : tableData.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={columns.length + 2}
+                        style={{
+                          textAlign: "center",
+                          color: "gray",
+                          borderRadius: "10px 10px 10px 10px",
+                        }}
+                      >
+                        No data found
+                      </td>
+                    </tr>
+                  ) : (
+                    tableData.map((row, index) => {
+                      return (
+                        <tr hover role="checkbox" tabIndex={-1} key={row.code}>
+                          <td style={{ borderRadius: "10px 0 0 10px" }}>
+                            {currentPage == 1 ? index : startIndex + index}
 
-                            </td>
-                            {columns.map((column) => {
-                              let value = row[column.id];
-                              // Replace null, undefined, or empty string with "-"
-                              if (!value && value !== 0) {
-                                value = "-";
+                          </td>
+                          {columns.map((column) => {
+                            let value = row[column.id];
+                            // Replace null, undefined, or empty string with "-"
+                            if (!value && value !== 0) {
+                              value = "-";
+                            }
+
+                            let style = {};
+
+                            // Apply red color if the column is 'due_amount' and status is 'due'
+                            if (
+                              column.id === "total_amount" &&
+                              row.status === "due"
+                            ) {
+                              style.color = "var(--color6)";
+                            } else if (
+                              column.id === "total_amount" &&
+                              row.status === ""
+                            )
+
+                              // Lowercase email if it's not already in lowercase
+                              if (column.id === "email") {
+                                if (
+                                  value &&
+                                  value[0] !== value[0].toLowerCase()
+                                ) {
+                                  value = value.toLowerCase();
+                                }
+                                style.textTransform = "none";
                               }
 
-                              let style = {};
-
-                              // Apply red color if the column is 'due_amount' and status is 'due'
-                              if (
-                                column.id === "total_amount" &&
-                                row.status === "due"
-                              ) {
-                                style.color = "var(--color6)";
-                              } else if (
-                                column.id === "total_amount" &&
-                                row.status === ""
-                              )
-
-                                // Lowercase email if it's not already in lowercase
-                                if (column.id === "email") {
-                                  if (
-                                    value &&
-                                    value[0] !== value[0].toLowerCase()
-                                  ) {
-                                    value = value.toLowerCase();
-                                  }
-                                  style.textTransform = "none";
-                                }
-
-                              return (
-                                <td
-                                  key={column.id}
-                                  align={column.align}
-                                  onClick={() => {
-                                    history.push(`/customerView/${row.id}`);
-                                  }}
-                                  style={style}
-                                >
-                                  {column.format && typeof value === "number"
-                                    ? column.format(value)
-                                    : value}
-                                </td>
-                              );
-                            })}
-                            <td style={{ borderRadius: "0 10px 10px 0" }}>
-                              <div
-                                style={{
-                                  fontSize: "15px",
-                                  display: "flex",
-                                  gap: "6px",
-                                  color: "gray",
-                                  cursor: "pointer",
+                            return (
+                              <td
+                                key={column.id}
+                                align={column.align}
+                                onClick={() => {
+                                  history.push(`/customerView/${row.id}`);
                                 }}
+                                style={style}
                               >
-                                <VisibilityIcon
-                                  style={{ color: "var(--color1)" }}
-                                  onClick={() => {
-                                    history.push(`/customerView/${row.id}`);
-                                  }}
-                                />
-                                {hasPermission(permissions, "customer edit") &&
-                                  row.name !== "Direct Customers" && (
-                                    <BorderColorIcon
-                                      style={{ color: "var(--color1)" }}
-                                      onClick={() => handleEditOpen(row)}
-                                      disabled={row.name == "Direct Customers"}
-                                    />
-                                  )}
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                )}
+                                {column.format && typeof value === "number"
+                                  ? column.format(value)
+                                  : value}
+                              </td>
+                            );
+                          })}
+                          <td style={{ borderRadius: "0 10px 10px 0" }}>
+                            <div
+                              style={{
+                                fontSize: "15px",
+                                display: "flex",
+                                gap: "6px",
+                                color: "gray",
+                                cursor: "pointer",
+                              }}
+                            >
+                              <VisibilityIcon
+                                style={{ color: "var(--color1)" }}
+                                onClick={() => {
+                                  history.push(`/customerView/${row.id}`);
+                                }}
+                              />
+                              {hasPermission(permissions, "customer edit") &&
+                                row.name !== "Direct Customers" && (
+                                  <BorderColorIcon
+                                    style={{ color: "var(--color1)" }}
+                                    onClick={() => handleEditOpen(row)}
+                                    disabled={row.name == "Direct Customers"}
+                                  />
+                                )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
               </table>
             </div>
           </div>

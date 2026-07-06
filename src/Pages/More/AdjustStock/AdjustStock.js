@@ -54,7 +54,7 @@ const AdjustStock = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const initialSearchTerms = stockList.map(() => "");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
 
@@ -535,575 +535,578 @@ const AdjustStock = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
+      <div
+        style={{
+          minHeight: 'calc(100vh - 64px)',
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+        }}
+      >
+        <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+          <div className="paddin12-8">
+            <div className="px-4 py-3">
+              <div
+                className="cust_list_main_hdr_bg"
+                style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "7px",
+                    alignItems: "center",
+                    whiteSpace: "nowrap",
+                  }}
+                  className=""
+                >
+                  <span
+                    style={{
+                      color: "var(--color1)",
+                      display: "flex",
+                      alignItems: "center",
+                      fontWeight: 700,
+                      fontSize: "20px",
+                      marginRight: "10px",
+                    }}
+                  >
+                    Adjust Stock
+                  </span>
+                  <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
+                </div>
+                <div className="headerList cust_hdr_mn_bg">
+                  <Button
+                    variant="contained"
+                    style={{
+                      background: "var(--color1)",
+                      display: "flex",
+                    }}
+                    className="gap-2"
+                    onClick={handelAddOpen}
+                  >
+                    <AddIcon className="" />
+                    Adjust Stock
+                  </Button>
+                </div>
+              </div>
+              <div
+                className="row border-b px-4 border-dashed"
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
+            </div>
+
+
+            {/*<====================================================================== table  =====================================================================> */}
+            <div className=" firstrow px-4 ">
+              <div className="overflow-x-auto" style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
+                <table
+                  className="w-full border-collapse custom-table"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      <th style={{ minWidth: 100, padding: '8px' }}>SR. No</th>
+                      {stockList.map((column, index) => (
+                        <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
+                          <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                            <span>{column.label}</span>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <SwapVertIcon
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => sortByColumn(column.id)}
+                              />
+                              {/* Show search field only for Item Name column */}
+                              {column.id === 'iteam_name' && (
+                                <TextField
+                                  autoComplete="off"
+                                  label="Type Here"
+                                  id="filled-basic"
+                                  size="small"
+                                  sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                                  value={searchTerms[0] || ''}
+                                  onChange={(e) => {
+                                    const newSearchTerms = [e.target.value];
+                                    setSearchTerms(newSearchTerms);
+                                    handleSearchChange(e.target.value);
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      adjustStockList(1);
+                                    }
+                                  }}
+                                  InputProps={{
+                                    endAdornment: searchTerms[0] && (
+                                      <IconButton
+                                        size="small"
+                                        onClick={() => {
+                                          setSearchTerms(['']);
+                                          handleSearchChange('');
+                                        }}
+                                        sx={{ padding: 0 }}
+                                      >
+                                        <CloseIcon fontSize="small" />
+                                      </IconButton>
+                                    ),
+                                  }}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody style={{ background: "#3f621217" }}>
+                    {(isLoading || isSearchLoading) ? (
+                      <tr>
+                        <td
+                          colSpan={stockList.length + 1}
+                          style={{
+                            textAlign: "center",
+                            padding: "40px",
+                          }}
+                        >
+                          <div className="flex justify-center items-center w-full">
+                            <Loader />
+                          </div>
+                        </td>
+                      </tr>
+                    ) : filteredList.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={stockList.length + 1}
+                          className="text-center text-gray-500"
+                          style={{ borderRadius: "10px 10px 10px 10px" }}
+                        >
+                          No data found
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredList.map((row, index) => (
+                        <tr
+                          className="bg-[#f5f8f3] align-middle"
+                          key={row.code}
+                        >
+                          <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
+                            {((currentPage - 1) * rowsPerPage) + index + 1}
+                          </td>
+
+                          {stockList.map((column, colIndex) => {
+                            // const value = row[column.id];
+                            let value = row[column.id];
+
+                            if (column.id === "iteam_name" && typeof value === "object" && value !== null) {
+                              value = value.iteam_name || value.name || value.item_name || "";
+                            }
+                            const tdClass = "px-4 py-2 font-semibold text-center";
+                            return (
+                              <td
+                                key={column.id}
+                                className={`capitalize ${tdClass} ${colIndex === stockList.length - 1 ? 'rounded-r-[10px]' : ''}`}
+                              >
+                                {column.format && typeof value === "number"
+                                  ? column.format(value)
+                                  : (value !== null &&
+                                    value !== undefined &&
+                                    value !== "" &&
+                                    value !== "[object Object]"
+                                    ? value
+                                    : "-")}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
-      ) : (
+
+        {/*<====================================================================== pagination  =====================================================================> */}
         <div
+          className="flex justify-center mt-4"
           style={{
-            minHeight: 'calc(100vh - 64px)',
-            display: 'flex',
-            flexDirection: 'column',
+            marginTop: 'auto',
             width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1rem',
           }}
         >
-          <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
-            <div className="paddin12-8">
-              <div className="px-4 py-3">
-                <div
-                  className="cust_list_main_hdr_bg"
-                  style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "7px",
-                      alignItems: "center",
-                      whiteSpace: "nowrap",
-                    }}
-                    className=""
-                  >
-                    <span
-                      style={{
-                        color: "var(--color1)",
-                        display: "flex",
-                        alignItems: "center",
-                        fontWeight: 700,
-                        fontSize: "20px",
-                        marginRight: "10px",
-                      }}
-                    >
-                      Adjust Stock
-                    </span>
-                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
-                  </div>
-                  <div className="headerList cust_hdr_mn_bg">
-                    <Button
-                      variant="contained"
-                      style={{
-                        background: "var(--color1)",
-                        display: "flex",
-                      }}
-                      className="gap-2"
-                      onClick={handelAddOpen}
-                    >
-                      <AddIcon className="" />
-                      Adjust Stock
-                    </Button>
-                  </div>
-                </div>
-                <div
-                  className="row border-b px-4 border-dashed"
-                  style={{ borderColor: "var(--color2)" }}
-                ></div>
-              </div>
-
-
-              {/*<====================================================================== table  =====================================================================> */}
-              <div className=" firstrow px-4 ">
-                <div className="overflow-x-auto" style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
-                  <table
-                    className="w-full border-collapse custom-table"
-                    style={{
-                      whiteSpace: "nowrap",
-                      borderCollapse: "separate",
-                      borderSpacing: "0 6px",
-                    }}
-                  >
-                    <thead>
-                      <tr>
-                        <th style={{ minWidth: 100, padding: '8px' }}>SR. No</th>
-                        {stockList.map((column, index) => (
-                          <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
-                            <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-                              <span>{column.label}</span>
-                              <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <SwapVertIcon
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={() => sortByColumn(column.id)}
-                                />
-                                {/* Show search field only for Item Name column */}
-                                {column.id === 'iteam_name' && (
-                                  <TextField
-                                    autoComplete="off"
-                                    label="Type Here"
-                                    id="filled-basic"
-                                    size="small"
-                                    sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
-                                    value={searchTerms[0] || ''}
-                                    onChange={(e) => {
-                                      const newSearchTerms = [e.target.value];
-                                      setSearchTerms(newSearchTerms);
-                                      handleSearchChange(e.target.value);
-                                    }}
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Enter") {
-                                        e.preventDefault();
-                                        adjustStockList(1);
-                                      }
-                                    }}
-                                    InputProps={{
-                                      endAdornment: searchTerms[0] && (
-                                        <IconButton
-                                          size="small"
-                                          onClick={() => {
-                                            setSearchTerms(['']);
-                                            handleSearchChange('');
-                                          }}
-                                          sx={{ padding: 0 }}
-                                        >
-                                          <CloseIcon fontSize="small" />
-                                        </IconButton>
-                                      ),
-                                    }}
-                                  />
-                                )}
-                              </div>
-                            </div>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    {isSearchLoading ? (
-                      <div className="loader-container ">
-                        <Loader />
-                      </div>
-                    ) : (
-                      <tbody style={{ background: "#3f621217" }}>
-                        {filteredList.length === 0 ? (
-                          <tr>
-                            <td
-                              colSpan={stockList.length + 1}
-                              className="text-center text-gray-500"
-                              style={{ borderRadius: "10px 10px 10px 10px" }}
-                            >
-                              No data found
-                            </td>
-                          </tr>
-                        ) : (
-                          filteredList.map((row, index) => (
-                            <tr
-                              className="bg-[#f5f8f3] align-middle"
-                              key={row.code}
-                            >
-                              <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
-                                {((currentPage - 1) * rowsPerPage) + index + 1}
-                              </td>
-
-                              {stockList.map((column, colIndex) => {
-                                // const value = row[column.id];
-                                let value = row[column.id];
-
-                                if (column.id === "iteam_name" && typeof value === "object" && value !== null) {
-                                  value = value.iteam_name || value.name || value.item_name || "";
-                                }
-                                const tdClass = "px-4 py-2 font-semibold text-center";
-                                return (
-                                  <td
-                                    key={column.id}
-                                    className={`capitalize ${tdClass} ${colIndex === stockList.length - 1 ? 'rounded-r-[10px]' : ''}`}
-                                  >
-                                    {column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : (value !== null &&
-                                        value !== undefined &&
-                                        value !== "" &&
-                                        value !== "[object Object]"
-                                        ? value
-                                        : "-")}
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    )}
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/*<====================================================================== pagination  =====================================================================> */}
-          <div
-            className="flex justify-center mt-4"
-            style={{
-              marginTop: 'auto',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '1rem',
-            }}
+          <button
+            onClick={handlePrevious}
+            className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage === 1}
           >
+            Previous
+          </button>
+          {currentPage > 2 && (
             <button
-              onClick={handlePrevious}
-              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                ? "bg-gray-200 text-gray-700"
-                : "secondary-bg text-white"
-                }`}
-              disabled={currentPage === 1}
+              onClick={() => handleClick(currentPage - 2)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
             >
-              Previous
+              {currentPage - 2}
             </button>
-            {currentPage > 2 && (
-              <button
-                onClick={() => handleClick(currentPage - 2)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage - 2}
-              </button>
-            )}
-            {currentPage > 1 && (
-              <button
-                onClick={() => handleClick(currentPage - 1)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage - 1}
-              </button>
-            )}
+          )}
+          {currentPage > 1 && (
             <button
-              onClick={() => handleClick(currentPage)}
-              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+              onClick={() => handleClick(currentPage - 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
             >
-              {currentPage}
+              {currentPage - 1}
             </button>
-            {currentPage < totalPages && (
-              <button
-                onClick={() => handleClick(currentPage + 1)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage + 1}
-              </button>
-            )}
+          )}
+          <button
+            onClick={() => handleClick(currentPage)}
+            className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+          >
+            {currentPage}
+          </button>
+          {currentPage < totalPages && (
             <button
-              onClick={handleNext}
-              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                ? "bg-gray-200 text-gray-700"
-                : "secondary-bg text-white"
-                }`}
-              disabled={currentPage >= totalPages}
+              onClick={() => handleClick(currentPage + 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
             >
-              Next
+              {currentPage + 1}
             </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
-              <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
-              <select
-                value={rowsPerPage}
-                onChange={(e) => {
-                  const newRows = parseInt(e.target.value, 10);
-                  setRowsPerPage(newRows);
-                  setCurrentPage(1);
-                }}
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  border: '1px solid var(--color1)',
-                  outline: 'none',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: 'var(--color1)',
-                  fontWeight: 'bold',
-                  backgroundColor: 'white',
-                }}
-              >
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-              </select>
-            </div>
-          </div>
-
-          {/*<====================================================================== Adjust stock dialog  =====================================================================> */}
-          <Dialog className="custom-dialog modal_991" open={openAddPopUp}>
-            <DialogTitle id="alert-dialog-title" className="primary">
-              Stock Adjustment
-            </DialogTitle>
-            <IconButton
-              aria-label="close"
-              onClick={resetAddDialog}
-              sx={{
-                position: "absolute",
-                right: 8,
-                top: 8,
-                color: "#ffffff",
+          )}
+          <button
+            onClick={handleNext}
+            className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage >= totalPages}
+          >
+            Next
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+            <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                const newRows = parseInt(e.target.value, 10);
+                setRowsPerPage(newRows);
+                setCurrentPage(1);
+              }}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '6px',
+                border: '1px solid var(--color1)',
+                outline: 'none',
+                cursor: 'pointer',
+                fontSize: '14px',
+                color: 'var(--color1)',
+                fontWeight: 'bold',
+                backgroundColor: 'white',
               }}
             >
-              <CloseIcon />
-            </IconButton>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+        </div>
 
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {/* First row: Item & Company */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
-                  <div className="w-full">
-                    <span className="title primary mb-2">Item Name   <span className="text-red-600 ml-1">*</span></span>
+        {/*<====================================================================== Adjust stock dialog  =====================================================================> */}
+        <Dialog className="custom-dialog modal_991" open={openAddPopUp}>
+          <DialogTitle id="alert-dialog-title" className="primary">
+            Stock Adjustment
+          </DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={resetAddDialog}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "#ffffff",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
 
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {/* First row: Item & Company */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
+                <div className="w-full">
+                  <span className="title primary mb-2">Item Name   <span className="text-red-600 ml-1">*</span></span>
+
+                  <Autocomplete
+                    disablePortal
+                    options={purchaseItemData}
+                    size="small"
+                    value={selectedItem || null}
+                    onChange={handleOptionChange}
+                    getOptionLabel={(option) => option.iteam_name}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+
+                    renderInput={(params) => (
+                      <TextField autoComplete="off" {...params} placeholder="Enter Item Name" error={!!errors.selectedItem} sx={{
+                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#d32f2f !important",
+
+                        },
+                      }} />
+                    )}
+                  />
+                  {errors.selectedItem && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      {errors.selectedItem}
+                    </span>
+                  )}
+                </div>
+
+                {/* <div className="w-full">
+                    <span className="title primary mb-2">Company</span>
                     <Autocomplete
                       disablePortal
-                      options={purchaseItemData}
+                      options={companyList}
                       size="small"
-                      value={selectedItem || null}
-                      onChange={handleOptionChange}
-                      getOptionLabel={(option) => option.iteam_name}
-                      isOptionEqualToValue={(option, value) => option.id === value.id}
-
+                      value={selectedCompany}
+                      onChange={(e, value) => setSelectedCompany(value)}
+                      getOptionLabel={(option) => option.company_name}
+                      disabled
                       renderInput={(params) => (
-                        <TextField autoComplete="off" {...params} placeholder="Enter Item Name" error={!!errors.selectedItem} sx={{
+                        <TextField autoComplete="off" {...params} placeholder="Enter Company Name" />
+                      )}
+                    />
+                  </div> */}
+
+
+                <div className="w-full">
+                  <span className="title primary mb-2"> Batch <span className="text-red-600">*</span></span>
+                  <Autocomplete
+                    disablePortal
+                    options={batchListData}
+                    size="small"
+                    value={batch || null}
+                    onChange={handleBatchData}
+                    error={!!errors.batch}
+                    getOptionLabel={(option) => option?.batch_number || ""}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    renderInput={(params) => (
+                      <TextField {...params} autoComplete="off" placeholder="Batch"
+                        error={!!errors.batch}
+                        sx={{
                           "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
                             borderColor: "#d32f2f !important",
-
                           },
-                        }} />
-                      )}
-                    />
-                    {errors.selectedItem && (
-                      <span style={{ color: "red", fontSize: "12px" }}>
-                        {errors.selectedItem}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* <div className="w-full">
-                    <span className="title primary mb-2">Company</span>
-                    <Autocomplete
-                      disablePortal
-                      options={companyList}
-                      size="small"
-                      value={selectedCompany}
-                      onChange={(e, value) => setSelectedCompany(value)}
-                      getOptionLabel={(option) => option.company_name}
-                      disabled
-                      renderInput={(params) => (
-                        <TextField autoComplete="off" {...params} placeholder="Enter Company Name" />
-                      )}
-                    />
-                  </div> */}
-
-
-                  <div className="w-full">
-                    <span className="title primary mb-2"> Batch <span className="text-red-600">*</span></span>
-                    <Autocomplete
-                      disablePortal
-                      options={batchListData}
-                      size="small"
-                      value={batch || null}
-                      onChange={handleBatchData}
-                      error={!!errors.batch}
-                      getOptionLabel={(option) => option?.batch_number || ""}
-                      isOptionEqualToValue={(option, value) => option.id === value.id}
-                      renderInput={(params) => (
-                        <TextField {...params} autoComplete="off" placeholder="Batch"
-                          error={!!errors.batch}
-                          sx={{
-                            "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "#d32f2f !important",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.batch && (
-                      <span style={{ color: "red", fontSize: "12px" }}>
-                        {errors.batch}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Other fields */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
-                  <div className="w-full">
-                    <span className="title primary mb-2">Adjustment Date</span>
-                    <DatePicker
-                      className="custom-datepicker w-full"
-                      selected={adjustmentDate}
-                      onChange={(newDate) => setAdjustDate(newDate)}
-                      dateFormat="dd/MM/yyyy"
-                      minDate={subDays(new Date(), 15)}
-                      disabled
-                    />
-
-                  </div>
-
-                  {/* <div className="w-full">
-                    <span className="title primary mb-2"> Batch <span className="text-red-600">*</span></span>
-                    <Autocomplete
-                      disablePortal
-                      options={batchListData}
-                      size="small"
-                      value={batch || null}
-                      onChange={handleBatchData}
-                      error={!!errors.batch}
-                      getOptionLabel={(option) => option?.batch_number || ""}
-                      isOptionEqualToValue={(option, value) => option.id === value.id}
-                      renderInput={(params) => (
-                        <TextField {...params} autoComplete="off" placeholder="Batch"
-                          error={!!errors.batch}
-                          sx={{
-                            "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "#d32f2f !important",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.batch && (
-                      <span style={{ color: "red", fontSize: "12px" }}>
-                        {errors.batch}
-                      </span>
-                    )}
-                  </div> */}
-                  <div className="w-full">
-                    <span className="title primary mb-2">Company</span>
-                    <Autocomplete
-                      disablePortal
-                      options={companyList}
-                      size="small"
-                      value={selectedCompany}
-                      onChange={(e, value) => setSelectedCompany(value)}
-                      getOptionLabel={(option) => option.company_name}
-                      disabled
-                      renderInput={(params) => (
-                        <TextField autoComplete="off" {...params} placeholder="Enter Company Name" />
-                      )}
-                    />
-                  </div>
-
-                  <div className="w-full">
-                    <span className="title primary mb-2">Unit</span>
-                    <TextField
-                      autoComplete="off"
-                      disabled
-                      size="small"
-                      value={unit}
-                      placeholder="Unit"
-                      onChange={(e) => setUnit(e.target.value)}
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="w-full">
-                    <span className="title primary mb-2">Expiry</span>
-                    <TextField
-                      autoComplete="off"
-                      disabled
-                      size="small"
-                      value={expiry}
-                      placeholder="Expiry"
-                      onChange={(e) => setExpiry(e.target.value)}
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="w-full">
-                    <span className="title primary mb-2">MRP</span>
-                    <TextField
-                      autoComplete="off"
-                      type="number"
-                      disabled
-                      size="small"
-                      value={mrp}
-                      placeholder="MRP"
-                      onChange={(e) => setMrp(e.target.value)}
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="w-full">
-                    <span className="title primary mb-2">Stock</span>
-                    <TextField
-                      autoComplete="off"
-                      type="number"
-                      disabled
-                      size="small"
-                      value={stock}
-                      placeholder="Stock"
-                      onChange={(e) => setStock(e.target.value)}
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="w-full">
-                    <span className="title primary mb-2">Stock Adjusted <span className="text-red-600">*</span></span>
-                    <div className="flex flex-row gap-3">
-
-
-                      <Button
-                        style={{
-                          background: "var(--COLOR_UI_PHARMACY)",
                         }}
-                        autoFocus
-                        variant="contained"
-                        className=""
-                        onClick={() => setAdjustType((prev) => (!prev))}
-
-                      >
-                        {adjustType ? "-" : "+"}
-                      </Button>
-                      <TextField
-                        autoComplete="off"
-                        type="number"
-                        size="small"
-                        value={stockAdjust}
-                        placeholder="No."
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setStockAdjust(value === "" ? "" : parseFloat(value));
-
-                          if (errors.stockAdjust) {
-                            setErrors((prev) => ({
-                              ...prev,
-                              stockAdjust: "",
-                            }));
-                          }
-                        }}
-                        className="w-full"
                       />
-                    </div>
-                    {errors.stockAdjust && (
+                    )}
+                  />
+                  {errors.batch && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      {errors.batch}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Other fields */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+                <div className="w-full">
+                  <span className="title primary mb-2">Adjustment Date</span>
+                  <DatePicker
+                    className="custom-datepicker w-full"
+                    selected={adjustmentDate}
+                    onChange={(newDate) => setAdjustDate(newDate)}
+                    dateFormat="dd/MM/yyyy"
+                    minDate={subDays(new Date(), 15)}
+                    disabled
+                  />
+
+                </div>
+
+                {/* <div className="w-full">
+                    <span className="title primary mb-2"> Batch <span className="text-red-600">*</span></span>
+                    <Autocomplete
+                      disablePortal
+                      options={batchListData}
+                      size="small"
+                      value={batch || null}
+                      onChange={handleBatchData}
+                      error={!!errors.batch}
+                      getOptionLabel={(option) => option?.batch_number || ""}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      renderInput={(params) => (
+                        <TextField {...params} autoComplete="off" placeholder="Batch"
+                          error={!!errors.batch}
+                          sx={{
+                            "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#d32f2f !important",
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.batch && (
                       <span style={{ color: "red", fontSize: "12px" }}>
-                        {errors.stockAdjust}
+                        {errors.batch}
                       </span>
                     )}
+                  </div> */}
+                <div className="w-full">
+                  <span className="title primary mb-2">Company</span>
+                  <Autocomplete
+                    disablePortal
+                    options={companyList}
+                    size="small"
+                    value={selectedCompany}
+                    onChange={(e, value) => setSelectedCompany(value)}
+                    getOptionLabel={(option) => option.company_name}
+                    disabled
+                    renderInput={(params) => (
+                      <TextField autoComplete="off" {...params} placeholder="Enter Company Name" />
+                    )}
+                  />
+                </div>
 
-                  </div>
+                <div className="w-full">
+                  <span className="title primary mb-2">Unit</span>
+                  <TextField
+                    autoComplete="off"
+                    disabled
+                    size="small"
+                    value={unit}
+                    placeholder="Unit"
+                    onChange={(e) => setUnit(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
 
-                  <div className="w-full">
-                    <span className="title primary mb-2">Remaining Stock</span>
+                <div className="w-full">
+                  <span className="title primary mb-2">Expiry</span>
+                  <TextField
+                    autoComplete="off"
+                    disabled
+                    size="small"
+                    value={expiry}
+                    placeholder="Expiry"
+                    onChange={(e) => setExpiry(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="w-full">
+                  <span className="title primary mb-2">MRP</span>
+                  <TextField
+                    autoComplete="off"
+                    type="number"
+                    disabled
+                    size="small"
+                    value={mrp}
+                    placeholder="MRP"
+                    onChange={(e) => setMrp(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="w-full">
+                  <span className="title primary mb-2">Stock</span>
+                  <TextField
+                    autoComplete="off"
+                    type="number"
+                    disabled
+                    size="small"
+                    value={stock}
+                    placeholder="Stock"
+                    onChange={(e) => setStock(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="w-full">
+                  <span className="title primary mb-2">Stock Adjusted <span className="text-red-600">*</span></span>
+                  <div className="flex flex-row gap-3">
+
+
+                    <Button
+                      style={{
+                        background: "var(--COLOR_UI_PHARMACY)",
+                      }}
+                      autoFocus
+                      variant="contained"
+                      className=""
+                      onClick={() => setAdjustType((prev) => (!prev))}
+
+                    >
+                      {adjustType ? "-" : "+"}
+                    </Button>
                     <TextField
                       autoComplete="off"
                       type="number"
-                      disabled
                       size="small"
-                      value={remainingStock}
-                      placeholder="Remaining Stock"
+                      value={stockAdjust}
+                      placeholder="No."
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setStockAdjust(value === "" ? "" : parseFloat(value));
+
+                        if (errors.stockAdjust) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            stockAdjust: "",
+                          }));
+                        }
+                      }}
                       className="w-full"
                     />
                   </div>
-                </div>
-              </DialogContentText>
-            </DialogContent>
+                  {errors.stockAdjust && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      {errors.stockAdjust}
+                    </span>
+                  )}
 
-            <DialogActions style={{ padding: "20px 24px" }}>
-              <Button
-                style={{
-                  background: "var(--COLOR_UI_PHARMACY)",
-                }}
-                autoFocus
-                variant="contained"
-                className=""
-                onClick={validateForm}
-              >
-                Save
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      )}
+                </div>
+
+                <div className="w-full">
+                  <span className="title primary mb-2">Remaining Stock</span>
+                  <TextField
+                    autoComplete="off"
+                    type="number"
+                    disabled
+                    size="small"
+                    value={remainingStock}
+                    placeholder="Remaining Stock"
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+
+          <DialogActions style={{ padding: "20px 24px" }}>
+            <Button
+              style={{
+                background: "var(--COLOR_UI_PHARMACY)",
+              }}
+              autoFocus
+              variant="contained"
+              className=""
+              onClick={validateForm}
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </>
   );
 };

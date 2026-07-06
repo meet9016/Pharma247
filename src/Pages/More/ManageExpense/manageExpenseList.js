@@ -42,7 +42,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const ManageExpense = () => {
   const history = useHistory();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [startDate, setStartDate] = useState(subDays(new Date(), 15));
   const [endDate, setEndDate] = useState(new Date());
   const [expenseDate, setExpenseDate] = useState(new Date());
@@ -484,19 +484,14 @@ const ManageExpense = () => {
           draggable
           pauseOnHover
         />
-        {isLoading ? (
-          <div className="loader-container ">
-            <Loader />
-          </div>
-        ) : (
-          <div
-            style={{
-              minHeight: 'calc(100vh - 64px)',
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-            }}
-          >
+        <div
+          style={{
+            minHeight: 'calc(100vh - 64px)',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
             <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
               <div className="p-6">
                 <div
@@ -659,7 +654,21 @@ const ManageExpense = () => {
                       </tr>
                     </thead>
                     <tbody style={{ backgroundColor: "#3f621217" }}>
-                      {expenseData?.expense_list?.length === 0 ? (
+                      {isLoading ? (
+                        <tr>
+                          <td
+                            colSpan={expenseColumns.length + 1}
+                            style={{
+                              textAlign: "center",
+                              padding: "40px",
+                            }}
+                          >
+                            <div className="flex justify-center items-center w-full">
+                              <Loader />
+                            </div>
+                          </td>
+                        </tr>
+                      ) : expenseData?.expense_list?.length === 0 ? (
                         <tr>
                           <td
                             colSpan={expenseColumns.length + 1}
@@ -1288,7 +1297,6 @@ const ManageExpense = () => {
               </DialogActions>
             </Dialog>
           </div>
-        )}
       </div>
     </>
   );

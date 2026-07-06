@@ -259,7 +259,7 @@ const BankAccount = () => {
           })
           .then((response) => {
             BankList();
-            BankDetailgetByID();
+            BankDetailgetByID(selectedAccountId);
             toast.dismiss();
             toast.success(response.data.message);
             setPaymentType("");
@@ -334,7 +334,13 @@ const BankAccount = () => {
           },
         })
         .then((response) => {
-          setBankData(response.data.data);
+          const list = response.data.data || [];
+          setBankData(list);
+          if (list.length > 0 && (selectedAccountId === null || selectedAccountId === undefined)) {
+            setSelectedAccountId(list[0].id);
+            setDetails(list[0]);
+            BankDetailgetByID(list[0].id);
+          }
           if (response.data.status === 401) {
             history.push("/");
             localStorage.clear();

@@ -48,7 +48,7 @@ const SehatMembersList = () => {
         direction: "ascending",
     });
     const [currentPage, setCurrentPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [totalRecords, setTotalRecords] = useState(0);
 
@@ -260,6 +260,7 @@ const SehatMembersList = () => {
             }
         } finally {
             setIsSearchLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -308,11 +309,6 @@ const SehatMembersList = () => {
                 draggable
                 pauseOnHover
             />
-            {isLoading ? (
-                <div className="loader-container ">
-                    <Loader />
-                </div>
-            ) : (
                 <div
                     style={{
                         minHeight: 'calc(100vh - 64px)',
@@ -438,13 +434,22 @@ const SehatMembersList = () => {
                                                 <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
                                             </tr>
                                         </thead>
-                                        {isSearchLoading ? (
-                                            <div className="loader-container ">
-                                                <Loader />
-                                            </div>
-                                        ) : (
                                             <tbody style={{ background: "#3f621217" }}>
-                                                {tableData.length === 0 ? (
+                                                {(isLoading || isSearchLoading) ? (
+                                                    <tr>
+                                                        <td
+                                                            colSpan={columns.length + 1}
+                                                            style={{
+                                                                textAlign: "center",
+                                                                padding: "40px",
+                                                            }}
+                                                        >
+                                                            <div className="flex justify-center items-center w-full">
+                                                                <Loader />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ) : tableData.length === 0 ? (
                                                     <tr>
                                                         <td
                                                             colSpan={columns.length + 1}
@@ -584,9 +589,7 @@ const SehatMembersList = () => {
                             Next
                         </button>
                     </div>
-
                 </div>
-            )}
 
             {addMember && <AddMemberDialog addMember={addMember} setAddMember={setAddMember} customerId={customerId} />}
             {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} setAddMember={setAddMember} />}
