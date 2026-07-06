@@ -277,6 +277,8 @@ const PaymentList = () => {
     setDistributor(row?.distributor_name);
     setDistributorsId(row?.distributor_id);
     setNote(row?.note);
+    setPaymentDate(row?.payment_date ? new Date(row.payment_date) : new Date());
+    setErrors({});
   };
 
   const handelAddOpen = () => {
@@ -284,12 +286,19 @@ const PaymentList = () => {
     setShowTable(true);
     setPaymentLabel("Add New Payment");
     setButtonLabel("Save ");
+    setDistributor(null);
+    setPaymentType("");
+    setNote("");
+    setAmounts({});
+    setPurchaseBill([]);
+    setErrors({});
   };
 
   const handlePermission = () => {
     const newErrors = {};
-    if (isEditMode == false) {
+    if (isEditMode === false) {
       if (!distributor) newErrors.distributor = "Distributor is required";
+      if (!paymentDate) newErrors.paymentDate = "Payment Date is required";
       if (!paymentType) newErrors.paymentType = "Select Any Payment Mode";
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -298,7 +307,14 @@ const PaymentList = () => {
       }
       return isValid;
     } else {
-      submitPayment();
+      if (!paymentDate) newErrors.paymentDate = "Payment Date is required";
+      if (!paymentType) newErrors.paymentType = "Select Any Payment Mode";
+      setErrors(newErrors);
+      const isValid = Object.keys(newErrors).length === 0;
+      if (isValid) {
+        submitPayment();
+      }
+      return isValid;
     }
   };
 
@@ -616,7 +632,15 @@ const PaymentList = () => {
   };
 
   // Render
-  useSubmitShortcut(submitPayment, confirm);
+  const handleShortcutSave = () => {
+    if (confirm) {
+      submitPayment();
+    } else if (open) {
+      handlePermission();
+    }
+  };
+
+  useSubmitShortcut(handleShortcutSave, open || confirm);
 
   return (
     <>
@@ -1024,42 +1048,48 @@ const PaymentList = () => {
                           size="small"
                           autoFocus
                           onChange={handleDistributor}
+                          onInputChange={(event, newInputValue) => {
+                            if (newInputValue) {
+                              setErrors((prev) => ({
+                                ...prev,
+                                distributor: "",
+                              }));
+                            }
+                          }}
                           options={distributorList}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params}
                             placeholder="Select Distributor "
                             error={!!errors.distributor}
+                            helperText={errors.distributor}
                             sx={{
+                              "& .MuiFormHelperText-root": {
+                                marginLeft: "0px",   // left margin remove
+
+                              },
                               "& .MuiOutlinedInput-root": {
                                 "& .MuiOutlinedInput-notchedOutline": {
                                   borderColor: errors.distributor
-                                    ? "#d32f2f"
+                                    ? "#ff0000ff"
                                     : "rgba(0, 0, 0, 0.38)",
                                 },
                                 "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#d32f2f !important",
+                                  borderColor: "#ff0000ff !important",
                                 },
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   borderColor: errors.distributor
-                                    ? "#d32f2f"
+                                    ? "#ff0000ff"
                                     : "var(--color1)",
                                 },
                                 "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                                   borderColor: errors.distributor
-                                    ? "#d32f2f"
+                                    ? "#ff0000ff"
                                     : "var(--color1)",
                                 },
                               },
                             }}
-                          />
-                          }
-
+                          />}
                         />
-                        {errors.distributor && (
-                          <span style={{ color: "red", fontSize: "12px" }}>
-                            {errors.distributor}
-                          </span>
-                        )}
                       </>
                     )}
                   </div>
@@ -1079,12 +1109,20 @@ const PaymentList = () => {
                                                 </LocalizationProvider> */}
 
                     <DatePicker
-                      className="custom-datepicker "
+                      className={`custom-datepicker ${errors.paymentDate ? "custom-datepicker-error" : ""}`}
                       selected={paymentDate}
-                      onChange={(newDate) => setPaymentDate(newDate)}
+                      onChange={(newDate) => {
+                        setPaymentDate(newDate);
+                        setErrors((prev) => ({ ...prev, paymentDate: "" }));
+                      }}
                       dateFormat="dd/MM/yyyy"
-                      minDate={new Date()} //
+                      minDate={new Date()}
                     />
+                    {errors.paymentDate && (
+                      <div style={{ color: "#ff0000ff", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.paymentDate}
+                      </div>
+                    )}
                   </div>
 
                   {/* <div style={{ width: "100%" }}>
@@ -1140,7 +1178,18 @@ const PaymentList = () => {
                           paymentType: "",
                         }));
                       }}
+                      onInputChange={(event, newInputValue) => {
+                        if (newInputValue) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            paymentType: "",
+                          }));
+                        }
+                      }}
                       sx={{
+                        "& .MuiFormHelperText-root": {
+                          marginLeft: "0px",
+                        },
                         "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
                           borderColor: "#d32f2f !important",
                         },
@@ -1150,15 +1199,10 @@ const PaymentList = () => {
                           {...params}
                           placeholder="Select Payment Mode"
                           error={!!errors.paymentType}
+                          helperText={errors.paymentType}
                         />
                       )}
                     />
-
-                    {errors.paymentType && (
-                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
-                        {errors.paymentType}
-                      </div>
-                    )}
                   </div>
 
                 </div>

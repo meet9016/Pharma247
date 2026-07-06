@@ -108,6 +108,8 @@ const OrderList = () => {
   const [openAddPopUpPlaceOrder, setOpenAddPopUpPlaceOrder] = useState(false);
   const [purchaseHistory, setPurchaseHistory] = useState([]);
   const [orderId, setOrderId] = useState(null);
+  const [allOnlineOrders, setAllOnlineOrders] = useState([]);
+  const [errors, setErrors] = useState({});
 
   const totalPages = Math.ceil(totalRecords / rowsPerPage);
 
@@ -253,11 +255,11 @@ const OrderList = () => {
   };
 
   // New function to update individual order status
-  const updateOrderStatus = async (itemId, newStatusId) => {
-    setUpdatingStatus(itemId);
+  const updateOrderStatus = async (orderId, newStatusId) => {
+    setUpdatingStatus(orderId);
     let data = new FormData();
     const params = {
-      id: itemId,
+      id: orderId,
       status: newStatusId,
     };
 
@@ -290,19 +292,53 @@ const OrderList = () => {
     }
   };
 
-  const handleStatusChange = (itemId, newStatusId) => {
-    updateOrderStatus(itemId, newStatusId);
+  const handleStatusChange = (orderId, newStatusId) => {
+    updateOrderStatus(orderId, newStatusId);
+  };
+
+  const fetchAllOnlineOrders = async () => {
+    let data = new FormData();
+    data.append("page", 1);
+    data.append("limit", "");
+    try {
+      const response = await axios.post("online-sales-order?", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAllOnlineOrders(response.data.data || []);
+    } catch (error) {
+      console.error("API error fetching all online orders:", error);
+      setAllOnlineOrders([]);
+    }
   };
 
   const handelAddOpen = () => {
     setOpenAddPopUpPlaceOrder(true);
+    setErrors({});
+    fetchAllOnlineOrders();
   };
 
   const PlaceOrder = async () => {
+    setErrors({});
+
+    const newErrors = {};
+    if (!items || items.length === 0) {
+      newErrors.items = "Please select at least one item.";
+    }
+    if (!statusName || !statusName.id) {
+      newErrors.status = "Please select a status.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.dismiss();
+      toast.error(newErrors.items || newErrors.status);
+      return;
+    }
+
     let data = new FormData();
     const params = {
       id: items.join(","),
-      status: statusName,
+      status: statusName.id,
     };
     try {
       await axios
@@ -314,14 +350,19 @@ const OrderList = () => {
         })
         .then((response) => {
           toast.dismiss();
-          toast.success(response.data.meassage);
+          const successMsg = response.data?.meassage || response.data?.message || "Order status updated successfully";
+          toast.success(successMsg);
           OnlineOrderList(currentPage);
           setOpenAddPopUpPlaceOrder(false);
           setItems([]);
           setStatusName({ id: 2, name: "Order" });
+          setErrors({});
         });
     } catch (error) {
       console.error("API error:", error);
+      toast.dismiss();
+      const errorMsg = error?.response?.data?.message || error?.response?.data?.meassage || "Failed to update status";
+      toast.error(errorMsg);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
@@ -682,8 +723,8 @@ const OrderList = () => {
                                         <FormControl size="small" sx={{ minWidth: 120 }}>
                                           <Select
                                             value={getStatusIdFromName(value) || ""}
-                                            onChange={(e) => handleStatusChange(row.item_id, e.target.value)}
-                                            disabled={updatingStatus === row.item_id}
+                                            onChange={(e) => handleStatusChange(row.id, e.target.value)}
+                                            disabled={updatingStatus === row.id}
                                             variant="standard"
                                             disableUnderline
                                             sx={{
@@ -717,7 +758,7 @@ const OrderList = () => {
                                             ))}
                                           </Select>
                                         </FormControl>
-                                        {updatingStatus === row.item_id && (
+                                        {updatingStatus === row.id && (
                                           <div style={{ fontSize: "0.75rem", color: "#666", marginTop: "2px" }}>
                                             Updating...
                                           </div>
@@ -1066,10 +1107,32 @@ const OrderList = () => {
 
 
             {/*<=============================================== order dialog  ==============================================> */}
-            <Dialog className=" custom-dialog pending-orders-dialog" open={openAddPopUpPlaceOrder}>
+            <Dialog
+              className="custom-dialog pending-orders-dialog"
+              open={openAddPopUpPlaceOrder}
+              maxWidth="sm"
+              fullWidth
+              sx={{
+                "& .MuiDialog-container": {
+                  "& .MuiPaper-root": {
+                    borderRadius: "16px",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+                  },
+                },
+              }}
+            >
               <DialogTitle
                 id="alert-dialog-title"
-                style={{ fontWeight: 700 }}
+                style={{
+                  fontWeight: 700,
+                  backgroundColor: "var(--color1)",
+                  color: "#ffffff",
+                  padding: "16px 24px",
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "1.25rem",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
+                }}
               >
                 Pending Orders
               </DialogTitle>
@@ -1078,40 +1141,45 @@ const OrderList = () => {
                 onClick={() => setOpenAddPopUpPlaceOrder(false)}
                 sx={{
                   position: "absolute",
-                  right: 8,
-                  top: 8,
+                  right: 12,
+                  top: 12,
                   color: "#ffffff",
+                  transition: "transform 0.2s ease-in-out",
+                  "&:hover": {
+                    transform: "rotate(90deg)",
+                    backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  },
                 }}
               >
                 <CloseIcon />
               </IconButton>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  <div className="flex flex-col gap-5" style={{ width: "100%" }}>
+              <DialogContent sx={{ padding: "24px !important" }}>
+                <DialogContentText id="alert-dialog-description" component="div">
+                  <div className="flex flex-col gap-6" style={{ width: "100%" }}>
                     <Autocomplete
                       multiple
                       id="pending-orders-autocomplete"
-                      options={[{ item_id: "select-all", iteam_name: "Select All" }, ...(onlineOrder || [])]}
+                      options={[{ id: "select-all", iteam_name: "Select All" }, ...(allOnlineOrders || [])]}
                       disableCloseOnSelect
                       getOptionLabel={(option) => option.iteam_name || ""}
-                      value={onlineOrder.filter(option => items.includes(option.item_id))}
+                      value={allOnlineOrders.filter(option => items.includes(option.id))}
                       onChange={(event, newValue) => {
-                        const hasSelectAll = newValue.some(option => option.item_id === "select-all");
+                        const hasSelectAll = newValue.some(option => option.id === "select-all");
                         if (hasSelectAll) {
-                          if (items.length === onlineOrder.length) {
+                          if (items.length === allOnlineOrders.length) {
                             setItems([]);
                           } else {
-                            setItems(onlineOrder.map((item) => item.item_id));
+                            setItems(allOnlineOrders.map((item) => item.id));
                           }
                         } else {
-                          const selectedIds = newValue.map(option => option.item_id).filter(id => id !== "select-all");
+                          const selectedIds = newValue.map(option => option.id).filter(id => id !== "select-all");
                           setItems(selectedIds);
                         }
                       }}
                       renderOption={(props, option, { selected }) => {
-                        const isSelectAll = option.item_id === "select-all";
-                        const isChecked = isSelectAll ? items.length === onlineOrder.length : selected;
-                        const isIndeterminate = isSelectAll && items.length > 0 && items.length < onlineOrder.length;
+                        const isSelectAll = option.id === "select-all";
+                        const isChecked = isSelectAll ? items.length === allOnlineOrders.length : selected;
+                        const isIndeterminate = isSelectAll && items.length > 0 && items.length < allOnlineOrders.length;
                         return (
                           <li {...props}>
                             <Checkbox
@@ -1130,13 +1198,23 @@ const OrderList = () => {
                         );
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Item Name" placeholder="Select Items" size="small"
+                        <TextField
+                          {...params}
+                          label="Item Name"
+                          placeholder="Select Items"
+                          size="small"
+                          error={!!errors.items}
+                          helperText={errors.items}
                           sx={{
                             width: "100%",
                             "& .MuiOutlinedInput-root": {
-                              padding: "8px !important",
+                              borderRadius: "8px",
+                              "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#F31C1C !important",
+                              },
                             },
-                          }} />
+                          }}
+                        />
                       )}
                       sx={{ width: "100%" }}
                     />
@@ -1145,49 +1223,57 @@ const OrderList = () => {
                       id="pending-orders-status-autocomplete"
                       options={statusOption || []}
                       getOptionLabel={(option) => option.name || ""}
-                      value={statusOption.find(option => {
-                        const targetId = statusName && typeof statusName === "object" ? statusName.id : statusName;
-                        return option.id === targetId;
-                      }) || null}
+                      value={statusName || null}
                       onChange={(event, newValue) => {
-                        if (newValue) {
-                          setStatusName(newValue.id);
-                        } else {
-                          setStatusName("");
-                        }
+                        setStatusName(newValue || null);
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Status" placeholder="Select Status" size="small" sx={{
-                          "& .MuiOutlinedInput-root": {
-                            padding: "8px",
-                          },
-                          "& .MuiOutlinedInput-input": {
-                            padding: "8px",
-                          },
-                        }} />
+                        <TextField
+                          {...params}
+                          label="Status"
+                          placeholder="Select Status"
+                          size="small"
+                          error={!!errors.status}
+                          helperText={errors.status}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "8px",
+                              "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#F31C1C !important",
+                              },
+                            },
+                          }}
+                        />
                       )}
                       sx={{ width: "100%" }}
                     />
                   </div>
                 </DialogContentText>
               </DialogContent>
-              <DialogActions style={{ padding: "24px" }}>
+              <DialogActions style={{ padding: "16px 24px", borderTop: "1px solid rgba(0,0,0,0.06)" }}>
                 <Button
                   autoFocus
                   variant="contained"
-                  className="p-5"
                   style={{
                     textTransform: "none",
-                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                    backgroundColor: "var(--color1)",
+                    borderRadius: "8px",
+                    fontWeight: 600,
+                    padding: "8px 20px",
                   }}
                   onClick={PlaceOrder}
                 >
-                  Pending Orders
+                  Save Status
                 </Button>
                 <Button
-                  autoFocus
                   variant="contained"
-                  style={{ textTransform: "none", backgroundColor: "#F31C1C" }}
+                  style={{
+                    textTransform: "none",
+                    backgroundColor: "#F31C1C",
+                    borderRadius: "8px",
+                    fontWeight: 600,
+                    padding: "8px 20px",
+                  }}
                   onClick={resetAddDialog}
                 >
                   Cancel
