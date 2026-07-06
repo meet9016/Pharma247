@@ -58,7 +58,7 @@ const DoctorList = () => {
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
 
   const history = useHistory();
-  const rowsPerPage = 10;
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const permissions = usePermissions();
 
   const token = localStorage.getItem("token");
@@ -534,7 +534,7 @@ const DoctorList = () => {
         clearTimeout(debounceTimeout.current);
       }
     };
-  }, [currentPage, searchTerms]);
+  }, [currentPage, searchTerms, rowsPerPage]);
 
 
   const convertToCSV = (data) => {
@@ -547,11 +547,12 @@ const DoctorList = () => {
       .join("\n");
   };
 
-  const ListOfDoctor = async (currentPage = 1, searchValues = searchTerms) => {
+  const ListOfDoctor = async (currentPage = 1, searchValues = searchTerms, limit = rowsPerPage) => {
     let data = new FormData();
     setIsSearchLoading(true);
 
     data.append("page", currentPage);
+    data.append("limit", limit);
     // Use searchValues instead of ref
     searchValues.forEach((term, index) => {
       if (term && term.trim()) {
@@ -561,6 +562,7 @@ const DoctorList = () => {
 
     const params = {
       page: currentPage,
+      limit: limit,
     };
     try {
       await axios
@@ -740,7 +742,7 @@ const DoctorList = () => {
               {/*<====================================================================== table  =====================================================================> */}
 
               <div className="firstrow px-4 ">
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto" style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
                   <table
                     className="w-full border-collapse custom-table"
                     style={{
@@ -988,6 +990,33 @@ const DoctorList = () => {
             >
               Next
             </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+              <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
+              <select
+                value={rowsPerPage}
+                onChange={(e) => {
+                  const newRows = parseInt(e.target.value, 10);
+                  setRowsPerPage(newRows);
+                  setCurrentPage(1);
+                }}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid var(--color1)',
+                  outline: 'none',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  color: 'var(--color1)',
+                  fontWeight: 'bold',
+                  backgroundColor: 'white',
+                }}
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
           </div>
           {/*<====================================================================== upload import doctor  =====================================================================> */}
 

@@ -46,7 +46,7 @@ const OrderList = () => {
   const history = useHistory();
   const token = localStorage.getItem("token");
 
-  const rowsPerPage = 10;
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const OnlineOrdercolumns = [
     { id: "company_name", label: "Company Name", minWidth: 150, height: 100 },
     { id: "iteam_name", label: "Item Name", minWidth: 150 },
@@ -148,9 +148,9 @@ const OrderList = () => {
   // Effect for pagination
   useEffect(() => {
     if (currentPage > 0) {
-      OnlineOrderList(currentPage);
+      OnlineOrderList(currentPage, false, rowsPerPage);
     }
-  }, [currentPage]);
+  }, [currentPage, rowsPerPage]);
 
   useEffect(() => {
     OnlineOrderList(1);
@@ -194,12 +194,12 @@ const OrderList = () => {
     }
   };
 
-  // Enhanced OnlineOrderList function with search and pagination
-  const OnlineOrderList = async (page, isSearch = false) => {
+  const OnlineOrderList = async (page, isSearch = false, limit = rowsPerPage) => {
     if (!page) return;
 
     let data = new FormData();
     data.append("page", page);
+    data.append("limit", limit);
 
     // Add search parameters when any search term has a value
     currentSearchTerms.current.forEach((term, index) => {
@@ -564,7 +564,7 @@ const OrderList = () => {
                   style={{ borderColor: "var(--color2)" }}
                 ></div>
                 <div className="firstrow mt-4">
-                  <div className="overflow-x-auto mt-4 ">
+                  <div className="overflow-x-auto mt-4 " style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
                     <table
                       className="w-full bg-transparent border-collapse custom-table pt-2"
                       style={{
@@ -824,6 +824,33 @@ const OrderList = () => {
               >
                 Next
               </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+                <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
+                <select
+                  value={rowsPerPage}
+                  onChange={(e) => {
+                    const newRows = parseInt(e.target.value, 10);
+                    setRowsPerPage(newRows);
+                    setCurrentPage(1);
+                  }}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid var(--color1)',
+                    outline: 'none',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    color: 'var(--color1)',
+                    fontWeight: 'bold',
+                    backgroundColor: 'white',
+                  }}
+                >
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+              </div>
             </div>
 
 

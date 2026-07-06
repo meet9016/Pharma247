@@ -53,7 +53,7 @@ const CustomerList = () => {
   const [city, setCity] = useState("");
   const [emailId, setEmailId] = useState("");
   const history = useHistory();
-  const rowsPerPage = 10;
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const token = localStorage.getItem("token");
   const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({});
@@ -578,14 +578,15 @@ const CustomerList = () => {
   }, [searchTrigger]);
 
   useEffect(() => {
-    customerAllData(currentPage);
-  }, [currentPage]);
+    customerAllData(currentPage, searchTerms, rowsPerPage);
+  }, [currentPage, rowsPerPage]);
 
 
-  const customerAllData = async (page = 1, customSearchTerms = searchTerms) => {
+  const customerAllData = async (page = 1, customSearchTerms = searchTerms, limit = rowsPerPage) => {
     let data = new FormData();
     setIsLoading(true);
     data.append("page", page);
+    data.append("limit", limit);
     data.append("due_only", chipState?.value);
     data.append("iss_value", "search");
 
@@ -778,7 +779,7 @@ const CustomerList = () => {
           </div> */}
           <div className=" firstrow px-4 ">
 
-            <div className="overflow-x-auto ">
+            <div className="overflow-x-auto " style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
               <table
                 className="w-full border-collapse custom-table"
                 style={{
@@ -1025,6 +1026,33 @@ const CustomerList = () => {
           >
             Next
           </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+            <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                const newRows = parseInt(e.target.value, 10);
+                setRowsPerPage(newRows);
+                setCurrentPage(1);
+              }}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '6px',
+                border: '1px solid var(--color1)',
+                outline: 'none',
+                cursor: 'pointer',
+                fontSize: '14px',
+                color: 'var(--color1)',
+                fontWeight: 'bold',
+                backgroundColor: 'white',
+              }}
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
         </div>
         {/*<====================================================================== customer upload  =====================================================================> */}
         <Dialog open={openUpload} className="custom-dialog">

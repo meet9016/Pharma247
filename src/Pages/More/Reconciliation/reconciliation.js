@@ -112,7 +112,7 @@ const Reconciliation = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-   if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -155,7 +155,7 @@ const Reconciliation = () => {
 
       toast.dismiss();
       toast.success("Data submitted successfully");
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -261,8 +261,24 @@ const Reconciliation = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center">
-                <Typography variant="h6" gutterBottom>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "calc(100vh - 150px)",
+                  width: "100%",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 600,
+                    color: "var(--color1)",
+                    textAlign: "center",
+                  }}
+                >
                   {role === "Owner"
                     ? "Reconciliation is not for Owner"
                     : "Reconciliation is not available"}

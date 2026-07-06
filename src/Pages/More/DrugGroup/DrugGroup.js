@@ -41,7 +41,7 @@ const DrugGroup = () => {
   const [drugGroupName, setDrugGroupName] = useState("");
   const [drugGroupID, setDrugGroupID] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [rowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const [errors, setErrors] = useState({});
@@ -85,9 +85,9 @@ const DrugGroup = () => {
 
   // Backend-driven Pagination + Search effect
   useEffect(() => {
-    DrugGroupList(currentPage);
+    DrugGroupList(currentPage, false, rowsPerPage);
     // eslint-disable-next-line
-  }, [currentPage]);
+  }, [currentPage, rowsPerPage]);
 
   // Debounced search effect - COPIED FROM COMPANY
   useEffect(() => {
@@ -115,7 +115,7 @@ const DrugGroup = () => {
   }, []);
 
   // Core List API (backend pagination + search)
-  const DrugGroupList = (page = 1, isSearch = false) => {
+  const DrugGroupList = (page = 1, isSearch = false, limit = rowsPerPage) => {
     if (!page) return;
     setIsLoading(!isSearch);
     setIsSearching(isSearch);
@@ -123,7 +123,7 @@ const DrugGroup = () => {
     const formData = new FormData();
 
     formData.append("page", page);
-    formData.append("limit", rowsPerPage);
+    formData.append("limit", limit);
     if (searchTerms[0] && searchTerms[0].trim()) {
       formData.append("search", searchTerms[0].trim());
     }
@@ -334,7 +334,7 @@ const DrugGroup = () => {
               </div>
             </div>
             <div className="row border-b border-dashed" style={{ borderColor: "var(--color2)" }}></div>
-            <div className="overflow-x-auto mt-4 px-4 py-3 " style={{ overflowX: 'auto', width: '100%' }}>
+            <div className="overflow-x-auto mt-4 px-4 py-3 " style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
               <table
                 className="w-full border-collapse custom-table"
                 style={{
@@ -510,6 +510,33 @@ const DrugGroup = () => {
           >
             Next
           </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+            <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                const newRows = parseInt(e.target.value, 10);
+                setRowsPerPage(newRows);
+                setCurrentPage(1);
+              }}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '6px',
+                border: '1px solid var(--color1)',
+                outline: 'none',
+                cursor: 'pointer',
+                fontSize: '14px',
+                color: 'var(--color1)',
+                fontWeight: 'bold',
+                backgroundColor: 'white',
+              }}
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
         </div>
       </div>
       {/* Add/Edit Dialog */}

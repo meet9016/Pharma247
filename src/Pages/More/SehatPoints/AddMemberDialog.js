@@ -377,7 +377,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
             <DialogTitle
                 id="alert-dialog-title"
                 sx={{
-                    background: "linear-gradient(135deg, #3f6212 0%, #4d7c0f 100%) !important",
+                    background: "#1F3109 !important",
                     color: "#ffffff !important",
                     position: "relative",
                     py: 2.2,
@@ -400,11 +400,6 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                         transform: "translateY(-50%)",
                         color: "rgba(255, 255, 255, 0.85)",
                         padding: "8.5px 12px !important",
-                        "&:hover": {
-                            color: "#ffffff",
-                            backgroundColor: "rgba(255, 255, 255, 0.15)",
-                            transform: "translateY(-50%) scale(1.05)",
-                        }
                     }}
                 >
                     <CloseIcon />
@@ -652,7 +647,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                 fontWeight: 500,
                                 "&:hover": {
                                     borderColor: "#94a3b8",
-                                    backgroundColor: "#f8fafc"
+                                    backgroundColor: "#f8fafc !important"
                                 }
                             }}
                         >
