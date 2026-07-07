@@ -24,6 +24,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Loader from "../../../../componets/loader/Loader";
@@ -876,32 +878,69 @@ const DistributerList = () => {
             >
               Next
             </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
               <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
-              <select
+              <Select
                 value={rowsPerPage}
                 onChange={(e) => {
                   const newRows = parseInt(e.target.value, 10);
                   setRowsPerPage(newRows);
                   setCurrentPage(1);
                 }}
-                style={{
-                  padding: '6px 12px',
+                size="small"
+                sx={{
+                  height: '32px',
                   borderRadius: '6px',
-                  border: '1px solid var(--color1)',
-                  outline: 'none',
-                  cursor: 'pointer',
-                  fontSize: '14px',
                   color: 'var(--color1)',
                   fontWeight: 'bold',
-                  backgroundColor: 'white',
+                  fontFamily: 'inherit',
+                  fontSize: '14px',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--color2) !important',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--color2) !important',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--color1) !important',
+                  },
+                  '& .MuiSelect-select': {
+                    paddingY: '4px',
+                    paddingLeft: '12px',
+                    paddingRight: '32px !important',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      '& .MuiMenuItem-root': {
+                        fontFamily: 'inherit',
+                        fontSize: '14px',
+                        color: 'var(--color1)',
+                        '&.Mui-selected': {
+                          backgroundColor: 'var(--color1) !important',
+                          color: 'white !important',
+                        },
+                        '&.Mui-selected:hover': {
+                          backgroundColor: 'var(--color1) !important',
+                          color: 'white !important',
+                        },
+                        '&:hover': {
+                          backgroundColor: 'rgba(98, 138, 47, 0.1) !important',
+                          color: 'var(--color1) !important',
+                        }
+                      }
+                    }
+                  }
                 }}
               >
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-              </select>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+                <MenuItem value={100}>100</MenuItem>
+              </Select>
             </div>
           </div>
           {/*<====================================================================== add distributor  =====================================================================> */}
