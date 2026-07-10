@@ -778,67 +778,53 @@ const EditPurchaseBill = () => {
     const newErrors = {};
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
+
     if (numericQty === 0 && numericFree === 0) {
-      toast.dismiss();
-      toast.error("Free and Qty cannot both be 0");
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) {
       newErrors.unit = "Unit is required";
-      toast.dismiss();
-      toast.error(newErrors.unit);
     }
 
     if (!batch) {
       newErrors.batch = "Batch is required";
-      toast.dismiss();
-      toast.error(newErrors.batch);
     }
 
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
-      toast.dismiss();
-      toast.error(newErrors.expiryDate);
     } else {
       const [expMonth, expYear] = expiryDate.split("/").map(Number);
       const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1; // getMonth() returns month from 0 to 11
-      const currentYear = currentDate.getFullYear() % 100; // get last two digits of year
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear() % 100;
 
       if (
         expYear < currentYear ||
         (expYear === currentYear && expMonth <= currentMonth)
       ) {
-        newErrors.expiryDate =
-          "Expiry date must be in the future and cannot be the current month";
-        toast.dismiss();
-        toast.error(newErrors.expiryDate);
+        newErrors.expiryDate = "Expiry date must be in the future and cannot be the current month";
       }
     }
+
     if (!mrp) newErrors.mrp = "MRP is required";
-    // if (!ptr) {
-    //   newErrors.ptr = "PTR is required";
-    // } else if (ptr && parseFloat(ptr) > parseFloat(mrp)) {
-    //   newErrors.ptr = "PTR must be less than or equal to MRP";
-    //   toast.dismiss();
-    // toast.error("PTR must be less than or equal to MRP");
-    // }
+
+    if (!ptr || ptr === "") {
+      newErrors.ptr = "PTR is required";
+    } else if (Number(mrp) && Number(ptr) >= Number(mrp)) {
+      newErrors.ptr = "PTR must be less than MRP";
+    }
 
     if (gst === undefined || gst === null || gst === "") {
       newErrors.gst = "GST is required";
-      toast.dismiss();
-      toast.error(newErrors.gst);
+    } else if (gst != 18 && gst != 5 && gst != 0) {
+      newErrors.gst = "Enter valid GST";
     }
+
     if (!searchItem) {
       toast.dismiss();
-      toast.error("Please Select any Item Name");
-      newErrors.searchItem = "Select any Item Name";
+      toast.error("Please select at least one item");
+      newErrors.item = "Select any Item Name";
     }
-    // if (!ItemTotalAmount) {
-    //   toast.dismiss();
-    // toast.error("Total amount is not available");
-    //   newErrors.searchItem = "Total amount is not available";
-    // }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -890,8 +876,9 @@ const EditPurchaseBill = () => {
     data.append("qty", !qty ? 0 : qty);
     data.append("free_qty", !free ? 0 : free);
     data.append("ptr", !ptr ? 0 : ptr);
-    data.append("disocunt", !disc ? 0 : disc);
+    data.append("discount", !disc ? 0 : disc);
     data.append("scheme_account", !schAmt ? 0 : schAmt);
+    data.append("id", selectedEditItemId ? selectedEditItemId : 0);
     data.append("base_price", !base ? 0 : base);
     data.append("gst", gstMapping[gst] ?? gst);
     data.append("location", !loc ? "" : loc.toUpperCase());
@@ -1233,14 +1220,15 @@ const EditPurchaseBill = () => {
     if (!billNo) {
       newErrors.billNo = "Bill No is Required";
     }
-    if (!purchase?.item_list || purchase.item_list.length === 0) {
-      toast.dismiss();
-      toast.error("Please select at least one item");
-      newErrors.item = "Please select at least one item";
-    }
     setError(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    if (!purchase?.item_list || purchase.item_list.length === 0) {
+      toast.dismiss();
+      toast.error("Please select at least one item");
       return;
     }
 
@@ -1685,21 +1673,26 @@ const EditPurchaseBill = () => {
                   <Autocomplete
                     value={distributor}
                     disabled
-                    placeholder="Distributer"
                     sx={{
                       width: "100%",
                       minWidth: "350px",
                       "@media (max-width:600px)": { minWidth: "250px" },
                     }}
                     size="small"
-                    onChange={(e, value) => setDistributor(value)}
-                    options={distributorList}
-                    getOptionLabel={(option) => option.name}
+                    onChange={(e, value) => {
+                      setDistributor(value);
+                      setError((prev) => ({ ...prev, distributor: "" }));
+                    }}
+                    options={distributorList || []}
+                    getOptionLabel={(option) => option.name || ""}
+                    isOptionEqualToValue={(option, value) => option.id === value?.id}
                     renderInput={(params) => (
                       <TextField
-                        variant="outlined"
-                        autoComplete="off"
                         {...params}
+                        placeholder="Select Distributor"
+                        variant="outlined"
+                        error={!!error.distributor}
+                        helperText={error.distributor || ""}
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 0)}
                       />
@@ -1715,14 +1708,21 @@ const EditPurchaseBill = () => {
                     size="small"
                     variant="outlined"
                     error={!!error.billNo}
+                    helperText={error.billNo || ""}
                     value={billNo}
                     disabled
                     sx={{
                       width: "100%",
                       minWidth: "200px",
                       minHeight: "40px",
-                      "@media (max-width:600px)": { minWidth: "200px" },
+                      "@media (max-width:600px)": { minWidth: "250px" },
                     }}
+                    inputRef={(el) => (inputRefs.current[1] = el)}
+                    onChange={(e) => {
+                      setbillNo(e.target.value);
+                      setError((prev) => ({ ...prev, billNo: "" }));
+                    }}
+                    onKeyDown={(e) => handleKeyDown(e, 1)}
                   />
                 </div>
 
@@ -1852,7 +1852,7 @@ const EditPurchaseBill = () => {
                             <TextField
                               variant="outlined"
                               autoComplete="off"
-                              placeholder="Search Item Name"
+                              placeholder="ITEM NAME"
                               {...params}
                               autoFocus
                               fullWidth
@@ -1896,7 +1896,7 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
-                        placeholder="Unit"
+                        placeholder="UNIT"
                         type="text"
                         size="small"
                         error={!!error.unit}
@@ -1937,7 +1937,7 @@ const EditPurchaseBill = () => {
                     <td >
                       <TextField
                         variant="outlined"
-                        placeholder="Batch"
+                        placeholder="BATCH"
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
@@ -2027,7 +2027,7 @@ const EditPurchaseBill = () => {
                       <TextField
                         variant="outlined"
                         autoComplete="off"
-                        placeholder="Mrp"
+                        placeholder="0.00"
                         id="outlined-number"
                         type="number"
                         sx={{
@@ -2068,7 +2068,7 @@ const EditPurchaseBill = () => {
                       <TextField
                         variant="outlined"
                         autoComplete="off"
-                        placeholder="Qty"
+                        placeholder="0"
                         id="outlined-number"
                         type="number"
 
@@ -2234,7 +2234,7 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
-                        placeholder="Base"
+                        placeholder="0.00"
                         type="number"
                         size="small"
                         value={base === 0 ? "" : base}
@@ -2252,50 +2252,55 @@ const EditPurchaseBill = () => {
                       />
                     </td>
                     <td >
-                      <Select
+                      <TextField
+                        select
+                        SelectProps={{ native: true }}
+                        variant="outlined"
                         size="small"
                         value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
-                        onChange={(e) => {
-                          setGst(e.target.value !== "" ? Number(e.target.value) : "");
-                          setUnsavedItems(true);
-                        }}
-                        inputRef={(el) => (inputRefs.current[11] = el)}
                         sx={{
                           minWidth: "60px",
                           width: "100%",
-                          '& .MuiSelect-select': {
+                          '& .MuiInputBase-input': {
                             textAlign: 'center',
-                            paddingY: '8.5px',
                           },
                         }}
+                        error={!!error.gst}
+                        inputRef={(el) => (inputRefs.current[11] = el)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setGst(value ? Number(value) : "");
+                          setError((prev) => ({ ...prev, gst: "" }));
+                          setUnsavedItems(true);
+                        }}
                         onKeyDown={(e) => {
-                          if (e.key === "Tab" && e.shiftKey) {
+                          const isTab = e.key === "Tab";
+                          const isEnter = e.key === "Enter";
+                          const isShiftTab = isTab && e.shiftKey;
+
+                          if (isShiftTab) return;
+
+                          if (isEnter || isTab) {
                             e.preventDefault();
-                            if (inputRefs.current[10]) {
-                              inputRefs.current[10].focus();
-                            }
-                            return;
-                          }
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            if (inputRefs.current[12]) {
-                              inputRefs.current[12].focus();
-                            }
+                            inputRefs.current[12]?.focus();
+                          } else {
+                            handleKeyDown(e, 11);
                           }
                         }}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={18}>18</MenuItem>
-                      </Select>
+                        <option value=""></option>
+                        <option value="0">0</option>
+                        <option value="5">5</option>
+                        <option value="18">18</option>
+                      </TextField>
                     </td>
                     <td >
                       <TextField
                         variant="outlined"
                         autoComplete="off"
-                        placeholder="Loc"
                         id="outlined-number"
                         size="small"
+                        placeholder="LOC"
                         value={loc?.toUpperCase()}
                         sx={{
                           minWidth: "65px",
@@ -2321,7 +2326,7 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
-                        placeholder="Net Rate"
+                        placeholder="0.00"
                         type="number"
                         disabled
                         size="small"
@@ -2340,7 +2345,7 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
-                        placeholder="Margin"
+                        placeholder="0.00"
                         type="number"
                         disabled
                         size="small"

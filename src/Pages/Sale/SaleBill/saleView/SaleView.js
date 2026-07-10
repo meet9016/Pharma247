@@ -528,6 +528,9 @@ const SaleView = () => {
                     </div>
                   </div>
                 </div>
+
+
+
                 <div
                   className="overflow-x-auto mt-4"
                   style={{

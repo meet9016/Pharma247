@@ -83,8 +83,7 @@ const Purchasebill = () => {
   useEffect(() => {
     purchaseBillList(currentPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [currentPage, startDate, endDate]);
-  }, [currentPage]);
+  }, [currentPage, startDate, endDate]);
 
   // Effect for handling search with debouncing
   useEffect(() => {
@@ -227,7 +226,7 @@ const Purchasebill = () => {
 
     // Use different loading states for search vs regular operations
     if (isSearch) {
-      if (page !== 1) return setCurrentPage(1); // Ensure `setCurrentPage(1)` happens outside the render cycle
+      if (page !== 1) return setCurrentPage(1); // 👈 Ensure `setCurrentPage(1)` happens outside the render cycle
       setIsSearchLoading(true);
     }
     else {
@@ -502,7 +501,7 @@ const Purchasebill = () => {
             <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
               <div className="detail flex flex-col">
                 <span className="text-gray-500 block">Start Date</span>
-                <div style={{ width: "100%" }}>
+                <div className="" style={{ width: "100%" }}>
                   <DatePicker
                     className="custom-datepicker"
                     selected={startDate}
@@ -512,9 +511,8 @@ const Purchasebill = () => {
                 </div>
               </div>
               <div className="detail flex flex-col">
-                <span className="text-gray-500 block">
-                  End Date</span>
-                <div style={{ zIndex: 9 }}>
+                <span className="text-gray-500 block">End Date</span>
+                <div className="" style={{ width: "100%" }}>
                   <DatePicker
                     className="custom-datepicker"
                     selected={endDate}

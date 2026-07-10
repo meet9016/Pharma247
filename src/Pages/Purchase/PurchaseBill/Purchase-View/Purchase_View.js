@@ -45,9 +45,7 @@ const PurchaseView = () => {
   const [header, setHeader] = useState("");
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [roundOffAmount, setRoundOffAmount] = useState("");
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isFetchingMore, setIsFetchingMore] = useState(false);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   {/*<=================================================================== get initial data  ===================================================================> */ }
@@ -90,10 +88,7 @@ const PurchaseView = () => {
       const index = tableData.findIndex((item) => item.id == parseInt(id));
       if (index !== -1) {
         setCurrentIndex(index);
-        // purchaseBillGetByID(parseInt(id));
-        setPage(1);
-        setHasMore(true);
-        purchaseBillGetByID(parseInt(id), 1);
+        purchaseBillGetByID(parseInt(id));
       }
     }
   }, [id, tableData]);
@@ -181,13 +176,9 @@ const PurchaseView = () => {
 
   {/*<===================================================================== get bill details  =====================================================================> */ }
 
-  const purchaseBillGetByID = async (
-    billId = id,
-    pageNumber = 1
-  ) => {
+  const purchaseBillGetByID = async (billId = id) => {
     let data = new FormData();
     data.append("id", billId);
-    data.append("page", pageNumber);
     const params = {
       id: billId,
     };
@@ -200,58 +191,10 @@ const PurchaseView = () => {
             Authorization: `Bearer ${token}`,
           },
         })
-        // .then((response) => {
-        //   // setData(response.data.data);
-        //   const res = response.data.data;
-
-        //   if (pageNumber === 1) {
-
-        //     setData(res);
-
-        //   } else {
-
-        //     setData(prev => ({
-        //       ...prev,
-        //       ...res,
-        //       item_list: [
-        //         ...prev.item_list,
-        //         ...res.item_list
-        //       ]
-        //     }));
-
-        //   }
-        //   setRoundOffAmount(response.data.data.round_off);
-        //   setIsLoading(false);
-        // });
         .then((response) => {
-
-          const res = response.data.data;
-
-          if (pageNumber === 1) {
-
-            setData(res);
-
-          } else {
-
-            setData(prev => ({
-              ...prev,
-              ...res,
-              item_list: [
-                ...prev.item_list,
-                ...res.item_list
-              ]
-            }));
-
-          }
-
-          // <-- Step 5 yahi add karna hai
-          if (res.item_list.length < 20) {
-            setHasMore(false);
-          }
-
-          setRoundOffAmount(res.round_off);
+          setData(response.data.data);
+          setRoundOffAmount(response.data.data.round_off);
           setIsLoading(false);
-
         });
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -263,27 +206,6 @@ const PurchaseView = () => {
       }
       console.error("API error:", error);
     }
-  };
-
-
-  const handleTableScroll = (e) => {
-
-    const { scrollTop, scrollHeight, clientHeight } = e.target;
-
-    if (
-      scrollTop + clientHeight >= scrollHeight - 20 &&
-      hasMore &&
-      !isFetchingMore
-    ) {
-
-      const nextPage = page + 1;
-
-      setPage(nextPage);
-
-      purchaseBillGetByID(id, nextPage);
-
-    }
-
   };
 
   {/*<====================================================================== total details  ======================================================================> */ }
@@ -413,7 +335,7 @@ const PurchaseView = () => {
             </div>
             <div className="detail_main">
               <span className="heading mb-2 ">Bill Creator</span>
-               <span className="data_bg">2 | Owner</span>
+             
               <span className="data_bg capitalize">{data.user_name}</span>
             </div>
             <div className="detail_main">
@@ -442,6 +364,7 @@ const PurchaseView = () => {
               <span className="data_bg">{localStorage.getItem("UserName")}</span>
             </div>
           </div> */}
+
           <div className="scroll-wrapper">
             <div
               className="firstrow"
@@ -467,6 +390,7 @@ const PurchaseView = () => {
                   flexShrink: 0,
                 }}
               />
+
               {/* SR No badge - compact */}
               <div
                 style={{
@@ -482,8 +406,8 @@ const PurchaseView = () => {
                 }}
               >
                 {/* <span style={{ fontSize: "0.82rem", color: "#65784a", fontWeight: 700, letterSpacing: "0.05em" }}>
-                  SR
-                </span> */}
+                        Bill No
+                      </span> */}
                 <span style={{ fontSize: "25px", fontWeight: 700, color: "#3f6212", lineHeight: 1.1 }}>
                   {data.sr_no}
                 </span>
@@ -499,13 +423,15 @@ const PurchaseView = () => {
                 }}
               >
                 {[
-                  { label: "Bill Creator", value: data.user_name, cap: true, accent: "#0f172a" },
-                  { label: "Bill No", value: data.bill_no, mono: true },
-                  { label: "Bill Date", value: data.bill_date },
-                  { label: "Due Date", value: data.due_date, },
-                  { label: "Distributor", value: data.distributor_name, cap: true },
-                  { label: "Payment Type", value: data.payment_type,  },
-                  { label: "Entry By", value: localStorage.getItem("UserName"), cap: true },
+
+                  { label: "Bill Creator", value: data.user_name || "-" },
+                  { label: "Bill No.", value: data.bill_no || "-" },
+                  { label: "Bill Date", value: data.bill_date || "-" },
+                  { label: "Due Date", value: data.due_date || "-" },
+                  { label: "Distributer", value: data.distributor_name || "-" },
+                  { label: "Payment Type", value: data.payment_type || "-" },
+                  { label: "Entery By", value: localStorage.getItem("UserName") || "-" },
+
                 ].map((item, idx, arr) => (
                   <div
                     key={item.label}
@@ -560,7 +486,7 @@ const PurchaseView = () => {
                         style={{
                           fontSize: "15px",
                           fontWeight: 600,
-                          color: item.accent || "#0f172a",
+                          color: item.accent || "#000000",
                           // fontFamily: item.mono
                           //   ? "'JetBrains Mono', ui-monospace, monospace"
                           //   : "inherit",
@@ -583,37 +509,27 @@ const PurchaseView = () => {
 
           {/*<===============================================================  table data  ===============================================================> */}
 
-          <div
-            className="overflow-x-auto mt-5"
-            onScroll={handleTableScroll}
-            style={{
-              maxHeight: "670px",
-              overflowY: "auto",
-              overflowX: "auto",
-              // position: "relative",
-              // zIndex: 1,
-            }}
-          >
+          <div className="overflow-x-auto mt-5">
             <table className="customtable  w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
               <thead>
                 <tr>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Item Name</th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Unit </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>HSN</th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Batch </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Expiry </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>MRP </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Qty. </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Free </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>PTR </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>CD% </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Sch.Amt </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Base </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>GST% </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Loc. </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Margin </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Net Rate </th>
-                  <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Amount </th>
+                  <th>Item Name</th>
+                  <th>Unit </th>
+                  <th>HSN</th>
+                  <th>Batch </th>
+                  <th>Expiry </th>
+                  <th>MRP </th>
+                  <th>Qty. </th>
+                  <th>Free </th>
+                  <th>PTR </th>
+                  <th>CD% </th>
+                  <th>Sch.Amt </th>
+                  <th>Base </th>
+                  <th>GST% </th>
+                  <th>Loc. </th>
+                  <th>Margin </th>
+                  <th>Net Rate </th>
+                  <th>Amount </th>
                 </tr>
               </thead>
               {isLoading ? (
@@ -621,36 +537,13 @@ const PurchaseView = () => {
                   <Loader />
                 </div>
               ) : (
-                // <tbody style={{ background: "#3f621217" }}>
-                //   {data?.item_list?.map((item, index) => (
-                //     <tr key={index}>
-                //       <td style={{ borderRadius: "10px 0 0 10px" }}>
-                //         <div>{item.item_name}</div>
-                //       </td>
-                //       <td>{item.weightage || "-"}</td>
-                //       <td>{item.hsn_code || "-"}</td>
-                //       <td>{item.batch_number || "-"}</td>
-                //       <td>{item.expiry || "-"}</td>
-                //       <td>{item.mrp || "-"}</td>
-                //       <td>{item.qty || "-"}</td>
-                //       <td>{item.fr_qty || "-"}</td>
-                //       <td>{item.ptr || "-"}</td>
-                //       <td>{item.disocunt || "-"}</td>
-                //       <td>{item.scheme_account || "-"}</td>
-                //       <td>{item.base_price || "-"}</td>
-                //       <td>{item.gst_name || "-"}</td>
-                //       <td>{item.location || "-"}</td>
-                //       <td>{item.margin || "-"}</td>
-                //       <td>{item.net_rate || "-"}</td>
-                //       <td className="amount" style={{ borderRadius: "0 10px 10px 0" }}>{item.amount || "-"}</td>
-                //     </tr>
-                //   ))}
-                // </tbody>
                 <tbody style={{ background: "#3f621217" }}>
                   {data?.item_list?.length > 0 ? (
                     data.item_list.map((item, index) => (
                       <tr key={index}>
-                        <td style={{ borderRadius: "10px 0 0 10px" }}>{item.item_name}</td>
+                        <td style={{ borderRadius: "10px 0 0 10px" }}>
+                          {item.item_name || "-"}
+                        </td>
                         <td>{item.weightage || "-"}</td>
                         <td>{item.hsn_code || "-"}</td>
                         <td>{item.batch_number || "-"}</td>
@@ -666,7 +559,10 @@ const PurchaseView = () => {
                         <td>{item.location || "-"}</td>
                         <td>{item.margin || "-"}</td>
                         <td>{item.net_rate || "-"}</td>
-                        <td style={{ borderRadius: "0 10px 10px 0" }}>
+                        <td
+                          className="amount"
+                          style={{ borderRadius: "0 10px 10px 0" }}
+                        >
                           {item.amount || "-"}
                         </td>
                       </tr>
@@ -679,8 +575,7 @@ const PurchaseView = () => {
                           textAlign: "center",
                           padding: "20px",
                           fontWeight: "600",
-                          color: "#777",
-
+                          color: "#666",
                         }}
                       >
                         No Data Found
@@ -688,6 +583,7 @@ const PurchaseView = () => {
                     </tr>
                   )}
                 </tbody>
+
               )}
             </table>
           </div>
@@ -696,7 +592,7 @@ const PurchaseView = () => {
         {/*<================================================================= total bottom details  =================================================================> */}
 
         <div className="" style={{ background: 'var(--color1)', color: 'white', display: "flex", justifyContent: 'space-between', position: 'fixed', width: '100%', bottom: '0', left: '0', overflow: 'auto' }}>
-          {/* <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
+          <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0', padding: '20px' }}>
             <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
               <label className="font-bold">Total GST : </label>
 
@@ -719,78 +615,7 @@ const PurchaseView = () => {
               <label className="font-bold">Total Net Rate : </label>
               <span style={{ fontWeight: 600 }}>&#8377; {data?.total_net_rate} </span>
             </div>
-          </div> */}
-
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: "20px",
-              padding: "20px",
-            }}
-          >
-            <div
-              className="invoice_total_fld"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-                minWidth: "180px",
-              }}
-            >
-              <label className="font-bold">Total GST :</label>
-              <span style={{ fontWeight: 600 }}>
-                {data?.total_gst || 0}
-              </span>
-            </div>
-
-            <div
-              className="invoice_total_fld"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-                minWidth: "220px",
-              }}
-            >
-              <label className="font-bold">Total Qty :</label>
-              <span style={{ fontWeight: 600 }}>
-                {data?.total_qty || 0} + {data?.total_free_qty || 0} Free
-              </span>
-            </div>
-
-            <div
-              className="invoice_total_fld"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-                minWidth: "200px",
-              }}
-            >
-              <label className="font-bold">Total Base :</label>
-              <span style={{ fontWeight: 600 }}>
-                {data?.total_base || 0}
-              </span>
-            </div>
-
-            <div
-              className="invoice_total_fld"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-                minWidth: "220px",
-              }}
-            >
-              <label className="font-bold">Total Net Rate :</label>
-              <span style={{ fontWeight: 600 }}>
-                ₹ {data?.total_net_rate || 0}
-              </span>
-            </div>
           </div>
-
 
           <div style={{ display: 'flex' }}>
             <div
@@ -852,10 +677,8 @@ const PurchaseView = () => {
                 <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{data?.net_amount ? data?.net_amount : 0}
                   <FaCaretUp />
                 </span>
+
               </div>
-
-
-
 
               <Modal
                 show={isModalOpen}
@@ -863,10 +686,9 @@ const PurchaseView = () => {
                 size="lg"
                 position="bottom-center"
                 className="modal_amount"
-                style={{ background: "transparent" }}
               >
                 <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
-                  <h2 style={{ textTransform: "uppercase" }}>invoice total </h2>
+                  <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
                   <IoMdClose onClick={() => setIsModalOpen(!isModalOpen)} cursor={"pointer"} size={30} />
 
                 </div>
@@ -907,9 +729,6 @@ const PurchaseView = () => {
                   </div>
                 </div>
               </Modal>
-
-
-
             </div>
           </div>
         </div>
@@ -968,7 +787,7 @@ const PurchaseView = () => {
           </DialogContent>
           <DialogActions></DialogActions>
         </Dialog>
-      </div>
+      </div >
 
     </>
   );

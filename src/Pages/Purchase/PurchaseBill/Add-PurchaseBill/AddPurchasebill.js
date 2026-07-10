@@ -52,9 +52,6 @@ import { FaCaretUp } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import TipsModal from "../../../../componets/Tips/TipsModal";
 import Loader from "../../../../componets/loader/Loader";
-import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
-
-const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
 
 const AddPurchaseBill = () => {
   const timeoutRef = useRef(null);
@@ -69,9 +66,6 @@ const AddPurchaseBill = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
-  const [purchasePage, setPurchasePage] = useState(1);
-  const [purchaseHasMore, setPurchaseHasMore] = useState(true);
-  const [isFetchingPurchaseMore, setIsFetchingPurchaseMore] = useState(false);
   const [distributor, setDistributor] = useState(null);
   const [billNo, setbillNo] = useState("");
   const [dueDate, setDueDate] = useState(addDays(new Date(), 15));
@@ -138,7 +132,6 @@ const AddPurchaseBill = () => {
   const [addDistributorNo, setAddDistributorNo] = useState("");
   const [addDistributorMobile, setAddDistributorMobile] = useState("");
   const [addDistributorAddress, setAddDistributorAddress] = useState("");
-  const [addDistributorId, setAddDistributorId] = useState("");
   const [highlightedRowId, setHighlightedRowId] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
   const [autocompleteKey, setAutocompleteKey] = useState(0);
@@ -155,11 +148,7 @@ const AddPurchaseBill = () => {
   const [showModal, setShowModal] = useState(false);
   const [dialogMode, setDialogMode] = useState("");
   const [addItemError, setAddItemError] = useState({});
-  const [errors, setErrors] = useState({});
   const [addDistributorError, setAddDistributorError] = useState({});
-  const [error, setError] = useState({});
-
-
 
   const optionForCsv = {
     "Skyway": "purchase-item-import",
@@ -171,7 +160,7 @@ const AddPurchaseBill = () => {
     "Visual": "visual-item-purchase-import",
   };
 
-
+  const [error, setError] = useState({});
   const [paymentType, setPaymentType] = useState("credit");
   const [bankData, setBankData] = useState([]);
   const [id, setId] = useState(null);
@@ -281,7 +270,11 @@ const AddPurchaseBill = () => {
       event.preventDefault();
 
       switch (key) {
-
+        case "s":
+          if (isSubmitting) return;
+          setBillSaveDraft("1");
+          handleSubmit("1");
+          break;
         case "g":
           handleSubmit();
           break;
@@ -296,8 +289,7 @@ const AddPurchaseBill = () => {
             inputRefs.current[2]?.focus();
           }, 10);
           break;
-        default:
-          break;
+
       }
     };
 
@@ -341,7 +333,7 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const SearchTimer = setTimeout(() => {
-      if (searchItem.trim()) {
+      if (searchItem) {
         setPage(1);
         setHasMore(true);
         handleSearch(searchItem.toUpperCase(), 1);
@@ -376,6 +368,8 @@ const AddPurchaseBill = () => {
     ) {
       if (Number(ptr) >= Number(mrp)) {
         newErrors.ptr = "PTR must be less than MRP";
+        toast.dismiss();
+        toast.error(newErrors.ptr);
       }
     }
 
@@ -434,30 +428,30 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     const delay = setTimeout(() => {
-      if (addDistributorName && !addDistributorId) {
+      if (addDistributorName) {
         listDistributor({ search_name: addDistributorName });
       }
     }, 300);
     return () => clearTimeout(delay);
-  }, [addDistributorName, addDistributorId]);
+  }, [addDistributorName]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
-      if (addDistributorNo && !addDistributorId) {
+      if (addDistributorNo) {
         listDistributor({ search_gst: addDistributorNo });
       }
     }, 300);
     return () => clearTimeout(delay);
-  }, [addDistributorNo, addDistributorId]);
+  }, [addDistributorNo]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
-      if (addDistributorMobile && !addDistributorId) {
+      if (addDistributorMobile) {
         listDistributor({ search_phone_number: addDistributorMobile });
       }
     }, 300);
     return () => clearTimeout(delay);
-  }, [addDistributorMobile, addDistributorId]);
+  }, [addDistributorMobile]);
 
   /*<============================================================= Clear old purchase item data =====================================================> */
 
@@ -573,7 +567,7 @@ const AddPurchaseBill = () => {
     }
 
     setExpiryDate(inputValue);
-    setError((prev) => ({ ...prev, expiryDate: false }));
+    setError(prev => ({ ...prev, expiryDate: "" }));
   };
 
   /*<================================================================ select file to upload ========================================================> */
@@ -1028,7 +1022,7 @@ const AddPurchaseBill = () => {
         });
     } else {
       axios
-        .post("list-distributer", {}, { headers })
+        .get("list-distributer", { headers })
         .then((response) => {
           const list = response.data.data?.distributor || response.data.data || [];
           localStorage.setItem("distributor", JSON.stringify(list));
@@ -1051,52 +1045,30 @@ const AddPurchaseBill = () => {
 
   /*<=============================================================== Get Item purchase List   ================================================================> */
 
-  const itemPurchaseList = async (pageNumber = 1) => {
+  const itemPurchaseList = async () => {
     let data = new FormData();
     data.append("random_number", localStorage.getItem("RandomNumber"));
-    data.append("page", pageNumber);
 
-    if (pageNumber === 1) {
-      setIsLoading(true);
-      setLoading(true);
-      setPurchasePage(1);
-      setPurchaseHasMore(true);
-    } else {
-      setIsFetchingPurchaseMore(true);
-    }
+    setIsLoading(true);
+    setLoading(true)
 
     try {
-      const response = await axios.post("item-purchase-list?", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const resData = response.data.data;
-      const newItems = resData?.item || [];
-
-      if (pageNumber === 1) {
-        setItemPurchaseList(resData);
-      } else {
-        setItemPurchaseList((prev) => ({
-          ...resData,
-          item: [...(prev?.item || []), ...newItems],
-        }));
-      }
-
-      setFinalTotalAmount(resData.new_total_price);
-      setTotalGst(resData.total_gst);
-      setTotalQty(resData.total_qty);
-      setTotalNetRate(resData.total_net_rate);
-      handleCalNetAmount(resData.new_total_price);
-      setTotalBase(resData.total_base);
-      setTotalFRee(resData.total_free);
-
-      if (newItems.length < 20) {
-        setPurchaseHasMore(false);
-      } else {
-        setPurchaseHasMore(true);
-      }
+      const response = await axios
+        .post("item-purchase-list?", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setItemPurchaseList(response.data.data);
+          setFinalTotalAmount(response.data.data.new_total_price);
+          setTotalGst(response.data.data.total_gst);
+          setTotalQty(response.data.data.total_qty);
+          setTotalNetRate(response.data.data.total_net_rate);
+          handleCalNetAmount(response.data.data.new_total_price);
+          setTotalBase(response.data.data.total_base);
+          setTotalFRee(response.data.data.total_free);
+        });
     } catch (error) {
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
@@ -1109,8 +1081,8 @@ const AddPurchaseBill = () => {
       setUnsavedItems(false);
     } finally {
       setIsLoading(false);
-      setLoading(false);
-      setIsFetchingPurchaseMore(false);
+      setLoading(false)
+
     }
   };
 
@@ -1197,94 +1169,79 @@ const AddPurchaseBill = () => {
 
   /*<========================================================================= Add and Edit validation  ====================================================================> */
 
-  const isItemRowActive = () => {
-    if (!ItemPurchaseList?.item || ItemPurchaseList.item.length === 0) {
-      return true;
-    }
-    if (
-      selectedOption ||
-      unit ||
-      batch ||
-      expiryDate ||
-      mrp ||
-      ptr ||
-      (gst !== "" && gst !== null && gst !== undefined)
-    ) {
-      return true;
-    }
-    return false;
-  };
-
-  const validateItemRow = () => {
-    const newErrors = {};
-    const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
-
-    if (!selectedOption) {
-      newErrors.searchItem = true;
-    }
-    if (!unit) {
-      newErrors.unit = true;
-    }
-    if (!batch) {
-      newErrors.batch = true;
-    }
-    if (!expiryDate) {
-      newErrors.expiryDate = true;
-    } else if (!expiryDateRegex.test(expiryDate)) {
-      newErrors.expiryDate = true;
-    } else {
-      const [expMonth, expYear] = expiryDate.split("/").map(Number);
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1;
-      const currentYear = currentDate.getFullYear() % 100;
-      if (
-        expYear < currentYear ||
-        (expYear === currentYear && expMonth <= currentMonth)
-      ) {
-        newErrors.expiryDate = true;
-      }
-    }
-    if (!mrp || Number(mrp) <= 0) {
-      newErrors.mrp = true;
-    }
-    if (!ptr || Number(ptr) <= 0 || (Number(mrp) && Number(ptr) >= Number(mrp))) {
-      newErrors.ptr = true;
-    }
-    const allowedGST = [0, 5, 18];
-    if (gst === undefined || gst === null || gst === "" || !allowedGST.includes(Number(gst))) {
-      newErrors.gst = true;
-    }
-
-    setError((prev) => {
-      const updated = { ...prev };
-      delete updated.searchItem;
-      delete updated.unit;
-      delete updated.batch;
-      delete updated.expiryDate;
-      delete updated.mrp;
-      delete updated.ptr;
-      delete updated.gst;
-      return {
-        ...updated,
-        ...newErrors,
-      };
-    });
-
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleAddButtonClick = async () => {
     // Prevent multiple submissions
     setFocusedField("item");
     setAutocompleteKey((prevKey) => prevKey + 1); // Re-render item Autocomplete
 
     generateRandomNumber();
-    const isValid = validateItemRow();
+    const newErrors = {};
+    const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+    const numericQty = parseFloat(qty) || 0;
+    const numericFree = parseFloat(free) || 0;
+
+    if (numericQty === 0 && numericFree === 0) {
+      newErrors.qty = "Free and Qty cannot both be 0";
+    }
+    if (!unit) newErrors.unit = "Unit is required";
+
+    if (
+      (!numericFree || Number(numericFree) === 0) &&
+      (!numericQty || Number(numericQty) === 0)
+    ) {
+      newErrors.quantity = "Qty is required";
+    }
+
+    if (!batch) {
+      newErrors.batch = "Batch is required";
+    }
+    if (!expiryDate) {
+      newErrors.expiryDate = "Expiry date is required";
+    } else if (!expiryDateRegex.test(expiryDate)) {
+      newErrors.expiryDate = "Expiry date must be in MM/YY format";
+    } else {
+      const [expMonth, expYear] = expiryDate.split("/").map(Number);
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear() % 100;
+
+      if (
+        expYear < currentYear ||
+        (expYear === currentYear && expMonth <= currentMonth)
+      ) {
+        newErrors.expiryDate =
+          "Expiry date must be in the future and cannot be the current month";
+      }
+    }
+    if (!mrp) {
+      newErrors.mrp = "MRP is required";
+    }
+
+    if (gst === undefined || gst === null || gst === "") {
+      newErrors.gst = "GST is required";
+    } else if (gst != 18 && gst != 5 && gst != 0) {
+      newErrors.gst = "Enter valid GST";
+    }
+
+    if (!ptr || ptr === "") {
+      newErrors.ptr = "PTR is required";
+    } else if (Number(mrp) && Number(ptr) >= Number(mrp)) {
+      newErrors.ptr = "PTR must be less than MRP";
+    }
+
+    if (!searchItem) {
+      toast.dismiss();
+      toast.error("Please select at least one item");
+      newErrors.item = "Select any Item Name";
+    }
+
+    setError(newErrors);
+    const isValid = Object.keys(newErrors).length === 0;
 
     if (isValid) {
-      if (isSubmitting) return; // Block if already submitting
+      if (isSubmitting) return; // ⛔ Block if already submitting
       else {
-        await handleAddItem(); // Call handleAddItem if validation passes
+        await handleAddItem(); // Call handleEditItem if validation passes
       }
     }
 
@@ -1417,9 +1374,6 @@ const AddPurchaseBill = () => {
   };
   /*<================================================================= Add new disrtibutor to item master  ============================================================> */
 
-
-
-
   const handleAddNewDistributor = async () => {
     // if (
     //   !addDistributorName ||
@@ -1430,41 +1384,31 @@ const AddPurchaseBill = () => {
     //   toast.error("Please fill all the fields");
     //   return;
     // }
-
-
     const newErrors = {};
 
-    if (!addDistributorName) {
+    if (!addDistributorName.trim()) {
       newErrors.addDistributorName = "Distributor Name is required";
     }
-    if (!addDistributorMobile) {
+
+    if (!addDistributorMobile.trim()) {
       newErrors.addDistributorMobile = "Mobile Number is required";
     }
-    if (!addDistributorNo) {
+
+    if (!addDistributorNo.trim()) {
       newErrors.addDistributorNo = "GSTIN Number is required";
-    } else if (!gstRegex.test(addDistributorNo)) {
-      newErrors.addDistributorNo = "Please enter a valid GST Number";
     }
 
     setAddDistributorError(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
-      // toast.dismiss();
-      // toast.error("Please fill all the required fields");
       return;
     }
 
     let data = new FormData();
     data.append("gst_number", addDistributorNo);
+    data.append("distributor_name", addDistributorName);
     data.append("mobile_no", addDistributorMobile);
     data.append("area", addDistributorAddress);
-    if (addDistributorId) {
-      data.append("distributor_id", addDistributorId);
-      data.append("distributor_name", "");
-    } else {
-      data.append("distributor_id", "");
-      data.append("distributor_name", addDistributorName);
-    }
 
     try {
       const response = await axios.post("create-distributer", data, {
@@ -1478,7 +1422,6 @@ const AddPurchaseBill = () => {
         setAddDistributorMobile("");
         setAddDistributorName("");
         setAddDistributorNo("");
-        setAddDistributorId("");
         toast.dismiss();
         toast.success("Distributor Added successfully");
         setOpenAddDistributorPopUp(false);
@@ -1515,25 +1458,19 @@ const AddPurchaseBill = () => {
   /*<======================================================================== Add new item to item master  ===================================================================> */
 
   const handleAddNewItem = async () => {
-    // if (!addItemName || !addUnit) {
-    //   toast.dismiss();
-    //   toast.error("Please fill required fields");
-    //   return;
-    // }
+    const newErrors = {};
 
-    const errors = {};
-
-    if (!addItemName) {
-      errors.addItemName = "Item Name is required";
+    if (!addItemName.trim()) {
+      newErrors.addItemName = "Item Name is required";
     }
 
     if (!addUnit) {
-      errors.addUnit = "Unit is required";
+      newErrors.addUnit = "Unit is required";
     }
 
-    setAddItemError(errors);
+    setAddItemError(newErrors);
 
-    if (Object.keys(errors).length > 0) {
+    if (Object.keys(newErrors).length > 0) {
       return;
     }
 
@@ -1796,8 +1733,7 @@ const AddPurchaseBill = () => {
 
       localStorage.removeItem("RandomNumber");
       setItemPurchaseList("");
-      setDistributor(null);
-      selectedDistributorRef.current = null;
+      setDistributor(null)
       setbillNo("")
       setSelectedDate(new Date())
       setUnsavedItems(false);
@@ -1839,32 +1775,23 @@ const AddPurchaseBill = () => {
     }
 
     const newErrors = {};
-    if (!distributor || !distributor.name) {
-      newErrors.distributor = "Please select Distributor";
-    } else {
-      const isValid = distributorList.some(
-        (d) => (d.name || "").toUpperCase().trim() === distributor.name.toUpperCase().trim()
-      );
-      if (!isValid) {
-        newErrors.distributor = "Please select a valid distributor from the dropdown options";
-      }
+    if (!distributor || !distributor.id) {
+      newErrors.distributor = distributor?.name ? "Please select a valid distributor from the dropdown options" : "Please select Distributor";
     }
-    if (!billNo || !billNo.trim()) {
+    if (!billNo) {
       newErrors.billNo = "Bill No is Required";
     }
-
-    if (!newErrors.distributor && !newErrors.billNo) {
-      if (!ItemPurchaseList?.item || ItemPurchaseList.item.length === 0) {
-        toast.dismiss();
-        toast.error("Please select at least one item");
-        newErrors.item = "Please select at least one item";
-      }
-    }
-
     setError(newErrors);
     if (Object.keys(newErrors)?.length > 0) {
       return;
     }
+
+    if (ItemPurchaseList?.item?.length === 0) {
+      toast.dismiss();
+      toast.error("Please add atleast one item");
+      return;
+    }
+
     submitPurchaseData(draft);
     setUnsavedItems(false);
   };
@@ -2181,69 +2108,49 @@ const AddPurchaseBill = () => {
     let data = new FormData();
     data.append("random_number", localStorage.getItem("RandomNumber"));
 
-    setIsOpenBox(false);
-    setUnsavedItems(false);
-    localStorage.removeItem("unsavedItems");
-
-    const navigateAway = () => {
-      localStorage.removeItem("RandomNumber");
-      if (nextPath) {
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 50);
-      }
-    };
-
     try {
-      await axios.post("item-purchase-delete-all", data, {
+      const response = await axios.post("item-purchase-delete-all", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      navigateAway();
+
+      if (response.status === 200) {
+        setUnsavedItems(false);
+        setIsOpenBox(false);
+        setTimeout(() => {
+          if (nextPath) {
+            history.push(nextPath);
+          }
+        }, 0);
+      }
+      setIsOpenBox(false);
+      setUnsavedItems(false);
+      localStorage.removeItem("RandomNumber");
+
+      // history.replace(nextPath);
     } catch (error) {
       if (error.response && error.response.status === 401) {
+        setUnsavedItems(false);
+        setIsOpenBox(false);
+        localStorage.setItem("unsavedItems", unsavedItems.toString());
+        setTimeout(() => {
+          history.push(nextPath);
+        }, 0);
+
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
+
       } else {
+        setUnsavedItems(false);
+
         console.error("Error deleting items:", error);
-        navigateAway();
       }
     }
   };
-
-  // Global submit shortcuts
-  useSubmitShortcut(() => handleSubmit(billSaveDraft), !showModal && !openFile && !openAddPopUp && !openAddItemPopUp && !openAddDistributorPopUp && !isOpenBox && !openItemHistory);
-  useSubmitShortcut(handleCnAmount, openAddPopUp);
-  useSubmitShortcut(handleFileUpload, openFile);
-  useSubmitShortcut(handleAddNewItem, openAddItemPopUp);
-  useSubmitShortcut(handleAddNewDistributor, openAddDistributorPopUp);
-
-
-
-
-  const validateRow = () => {
-    let isValid = true;
-
-    const fields = document.querySelectorAll(".req-field");
-
-    fields.forEach((el) => {
-      if (!el.value || el.value.trim() === "") {
-        el.style.border = "1px solid red";
-        isValid = false;
-      } else {
-        el.style.border = "";
-      }
-    });
-
-    return isValid;
-  };
-
-
-
 
   return (
     <>
@@ -2296,14 +2203,6 @@ const AddPurchaseBill = () => {
                   onChange={(e) => setPaymentType(e.target.value)}
                   size="small"
                   className="min-w-[150px] rounded-md"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      if (submitButtonRef.current) {
-                        submitButtonRef.current.focus();
-                      }
-                    }
-                  }}
                 >
                   <MenuItem value="cash" className="hover:bg-[var(--color2)]">Cash</MenuItem>
                   <MenuItem value="credit" className="hover:bg-[var(--color2)]">Credit</MenuItem>
@@ -2465,118 +2364,63 @@ const AddPurchaseBill = () => {
                         };
                       }
 
-                      if (finalValue && finalValue.name && !finalValue.id) {
-                        const found = distributorList.find(
-                          (d) => (d.name || "").toUpperCase().trim() === finalValue.name.toUpperCase().trim()
-                        );
-                        if (found) {
-                          finalValue.id = found.id;
-                        }
-                      }
-
                       selectedDistributorRef.current = finalValue;
                       setDistributor(finalValue);
                       setbillNo("");
-
-                      if (finalValue && finalValue.name) {
-                        const isValid = distributorList.some(
-                          (d) => (d.name || "").toUpperCase().trim() === finalValue.name.toUpperCase().trim()
-                        );
-                        setError((prev) => ({
-                          ...prev,
-                          distributor: isValid ? "" : "Please select a valid distributor from the dropdown options",
-                        }));
-                      } else {
-                        setError((prev) => ({
-                          ...prev,
-                          distributor: "Please select Distributor",
-                        }));
-                      }
+                      setError((prev) => ({ ...prev, distributor: "" }));
                     }}
                     onInputChange={(event, newInputValue, reason) => {
                       if (reason === "input") {
-                        const uppercased = newInputValue.toUpperCase();
-                        const found = distributorList.find(
-                          (d) => (d.name || "").toUpperCase().trim() === uppercased.trim()
-                        );
-                        const finalValue = {
-                          id: found ? found.id : null,
-                          name: uppercased,
-                        };
-                        selectedDistributorRef.current = finalValue;
-                        setDistributor(finalValue);
+                        // User typing: keep ID only if still matches list
+                        setDistributor((prev) => ({
+                          id: null,
+                          name: newInputValue.toUpperCase(),
+                        }));
                         setbillNo("");
-
-                        if (found) {
-                          setError((prev) => ({
-                            ...prev,
-                            distributor: "",
-                          }));
-                        }
+                        setError((prev) => ({ ...prev, distributor: "" }));
                       }
                     }}
                     getOptionLabel={(option) =>
                       typeof option === "string" ? option : option?.name ?? ""
                     }
-                    onBlur={(e) => {
-                      const typedValue = distributor?.name || "";
-                      if (!typedValue.trim()) {
-                        setError((prev) => ({
-                          ...prev,
-                          distributor: "Please select Distributor",
-                        }));
-                      } else {
-                        const isValid = distributorList.some(
-                          (d) => (d.name || "").toUpperCase().trim() === typedValue.toUpperCase().trim()
-                        );
-                        setError((prev) => ({
-                          ...prev,
-                          distributor: isValid ? "" : "Please select a valid distributor from the dropdown options",
-                        }));
-                      }
-                    }}
                     renderInput={(params) => (
                       <TextField
                         autoFocus={focusedField === "distributor"}
                         autoComplete="off"
                         variant="outlined"
                         error={!!error.distributor}
-                        placeholder="Select Distributor"
+                        helperText={error.distributor}
+                        placeholder="Select Distributer"
+                        FormHelperTextProps={{
+                          sx: {
+                            color: "#ff0000ff !important",
+                            ml: 0,
+                          },
+                        }}
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         inputProps={{
                           ...params.inputProps,
-                          // style: { textTransform: "uppercase" },
+                          style: { textTransform: "" },
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === "Tab") {
                             const prevent = !selectedDistributorRef.current?.id;
 
+                            setTimeout(() => {
+                              if (selectedDistributorRef.current?.id) {
+                                handleKeyDown(e, 0);
+                              }
+                            }, 100);
+
                             if (prevent) {
-                              setError((prev) => ({
-                                ...prev,
-                                distributor: distributor?.name?.trim()
-                                  ? "Please select a valid distributor from the dropdown options"
-                                  : "Please select Distributor",
-                              }));
                               e.preventDefault();
-                            } else {
-                              setTimeout(() => {
-                                if (selectedDistributorRef.current?.id) {
-                                  handleKeyDown(e, 0);
-                                }
-                              }, 100);
                             }
                           }
                         }}
                       />
                     )}
                   />
-                  {error.distributor && (
-                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
-                      {error.distributor}
-                    </div>
-                  )}
                 </div>
 
                 <div>
@@ -2586,7 +2430,15 @@ const AddPurchaseBill = () => {
                     id="outlined-number"
                     size="small"
                     variant="outlined"
+                    placeholder="Enter Bill No"
                     error={!!error.billNo}
+                    helperText={error.billNo}
+                    FormHelperTextProps={{
+                      sx: {
+                        color: "#ff0000ff !important",
+                        ml: 0,
+                      },
+                    }}
                     value={billNo}
                     sx={{
                       width: "100%",
@@ -2596,13 +2448,9 @@ const AddPurchaseBill = () => {
                     }}
                     onChange={(e) => {
                       setbillNo(e.target.value.toUpperCase());
-                      setError((prev) => ({
-                        ...prev,
-                        billNo: "",
-                      }));
+                      setError((prev) => ({ ...prev, billNo: "" }));
                     }}
                     inputRef={(el) => (inputRefs.current[1] = el)}
-                    placeholder="Bill No. / Order No."
                     onKeyDown={(e) => {
                       if (billNo) {
                         handleKeyDown(e, 1);
@@ -2612,19 +2460,13 @@ const AddPurchaseBill = () => {
 
                         if (isEnter || isTab) {
                           e.preventDefault();
-                          toast.dismiss();
-                          toast.error("Bill NO is Required");
+                          setError((prev) => ({ ...prev, billNo: "Bill No is Required" }));
                         }
                         // Shift + Tab is allowed by default; do not prevent it
                       }
                     }}
 
                   />
-                  {error.billNo && (
-                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
-                      {error.billNo}
-                    </div>
-                  )}
                 </div>
 
                 <div>
@@ -2667,7 +2509,7 @@ const AddPurchaseBill = () => {
                     size="small"
                     variant="outlined"
                     value={barcode}
-                    placeholder="Scan Barcode"
+                    placeholder="scan barcode"
                     // inputRef={inputRef10}
                     // onKeyDown={handleKeyDown}
 
@@ -2678,9 +2520,8 @@ const AddPurchaseBill = () => {
                     }}
                     onChange={(e) => {
                       generateRandomNumber();
-
+                      setError((prev) => ({ ...prev, searchItem: "" }));
                       setBarcode(e.target.value);
-
                     }}
                   />
                 </div>
@@ -2689,21 +2530,7 @@ const AddPurchaseBill = () => {
             </div>
             {/*<=====================================================Item Table ====================================================> */}
 
-            <div
-              className="table-container"
-              onScroll={(e) => {
-                const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-                if (
-                  scrollTop + clientHeight >= scrollHeight - 50 &&
-                  purchaseHasMore &&
-                  !isFetchingPurchaseMore
-                ) {
-                  const nextPage = purchasePage + 1;
-                  setPurchasePage(nextPage);
-                  itemPurchaseList(nextPage);
-                }
-              }}
-            >
+            <div className="table-container">
               <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
                 <thead>
                   <tr className="input-row">
@@ -2716,7 +2543,7 @@ const AddPurchaseBill = () => {
                         />
                       </div>
                     </th>
-                    <th>Unit<span className="text-red-600 ">*</span></th>
+                    <th>Unit <span className="text-red-600 ">*</span></th>
                     <th>Batch <span className="text-red-600 ">*</span> </th>
                     <th>Expiry <span className="text-red-600 ">*</span></th>
                     <th>MRP <span className="text-red-600 ">*</span></th>
@@ -2757,6 +2584,7 @@ const AddPurchaseBill = () => {
                           key={autocompleteKey}
                           value={selectedOption}
                           size="small"
+
                           onChange={handleOptionChange}
                           onInputChange={handleInputChange}
                           open={autoCompleteOpen}
@@ -2782,34 +2610,25 @@ const AddPurchaseBill = () => {
                               tabIndex={0}
                               variant="outlined"
                               autoComplete="off"
-                              placeholder="Search Item Name"
                               {...params}
+                              error={!!error.item}
+                              placeholder="Item Name"
                               value={searchItem?.iteam_name}
                               inputRef={(el) => (inputRefs.current[2] = el)}
                               onFocus={() => setSelectedIndex(-1)}
                               fullWidth
-                              error={!!error.searchItem}
                               sx={{
                                 minWidth: 400,
                                 width: "100%",
                                 '& .MuiInputBase-input': {
                                   // textAlign: 'center',
-                                  // textTransform: 'uppercase',
-                                },
-                                "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#ff0000 !important",
-                                },
-                                "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: error.searchItem ? "#ff0000" : "",
-                                },
-                                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: error.searchItem ? "#ff0000" : "",
+                                  textTransform: '',
                                 },
                               }}
 
                               InputProps={{
                                 ...params.InputProps,
-                                style: { textTransform: 'uppercase' },
+                                style: { textTransform: '' },
                                 endAdornment: (
                                   <>
                                     {selectedOption && (
@@ -2895,7 +2714,9 @@ const AddPurchaseBill = () => {
 
                                   if (!selectedOption) {
                                     e.preventDefault();
-                                    setError((prev) => ({ ...prev, searchItem: true }));
+                                    setTimeout(() => {
+                                      setError((prev) => ({ ...prev, item: true }));
+                                    }, 100);
                                   } else {
                                     setTimeout(() => inputRefs?.current[3].focus(), 100);
                                   }
@@ -2913,9 +2734,9 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
-                        placeholder="Unit"
                         type="text"
                         size="small"
+                        placeholder="Unit"
                         error={!!error.unit}
                         value={unit}
                         sx={{
@@ -2923,21 +2744,14 @@ const AddPurchaseBill = () => {
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
-                          },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.unit ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.unit ? "#ff0000" : "",
+
+
                           },
                         }}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setUnit(value ? Number(value) : "");
-                          setError((prev) => ({ ...prev, unit: false }));
+                          setError((prev) => ({ ...prev, unit: "" }));
                         }}
                         onKeyDown={(e) => {
                           const isInvalidKey = ["e", "E", ".", "+", "-", ","].includes(e.key);
@@ -2978,19 +2792,10 @@ const AddPurchaseBill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.batch ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.batch ? "#ff0000" : "",
-                          },
                         }}
                         onChange={(e) => {
                           setBatch((e.target.value).toUpperCase());
-                          setError((prev) => ({ ...prev, batch: false }));
+                          setError((prev) => ({ ...prev, batch: "" }));
                         }}
                         inputRef={(el) => (inputRefs.current[4] = el)}
                         onKeyDown={(e) => {
@@ -3015,15 +2820,6 @@ const AddPurchaseBill = () => {
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
-                          },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.expiryDate ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.expiryDate ? "#ff0000" : "",
                           },
                         }}
                         error={!!error.expiryDate}
@@ -3062,6 +2858,7 @@ const AddPurchaseBill = () => {
                               e.preventDefault();
                               setError((prev) => ({ ...prev, expiryDate: true }));
                             } else if (expiry < sixMonthsLater) {
+
                               toast.warning("Product will expire within 6 months");
                               handleKeyDown(e, 5);
                             } else {
@@ -3078,31 +2875,22 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        placeholder="Mrp"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.mrp ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.mrp ? "#ff0000" : "",
-                          },
                         }}
                         size="small"
+                        placeholder="0.00"
                         error={!!error.mrp}
                         value={mrp}
                         onChange={(e) => {
                           const value = e.target.value;
+                          setError((prev) => ({ ...prev, mrp: "" }));
                           if (/^\d*\.?\d*$/.test(value)) {
                             setMRP(value ? Number(value) : "");
-                            setError((prev) => ({ ...prev, mrp: false }));
                           }
                         }}
                         onKeyDown={(e) => {
@@ -3136,7 +2924,7 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        placeholder="Qty"
+
                         sx={{
                           minWidth: "65px",
                           width: "100%",
@@ -3145,11 +2933,13 @@ const AddPurchaseBill = () => {
                           },
                         }}
                         size="small"
+                        placeholder="0"
                         error={!!error.qty}
                         value={qty}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setQty(value ? Number(value) : "");
+                          setError((prev) => ({ ...prev, qty: "", quantity: "" }));
                         }}
                         inputRef={(el) => (inputRefs.current[7] = el)}
                         onKeyDown={(e) => {
@@ -3176,7 +2966,6 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         type="number"
-                        placeholder="Free"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -3186,10 +2975,12 @@ const AddPurchaseBill = () => {
                         }}
 
                         value={free}
+                        placeholder="0"
                         error={!!error.free}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g);
                           setFree(value ? Number(value) : "");
+                          setError((prev) => ({ ...prev, qty: "", quantity: "" }));
                         }}
                         onKeyDown={(e) => {
                           const invalidKeys = ["e", "E", ".", "+", "-", ","];
@@ -3197,6 +2988,7 @@ const AddPurchaseBill = () => {
                             e.preventDefault();
                             return;
                           }
+
                           if (e.key === "Enter") {
                             e.preventDefault();
                             handleKeyDown(e, 8);
@@ -3212,31 +3004,22 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        placeholder="Ptr"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.ptr ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.ptr ? "#ff0000" : "",
-                          },
                         }}
                         size="small"
+                        placeholder="0.00"
                         value={ptr}
                         error={!!error.ptr}
                         onChange={(e) => {
                           const value = e.target.value;
+                          setError((prev) => ({ ...prev, ptr: "" }));
                           if (/^\d*\.?\d*$/.test(value)) {
                             setPTR(value ? Number(value) : "");
-                            setError((prev) => ({ ...prev, ptr: false }));
                           }
                         }}
                         onKeyDown={(e) => {
@@ -3253,7 +3036,14 @@ const AddPurchaseBill = () => {
                           if (isShiftTab) return;
 
                           if (isEnter || isTab) {
-                            if (!ptr || ptr === 0 || (Number(mrp) && Number(ptr) >= Number(mrp))) {
+                            // if (!ptr || ptr === 0) {
+                            //   e.preventDefault();
+                            // toast.dismiss();
+                            // toast.error("PTR is required and must be greater than 0");
+                            //   return;
+                            // }
+
+                            if (Number(mrp) && Number(ptr) >= Number(mrp)) {
                               e.preventDefault();
                               setError((prev) => ({ ...prev, ptr: true }));
                               return;
@@ -3271,7 +3061,6 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
-                        placeholder="Cd"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -3281,6 +3070,7 @@ const AddPurchaseBill = () => {
                         }}
                         size="small"
                         type="text"
+                        placeholder="0"
                         value={disc}
                         onKeyDown={(e) => {
                           const invalidKeys = ["e", "E", "+", "-", ","];
@@ -3311,8 +3101,8 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        placeholder="Base"
                         size="small"
+                        placeholder="0.00"
                         value={base === 0 ? "" : base}
                         disabled
 
@@ -3330,36 +3120,25 @@ const AddPurchaseBill = () => {
                     </td>
 
                     <td>
-                      <Select
+                      <TextField
+                        select
+                        SelectProps={{ native: true }}
+                        variant="outlined"
                         size="small"
                         value={gst}
-                        displayEmpty
-                        renderValue={(value) => (value === "" || value === undefined || value === null ? "Gst" : value)}
                         sx={{
                           minWidth: "60px",
                           width: "100%",
-                          '& .MuiSelect-select': {
+                          '& .MuiInputBase-input': {
                             textAlign: 'center',
-                            paddingY: '8.5px',
-                          },
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.gst ? "#ff0000 !important" : "",
-                          },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.gst ? "#ff0000 !important" : "",
-                          },
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.gst ? "#ff0000 !important" : "",
                           },
                         }}
                         error={!!error.gst}
                         inputRef={(el) => (inputRefs.current[11] = el)}
                         onChange={(e) => {
-                          setGst(e.target.value !== "" ? Number(e.target.value) : "");
-                          setError((prev) => ({ ...prev, gst: false }));
-                          setTimeout(() => {
-                            inputRefs.current[12]?.focus();
-                          }, 50);
+                          const value = e.target.value;
+                          setGst(value ? Number(value) : "");
+                          setError((prev) => ({ ...prev, gst: "" }));
                         }}
                         onKeyDown={(e) => {
                           const isTab = e.key === "Tab";
@@ -3369,27 +3148,18 @@ const AddPurchaseBill = () => {
                           if (isShiftTab) return;
 
                           if (isEnter || isTab) {
-                            // If event is coming from the open dropdown menu items, let MUI handle the selection
-                            if (e.target.tagName === 'LI' || e.target.getAttribute('role') === 'option' || e.target.tagName === 'UL') {
-                               return;
-                            }
-                            
                             e.preventDefault();
-                            const allowedGST = [0, 5, 18];
-                            if (gst === "" || gst === null || gst === undefined || !allowedGST.includes(Number(gst))) {
-                              setError((prev) => ({ ...prev, gst: true }));
-                              return;
-                            }
-                            setTimeout(() => {
-                              inputRefs.current[12]?.focus();
-                            }, 50);
+                            inputRefs.current[12]?.focus();
+                          } else {
+                            handleKeyDown(e, 11);
                           }
                         }}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={18}>18</MenuItem>
-                      </Select>
+                        <option value=""></option>
+                        <option value="0">0</option>
+                        <option value="5">5</option>
+                        <option value="18">18</option>
+                      </TextField>
                     </td>
 
                     <td>
@@ -3398,8 +3168,9 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
+                        placeholder="Loc"
                         value={loc?.toUpperCase()}
-                        placeholder="Loc."
+
                         sx={{
                           minWidth: "65px",
                           width: "100%",
@@ -3428,8 +3199,8 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         type="number"
                         disabled
-                        placeholder="Net Rate"
                         size="small"
+                        placeholder="0.00"
                         value={netRate === 0 ? "" : netRate}
                         sx={{
                           minWidth: "65px",
@@ -3447,9 +3218,9 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        placeholder="Margin"
                         disabled
                         size="small"
+                        placeholder="0.00"
                         value={margin === 0 ? "" : margin}
                         sx={{
                           minWidth: "40px",
@@ -3514,62 +3285,53 @@ const AddPurchaseBill = () => {
                           />
                         </div>
                         <span style={{ alignSelf: "center" }}>
-                          {item.iteam_name ? item.iteam_name : "-"}
+                          {item.iteam_name ? item.iteam_name : "-----"}
                         </span>
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.weightage ? item.weightage : "-"}
+                        {item.weightage ? item.weightage : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.batch_number ? item.batch_number : "-"}
+                        {item.batch_number ? item.batch_number : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.expiry ? item.expiry : "-"}
+                        {item.expiry ? item.expiry : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.mrp ? item.mrp : "-"}
+                        {item.mrp ? item.mrp : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.qty ? item.qty : "-"}
+                        {item.qty ? item.qty : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.free_qty ? item.free_qty : "-"}
+                        {item.free_qty ? item.free_qty : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.ptr ? item.ptr : "-"}
+                        {item.ptr ? item.ptr : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.discount ? item.discount : "-"}
+                        {item.discount ? item.discount : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.base_price ? item.base_price : "-"}
+                        {item.base_price ? item.base_price : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.gst ? item.gst : "-"}
+                        {item.gst ? item.gst : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.location ? item.location : "-"}
+                        {item.location ? item.location : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.net_rate ? item.net_rate : "-"}
+                        {item.net_rate ? item.net_rate : "-----"}
                       </td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                        {item.margin ? item.margin : "-"}
+                        {item.margin ? item.margin : "-----"}
                       </td>
                       <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>
-                        {item.total_amount ? item.total_amount : "-"}
+                        {item.total_amount ? item.total_amount : "-----"}
                       </td>
                     </tr>
                   ))
-                  )}
-                  {isFetchingPurchaseMore && (
-                    <tr>
-                      <td colSpan={15} style={{ padding: "12px", textAlign: "center" }}>
-                        <div className="loader-container">
-                          <Loader />
-                        </div>
-                      </td>
-                    </tr>
                   )}
                 </tbody>
               </table>
@@ -4049,6 +3811,21 @@ const AddPurchaseBill = () => {
 
           {/*<================================================= add Distributor PopUp Box  ==============================================> */}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           <Dialog open={openAddDistributorPopUp} className="custom-dialog add-distributor-dialog modal_991">
             <DialogTitle id="alert-dialog-title" className="primary">
               Add Distributor
@@ -4061,7 +3838,6 @@ const AddPurchaseBill = () => {
                 setAddDistributorMobile("");
                 setAddDistributorName("");
                 setAddDistributorNo("");
-                setAddDistributorId("");
               }}
 
               sx={{
@@ -4091,87 +3867,50 @@ const AddPurchaseBill = () => {
                         <label className="label secondary">Distributor Name<span className="text-red-600  ">*</span></label>
                         <Autocomplete
                           freeSolo
-                          options={Array.from(new Set(distributorList.map(d => (d.name || "").toUpperCase().trim()).filter(Boolean)))}
+                          options={distributorList.map(d => d.name)}
                           value={addDistributorName}
                           onInputChange={(e, newValue) => {
-                            const uppercased = newValue.toUpperCase();
-                            setAddDistributorName(uppercased);
-                            setAddDistributorError((prev) => ({ ...prev, addDistributorName: "" }));
-                            const found = distributorList.find(d =>
-                              (d.name || "").toUpperCase().trim() === uppercased.trim()
-                            );
-                            if (found) {
-                              setAddDistributorId(found.id || "");
-                              setAddDistributorMobile(found.phone_number || "");
-                              setAddDistributorNo(found.gst || "");
-                              setAddDistributorAddress(found.area || "");
-                            } else {
-                              setAddDistributorId("");
-                              if (!newValue) {
-                                setAddDistributorMobile("");
-                                setAddDistributorNo("");
-                                setAddDistributorAddress("");
-                              }
-                            }
+                            setAddDistributorName(newValue.toUpperCase());
                           }}
                           onChange={(e, selectedValue) => {
-
-                            if (selectedValue) {
-                              const valString = String(selectedValue).toUpperCase().trim();
-                              const found = distributorList.find(d =>
-                                (d.name || "").toUpperCase().trim() === valString
-                              );
-                              if (found) {
-                                setAddDistributorId(found.id || "");
-                                setAddDistributorName((found.name || "").toUpperCase().trim());
-                                setAddDistributorMobile(found.phone_number || "");
-                                setAddDistributorNo(found.gst || "");
-                                setAddDistributorAddress(found.area || "");
-                              }
-                            } else {
-                              setAddDistributorId("");
-                              setAddDistributorName("");
-                              setAddDistributorMobile("");
-                              setAddDistributorNo("");
-                              setAddDistributorAddress("");
+                            const found = distributorList.find(d => d.name === selectedValue);
+                            if (found) {
+                              setAddDistributorName(found.name);
+                              setAddDistributorMobile(found.phone_number);
+                              setAddDistributorNo(found.gst);
+                              setAddDistributorAddress(found.area || "");
                             }
                           }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              placeholder="Distributor Name"
-                              size="small"
-                              variant="outlined"
                               error={!!addDistributorError.addDistributorName}
+                              helperText={addDistributorError.addDistributorName}
+                              onChange={(e) => {
+                                setAddDistributorName(e.target.value.toUpperCase());
+
+                                setAddDistributorError((prev) => ({
+                                  ...prev,
+                                  addDistributorName: "",
+                                }));
+                              }}
+                              FormHelperTextProps={{
+                                sx: {
+                                  color: "#ff0000 !important",
+                                  ml: 0,
+                                },
+                              }}
+                              size="small"
                               inputRef={(el) => (inputRefs.current[16] = el)}
                               onKeyDown={(e) => handleKeyDown(e, 16)}
                               inputProps={{
                                 ...params.inputProps,
+                                style: { textTransform: "uppercase" },
                                 autoComplete: "off",
-                              }}
-                              sx={{
-                                "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#ff0000 !important",
-                                },
-                                "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: addDistributorError.addDistributorName
-                                    ? "#ff0000"
-                                    : "",
-                                },
-                                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: addDistributorError.addDistributorName
-                                    ? "#ff0000"
-                                    : "",
-                                },
                               }}
                             />
                           )}
                         />
-                        {addDistributorError.addDistributorName && (
-                          <span className="text-[#ff0000] text-[12px]">
-                            {addDistributorError.addDistributorName}
-                          </span>
-                        )}
                       </div>
 
                     </div>
@@ -4195,8 +3934,6 @@ const AddPurchaseBill = () => {
                             }
 
                             setAddDistributorMobile(numericValue);
-
-                            setAddDistributorError((prev) => ({ ...prev, addDistributorMobile: "" }));
                           }}
                           onChange={(e, selectedValue) => {
                             const found = distributorList.find(d => d.phone_number === selectedValue);
@@ -4205,15 +3942,11 @@ const AddPurchaseBill = () => {
                               setAddDistributorMobile(found.phone_number);
                               setAddDistributorNo(found.gst);
                               setAddDistributorAddress(found.area || "");
-                              setAddDistributorId(found.id);
-                            } else {
-                              setAddDistributorId("");
                             }
                           }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              placeholder="Mobile Number"
                               size="small"
                               inputRef={(el) => (inputRefs.current[17] = el)}
                               onKeyDown={(e) => handleKeyDown(e, 17)}
@@ -4227,25 +3960,25 @@ const AddPurchaseBill = () => {
                                   e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
                                 }
                               }}
-                              error={!!addDistributorError.addDistributorMobile || distributorList.some(d => d.phone_number === addDistributorMobile)}
-                              sx={{
-                                "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#ff0000 !important",
+                              error={
+                                !!addDistributorError.addDistributorMobile ||
+                                distributorList.some(d => d.phone_number === addDistributorMobile)
+                              }
+                              helperText={
+                                addDistributorError.addDistributorMobile ||
+                                (distributorList.some(d => d.phone_number === addDistributorMobile)
+                                  ? "This number already exists"
+                                  : "")
+                              }
+                              FormHelperTextProps={{
+                                sx: {
+                                  color: "#ff0000 !important",
+                                  ml: 0,
                                 },
                               }}
                             />
                           )}
                         />
-                        {/* Helper text replacement */}
-                        {addDistributorError.addDistributorMobile ? (
-                          <span className="text-[#ff0000] text-[12px]">
-                            {addDistributorError.addDistributorMobile}
-                          </span>
-                        ) : distributorList.some(d => d.phone_number === addDistributorMobile) ? (
-                          <span className="text-[#ff0000] text-[12px]">
-                            This number already exists
-                          </span>
-                        ) : null}
                       </div>
                       {/* GST Number */}
                       <div className="fields add_new_item_divv">
@@ -4257,7 +3990,6 @@ const AddPurchaseBill = () => {
                           value={addDistributorNo}
                           onInputChange={(e, newValue) => {
                             setAddDistributorNo(newValue.toUpperCase());
-                            setAddDistributorError((prev) => ({ ...prev, addDistributorNo: "" }));
                           }}
                           onChange={(e, selectedValue) => {
                             const found = distributorList.find(d => d.gst === selectedValue);
@@ -4266,44 +3998,37 @@ const AddPurchaseBill = () => {
                               setAddDistributorMobile(found.phone_number);
                               setAddDistributorNo(found.gst);
                               setAddDistributorAddress(found.area || "");
-                              setAddDistributorId(found.id);
-                            } else {
-                              setAddDistributorId("");
                             }
                           }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              placeholder="Distributor GSTIN Number"
+
                               size="small"
                               inputRef={(el) => (inputRefs.current[18] = el)}
+                              error={!!addDistributorError.addDistributorNo}
+                              helperText={addDistributorError.addDistributorNo}
+                              FormHelperTextProps={{
+                                sx: {
+                                  color: "#ff0000 !important",
+                                  ml: 0,
+                                },
+                              }}
                               onKeyDown={(e) => handleKeyDown(e, 18)}
                               inputProps={{
                                 ...params.inputProps,
+                                style: { textTransform: "uppercase" },
                                 autoComplete: "off",
                                 maxLength: 15,
+                                onInput: (e) => {
+                                  e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 15);
+                                }
                               }}
-                              // error={addDistributorNo.length > 0 && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(addDistributorNo)}
-                              // helperText={addDistributorNo.length > 0 && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(addDistributorNo) ? "Invalid GST Number" : ""}
-                              error={!!addDistributorError.addDistributorNo || (addDistributorNo.length > 0 && !gstRegex.test(addDistributorNo))}
-                              sx={{
-                                "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#ff0000 !important",
-                                },
-                              }}
+
                             />
                           )}
                         />
 
-                        {addDistributorError.addDistributorNo ? (
-                          <span className="text-[#ff0000] text-[12px]">
-                            {addDistributorError.addDistributorNo}
-                          </span>
-                        ) : addDistributorNo.length > 0 && !gstRegex.test(addDistributorNo) ? (
-                          <span className="text-[#ff0000] text-[12px]">
-                            Invalid GST Number
-                          </span>
-                        ) : null}
                       </div>
                     </div>
 
@@ -4318,7 +4043,6 @@ const AddPurchaseBill = () => {
                           autoComplete="off"
                           size="small"
                           value={addDistributorAddress}
-                          placeholder="Address"
                           onChange={(e) => {
                             const value = e.target.value;
                             const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
@@ -4361,7 +4085,41 @@ const AddPurchaseBill = () => {
             </DialogContent>
           </Dialog>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           {/*<==================================================== add item PopUp Box  ===================================================> */}
+
+
+
+
+
+
+
+
+
 
           <Dialog open={openAddItemPopUp} className="custom-dialog add-item-dialog modal_991 ">
             <DialogTitle id="alert-dialog-title" className="primary">
@@ -4391,11 +4149,15 @@ const AddPurchaseBill = () => {
                           id="outlined-number"
                           size="small"
                           value={addItemName}
-                          placeholder="Item Name"
+                          error={!!addItemError.addItemName}
+                          helperText={addItemError.addItemName}
+                          FormHelperTextProps={{
+                            sx: {
+                              color: "#ff0000ff !important",
+                              ml: 0,
+                            },
+                          }}
                           autoFocus
-                          // onChange={(e) =>
-                          //   setAddItemName(e.target.value.toUpperCase())
-                          // }
                           onChange={(e) => {
                             setAddItemName(e.target.value.toUpperCase());
 
@@ -4404,39 +4166,9 @@ const AddPurchaseBill = () => {
                               addItemName: "",
                             }));
                           }}
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              "& .MuiOutlinedInput-notchedOutline": {
-                                borderColor: addItemError.addItemName
-                                  ? "#d32f2f"
-                                  : "rgba(0, 0, 0, 0.38)",
-                              },
-                              "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                                borderColor: "#d32f2f !important",
-                              },
-                              "&:hover .MuiOutlinedInput-notchedOutline": {
-                                borderColor: addItemError.addItemName
-                                  ? "#d32f2f"
-                                  : "var(--color1)",
-                              },
-                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                borderColor: addItemError.addItemName
-                                  ? "#d32f2f"
-                                  : "var(--color1)",
-                              },
-                            },
-                          }}
-                          error={!!addItemError.addItemName}
                           inputRef={(el) => (inputRefs.current[13] = el)}
                           onKeyDown={(e) => handleKeyDown(e, 13)}
                         />
-
-
-                        {addItemError.addItemName && (
-                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
-                            {addItemError.addItemName}
-                          </div>
-                        )}
                       </div>
                     </div>
 
@@ -4450,7 +4182,6 @@ const AddPurchaseBill = () => {
                           type="number"
                           size="small"
                           value={addBarcode}
-                          placeholder="Barcode"
                           onChange={(e) => setAddBarcode(Number(e.target.value))}
                           inputRef={(el) => (inputRefs.current[14] = el)}
                           onKeyDown={(e) => handleKeyDown(e, 14)}
@@ -4464,9 +4195,8 @@ const AddPurchaseBill = () => {
                           type="number"
                           size="small"
                           value={addUnit}
-                          placeholder="Unit"
-                          // onChange={(e) => setAddUnit(e.target.value)}
                           error={!!addItemError.addUnit}
+                          helperText={addItemError.addUnit}
                           onChange={(e) => {
                             setAddUnit(e.target.value);
 
@@ -4475,43 +4205,20 @@ const AddPurchaseBill = () => {
                               addUnit: "",
                             }));
                           }}
+                          FormHelperTextProps={{
+                            sx: {
+                              color: "#ff0000ff !important",
+                              ml: 0,
+                            },
+                          }}
                           inputRef={(el) => (inputRefs.current[15] = el)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                              e.preventDefault();
+                              e.preventDefault(); // Prevent form submission
                               handleAddNewItem();
                             }
                           }}
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              "& .MuiOutlinedInput-notchedOutline": {
-                                borderColor: "rgba(0, 0, 0, 0.38)",
-                              },
-
-                              "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                                borderColor: "#d32f2f !important",
-                              },
-
-                              "&:hover .MuiOutlinedInput-notchedOutline": {
-                                borderColor: !!addItemError.addUnit
-                                  ? "#d32f2f"
-                                  : "var(--color1)",
-                              },
-
-                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                borderColor: !!addItemError.addUnit
-                                  ? "#d32f2f"
-                                  : "var(--color1)",
-                              },
-                            },
-                          }}
-
                         />
-                        {addItemError.addUnit && (
-                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
-                            {addItemError.addUnit}
-                          </div>
-                        )}
                       </div>
                       <div className="fields add_new_item_divv">
                         <label className="label secondary">Pack</label>
@@ -4551,6 +4258,21 @@ const AddPurchaseBill = () => {
               </DialogContentText>
             </DialogContent>
           </Dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
           {/*<==================================================== Item History Modal  ===================================================> */}
           <Dialog
