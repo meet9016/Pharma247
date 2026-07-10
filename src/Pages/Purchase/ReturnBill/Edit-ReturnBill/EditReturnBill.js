@@ -421,35 +421,43 @@ const EditReturnBill = () => {
         data.append("distributor_id", distributorId);
         data.append("type", "1");
 
-        setIsOpenBox(false);
-        setUnsavedItems(false);
-        localStorage.removeItem("unsavedItems");
-
-        const navigateAway = () => {
-            if (nextPath) {
-                setTimeout(() => {
-                    history.push(nextPath);
-                }, 50);
-            }
-        };
 
         try {
-            await axios.post("purches-return-iteam-histroy", data,
+            const response = await axios.post("purches-return-iteam-histroy", data,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            navigateAway();
+            if (response.status === 200) {
+                setUnsavedItems(false);
+                setIsOpenBox(false);
+
+                setTimeout(() => {
+                    if (nextPath) {
+                        history.push(nextPath);
+                    }
+                }, 0);
+            }
+            setIsOpenBox(false);
+            setUnsavedItems(false);
+
         } catch (error) {
             if (error.response && error.response.status === 401) {
+                setUnsavedItems(false);
+                setIsOpenBox(false);
+                localStorage.setItem("unsavedItems", unsavedItems.toString());
+                setTimeout(() => {
+                    history.push(nextPath);
+                }, 0);
+
                 localStorage.removeItem("token");
                 localStorage.removeItem("userId");
                 localStorage.removeItem("role");
                 localStorage.clear();
                 history.push("/");
+
             } else {
                 console.error("Error deleting items:", error);
-                navigateAway();
             }
         }
     };
@@ -624,6 +632,7 @@ const EditReturnBill = () => {
     const handleInputChange = async (e) => {
         const value = e.target.value;
         setSearchQuery(value);
+        setErrors((prev) => ({ ...prev, searchItem: "" }));
         const distributors = await listDistributor();
         await returnBillEditID(distributors, value);
     };
@@ -810,10 +819,8 @@ const EditReturnBill = () => {
 
         if (!gst) newErrors.gst = 'GST is required';
         // if (!loc) newErrors.loc = 'Location is required';
-        if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
+        if (gst != 18 && gst != 5 && gst != 0) {
             newErrors.gst = "Enter valid GST";
-            toast.dismiss();
-            toast.error("Enter valid GST")
         };
 
         setErrors(newErrors);
@@ -927,15 +934,21 @@ const EditReturnBill = () => {
             newErrors.billNo = 'Bill No is Required';
         }
 
-        if (!tableData?.item_list || tableData.item_list.length === 0) {
-            newErrors.item = 'Please select at least one item';
-            toast.dismiss();
-            toast.error("Please select at least one item");
-        }
+        // if(checkedItems.length===0){
+        //     newErrors.checkedItems = 'Item is not selected';
+        //     toast.dismiss();
+        // toast.error("Item is not selected");
 
+        // }
         setError(newErrors);
 
         if (Object.keys(newErrors).length > 0) {
+            return;
+        }
+
+        if (tableData?.item_list?.length === 0) {
+            toast.dismiss();
+            toast.error("Please select at least one item");
             return;
         }
         updatePurchaseRecord();
@@ -1134,7 +1147,8 @@ const EditReturnBill = () => {
 
                                 onClick={() => history.push("/purchaseReturn")}
                             >
-                                Purchase Return 
+                                Purchase Return
+
                             </span>
                             <ArrowForwardIosIcon
                                 fontSize="small"
@@ -1312,16 +1326,16 @@ const EditReturnBill = () => {
                                                 onChange={handleInputChange}
                                                 variant="outlined"
                                                 placeholder="Please search any items.."
+                                                error={!!errors.searchItem}
                                                 inputRef={(el) => (inputRefs.current[0] = el)}
                                                 onKeyDown={e => {
                                                     if (e.key === "Enter" && !searchQuery) {
-                                                        toast.dismiss();
-                                                        toast.error("Please search any items..");
                                                         e.preventDefault();
+                                                        setErrors((prev) => ({ ...prev, searchItem: true }));
                                                     }
                                                 }}
                                                 InputProps={{
-                                                   startAdornment: (
+                                                    endAdornment: (
                                                         <InputAdornment position="start">
                                                             <svg width="20" height="20" fill="gray"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
                                                         </InputAdornment>
@@ -1347,11 +1361,11 @@ const EditReturnBill = () => {
                                                 },
                                             }}
                                             error={!!errors.unit}
-                                            helperText={errors.unit}
                                             value={unit}
                                             onChange={(e) => {
                                                 const value = e.target.value.replace(/[^0-9]/g, '');
                                                 setUnit(value ? Number(value) : "");
+                                                setErrors((prev) => ({ ...prev, unit: "" }));
                                             }}
                                             inputRef={(el) => (inputRefs.current[1] = el)}
                                             onKeyDown={(e) => {
@@ -1359,9 +1373,8 @@ const EditReturnBill = () => {
                                                     if (unit && unit !== 0) {
                                                         handleKeyDown(e, 1);
                                                     } else {
-                                                        toast.dismiss();
-                                                        toast.error("Please enter unit");
                                                         e.preventDefault();
+                                                        setErrors((prev) => ({ ...prev, unit: true }));
                                                     }
                                                 }
                                                 if (['e', 'E', '.', '+', '-', ','].includes(e.key)) {
@@ -1445,7 +1458,6 @@ const EditReturnBill = () => {
                                         <TextField
                                             autoComplete="off"
                                             id="outlined-number"
-                                            placeholder='Qty'
                                             type="number"
                                             sx={{
                                                 minWidth: "65px",
@@ -1467,9 +1479,7 @@ const EditReturnBill = () => {
                                                     if (qty && qty !== 0) {
                                                         handleKeyDown(e, 2);
                                                     } else {
-                                                        toast.dismiss();
-                                                        toast.error("Please enter quantity");
-                                                        e.preventDefault();
+                                                        handleKeyDown(e, 2);
                                                     }
                                                 }
                                                 if (['e', 'E', '.', '+', '-', ','].includes(e.key)) {
@@ -1484,7 +1494,6 @@ const EditReturnBill = () => {
                                             autoComplete="off"
                                             id="outlined-number"
                                             size="small"
-                                            placeholder='Free'
                                             type="number"
                                             sx={{
                                                 minWidth: "40px",
@@ -1493,6 +1502,7 @@ const EditReturnBill = () => {
                                                     textAlign: 'center',
                                                 },
                                             }}
+                                            placeholder='Free'
                                             value={free}
                                             onChange={(e) => {
                                                 const value = e.target.value.replace(/[^0-9]/g, '');
@@ -1504,9 +1514,7 @@ const EditReturnBill = () => {
                                                     if (free !== "") {
                                                         handleKeyDown(e, 3);
                                                     } else {
-                                                        toast.dismiss();
-                                                        toast.error("Please enter free quantity");
-                                                        e.preventDefault();
+                                                        handleKeyDown(e, 3);
                                                     }
                                                 }
                                                 if (['e', 'E', '.', '+', '-', ','].includes(e.key)) {
@@ -1538,9 +1546,8 @@ const EditReturnBill = () => {
                                                     if (ptr && ptr !== 0) {
                                                         handleKeyDown(e, 4);
                                                     } else {
-                                                        toast.dismiss();
-                                                        toast.error("Please enter PTR");
                                                         e.preventDefault();
+                                                        setErrors((prev) => ({ ...prev, ptr: true }));
                                                     }
                                                 }
                                                 if (
@@ -1554,6 +1561,7 @@ const EditReturnBill = () => {
                                                 const value = e.target.value;
                                                 if (/^\d*\.?\d*$/.test(value)) {
                                                     handlePTR(value ? Number(value) : "");
+                                                    setErrors((prev) => ({ ...prev, ptr: "" }));
                                                 }
                                             }}
                                         />
@@ -1582,9 +1590,7 @@ const EditReturnBill = () => {
                                                     if (disc !== "") {
                                                         handleKeyDown(e, 5);
                                                     } else {
-                                                        toast.dismiss();
-                                                        toast.error("Please enter CD");
-                                                        e.preventDefault();
+                                                        handleKeyDown(e, 5);
                                                     }
                                                 }
                                                 if (
@@ -1604,49 +1610,56 @@ const EditReturnBill = () => {
                                         />
                                     </td>
                                     <td>
-                                        <Select
-                                            size="small"
-                                            value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
-                                            onChange={(e) => {
-                                                setGst(e.target.value !== "" ? Number(e.target.value) : "");
-                                                setErrors((prev) => ({ ...prev, gst: false }));
-                                            }}
-                                            inputRef={(el) => (inputRefs.current[6] = el)}
+                                        <TextField
+                                            select
+                                            SelectProps={{ native: true }}
+                                            labelId="dropdown-label"
+                                            id="dropdown"
+                                            placeholder='Gst'
+                                            value={gst}
                                             sx={{
-                                                minWidth: "60px",
+                                                minWidth: "40px",
                                                 width: "100%",
-                                                '& .MuiSelect-select': {
+                                                '& .MuiInputBase-input': {
                                                     textAlign: 'center',
-                                                    paddingY: '8.5px',
                                                 },
                                             }}
+                                            inputRef={(el) => (inputRefs.current[6] = el)}
                                             onKeyDown={(e) => {
-                                                if (e.key === "Tab" && e.shiftKey) {
-                                                    e.preventDefault();
-                                                    if (inputRefs.current[5]) {
-                                                        inputRefs.current[5].focus();
-                                                    }
-                                                    return;
-                                                }
                                                 if (e.key === "Enter") {
-                                                    e.preventDefault();
-                                                    if (inputRefs.current[7]) {
-                                                        inputRefs.current[7].focus();
+                                                    if (gst && gst !== "") {
+                                                        handleKeyDown(e, 6);
+                                                    } else {
+                                                        e.preventDefault();
+                                                        setErrors((prev) => ({ ...prev, gst: true }));
                                                     }
+                                                }
+                                                if (
+                                                    ['e', 'E', '+', '-', ','].includes(e.key) ||
+                                                    (e.key === '.' && e.target.value.includes('.'))
+                                                ) {
+                                                    e.preventDefault();
                                                 }
                                             }}
+                                            onChange={(e) => {
+                                                setGst(e.target.value);
+                                                setErrors((prev) => ({ ...prev, gst: "" }));
+                                            }}
+                                            size="small"
+                                            displayEmpty
+                                            error={!!errors.gst}
                                         >
-                                            <MenuItem value={0}>0</MenuItem>
-                                            <MenuItem value={5}>5</MenuItem>
-                                            <MenuItem value={18}>18</MenuItem>
-                                        </Select>
+                                            <option value="0">0</option>
+                                            <option value="5">5</option>
+                                            <option value="18">18</option>
+                                        </TextField>
                                     </td>
                                     <td>
                                         <TextField
                                             autoComplete="off"
                                             id="outlined-number"
-                                            placeholder='Loc.'
                                             size="small"
+                                            placeholder='Loc'
                                             value={loc}
                                             inputRef={(el) => (inputRefs.current[7] = el)}
                                             sx={{

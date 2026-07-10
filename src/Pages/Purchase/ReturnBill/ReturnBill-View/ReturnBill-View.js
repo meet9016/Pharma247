@@ -226,7 +226,7 @@ const ReturnView = () => {
                   }}
                   onClick={() => history.push("/purchaseReturn")}
                 >
-                  Purchase Return   
+                  Purchase Return
                 </span>
                 <ArrowForwardIosIcon
                   style={{ fontSize: "20px", color: "var(--color1)" }}
@@ -287,11 +287,6 @@ const ReturnView = () => {
             </div>
           </div>
           <div>
-
-
-
-
-
             {/* <div
               className="firstrow flex"
               style={{
@@ -331,6 +326,8 @@ const ReturnView = () => {
             </div> */}
 
 
+
+
             <div className="scroll-wrapper">
               <div
                 className="firstrow"
@@ -356,6 +353,7 @@ const ReturnView = () => {
                     flexShrink: 0,
                   }}
                 />
+
                 {/* SR No badge - compact */}
                 <div
                   style={{
@@ -370,11 +368,11 @@ const ReturnView = () => {
                     borderRight: "1px solid #e7ebe0",
                   }}
                 >
-                  {/* <span style={{ fontSize: "0.62rem", color: "#65784a", fontWeight: 600, letterSpacing: "0.05em" }}>
-                    Bill No
-                  </span> */}
+                  {/* <span style={{ fontSize: "0.82rem", color: "#65784a", fontWeight: 700, letterSpacing: "0.05em" }}>
+                        Bill No
+                      </span> */}
                   <span style={{ fontSize: "25px", fontWeight: 700, color: "#3f6212", lineHeight: 1.1 }}>
-                    {tableData?.bill_no}
+                    {tableData?.bill_no || "-"}
                   </span>
                 </div>
 
@@ -388,13 +386,13 @@ const ReturnView = () => {
                   }}
                 >
                   {[
-                    { label: "Bill Creator", value: tableData?.user_name, cap: true, accent: "#0f172a" },
-
-                    { label: "Bill Date", value: tableData?.bill_date },
-                    { label: "Start Date", value: tableData?.start_date, },
-                    { label: "end Date", value: tableData?.end_date, cap: true },
-                    { label: "Remark", value: tableData?.remark },
-                    { label: "Distributer", value: tableData?.distributor_name },
+                    // { label: "Bill No", value: tableData.bill_no, mono: true },
+                    { label: "Bill Creator", value: tableData?.user_name || "-" },
+                    { label: "Bill Date", value: tableData?.bill_date || "-" },
+                    { label: "start Date", value: tableData?.start_date || "-" },
+                    { label: "end Date", value: tableData?.end_date || "-" },
+                    { label: "Remark", value: tableData?.remark || "-" },
+                    { label: "Distributer", value: tableData?.distributor_name || "-" },
 
                   ].map((item, idx, arr) => (
                     <div
@@ -474,14 +472,10 @@ const ReturnView = () => {
 
 
 
-            <div
-              className="overflow-x-auto mt-5"
-              style={{
-                maxHeight: "670px",
-                overflowY: "auto",
-                overflowX: "auto",
-              }}
-            >
+
+
+
+            <div className="overflow-x-auto mt-5">
               <table
                 className="customtable  w-full border-collapse custom-table"
                 style={{
@@ -492,19 +486,19 @@ const ReturnView = () => {
               >
                 <thead>
                   <tr>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Item Name</th>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Unit </th>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Batch </th>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Expiry </th>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>MRP </th>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Qty. </th>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Free </th>
+                    <th>Item Name</th>
+                    <th>Unit </th>
+                    <th>Batch </th>
+                    <th>Expiry </th>
+                    <th>MRP </th>
+                    <th>Qty. </th>
+                    <th>Free </th>
 
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>PTR </th>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>CD% </th>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>GST% </th>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Loc </th>
-                    <th style={{ position: "sticky", top: 0, zIndex: 1, background: "#E0E3DC" }}>Amount </th>
+                    <th>PTR </th>
+                    <th>CD% </th>
+                    <th>GST% </th>
+                    <th>Loc </th>
+                    <th>Amount </th>
                   </tr>
                 </thead>
                 {tableData.length == 0 ? (
@@ -521,29 +515,46 @@ const ReturnView = () => {
                   </div>
                 ) : (
                   <tbody style={{ background: "#3f621217" }}>
-                    {tableData?.item_list.map((item, index) => (
-                      <tr key={index}>
-                        <td style={{ borderRadius: "10px 0 0 10px" }}>
-                          <div className="itemName">{item?.item_name}</div>
-                        </td>
-                        <td>{item?.weightage}</td>
-                        <td>{item?.batch_number}</td>
-                        <td>{item?.expiry}</td>
-                        <td>{item?.mrp}</td>
-                        <td>{item?.qty}</td>
-                        <td>{item?.fr_qty}</td>
-                        <td>{item?.ptr}</td>
-                        <td>{item?.disocunt}</td>
-                        <td>{item?.gst_name}</td>
-                        <td>{item?.location}</td>
+                    {tableData?.item_list?.length > 0 ? (
+                      tableData.item_list.map((item, index) => (
+                        <tr key={index}>
+                          <td style={{ borderRadius: "10px 0 0 10px" }}>
+                            <div className="itemName">{item?.item_name || "-"}</div>
+                          </td>
+                          <td>{item?.weightage || "-"}</td>
+                          <td>{item?.batch_number || "-"}</td>
+                          <td>{item?.expiry || "-"}</td>
+                          <td>{item?.mrp || "-"}</td>
+                          <td>{item?.qty || "-"}</td>
+                          <td>{item?.fr_qty || "-"}</td>
+                          <td>{item?.ptr || "-"}</td>
+                          <td>{item?.disocunt || "-"}</td>
+                          <td>{item?.gst_name || "-"}</td>
+                          <td>{item?.location || "-"}</td>
+                          <td
+                            className="amount"
+                            style={{ borderRadius: "0 10px 10px 0" }}
+                          >
+                            {item?.amount || "-"}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
                         <td
-                          className="amount"
-                          style={{ borderRadius: "0 10px 10px 0" }}
+                          colSpan={12}
+                          style={{
+                            textAlign: "center",
+                            padding: "20px",
+                            fontSize: "16px",
+                            fontWeight: 600,
+                            color: "#666",
+                          }}
                         >
-                          {item?.amount}
+                          No Data Found
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 )}
               </table>
@@ -563,10 +574,7 @@ const ReturnView = () => {
                 overflow: "auto",
               }}
             >
-
-
-
-              {/* <div
+              <div
                 className=""
                 style={{
                   display: "flex",
@@ -574,8 +582,7 @@ const ReturnView = () => {
                   left: "0",
                   padding: "20px",
                 }}
-              >      
-
+              >
                 <div
                   className="gap-2 invoice_total_fld"
                   style={{ display: "flex" }}
@@ -587,8 +594,6 @@ const ReturnView = () => {
                     {tableData?.total_gst ? tableData?.total_gst : 0}
                   </span>
                 </div>
-
-
                 <div
                   className="gap-2 invoice_total_fld"
                   style={{ display: "flex" }}
@@ -598,72 +603,7 @@ const ReturnView = () => {
                     {tableData?.total_qty ? tableData?.total_qty : 0}
                   </span>
                 </div>
-              </div> */}
-
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  alignItems: "center",
-                  gap: "20px",
-                  padding: "20px",
-                }}
-              >
-                <div
-                  className="invoice_total_fld"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    minWidth: "180px",
-                  }}
-                >
-                  <label className="font-bold">Total GST :</label>
-                  <span
-                    title={String(tableData?.total_gst || 0)}
-                    style={{
-                      fontWeight: 600,
-                      wordBreak: "break-word",
-                    }}
-                  >
-                    {tableData?.total_gst ? tableData?.total_gst : 0}
-                  </span>
-                </div>
-
-                <div
-                  className="invoice_total_fld"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    minWidth: "180px",
-                  }}
-                >
-                  <label className="font-bold">Total Qty :</label>
-                  <span
-                    title={String(tableData?.total_qty || 0)}
-                    style={{
-                      fontWeight: 600,
-                      wordBreak: "break-word",
-                    }}
-                  >
-                    {tableData?.total_qty ? tableData?.total_qty : 0}
-                  </span>
-                </div>
               </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
               <div style={{ display: "flex" }}>
                 <div
@@ -888,10 +828,6 @@ const ReturnView = () => {
                 </div>
               </div>
             </div>
-
-
-
-
           </div>
         </div>
       )}

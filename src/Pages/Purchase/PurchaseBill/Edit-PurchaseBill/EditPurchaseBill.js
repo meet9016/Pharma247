@@ -876,7 +876,7 @@ const EditPurchaseBill = () => {
     data.append("qty", !qty ? 0 : qty);
     data.append("free_qty", !free ? 0 : free);
     data.append("ptr", !ptr ? 0 : ptr);
-    data.append("discount", !disc ? 0 : disc);
+    data.append("disocunt", !disc ? 0 : disc);
     data.append("scheme_account", !schAmt ? 0 : schAmt);
     data.append("id", selectedEditItemId ? selectedEditItemId : 0);
     data.append("base_price", !base ? 0 : base);

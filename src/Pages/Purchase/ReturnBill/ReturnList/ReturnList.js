@@ -225,7 +225,7 @@ const ReturnList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -265,7 +265,7 @@ const ReturnList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -334,7 +334,7 @@ const ReturnList = () => {
       console.error("API error:", error);
       setTableData([]);
       setTotalRecords(0);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -372,7 +372,7 @@ const ReturnList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -437,7 +437,7 @@ const ReturnList = () => {
                           history.push("/purchase");
                         }}
                       >
-                        Purchase Return 
+                        Purchase Return
                       </span>
                       <div>
                         <ArrowForwardIosIcon

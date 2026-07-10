@@ -14,7 +14,6 @@ import {
   ListItemText,
   MenuItem,
   Select,
-  OutlinedInput,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DatePicker from "react-datepicker";
@@ -415,33 +414,39 @@ const AddReturnbill = () => {
     data.append("distributor_id", localStorage.getItem("DistributorId"));
     data.append("type", "0");
 
-    setIsOpenBox(false);
-    setUnsavedItems(false);
-    localStorage.removeItem("unsavedItems");
-
-    const navigateAway = () => {
-      if (nextPath) {
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 50);
-      }
-    };
-
     try {
-      await axios.post("purches-return-iteam-histroy", data, {
+      const response = await axios.post("purches-return-iteam-histroy", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      navigateAway();
+      if (response.status === 200) {
+        setUnsavedItems(false);
+        setIsOpenBox(false);
+
+        setTimeout(() => {
+          if (nextPath) {
+            history.push(nextPath);
+          }
+        }, 0);
+      }
+      setIsOpenBox(false);
+      setUnsavedItems(false);
     } catch (error) {
       if (error.response && error.response.status === 401) {
+        setUnsavedItems(false);
+
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
+
+        setIsOpenBox(false);
+        localStorage.setItem("unsavedItems", unsavedItems.toString());
+        setTimeout(() => {
+          history.push(nextPath);
+        }, 0);
       } else {
         console.error("Error deleting items:", error);
-        navigateAway();
       }
     }
   };
@@ -532,16 +537,22 @@ const AddReturnbill = () => {
     const newErrors = {};
 
     if (!distributor) {
-      newErrors.distributor = "Please select Distributor";
+      newErrors.distributor = "Distributor is required";
+      toast.dismiss();
+      toast.error("Distributor is required");
     }
     if (!startDate) {
       newErrors.startDate = "Start date is required";
+      toast.dismiss();
+      toast.error("Start date is required");
     }
     if (!endDate) {
       newErrors.endDate = "End date is required";
+      toast.dismiss();
+      toast.error("End date is required");
     }
 
-    setError(newErrors);
+    setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
       await purcheseReturnFilter();
@@ -553,11 +564,7 @@ const AddReturnbill = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
-    setErrors((prev) => ({ ...prev, searchItem: false }));
-
-    if (!value.trim()) {
-      return;
-    }
+    setErrors((prev) => ({ ...prev, searchItem: "" }));
 
     if (!distributor) {
       toast.dismiss();
@@ -661,16 +668,22 @@ const AddReturnbill = () => {
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
     }
-    if (!billNo) {
-      newErrors.billNo = "Bill No is Required";
+    if (!startDate) {
+      newErrors.startDate = "Start date is required";
     }
-    if (!selectedItem || selectedItem.length === 0) {
-      newErrors.ItemId = "Please select at least one item";
+    if (!endDate) {
+      newErrors.endDate = "End date is required";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    if (selectedItem.length === 0) {
       toast.dismiss();
       toast.error("Please select at least one item");
-    }
-    setError(newErrors);
-    if (Object.keys(newErrors).length > 0) {
       return;
     }
 
@@ -831,10 +844,8 @@ const AddReturnbill = () => {
     // if (!disc) newErrors.disc = 'Discount is required';
     if (!gst) newErrors.gst = "GST is required";
     // if (!loc) newErrors.loc = 'Location is required';
-    if (gst != 12 && gst != 18 && gst != 5 && gst != 28 && gst != 0) {
+    if (gst != 18 && gst != 5 && gst != 0) {
       newErrors.gst = "Enter valid GST";
-      toast.dismiss();
-      toast.error("Enter valid GST");
     }
 
     setErrors(newErrors);
@@ -1072,7 +1083,7 @@ const AddReturnbill = () => {
             {/*<============================================================= Top details   ============================================================> */}
 
             <div className="flex gap-4  mt-4">
-              <div className="flex flex-row gap-4 overflow-x-auto w-full items-start" style={{ zIndex: "1" }}>
+              <div className="flex flex-row gap-4 overflow-x-auto w-full ">
                 <div>
                   <span className="title mb-2 flex items-center gap-2">Distributor<span className="text-red-600">*</span></span>
                   <Autocomplete
@@ -1082,57 +1093,31 @@ const AddReturnbill = () => {
                       minWidth: "350px",
                       minHeight: "40px",
                       "@media (max-width:600px)": { minWidth: "250px" },
-
-                      "& .MuiOutlinedInput-root": {
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor: error.distributor
-                            ? "#d32f2f"
-                            : "rgba(0, 0, 0, 0.38)",
-                        },
-                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "#d32f2f !important",
-                        },
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                          borderColor: error.distributor
-                            ? "#d32f2f"
-                            : "var(--color1)",
-                        },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                          borderColor: error.distributor
-                            ? "#d32f2f"
-                            : "var(--color1)",
-                        },
-                      },
                     }}
-                    error={!!error.distributor}
                     size="small"
                     options={distributorList}
                     onChange={(e, newValue) => {
                       setDistributor(newValue);
-
-                      setError((prev) => ({
-                        ...prev,
-                        distributor: "",
-                      }));
+                      setErrors((prev) => ({ ...prev, distributor: "" }));
                     }}
                     getOptionLabel={(option) => (typeof option === "string" ? option : option?.name ?? "")}
                     renderInput={(params) => (
                       <TextField
                         autoFocus
                         autoComplete="off"
-                        variant="outlined"
                         placeholder="Select Distributor"
+                        variant="outlined"
+                        error={!!errors.distributor}
+                        helperText={errors.distributor}
+                        FormHelperTextProps={{
+                          sx: { color: "#ff0000ff !important", ml: 0 },
+                        }}
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 0)}
                       />
                     )}
                   />
-                  {error.distributor && (
-                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
-                      {error.distributor}
-                    </div>
-                  )}
                 </div>
 
                 <div >
@@ -1140,6 +1125,7 @@ const AddReturnbill = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
+
                     size="small"
                     variant="outlined"
                     sx={{
@@ -1152,7 +1138,6 @@ const AddReturnbill = () => {
                     disabled
                     inputRef={(el) => (inputRefs.current[1] = el)}
                   />
-
                 </div>
 
 
@@ -1177,93 +1162,67 @@ const AddReturnbill = () => {
                   <span className="title mb-2">Expiry Start Date <span className="text-red-600">*</span></span>
                   <div>
                     <DatePicker
-                      className="custom-datepicker "
                       selected={startDate}
                       onChange={(newDate) => {
                         setStartDate(newDate);
-                        setError((prev) => ({
-                          ...prev,
-                          startDate: "",
-                        }));
+                        setErrors((prev) => ({ ...prev, startDate: "" }));
                       }}
                       dateFormat="MM/yyyy"
                       showMonthYearPicker
                       ref={(el) => (inputRefs.current[3] = el)}
                       onKeyDown={(e) => handleKeyDown(e, 3)}
                       customInput={
-                        <OutlinedInput
-
+                        <TextField
                           size="small"
-                          error={!!error.startDate}
+                          error={!!errors.startDate}
+                          helperText={errors.startDate}
+                          FormHelperTextProps={{
+                            sx: { color: "#d32f2f !important", ml: 0 },
+                          }}
                           sx={{
                             width: "100%",
                             minWidth: "200px",
                             backgroundColor: "#ffffff",
-                            "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "#d32f2f !important",
-                            },
-                            "& .MuiOutlinedInput-input": {
-                              padding: "0px !important",
-                              paddingTop: "0px !important"
-                            },
                           }}
                         />
                       }
                     />
                   </div>
-                  {error.startDate && (
-                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-                      {error.startDate}
-                    </div>
-                  )}
                 </div>
 
                 <div>
                   <span className="title mb-2">Expiry End Date <span className="text-red-600">*</span></span>
                   <div>
                     <DatePicker
-                      className="custom-datepicker "
                       selected={endDate}
                       onChange={(newDate) => {
                         setEndDate(newDate);
-                        setError((prev) => ({
-                          ...prev,
-                          endDate: "",
-                        }));
+                        setErrors((prev) => ({ ...prev, endDate: "" }));
                       }}
                       dateFormat="MM/yyyy"
                       showMonthYearPicker
                       ref={(el) => (inputRefs.current[4] = el)}
                       onKeyDown={(e) => handleKeyDown(e, 4)}
                       customInput={
-                        <OutlinedInput
+                        <TextField
                           size="small"
-                          error={!!error.endDate}
+                          error={!!errors.endDate}
+                          helperText={errors.endDate}
+                          FormHelperTextProps={{
+                            sx: { color: "#d32f2f !important", ml: 0 },
+                          }}
                           sx={{
                             width: "100%",
                             minWidth: "200px",
                             backgroundColor: "#ffffff",
-                            "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "#d32f2f !important",
-                            },
-                            "& .MuiOutlinedInput-input": {
-                              padding: "0px !important",
-                              paddingTop: "0px !important"    // or "8px 12px"
-                            },
                           }}
                         />
                       }
                     />
                   </div>
-                  {error.endDate && (
-                    <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-                      {error.endDate}
-                    </div>
-                  )}
                 </div>
 
-                <div>
-                  <span className="title mb-2" style={{ display: "block", visibility: "hidden" }}>Spacer</span>
+                <div className="flex items-end">
                   <button
                     type="button"
                     className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
@@ -1329,25 +1288,19 @@ const AddReturnbill = () => {
                           id="outlined-basic"
                           size="small"
                           fullWidth
-                          error={!!errors.searchItem}
                           sx={{
                             minWidth: 400,
                             width: "100%",
-                            "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "#ff0000 !important",
-                            },
-                            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                              borderColor: errors.searchItem ? "#ff0000" : "",
-                            },
-                            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                              borderColor: errors.searchItem ? "#ff0000" : "",
-                            },
+                            textTransform: 'uppercase',
+
                           }}
                           value={searchQuery.toUpperCase()}
                           onChange={handleInputChange}
+
                           variant="outlined"
-                          placeholder="Please Search Any Items.."
+                          placeholder="Please search any items.."
                           inputRef={(el) => (inputRefs.current[5] = el)}
+                          error={!!errors.searchItem}
                           onKeyDown={e => {
                             if (e.key === "Enter" && !searchQuery) {
                               e.preventDefault();
@@ -1382,20 +1335,11 @@ const AddReturnbill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.unit ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.unit ? "#ff0000" : "",
-                          },
                         }}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setUnit(value ? Number(value) : "");
-                          setErrors((prev) => ({ ...prev, unit: false }));
+                          setErrors((prev) => ({ ...prev, unit: "" }));
                         }}
                         inputRef={(el) => (inputRefs.current[6] = el)}
                         onKeyDown={(e) => {
@@ -1426,15 +1370,6 @@ const AddReturnbill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.batch ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.batch ? "#ff0000" : "",
-                          },
                         }}
                         onChange={(e) => {
                           setBatch(e.target.value);
@@ -1459,15 +1394,6 @@ const AddReturnbill = () => {
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.expiryDate ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.expiryDate ? "#ff0000" : "",
-                          },
                         }}
                         error={!!errors.expiryDate}
                         value={expiryDate}
@@ -1486,24 +1412,15 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
+                        placeholder="Mrp"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.mrp ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.mrp ? "#ff0000" : "",
-                          },
                         }}
                         size="small"
-                        placeholder="Mrp"
                         disabled
                         error={!!errors.mrp}
                         value={mrp}
@@ -1530,21 +1447,11 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        placeholder="Qty"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
-                          },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.qty ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.qty ? "#ff0000" : "",
                           },
                         }}
                         size="small"
@@ -1554,15 +1461,13 @@ const AddReturnbill = () => {
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           handleQtyChange(value ? Number(value) : "");
-                          setErrors((prev) => ({ ...prev, qty: false }));
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             if (qty && qty !== 0) {
                               handleKeyDown(e, 7);
                             } else {
-                              e.preventDefault();
-                              setErrors((prev) => ({ ...prev, qty: true }));
+                              handleKeyDown(e, 7); // Usually qty is not compulsory, but if it is, maybe set error. I will let it pass.
                             }
                           }
                         }}
@@ -1574,7 +1479,6 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
-                        placeholder="Free"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -1601,30 +1505,20 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        placeholder="Ptr"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.ptr ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.ptr ? "#ff0000" : "",
-                          },
                         }}
                         size="small"
                         value={ptr}
-                        error={!!errors.ptr}
+                        placeholder="Ptr"
                         inputRef={(el) => (inputRefs.current[9] = el)}
                         onChange={(e) => {
                           setPTR(e.target.value);
-                          setErrors((prev) => ({ ...prev, ptr: false }));
+                          setErrors((prev) => ({ ...prev, ptr: "" }));
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
@@ -1643,7 +1537,6 @@ const AddReturnbill = () => {
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
-                        placeholder="Cd"
                         sx={{
                           minWidth: "40px",
                           width: "100%",
@@ -1667,50 +1560,45 @@ const AddReturnbill = () => {
                     </td>
 
                     <td>
-                      <Select
-                        size="small"
-                        value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
-                        onChange={(e) => {
-                          setGst(e.target.value !== "" ? Number(e.target.value) : "");
-                          setErrors((prev) => ({ ...prev, gst: false }));
-                        }}
-                        inputRef={(el) => (inputRefs.current[11] = el)}
+                      <TextField
+                        labelId="dropdown-label"
+                        id="dropdown"
+                        value={gst}
                         sx={{
-                          minWidth: "60px",
+                          minWidth: "40px",
                           width: "100%",
-                          '& .MuiSelect-select': {
+                          '& .MuiInputBase-input': {
                             textAlign: 'center',
-                            paddingY: '8.5px',
                           },
                         }}
+                        select
+                        SelectProps={{ native: true }}
+                        variant="outlined"
                         onKeyDown={(e) => {
-                          if (e.key === "Tab" && e.shiftKey) {
-                            e.preventDefault();
-                            if (inputRefs.current[10]) {
-                              inputRefs.current[10].focus();
-                            }
-                            return;
-                          }
                           if (e.key === "Enter") {
-                            e.preventDefault();
-                            if (inputRefs.current[12]) {
-                              inputRefs.current[12].focus();
-                            }
+                            handleKeyDown(e, 11);
                           }
                         }}
+                        onChange={(e) => {
+                          setGst(e.target.value);
+                          setErrors((prev) => ({ ...prev, gst: "" }));
+                        }}
+                        inputRef={(el) => (inputRefs.current[11] = el)}
+                        size="small"
+                        error={!!errors.gst}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={18}>18</MenuItem>
-                      </Select>
+                        <option value="0">0</option>
+                        <option value="5">5</option>
+                        <option value="18">18</option>
+                      </TextField>
                     </td>
 
                     <td>
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
-                        placeholder="Loc"
                         size="small"
+                        placeholder="Loc"
                         sx={{
                           minWidth: "65px",
                           width: "100%",
@@ -1784,20 +1672,20 @@ const AddReturnbill = () => {
                         </div>
 
                         <span style={{ alignSelf: "center" }}>
-                          {item.item_name ? item.item_name : "-----"}
+                          {item.item_name ? item.item_name : "-"}
                         </span>
                       </td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage ? item.weightage : "-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number ? item.batch_number : "-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry ? item.expiry : "-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : "-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.total_stock ? item.total_stock : "-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name ? item.gst_name : "-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-----"}</td>
-                      <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage ? item.weightage : "-"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number ? item.batch_number : "-"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry ? item.expiry : "-"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : "-"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.total_stock ? item.total_stock : "-"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name ? item.gst_name : "-"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-"}</td>
+                      <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-"}</td>
                     </tr>
                   )))}
 

@@ -3680,19 +3680,19 @@ const AddSale = () => {
                       />
                     </div>
                     <span style={{ alignSelf: "center" }}>
-                      {item.iteam_name || barcodeItemName || "-----"}
+                      {item.iteam_name || barcodeItemName || "-"}
                     </span>
                   </td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-----"}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-----"}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-----"}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.base || "-----"}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.gst_name || "-----"}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-----"}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.location || "-----"}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "------"}</td>
-                  <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.base || "-"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.gst_name || "-"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.location || "-"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "-"}</td>
+                  <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate || "-"}</td>
                 </tr>
               ))}
 
