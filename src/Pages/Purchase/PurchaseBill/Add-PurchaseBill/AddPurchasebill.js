@@ -3357,6 +3357,9 @@ const AddPurchaseBill = () => {
                         onChange={(e) => {
                           setGst(e.target.value !== "" ? Number(e.target.value) : "");
                           setError((prev) => ({ ...prev, gst: false }));
+                          setTimeout(() => {
+                            inputRefs.current[12]?.focus();
+                          }, 50);
                         }}
                         onKeyDown={(e) => {
                           const isTab = e.key === "Tab";
@@ -3366,17 +3369,20 @@ const AddPurchaseBill = () => {
                           if (isShiftTab) return;
 
                           if (isEnter || isTab) {
+                            // If event is coming from the open dropdown menu items, let MUI handle the selection
+                            if (e.target.tagName === 'LI' || e.target.getAttribute('role') === 'option' || e.target.tagName === 'UL') {
+                               return;
+                            }
+                            
+                            e.preventDefault();
                             const allowedGST = [0, 5, 18];
-
                             if (gst === "" || gst === null || gst === undefined || !allowedGST.includes(Number(gst))) {
-                              e.preventDefault();
                               setError((prev) => ({ ...prev, gst: true }));
                               return;
                             }
-                            e.preventDefault();
                             setTimeout(() => {
                               inputRefs.current[12]?.focus();
-                            }, 100);
+                            }, 50);
                           }
                         }}
                       >
