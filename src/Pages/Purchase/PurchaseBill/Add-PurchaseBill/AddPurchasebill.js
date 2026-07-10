@@ -1796,7 +1796,8 @@ const AddPurchaseBill = () => {
 
       localStorage.removeItem("RandomNumber");
       setItemPurchaseList("");
-      setDistributor(null)
+      setDistributor(null);
+      selectedDistributorRef.current = null;
       setbillNo("")
       setSelectedDate(new Date())
       setUnsavedItems(false);
@@ -1840,6 +1841,13 @@ const AddPurchaseBill = () => {
     const newErrors = {};
     if (!distributor || !distributor.name) {
       newErrors.distributor = "Please select Distributor";
+    } else {
+      const isValid = distributorList.some(
+        (d) => (d.name || "").toUpperCase().trim() === distributor.name.toUpperCase().trim()
+      );
+      if (!isValid) {
+        newErrors.distributor = "Please select a valid distributor from the dropdown options";
+      }
     }
     if (!billNo || !billNo.trim()) {
       newErrors.billNo = "Bill No is Required";
@@ -1847,10 +1855,8 @@ const AddPurchaseBill = () => {
 
     if (!newErrors.distributor && !newErrors.billNo) {
       if (!ItemPurchaseList?.item || ItemPurchaseList.item.length === 0) {
-        if (!selectedOption) {
-          toast.dismiss();
-          toast.error("Please select at least one item");
-        }
+        toast.dismiss();
+        toast.error("Please select at least one item");
         newErrors.item = "Please select at least one item";
       }
     }
@@ -2175,46 +2181,36 @@ const AddPurchaseBill = () => {
     let data = new FormData();
     data.append("random_number", localStorage.getItem("RandomNumber"));
 
+    setIsOpenBox(false);
+    setUnsavedItems(false);
+    localStorage.removeItem("unsavedItems");
+
+    const navigateAway = () => {
+      localStorage.removeItem("RandomNumber");
+      if (nextPath) {
+        setTimeout(() => {
+          history.push(nextPath);
+        }, 50);
+      }
+    };
+
     try {
-      const response = await axios.post("item-purchase-delete-all", data, {
+      await axios.post("item-purchase-delete-all", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      if (response.status === 200) {
-        setUnsavedItems(false);
-        setIsOpenBox(false);
-        setTimeout(() => {
-          if (nextPath) {
-            history.push(nextPath);
-          }
-        }, 0);
-      }
-      setIsOpenBox(false);
-      setUnsavedItems(false);
-      localStorage.removeItem("RandomNumber");
-
-      // history.replace(nextPath);
+      navigateAway();
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setUnsavedItems(false);
-        setIsOpenBox(false);
-        localStorage.setItem("unsavedItems", unsavedItems.toString());
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 0);
-
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
-
       } else {
-        setUnsavedItems(false);
-
         console.error("Error deleting items:", error);
+        navigateAway();
       }
     }
   };
@@ -2300,6 +2296,14 @@ const AddPurchaseBill = () => {
                   onChange={(e) => setPaymentType(e.target.value)}
                   size="small"
                   className="min-w-[150px] rounded-md"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      if (submitButtonRef.current) {
+                        submitButtonRef.current.focus();
+                      }
+                    }
+                  }}
                 >
                   <MenuItem value="cash" className="hover:bg-[var(--color2)]">Cash</MenuItem>
                   <MenuItem value="credit" className="hover:bg-[var(--color2)]">Credit</MenuItem>
@@ -2461,28 +2465,76 @@ const AddPurchaseBill = () => {
                         };
                       }
 
+                      if (finalValue && finalValue.name && !finalValue.id) {
+                        const found = distributorList.find(
+                          (d) => (d.name || "").toUpperCase().trim() === finalValue.name.toUpperCase().trim()
+                        );
+                        if (found) {
+                          finalValue.id = found.id;
+                        }
+                      }
+
                       selectedDistributorRef.current = finalValue;
                       setDistributor(finalValue);
                       setbillNo("");
 
-                      setError((prev) => ({
-                        ...prev,
-                        distributor: "",
-                      }));
+                      if (finalValue && finalValue.name) {
+                        const isValid = distributorList.some(
+                          (d) => (d.name || "").toUpperCase().trim() === finalValue.name.toUpperCase().trim()
+                        );
+                        setError((prev) => ({
+                          ...prev,
+                          distributor: isValid ? "" : "Please select a valid distributor from the dropdown options",
+                        }));
+                      } else {
+                        setError((prev) => ({
+                          ...prev,
+                          distributor: "Please select Distributor",
+                        }));
+                      }
                     }}
                     onInputChange={(event, newInputValue, reason) => {
                       if (reason === "input") {
-                        // User typing: keep ID only if still matches list
-                        setDistributor((prev) => ({
-                          id: null,
-                          name: newInputValue.toUpperCase(),
-                        }));
+                        const uppercased = newInputValue.toUpperCase();
+                        const found = distributorList.find(
+                          (d) => (d.name || "").toUpperCase().trim() === uppercased.trim()
+                        );
+                        const finalValue = {
+                          id: found ? found.id : null,
+                          name: uppercased,
+                        };
+                        selectedDistributorRef.current = finalValue;
+                        setDistributor(finalValue);
                         setbillNo("");
+
+                        if (found) {
+                          setError((prev) => ({
+                            ...prev,
+                            distributor: "",
+                          }));
+                        }
                       }
                     }}
                     getOptionLabel={(option) =>
                       typeof option === "string" ? option : option?.name ?? ""
                     }
+                    onBlur={(e) => {
+                      const typedValue = distributor?.name || "";
+                      if (!typedValue.trim()) {
+                        setError((prev) => ({
+                          ...prev,
+                          distributor: "Please select Distributor",
+                        }));
+                      } else {
+                        const isValid = distributorList.some(
+                          (d) => (d.name || "").toUpperCase().trim() === typedValue.toUpperCase().trim()
+                        );
+                        setError((prev) => ({
+                          ...prev,
+                          distributor: isValid ? "" : "Please select a valid distributor from the dropdown options",
+                        }));
+                      }
+                    }}
                     renderInput={(params) => (
                       <TextField
                         autoFocus={focusedField === "distributor"}
@@ -2500,14 +2552,20 @@ const AddPurchaseBill = () => {
                           if (e.key === "Enter" || e.key === "Tab") {
                             const prevent = !selectedDistributorRef.current?.id;
 
-                            setTimeout(() => {
-                              if (selectedDistributorRef.current?.id) {
-                                handleKeyDown(e, 0);
-                              }
-                            }, 100);
-
                             if (prevent) {
+                              setError((prev) => ({
+                                ...prev,
+                                distributor: distributor?.name?.trim()
+                                  ? "Please select a valid distributor from the dropdown options"
+                                  : "Please select Distributor",
+                              }));
                               e.preventDefault();
+                            } else {
+                              setTimeout(() => {
+                                if (selectedDistributorRef.current?.id) {
+                                  handleKeyDown(e, 0);
+                                }
+                              }, 100);
                             }
                           }
                         }}

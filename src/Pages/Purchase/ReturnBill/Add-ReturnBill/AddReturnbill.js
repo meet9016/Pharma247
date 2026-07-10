@@ -415,39 +415,33 @@ const AddReturnbill = () => {
     data.append("distributor_id", localStorage.getItem("DistributorId"));
     data.append("type", "0");
 
+    setIsOpenBox(false);
+    setUnsavedItems(false);
+    localStorage.removeItem("unsavedItems");
+
+    const navigateAway = () => {
+      if (nextPath) {
+        setTimeout(() => {
+          history.push(nextPath);
+        }, 50);
+      }
+    };
+
     try {
-      const response = await axios.post("purches-return-iteam-histroy", data, {
+      await axios.post("purches-return-iteam-histroy", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (response.status === 200) {
-        setUnsavedItems(false);
-        setIsOpenBox(false);
-
-        setTimeout(() => {
-          if (nextPath) {
-            history.push(nextPath);
-          }
-        }, 0);
-      }
-      setIsOpenBox(false);
-      setUnsavedItems(false);
+      navigateAway();
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setUnsavedItems(false);
-
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
-
-        setIsOpenBox(false);
-        localStorage.setItem("unsavedItems", unsavedItems.toString());
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 0);
       } else {
         console.error("Error deleting items:", error);
+        navigateAway();
       }
     }
   };
@@ -670,10 +664,10 @@ const AddReturnbill = () => {
     if (!billNo) {
       newErrors.billNo = "Bill No is Required";
     }
-    if (selectedItem.length === 0) {
+    if (!selectedItem || selectedItem.length === 0) {
       newErrors.ItemId = "Please select at least one item";
       toast.dismiss();
-      // toast.error("Please select at least one item");
+      toast.error("Please select at least one item");
     }
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -1673,50 +1667,42 @@ const AddReturnbill = () => {
                     </td>
 
                     <td>
-                      <TextField
-                        labelId="dropdown-label"
-                        id="dropdown"
-                        value={gst}
-                        placeholder="Gst"
-                        sx={{
-                          minWidth: "40px",
-                          width: "100%",
-                          '& .MuiInputBase-input': {
-                            textAlign: 'center',
-                          },
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff0000 !important",
-                          },
-                          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.gst ? "#ff0000" : "",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: errors.gst ? "#ff0000" : "",
-                          },
-                        }}
-                        onKeyDown={(e) => {
-                          if (["e", "E", "+", "-", ","].includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
-                            e.preventDefault();
-                          }
-                          if (e.key === "Enter") {
-                            const allowedGST = [0, 5, 12, 18, 28];
-                            if (gst === "" || gst === null || gst === undefined || !allowedGST.includes(Number(gst))) {
-                              e.preventDefault();
-                              setErrors((prev) => ({ ...prev, gst: true }));
-                            } else {
-                              handleKeyDown(e, 11);
-                            }
-                          }
-                        }}
+                      <Select
+                        size="small"
+                        value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
                         onChange={(e) => {
-                          setGst(e.target.value);
+                          setGst(e.target.value !== "" ? Number(e.target.value) : "");
                           setErrors((prev) => ({ ...prev, gst: false }));
                         }}
                         inputRef={(el) => (inputRefs.current[11] = el)}
-                        size="small"
-                        displayEmpty
-                        error={!!errors.gst}
-                      ></TextField>
+                        sx={{
+                          minWidth: "60px",
+                          width: "100%",
+                          '& .MuiSelect-select': {
+                            textAlign: 'center',
+                            paddingY: '8.5px',
+                          },
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Tab" && e.shiftKey) {
+                            e.preventDefault();
+                            if (inputRefs.current[10]) {
+                              inputRefs.current[10].focus();
+                            }
+                            return;
+                          }
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            if (inputRefs.current[12]) {
+                              inputRefs.current[12].focus();
+                            }
+                          }
+                        }}
+                      >
+                        <MenuItem value={0}>0</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                        <MenuItem value={18}>18</MenuItem>
+                      </Select>
                     </td>
 
                     <td>

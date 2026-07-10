@@ -228,6 +228,7 @@ const AddSale = () => {
   const dateRefs = useRef([]);
 
   const submitButtonRef = useRef(null);
+  const pickupSelectRef = useRef(null);
   const addButtonref = useRef(null);
 
   const timeoutRef = useRef(null);
@@ -1772,8 +1773,10 @@ const AddSale = () => {
         "Total Amount must be greater than Loyalty points";
     }
 
-    if (ItemSaleList?.sales_item.length === 0) {
+    if (!ItemSaleList?.sales_item || ItemSaleList.sales_item.length === 0) {
       newErrors.item = "Please Add any Item in Sale Bill";
+      toast.dismiss();
+      toast.error("Please select at least one item");
     }
 
     setError(newErrors);
@@ -1948,46 +1951,30 @@ const AddSale = () => {
     setOpenModal(false);
     setUnsavedItems(false);
 
-    // const params = {
-    //     random_number: localStorage.getItem('RandomNumber')
-    // };
-    try {
-      const response = await axios.post("all-sales-item-delete", data, {
-        // params: params,
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.data.status === 200) {
-        setOpenModal(false);
-        setUnsavedItems(false);
-        setTimeout(() => {
-          if (nextPath) {
-            history.push(nextPath);
-          }
-        }, 0);
-      }
-
-      setOpenModal(false);
-      setUnsavedItems(false);
+    const navigateAway = () => {
       localStorage.removeItem("RandomNumber");
-
-      // history.replace(nextPath);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        setUnsavedItems(false);
-        setOpenModal(false);
-        localStorage.setItem("unsavedItems", unsavedItems.toString());
+      if (nextPath) {
         setTimeout(() => {
           history.push(nextPath);
-        }, 0);
-        if (error?.response?.status === 401) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("userId");
-          localStorage.removeItem("role");
-          localStorage.clear();
-          history.push("/");
-        }
+        }, 50);
+      }
+    };
+
+    try {
+      const response = await axios.post("all-sales-item-delete", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      navigateAway();
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
       } else {
         console.error("Error deleting items:", error);
+        navigateAway();
       }
     }
   };
@@ -2539,6 +2526,14 @@ const AddSale = () => {
               }}
               size="small"
               sx={{ minWidth: "150px" }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  if (pickupSelectRef.current) {
+                    pickupSelectRef.current.focus();
+                  }
+                }
+              }}
             >
               <MenuItem value="cash">Cash</MenuItem>
               <MenuItem value="credit">Credit</MenuItem>
@@ -2553,6 +2548,7 @@ const AddSale = () => {
               labelId="dropdown-label"
               id="dropdown"
               value={pickup}
+              inputRef={pickupSelectRef}
               className="payment_divv "
               onChange={(e) => {
                 setPickup(e.target.value);
@@ -2567,6 +2563,14 @@ const AddSale = () => {
                   alignItems: "center",
                   gap: "1rem",
                 },
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  if (submitButtonRef.current) {
+                    submitButtonRef.current.focus();
+                  }
+                }
               }}
             >
               {pickupOptions.map((option) => (
@@ -3469,15 +3473,9 @@ const AddSale = () => {
                         return;
                       }
                       if (e.key === "Enter" || e.key === "Tab") {
-                        if (base === "" || base === null || base === undefined) {
-                          toast.dismiss();
-                          toast.error("Base is required");
-                          e.preventDefault();
-                          return;
-                        }
                         e.preventDefault();
-                        if (itemRowInputOrder[5]?.current) {
-                          itemRowInputOrder[5].current.focus();
+                        if (inputRef6.current) {
+                          inputRef6.current.focus();
                         }
                       }
                     }}
@@ -3489,40 +3487,42 @@ const AddSale = () => {
                   />
                 </td>
                 <td>
-                  <TextField
-                    id="outlined-number"
-                    type="number"
-                    disabled
-                    placeholder="Gst"
+                  <Select
                     size="small"
+                    value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
+                    onChange={(e) => {
+                      setGst(e.target.value !== "" ? Number(e.target.value) : "");
+                      setUnsavedItems(true);
+                    }}
                     inputRef={inputRef6}
+                    sx={{
+                      minWidth: "60px",
+                      width: "100%",
+                      '& .MuiSelect-select': {
+                        textAlign: 'center',
+                        paddingY: '8.5px',
+                      },
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === "Tab" && e.shiftKey) {
                         e.preventDefault();
-                        if (itemRowInputOrder[4]?.current) {
-                          itemRowInputOrder[4].current.focus();
+                        if (inputRef5.current) {
+                          inputRef5.current.focus();
                         }
                         return;
                       }
-                      if (e.key === "Enter" || e.key === "Tab") {
+                      if (e.key === "Enter") {
                         e.preventDefault();
-                        if (itemRowInputOrder[6]?.current) {
-                          itemRowInputOrder[6].current.focus();
+                        if (inputRef7.current) {
+                          inputRef7.current.focus();
                         }
                       }
                     }}
-                    sx={{
-                      minWidth: "40px",
-                      width: "100%",
-                      '& .MuiInputBase-input': {
-                        textAlign: 'center',
-                      },
-                    }}
-                    value={gst}
-                    onChange={(e) => {
-                      setGst(e.target.value);
-                    }}
-                  />
+                  >
+                    <MenuItem value={0}>0</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                    <MenuItem value={18}>18</MenuItem>
+                  </Select>
                 </td>
                 <td >
                   <TextField
@@ -3543,18 +3543,12 @@ const AddSale = () => {
                     onKeyDown={(e) => {
                       if (e.key === "Tab" && e.shiftKey) {
                         e.preventDefault();
-                        if (itemRowInputOrder[5]?.current) {
-                          itemRowInputOrder[5].current.focus();
+                        if (inputRef6.current) {
+                          inputRef6.current.focus();
                         }
                         return;
                       }
                       if (e.key === "Enter" || e.key === "Tab") {
-                        if (qty === "" || qty === null || qty === undefined) {
-                          toast.dismiss();
-                          toast.error("Qty is required");
-                          e.preventDefault();
-                          return;
-                        }
                         e.preventDefault();
                         if (itemRowInputOrder[7]?.current) {
                           itemRowInputOrder[7].current.focus();

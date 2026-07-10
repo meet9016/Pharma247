@@ -129,6 +129,7 @@ const EditPurchaseBill = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
   const inputRefs = useRef([]);
+  const shouldSubmitAfterEditRef = useRef(false);
   const [errors, setErrors] = useState({});
 
   let defaultDate = new Date();
@@ -233,7 +234,14 @@ const EditPurchaseBill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, ItemPurchaseList, purchase, isSubmitting]);
+  }, [distributor, billNo, ItemPurchaseList, purchase, isSubmitting, isEditMode]);
+
+  useEffect(() => {
+    if (shouldSubmitAfterEditRef.current && !isEditMode && purchase) {
+      shouldSubmitAfterEditRef.current = false;
+      handleSubmit();
+    }
+  }, [isEditMode, purchase]);
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -462,7 +470,7 @@ const EditPurchaseBill = () => {
 
       if (purchaseData) {
         // const foundDistributor = distributors.find(option => option.id === purchaseData.distributor_id);
-        const foundDistributor = distributors.find((option) => {
+        const foundDistributor = (distributors || distributorList || []).find((option) => {
           return option.id == purchaseData.distributor_id;
         });
 
@@ -862,18 +870,17 @@ const EditPurchaseBill = () => {
     let data = new FormData();
     data.append("user_id", userId);
     if (isEditMode == true) {
-      data.append("item_id", selectedEditItemId);
-      // data.append("unit_id", value?.unit_id);
+      data.append("item_id", selectedEditItem?.item_id || ItemId);
+      data.append("unit_id", selectedEditItem?.unit_id || 0);
     } else {
       if (barcode) {
         data.append("item_id", ItemId);
         data.append("unit_id", Number(0));
       } else {
-        data.append("item_id", value?.id);
-        data.append("unit_id", value?.unit_id);
+        data.append("item_id", value?.id || ItemId);
+        data.append("unit_id", value?.unit_id || 0);
       }
     }
-    data.append("unit_id", unit);
     data.append("hsn_code", HSN ? HSN : 0);
     data.append("random_number", randomNumber);
     data.append("unit", !unit ? 0 : unit);
@@ -913,8 +920,8 @@ const EditPurchaseBill = () => {
         });
 
       setDeleteAll(true);
-      itemPurchaseList();
-      purchaseBillGetByID();
+      await itemPurchaseList();
+      await purchaseBillGetByID();
       setSearchItem("");
       setAutocompleteDisabled(false);
       setUnit("");
@@ -943,7 +950,12 @@ const EditPurchaseBill = () => {
       setItemTotalAmount(0.00);
       setIsEditMode(false);
       setSelectedEditItemId(null);
-
+      setTimeout(() => {
+        if (inputRefs.current[1]) {
+          inputRefs.current[1].focus(); // Focus item name
+        }
+      }, 150);
+      return true;
 
     } catch (error) {
       console.error("API error:", error);
@@ -955,6 +967,7 @@ const EditPurchaseBill = () => {
         localStorage.clear();
         history.push("/");
       }
+      return false;
 
     } finally {
       setIsSubmitting(false);
@@ -969,45 +982,38 @@ const EditPurchaseBill = () => {
     data.append("end_date", localStorage.getItem("EndFilterDate"));
     data.append("distributor_id", localStorage.getItem("DistributorId"));
     data.append("type", "1");
-    try {
-      const response = await axios.post("purches-histroy", data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
 
-      if (response.status === 200) {
-        setUnsavedItems(false);
-        setIsOpenBox(false);
-        setTimeout(() => {
-          if (nextPath) {
-            history.push(nextPath);
-          }
-        }, 0);
-      }
-      setIsOpenBox(false);
-      setUnsavedItems(false);
+    setIsOpenBox(false);
+    setUnsavedItems(false);
+    localStorage.removeItem("unsavedItems");
 
-      // history.replace(nextPath);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        setUnsavedItems(false);
-        setOpenModal(false);
-        localStorage.setItem("unsavedItems", unsavedItems.toString());
+    const navigateAway = () => {
+      if (nextPath) {
         setTimeout(() => {
           history.push(nextPath);
-        }, 0);
-        if (error?.response?.status === 401) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("userId");
-          localStorage.removeItem("role");
-          localStorage.clear();
-          history.push("/");
-        }
+        }, 50);
+      }
+    };
+
+    try {
+      await axios.post("purches-histroy", data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      navigateAway();
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
       } else {
         console.error("Error deleting items:", error);
-        setUnsavedItems(false);
+        navigateAway();
       }
     }
   };
+
   /*<============================================================================= barcode =====================================================================> */
 
   const handleBarcode = async () => {
@@ -1209,6 +1215,15 @@ const EditPurchaseBill = () => {
       return;
     }
 
+    if (isEditMode || searchItem) {
+      shouldSubmitAfterEditRef.current = true;
+      const isValid = await updatePurchaseValidation();
+      if (!isValid) {
+        shouldSubmitAfterEditRef.current = false;
+      }
+      return;
+    }
+
     setUnsavedItems(false);
 
     const newErrors = {};
@@ -1218,11 +1233,10 @@ const EditPurchaseBill = () => {
     if (!billNo) {
       newErrors.billNo = "Bill No is Required";
     }
-    if (purchase?.item_list?.length === 0) {
+    if (!purchase?.item_list || purchase.item_list.length === 0) {
       toast.dismiss();
-      toast.error("Please add atleast one item");
-      newErrors.item = "Please add atleast one item";
-
+      toast.error("Please select at least one item");
+      newErrors.item = "Please select at least one item";
     }
     setError(newErrors);
 
@@ -1282,12 +1296,15 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
-          if (response?.data?.status === 200) {
+          if (response.status === 200 || response?.data?.status === 200 || response?.data?.status === "success") {
             toast.dismiss();
-            toast.success(response?.data?.message);
+            toast.success(response?.data?.message || "Purchase updated successfully");
             setTimeout(() => {
+              setIsSubmitting(false);
               history.push("/purchase");
             }, 2000)
+          } else {
+            setIsSubmitting(false);
           }
         })
     } catch (error) {
@@ -1313,25 +1330,30 @@ const EditPurchaseBill = () => {
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId(item.id);
-    inputRefs.current[3].focus();
 
-    if (selectedEditItem) {
-      setSearchItem(selectedEditItem.item_name);
-      setUnit(selectedEditItem.weightage);
-      setHSN(selectedEditItem.HSN);
-      setBatch(selectedEditItem.batch_number);
-      setExpiryDate(selectedEditItem.expiry);
-      setMRP(selectedEditItem.mrp);
-      setQty(selectedEditItem.qty || 0);
-      setFree(selectedEditItem.fr_qty);
-      setPTR(selectedEditItem.ptr);
-      setDisc(selectedEditItem.disocunt);
-      setSchAmt(selectedEditItem.scheme_account);
-      setBase(selectedEditItem.base_price);
-      setGst(selectedEditItem.gst_name);
-      setLoc(selectedEditItem.location);
-      setMargin(selectedEditItem.margin);
-      setNetRate(selectedEditItem.net_rate);
+    setTimeout(() => {
+      if (inputRefs.current[3]) {
+        inputRefs.current[3].focus();
+      }
+    }, 100);
+
+    if (item) {
+      setSearchItem(item.item_name || item.iteam_name || "");
+      setUnit(item.weightage || "");
+      setHSN(item.hsn_code || item.HSN || "");
+      setBatch(item.batch_number || "");
+      setExpiryDate(item.expiry || "");
+      setMRP(item.mrp || "");
+      setQty(item.qty || 0);
+      setFree(item.free_qty || item.fr_qty || 0);
+      setPTR(item.ptr || "");
+      setDisc(item.discount || item.disocunt || "");
+      setSchAmt(item.scheme_account || "");
+      setBase(item.base_price || 0);
+      setGst(item.gst_name || item.gst || "");
+      setLoc(item.location || "");
+      setMargin(item.margin || "");
+      setNetRate(item.net_rate || "");
     }
   };
 
@@ -1622,7 +1644,6 @@ const EditPurchaseBill = () => {
                     className="text-[var(--color1)]"
                   />
                 </span>
-
                 <span className="text-[var(--color1)] font-bold text-[20px]">Edit</span>
 
                 <BsLightbulbFill className="w-6 h-6 text-[var(--color2)] hover-yellow" onClick={() => setShowModal(true)} />
@@ -1655,7 +1676,7 @@ const EditPurchaseBill = () => {
             <div className="flex gap-4  mt-4">
               <div className="flex flex-row gap-4 overflow-x-auto w-full">
                 <div>
-                  <span className="title mb-2 flex  items-center gap-2">Distributor<span className="text-red-600">*</span>    <FaPlusCircle
+                  <span className="title mb-2 flex  items-center gap-2">Distributor <span className="text-red-600">*</span>    <FaPlusCircle
                     className="primary cursor-pointer"
                     onClick={() => {
                       history.push('/addDistributer');
@@ -2231,49 +2252,42 @@ const EditPurchaseBill = () => {
                       />
                     </td>
                     <td >
-                      <TextField
-                        variant="outlined"
+                      <Select
                         size="small"
-                        placeholder="Gst"
-                        value={gst}
+                        value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
+                        onChange={(e) => {
+                          setGst(e.target.value !== "" ? Number(e.target.value) : "");
+                          setUnsavedItems(true);
+                        }}
+                        inputRef={(el) => (inputRefs.current[11] = el)}
                         sx={{
-                          minWidth: "40px",
+                          minWidth: "60px",
                           width: "100%",
-                          '& .MuiInputBase-input': {
+                          '& .MuiSelect-select': {
                             textAlign: 'center',
+                            paddingY: '8.5px',
                           },
                         }}
-                        error={!!error.gst}
-                        inputRef={(el) => (inputRefs.current[11] = el)}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (/^\d*$/.test(value)) {
-                            setGst(value ? Number(value) : "");
-                          }
-                        }}
                         onKeyDown={(e) => {
-                          const isTab = e.key === "Tab";
-                          const isEnter = e.key === "Enter";
-                          const isShiftTab = isTab && e.shiftKey;
-                          if (isShiftTab) return;
-                          if (isEnter || isTab) {
-                            const allowedGST = [0, 5, 18,];
-                            if (gst === "" || gst === null || gst === undefined) {
-                              e.preventDefault();
-                              toast.dismiss();
-                              toast.error("GST is required");
-                              return;
+                          if (e.key === "Tab" && e.shiftKey) {
+                            e.preventDefault();
+                            if (inputRefs.current[10]) {
+                              inputRefs.current[10].focus();
                             }
-                            if (!allowedGST.includes(Number(gst))) {
-                              e.preventDefault();
-                              toast.dismiss();
-                              toast.error("Only 0%,5%,18%, GST is allowed");
-                              return;
+                            return;
+                          }
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            if (inputRefs.current[12]) {
+                              inputRefs.current[12].focus();
                             }
                           }
-                          handleKeyDown(e, 11);
                         }}
-                      />
+                      >
+                        <MenuItem value={0}>0</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                        <MenuItem value={18}>18</MenuItem>
+                      </Select>
                     </td>
                     <td >
                       <TextField
@@ -2383,22 +2397,22 @@ const EditPurchaseBill = () => {
                             />
                           </div>
 
-                          <span style={{ alignSelf: "center" }}>{item.item_name ? item.item_name : "-----"}</span>
+                          <span style={{ alignSelf: "center" }}>{item.item_name ? item.item_name : "-"}</span>
                         </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage ? item.weightage : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number ? item.batch_number : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry ? item.expiry : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty ? item.qty : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.base_price ? item.base_price : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name ? item.gst_name : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.net_rate ? item.net_rate : "-----"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.margin ? item.margin : "-----"}</td>
-                        <td className="total " style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-----"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage ? item.weightage : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number ? item.batch_number : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry ? item.expiry : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty ? item.qty : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.base_price ? item.base_price : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name ? item.gst_name : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.net_rate ? item.net_rate : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.margin ? item.margin : "-"}</td>
+                        <td className="total " style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-"}</td>
                       </tr>
                     </>
                   ))}

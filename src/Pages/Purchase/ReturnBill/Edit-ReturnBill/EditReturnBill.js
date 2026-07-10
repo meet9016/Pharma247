@@ -421,43 +421,35 @@ const EditReturnBill = () => {
         data.append("distributor_id", distributorId);
         data.append("type", "1");
 
+        setIsOpenBox(false);
+        setUnsavedItems(false);
+        localStorage.removeItem("unsavedItems");
+
+        const navigateAway = () => {
+            if (nextPath) {
+                setTimeout(() => {
+                    history.push(nextPath);
+                }, 50);
+            }
+        };
 
         try {
-            const response = await axios.post("purches-return-iteam-histroy", data,
+            await axios.post("purches-return-iteam-histroy", data,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            if (response.status === 200) {
-                setUnsavedItems(false);
-                setIsOpenBox(false);
-
-                setTimeout(() => {
-                    if (nextPath) {
-                        history.push(nextPath);
-                    }
-                }, 0);
-            }
-            setIsOpenBox(false);
-            setUnsavedItems(false);
-
+            navigateAway();
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                setUnsavedItems(false);
-                setIsOpenBox(false);
-                localStorage.setItem("unsavedItems", unsavedItems.toString());
-                setTimeout(() => {
-                    history.push(nextPath);
-                }, 0);
-
                 localStorage.removeItem("token");
                 localStorage.removeItem("userId");
                 localStorage.removeItem("role");
                 localStorage.clear();
                 history.push("/");
-
             } else {
                 console.error("Error deleting items:", error);
+                navigateAway();
             }
         }
     };
@@ -935,12 +927,12 @@ const EditReturnBill = () => {
             newErrors.billNo = 'Bill No is Required';
         }
 
-        // if(checkedItems.length===0){
-        //     newErrors.checkedItems = 'Item is not selected';
-        //     toast.dismiss();
-        // toast.error("Item is not selected");
+        if (!tableData?.item_list || tableData.item_list.length === 0) {
+            newErrors.item = 'Please select at least one item';
+            toast.dismiss();
+            toast.error("Please select at least one item");
+        }
 
-        // }
         setError(newErrors);
 
         if (Object.keys(newErrors).length > 0) {
@@ -1612,43 +1604,42 @@ const EditReturnBill = () => {
                                         />
                                     </td>
                                     <td>
-                                        <TextField
-                                            labelId="dropdown-label"
-                                            id="dropdown"
-                                            placeholder='Gst'
-                                            value={gst}
-                                            sx={{
-                                                minWidth: "40px",
-                                                width: "100%",
-                                                '& .MuiInputBase-input': {
-                                                    textAlign: 'center',
-                                                },
+                                        <Select
+                                            size="small"
+                                            value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
+                                            onChange={(e) => {
+                                                setGst(e.target.value !== "" ? Number(e.target.value) : "");
+                                                setErrors((prev) => ({ ...prev, gst: false }));
                                             }}
                                             inputRef={(el) => (inputRefs.current[6] = el)}
+                                            sx={{
+                                                minWidth: "60px",
+                                                width: "100%",
+                                                '& .MuiSelect-select': {
+                                                    textAlign: 'center',
+                                                    paddingY: '8.5px',
+                                                },
+                                            }}
                                             onKeyDown={(e) => {
+                                                if (e.key === "Tab" && e.shiftKey) {
+                                                    e.preventDefault();
+                                                    if (inputRefs.current[5]) {
+                                                        inputRefs.current[5].focus();
+                                                    }
+                                                    return;
+                                                }
                                                 if (e.key === "Enter") {
-                                                    if (gst && gst !== "") {
-                                                        handleKeyDown(e, 6);
-                                                    } else {
-                                                        toast.dismiss();
-                                                        toast.error("Please enter GST");
-                                                        e.preventDefault();
+                                                    e.preventDefault();
+                                                    if (inputRefs.current[7]) {
+                                                        inputRefs.current[7].focus();
                                                     }
                                                 }
-                                                if (
-                                                    ['e', 'E', '+', '-', ','].includes(e.key) ||
-                                                    (e.key === '.' && e.target.value.includes('.'))
-                                                ) {
-                                                    e.preventDefault();
-                                                }
                                             }}
-                                            onChange={(e) => setGst(e.target.value)}
-                                            size="small"
-                                            displayEmpty
-                                            error={!!errors.gst}
                                         >
-
-                                        </TextField>
+                                            <MenuItem value={0}>0</MenuItem>
+                                            <MenuItem value={5}>5</MenuItem>
+                                            <MenuItem value={18}>18</MenuItem>
+                                        </Select>
                                     </td>
                                     <td>
                                         <TextField

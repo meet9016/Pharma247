@@ -429,12 +429,21 @@ const EditSaleReturn = () => {
     }
     setIsSubmitting(true);
 
+    if (!tableData?.sales_iteam || tableData.sales_iteam.length === 0) {
+      toast.dismiss();
+      toast.error("Please select at least one item");
+      setIsSubmitting(false);
+      return;
+    }
+
     const hasUncheckedItems = tableData?.sales_iteam?.every(
       (item) => item.iss_check === false
     );
     if (hasUncheckedItems) {
       toast.dismiss();
       toast.error("Please select at least one item");
+      setIsSubmitting(false);
+      return;
     } else {
       let data = new FormData();
       data.append("bill_no", tableData?.bill_no);
@@ -870,39 +879,31 @@ const EditSaleReturn = () => {
     setUnsavedItems(false);
     localStorage.removeItem("unsavedItems");
 
+    const navigateAway = () => {
+      if (nextPath) {
+        setTimeout(() => {
+          history.push(nextPath);
+        }, 50);
+      }
+    };
+
     try {
       // Wait for the response from the server
-      const response = await axios.post("sales-return-edit-history", data, {
+      await axios.post("sales-return-edit-history", data, {
         // params, // Uncomment if `random_number` is required in the request
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      // Check for a successful response
-      if (response.status === 200) {
-        setOpenModal(false); // Close the modal
-        setUnsavedItems(false); // Mark items as saved
-        history.replace(nextPath); // Redirect to the next page
-      }
+      navigateAway();
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        setUnsavedItems(false);
-        setOpenModal(false);
-        localStorage.setItem("unsavedItems", unsavedItems.toString());
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 0);
-        
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
-      
       } else {
         console.error("Error deleting items:", error);
-
-        // Optional: Provide user feedback if there's an error
-        alert("Failed to save changes. Please try again.");
+        navigateAway();
       }
     }
   };
@@ -1355,31 +1356,42 @@ const EditSaleReturn = () => {
                 </td>
 
                 <td>
-                  <TextField
-                    autoComplete="off"
-                    placeholder="Gst"
-                    id="outlined-number"
-                    type="number"
-                    disabled
+                  <Select
                     size="small"
+                    value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
+                    onChange={(e) => {
+                      setGst(e.target.value !== "" ? Number(e.target.value) : "");
+                      localStorage.setItem("unsavedEditReturnItems", "true");
+                    }}
                     inputRef={inputRef8}
-                    onKeyDown={handleKeyDown}
                     sx={{
-                      minWidth: "40px",
+                      minWidth: "60px",
                       width: "100%",
-                      '& .MuiInputBase-input': {
+                      '& .MuiSelect-select': {
                         textAlign: 'center',
+                        paddingY: '8.5px',
                       },
                     }}
-                    value={gst}
-                    onChange={(e) => {
-                      setGst(e.target.value);
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        if (inputRef6.current) {
+                          inputRef6.current.focus();
+                        }
+                        return;
+                      }
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (inputRef9.current) {
+                          inputRef9.current.focus();
+                        }
+                      }
                     }}
-                    InputProps={{
-
-                      disableUnderline: true,
-                    }}
-                  />
+                  >
+                    <MenuItem value={0}>0</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                    <MenuItem value={18}>18</MenuItem>
+                  </Select>
                 </td>
                 <td>
                   <TextField

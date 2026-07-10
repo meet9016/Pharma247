@@ -114,6 +114,7 @@ const Salereturn = () => {
     const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
     const inputRefs = useRef([]);
+    const returnSubmitBtnRef = useRef(null);
 
     useEffect(() => {
         if (inputRefs?.current[0]) {
@@ -251,8 +252,6 @@ const Salereturn = () => {
                 if (isSubmitting) return;
 
                 if (!customer || !customer.id) {
-                    toast.dismiss();
-                    toast.error('Please select customer');
                     setError({ customer: "Please select customer" });
                     return;
                 }
@@ -287,7 +286,6 @@ const Salereturn = () => {
         otherAmt,
         finalDiscount
     ]);
-
 
     useEffect(() => {
         const totalAmount = (qty / unit);
@@ -670,9 +668,9 @@ const Salereturn = () => {
         }
         if (!tableData || !Array.isArray(tableData.sales_item) || tableData.sales_item.length === 0) {
 
-            newErrors.sales_item = 'Please add at least one item';
+            newErrors.sales_item = 'Please select at least one item';
             toast.dismiss();
-            toast.error('Please add at least one item');
+            toast.error('Please select at least one item');
             setError(newErrors);
             return;
         }
@@ -909,41 +907,35 @@ const Salereturn = () => {
         data.append('start_date', startDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
         data.append('end_date', endDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
 
+        setOpenModal(false);
+        setUnsavedItems(false);
+        localStorage.removeItem("unsavedItems");
+
+        const navigateAway = () => {
+            if (nextPath) {
+                setTimeout(() => {
+                    history.push(nextPath);
+                }, 50);
+            }
+        };
+
         try {
-            const response = await axios.post("sales-return-delete-history", data, {
+            await axios.post("sales-return-delete-history", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-
-            if (response.status === 200) {
-                setUnsavedItems(false);
-                setOpenModal(false);
-                localStorage.setItem("unsavedItems", unsavedItems.toString());
-                setTimeout(() => {
-                    history.push(nextPath);
-                }, 0);
-            }
+            navigateAway();
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                setUnsavedItems(false);
-                setOpenModal(false);
-                localStorage.setItem("unsavedItems", unsavedItems.toString());
-                setTimeout(() => {
-                    history.push(nextPath);
-                }, 0);
-
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
             } else {
-                if (error.response && error.response.status === 401) {
-                    setUnsavedItems(false);
-                    setOpenModal(false);
-                    localStorage.setItem("unsavedItems", unsavedItems.toString());
-                    setTimeout(() => {
-                        history.push(nextPath);
-                    }, 0);
-                } else {
-                    console.error("Error deleting items:", error);
-                }
+                console.error("Error deleting items:", error);
+                navigateAway();
             }
         }
     };
@@ -1004,6 +996,14 @@ const Salereturn = () => {
                             sx={{ minWidth: '150px' }}
                             onChange={(e) => { setPaymentType(e.target.value) }}
                             size="small"
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    if (returnSubmitBtnRef.current) {
+                                        returnSubmitBtnRef.current.focus();
+                                    }
+                                }
+                            }}
                         >
                             <MenuItem value="cash">Cash</MenuItem>
                             <MenuItem value="credit">Credit</MenuItem>
@@ -1011,7 +1011,7 @@ const Salereturn = () => {
                                 <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                             ))}
                         </Select>
-                        <Button variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => handleSubmit()}> Submit </Button>
+                        <Button ref={returnSubmitBtnRef} variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => handleSubmit()}> Submit </Button>
 
                     </div>
                 </div>
@@ -1019,7 +1019,7 @@ const Salereturn = () => {
 
 
                 <div className=" flex gap-4  mt-4">
-                    <div className="flex flex-row gap-4 overflow-x-auto w-full items-end">
+                    <div className="flex flex-row gap-4 mb-[20px] w-full items-end">
                         <div >
                             <span className="title mb-2" >Bill No <span className="text-red-600">*</span></span>
                             <TextField
@@ -1038,11 +1038,16 @@ const Salereturn = () => {
                             />
                         </div>
 
-                        <div >
+                        <div style={{ position: 'relative' }}>
                             <span className="title mb-2 flex  items-center gap-2">Customer Mobile / Name <span className="text-red-600">*</span></span>
                             <Autocomplete
                                 value={customer}
-                                onChange={handleCustomerOption}
+                                onChange={(event, newValue) => {
+                                    handleCustomerOption(event, newValue);
+                                    if (newValue && newValue.id) {
+                                        setError((prev) => ({ ...prev, customer: '' }));
+                                    }
+                                }}
                                 inputValue={searchQuery}
                                 // onInputChange={(event, newInputValue) => {
                                 //     setSearchQuery(newInputValue);
@@ -1087,7 +1092,23 @@ const Salereturn = () => {
                                         variant="outlined"
                                         placeholder="Search by Mobile, Name"
                                         inputRef={el => inputRefs.current[0] = el}
-                                        onKeyDown={handleKeyDown}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                // Skip Doctor field (index 1), go to Start Date (index 2)
+                                                const nextRef = inputRefs.current[2];
+                                                if (nextRef) {
+                                                    if (nextRef.input) {
+                                                        nextRef.input.focus();
+                                                    } else if (typeof nextRef.focus === 'function') {
+                                                        nextRef.focus();
+                                                    }
+                                                }
+                                                return;
+                                            }
+                                            handleKeyDown(e);
+                                        }}
+                                        error={!!error?.customer}
                                         InputProps={{
                                             ...params.InputProps,
                                             endAdornment: (
@@ -1104,6 +1125,11 @@ const Salereturn = () => {
                                     />
                                 )}
                             />
+                            {error?.customer && (
+                                <span style={{ position: 'absolute', bottom: '-18px', left: 0, color: 'red', fontSize: '12px', whiteSpace: 'nowrap' }}>
+                                    {error.customer}
+                                </span>
+                            )}
 
                         </div>
 
@@ -1401,25 +1427,42 @@ const Salereturn = () => {
                                     />
                                 </td>
                                 <td>
-                                    <TextField
-                                        autoComplete="off"
-                                        id="outlined-number"
-                                        type="number"
-                                        placeholder="Gst"
-                                        disabled
+                                    <Select
                                         size="small"
+                                        value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
+                                        onChange={(e) => {
+                                            setGst(e.target.value !== "" ? Number(e.target.value) : "");
+                                            setUnsavedItems(true);
+                                        }}
                                         inputRef={el => inputRefs.current[11] = el}
-                                        onKeyDown={handleKeyDown}
                                         sx={{
-                                            minWidth: "40px",
+                                            minWidth: "60px",
                                             width: "100%",
-                                            '& .MuiInputBase-input': {
+                                            '& .MuiSelect-select': {
                                                 textAlign: 'center',
+                                                paddingY: '8.5px',
                                             },
                                         }}
-                                        value={gst}
-                                        onChange={(e) => { setGst(e.target.value) }}
-                                    />
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Tab" && e.shiftKey) {
+                                                e.preventDefault();
+                                                if (inputRefs.current[10]) {
+                                                    inputRefs.current[10].focus();
+                                                }
+                                                return;
+                                            }
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                if (inputRefs.current[12]) {
+                                                    inputRefs.current[12].focus();
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        <MenuItem value={0}>0</MenuItem>
+                                        <MenuItem value={5}>5</MenuItem>
+                                        <MenuItem value={18}>18</MenuItem>
+                                    </Select>
                                 </td>
                                 <td>
                                     <TextField

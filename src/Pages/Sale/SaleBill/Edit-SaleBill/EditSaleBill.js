@@ -152,6 +152,7 @@ const EditSaleBill = () => {
   const inputRef2 = useRef(null);
   const inputRef3 = useRef(null);
   const inputRef4 = useRef(null);
+  const inputRefGst = useRef(null);
 
 
 
@@ -159,17 +160,19 @@ const EditSaleBill = () => {
   const itemRowInputOrder = [
     inputRef1, // Item
     inputRef2, // Base
+    inputRefGst, // GST Select
     inputRef3, // Qty
     inputRef4, // Order
   ];
   /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
 
 
-  // Helpers to move focus in the Item → Base → Qty → Order order
+  // Helpers to move focus in the Item → Base → GST → Qty → Order order
   const focusByIndex = (i) => itemRowInputOrder[i]?.current?.focus();
   const focusItem = () => focusByIndex(0);
   const focusBase = () => focusByIndex(1);
-  const focusQty = () => focusByIndex(2);
+  const focusGst = () => focusByIndex(2);
+  const focusQty = () => focusByIndex(3);
 
 
   // Focus the main table and move selection (clamped). Also focuses the target row immediately.
@@ -792,39 +795,37 @@ const EditSaleBill = () => {
     setUnsavedItems(false);
     localStorage.removeItem("unsavedItems");
 
+    const navigateAway = () => {
+      if (nextPath) {
+        setTimeout(() => {
+          history.push(nextPath);
+        }, 50);
+      }
+    };
+
     try {
-      const response = axios
+      axios
         .post("sales-history", data, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          setUnsavedItems(false);
-          setOpenModal(false);
-          if (nextPath) {
-            history.replace(nextPath);
-          }
+          navigateAway();
         })
         .catch((error) => {
           console.error("Error fetching sales history:", error);
+          if (error.response && error.response.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("role");
+            localStorage.clear();
+            history.push("/");
+          } else {
+            navigateAway();
+          }
         });
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        setUnsavedItems(false);
-        setOpenModal(false);
-        localStorage.setItem("unsavedItems", unsavedItems.toString());
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 0);
-        if (error?.response?.status === 401) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("userId");
-          localStorage.removeItem("role");
-          localStorage.clear();
-          history.push("/");
-        }
-      } else {
-        console.error("Error fetching sales history:", error);
-      }
+      console.error("Unexpected error:", error);
+      navigateAway();
     }
   };
 
@@ -1289,6 +1290,11 @@ const EditSaleBill = () => {
     const newErrors = {};
     if (!customer) {
       newErrors.customer = "Please select Customer";
+    }
+    if (!tableData?.sales_item || tableData.sales_item.length === 0) {
+      newErrors.item = "Please Add any Item in Sale Bill";
+      toast.dismiss();
+      toast.error("Please select at least one item");
     }
     setError(newErrors);
 
@@ -2093,31 +2099,45 @@ const EditSaleBill = () => {
                             return;
                           }
                           e.preventDefault();
-                          focusQty();  // ← forward to Qty
+                          focusGst();  // ← forward to GST Select
                         }
                       }}
 
                     />
                   </td>
                   <td>
-                    <TextField
-                      id="outlined-number"
-                      placeholder="Gst"
-                      type="number"
-                      disabled
+                    <Select
                       size="small"
+                      value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
+                      onChange={(e) => {
+                        setGst(e.target.value !== "" ? Number(e.target.value) : "");
+                        localStorage.setItem("unsavedItems", "true");
+                      }}
+                      inputRef={inputRefGst}
                       sx={{
-                        minWidth: "40px",
+                        minWidth: "60px",
                         width: "100%",
-                        '& .MuiInputBase-input': {
+                        '& .MuiSelect-select': {
                           textAlign: 'center',
+                          paddingY: '8.5px',
                         },
                       }}
-                      value={gst}
-                      onChange={(e) => {
-                        setGst(e.target.value);
+                      onKeyDown={(e) => {
+                        if (e.key === "Tab" && e.shiftKey) {
+                          e.preventDefault();
+                          focusBase();
+                          return;
+                        }
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          focusQty();
+                        }
                       }}
-                    />
+                    >
+                      <MenuItem value={0}>0</MenuItem>
+                      <MenuItem value={5}>5</MenuItem>
+                      <MenuItem value={18}>18</MenuItem>
+                    </Select>
                   </td>
                   <td>
                     <TextField
@@ -2139,7 +2159,7 @@ const EditSaleBill = () => {
                       onKeyDown={async (e) => {
                         if (e.key === "Tab" && e.shiftKey) {
                           e.preventDefault();
-                          focusBase(); // ← back to Base
+                          focusGst(); // ← back to GST Select
                           return;
                         }
                         if (e.key === "Enter" || e.key === "Tab") {
