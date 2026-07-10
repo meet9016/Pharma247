@@ -49,9 +49,8 @@ import { FaCrown } from "react-icons/fa";
 
 import TipsModal from "../../../../componets/Tips/TipsModal";
 import Loader from "../../../../componets/loader/Loader";
-import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 
-const AddSale = () => {
+const addSale = () => {
   const token = localStorage.getItem("token");
   const searchInputRef = useRef(null);
   const itemNameInputRef = useRef(null);
@@ -98,6 +97,7 @@ const AddSale = () => {
   const [pickup, setPickup] = useState("Counter");
   const [id, setId] = useState("");
   const [error, setError] = useState({ customer: "" });
+  const [itemErrors, setItemErrors] = useState({});
   const [expiryDate, setExpiryDate] = useState("");
   const [selectedEditItemId, setSelectedEditItemId] = useState("");
   const [mrp, setMRP] = useState("");
@@ -176,9 +176,6 @@ const AddSale = () => {
   const [billNo, setBillNo] = useState(localStorage.getItem("BillNo"));
   const tableRef = useRef(null);
   const [openCustomerHistory, setOpenCustomerHistory] = useState(false);
-  const [customerSearch, setCustomerSearch] = useState("");
-  const [historyPage, setHistoryPage] = useState(1);
-  const historyRowsPerPage = 5;
   const [customerHistoryData, setCustomerHistoryData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -188,27 +185,6 @@ const AddSale = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
-  const [errors, setErrors] = useState({
-    doctorName: "",
-    clinic: "",
-  });
-
-
-  const [addItemError, setAddItemError] = useState({
-    addItemName: "",
-    addUnit: "",
-  });
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5; // adjust as needed
-
-  const paginatedData = useMemo(() => {
-    if (!customerHistoryData?.data) return [];
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    return customerHistoryData.data.slice(startIndex, endIndex);
-  }, [customerHistoryData, currentPage]);
-
 
   const toggleModal = async () => {
     if (isModalOpen && netAmount >= 0) {
@@ -228,7 +204,6 @@ const AddSale = () => {
   const dateRefs = useRef([]);
 
   const submitButtonRef = useRef(null);
-  const pickupSelectRef = useRef(null);
   const addButtonref = useRef(null);
 
   const timeoutRef = useRef(null);
@@ -471,25 +446,36 @@ const AddSale = () => {
   ];
 
   const itemRowInputOrder = [
-    inputRef1, // Unit
-    inputRef3, // Batch
-    inputRef4, // Expiry
-    inputRef5, // MRP
-    inputRef6, // Base
-    inputRef7, // GST
-    inputRef9, // Qty
-    inputRef8, // Loc
-    inputRef10 // Order
+    inputRef1, // 0 - Unit
+    inputRef2, // 1 - Batch
+    inputRef3, // 2 - Expiry
+    inputRef4, // 3 - MRP
+    inputRef5, // 4 - Base
+    inputRef6, // 5 - GST
+    inputRef7, // 6 - Qty
+    inputRef9, // 7 - Loc
+    inputRef8  // 8 - Order
   ];
 
   const handleKeyDown = (event, index) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" || event.key === "Tab") {
       event.preventDefault();
-      for (let i = index + 1; i < itemRowInputOrder.length; i++) {
-        const nextRef = itemRowInputOrder[i];
-        if (nextRef && nextRef.current && !nextRef.current.disabled) {
-          nextRef.current.focus();
-          return;
+      if (event.shiftKey && event.key === "Tab") {
+        for (let i = index - 1; i >= 0; i--) {
+          const prevRef = itemRowInputOrder[i];
+          if (prevRef && prevRef.current && !prevRef.current.disabled) {
+            prevRef.current.focus();
+            return;
+          }
+        }
+        if (searchInputRef.current) searchInputRef.current.focus();
+      } else {
+        for (let i = index + 1; i < itemRowInputOrder.length; i++) {
+          const nextRef = itemRowInputOrder[i];
+          if (nextRef && nextRef.current && !nextRef.current.disabled) {
+            nextRef.current.focus();
+            return;
+          }
         }
       }
     }
@@ -702,7 +688,7 @@ const AddSale = () => {
 
   /*<================================================================= Search Item Debouncing ========================================================> */
   useEffect(() => {
-    if (!searchItem?.trim()) {
+    if (!searchItem) {
       setItemList([]);
       return;
     }
@@ -753,7 +739,7 @@ const AddSale = () => {
   };
 
   const handleSearch = async (searchTerm, pageNumber = 1) => {
-    if (!searchTerm?.trim() || isFetchingMore) return;
+    if (!searchTerm || isFetchingMore) return;
 
     setIsFetchingMore(true);
 
@@ -834,22 +820,13 @@ const AddSale = () => {
   const handleInputChange = (event, newInputValue) => {
     setUnsavedItems(true);
     setSearchItem(newInputValue.toUpperCase());
-
-
-    if (!newInputValue.trim()) {
-      setSearchItem("");
-      setItemList([]);
-      setPage(1);
-      setHasMore(true);
-      return;
-    }
-    setSearchItem(newInputValue.trim().toUpperCase());
-
+    setItemErrors((prev) => ({ ...prev, searchItem: false }));
   };
 
   const handleOptionChange = (event, newValue) => {
     setUnsavedItems(true);
     setSelectedOption(newValue);
+    setItemErrors({});
     setValue(newValue);
 
     const itemName = newValue ? newValue.iteam_name : "";
@@ -914,41 +891,23 @@ const AddSale = () => {
 
   /*<========================================================================= add new item   ====================================================================> */
 
-  // const handleAddNewItemValidation = () => {
-  //   const newErrors = {};
-  //   if (!addItemName) {
-  //     newErrors.addItemName = "Item Name is required";
-  //     toast.dismiss();
-  //     toast.error(newErrors.addItemName);
-  //   }
-  //   if (!addUnit) {
-  //     newErrors.addUnit = "Item Unit is required";
-  //     toast.dismiss();
-  //     toast.error(newErrors.addUnit);
-  //   }
-  //   const isValid = Object.keys(newErrors).length === 0;
-  //   if (isValid) {
-  //     handleAddNewItem();
-  //   }
-  //   return isValid;
-  // };
-
   const handleAddNewItemValidation = () => {
     const newErrors = {};
-
     if (!addItemName) {
       newErrors.addItemName = "Item Name is required";
+      toast.dismiss();
+      toast.error(newErrors.addItemName);
     }
-
     if (!addUnit) {
       newErrors.addUnit = "Item Unit is required";
+      toast.dismiss();
+      toast.error(newErrors.addUnit);
     }
-
-    setAddItemError(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
+    const isValid = Object.keys(newErrors).length === 0;
+    if (isValid) {
       handleAddNewItem();
     }
+    return isValid;
   };
 
   const handleAddNewItem = async () => {
@@ -1016,66 +975,34 @@ const AddSale = () => {
 
   /*<========================================================== Fetch customer history   =====================================================> */
 
-  // const fetchCustomerHistory = async (customerId) => {
-  //   let data = new FormData();
-  //   data.append("customer_id", customerId);
-  //   // setIsLoading(true);
-  //   try {
-  //     const response = await axios.get("customer-sale-item-history", data, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     if (response.data.status === 200) {
-  //       setCustomerHistoryData(response.data.data);
-  //       setOpenCustomerHistory(true);
-  //     }
-  //     // setIsLoading(false);
-  //   } catch (error) {
-  //     // setIsLoading(false);
-  //     console.error("API error:", error);
-  //     toast.dismiss();
-  //     toast.error("Failed to fetch customer history");
-  //     if (error?.response?.status === 401) {
-  //       localStorage.removeItem("token");
-  //       localStorage.removeItem("userId");
-  //       localStorage.removeItem("role");
-  //       localStorage.clear();
-  //       history.push("/");
-  //     }
-  //   }
-  // };
-
-  const fetchCustomerHistory = async (customerId, search = "", page = 1) => {
+  const fetchCustomerHistory = async (customerId) => {
+    let data = new FormData();
+    data.append("id", customerId);
+    // setIsLoading(true);
     try {
-      const response = await axios.get(
-        `customer-sale-item-history?customer_id=${customerId}&search=${search}&page=${page}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      const response = await axios.post("customer-view", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.data.status === 200) {
         setCustomerHistoryData(response.data.data);
-        setHistoryPage(page);
+
         setOpenCustomerHistory(true);
       }
+      // setIsLoading(false);
     } catch (error) {
+      // setIsLoading(false);
       console.error("API error:", error);
       toast.dismiss();
       toast.error("Failed to fetch customer history");
       if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
       }
-    }
-  };
-
-  const handleCustomerSearch = () => {
-    if (customer && customer.id) {
-      fetchCustomerHistory(customer.id, customerSearch.toUpperCase(), 1);
     }
   };
 
@@ -1154,7 +1081,7 @@ const AddSale = () => {
         history.push("/");
       }
     } catch (error) {
-      console.error("API error:", error);
+      console.error("API error:", err);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
@@ -1177,6 +1104,7 @@ const AddSale = () => {
 
   const handleCustomerOption = (event, newValue) => {
     setCustomer(newValue);
+    setError((prev) => ({ ...prev, customer: "" }));
     setUnsavedItems(true);
 
     if (newValue) {
@@ -1311,88 +1239,46 @@ const AddSale = () => {
 
   /*<========================================================================= add doctor   ====================================================================> */
 
-  // const AddDoctorRecord = async () => {
-  //   if (!doctorName || !clinic) {
-  //     toast.dismiss();
-  //     toast.error("Please fill all required fields");
-  //     return;
-  //   }
-
-  //   let data = new FormData();
-  //   data.append("name", doctorName);
-  //   data.append("clinic", clinic);
-
-  //   try {
-  //     await axios
-  //       .post("doctor-create", data, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         setOpenAddPopUp(false);
-  //         setDoctorName("");
-  //         setClinic("");
-  //         toast.dismiss();
-  //         toast.success(response.data.message);
-  //       });
-  //   } catch (error) {
-  //     // setIsLoading(false);
-  //     if (error.response?.data?.status === 400) {
-  //       toast.dismiss();
-  //       toast.error(error.response.data.message);
-  //     } else {
-  //       toast.dismiss();
-  //       toast.error("An unexpected error occurred");
-  //     }
-  //     if (error?.response?.status === 401) {
-  //       localStorage.removeItem("token");
-  //       localStorage.removeItem("userId");
-  //       localStorage.removeItem("role");
-  //       localStorage.clear();
-  //       history.push("/");
-  //     }
-  //   }
-  // };
   const AddDoctorRecord = async () => {
-    let tempErrors = { doctorName: "", clinic: "" };
-    let isValid = true;
-
-    if (!doctorName) {
-      tempErrors.doctorName = "Doctor name is required";
-      isValid = false;
+    if (!doctorName || !clinic) {
+      toast.dismiss();
+      toast.error("Please fill all required fields");
+      return;
     }
-
-    if (!clinic) {
-      tempErrors.clinic = "Clinic name is required";
-      isValid = false;
-    }
-
-    setErrors(tempErrors);
-
-    if (!isValid) return;
 
     let data = new FormData();
     data.append("name", doctorName);
     data.append("clinic", clinic);
 
     try {
-      const response = await axios.post("doctor-create", data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setOpenAddPopUp(false);
-      setDoctorName("");
-      setClinic("");
-      setErrors({ doctorName: "", clinic: "" });
-
-      toast.success(response.data.message);
+      await axios
+        .post("doctor-create", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setOpenAddPopUp(false);
+          setDoctorName("");
+          setClinic("");
+          toast.dismiss();
+          toast.success(response.data.message);
+        });
     } catch (error) {
+      // setIsLoading(false);
+      if (error.response?.data?.status === 400) {
+        toast.dismiss();
+        toast.error(error.response.data.message);
+      } else {
+        toast.dismiss();
+        toast.error("An unexpected error occurred");
+      }
       if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
-      } else {
-        toast.error("Something went wrong");
       }
     }
   };
@@ -1447,7 +1333,7 @@ const AddSale = () => {
     if (!item) return;
     setSelectedEditItem(item);
     setIsEditMode(true);
-    setSelectedEditItemId();
+    setSelectedEditItemId(item.id);
 
     setSelectedOption(item);
     setMaxQty(Number(item.total_stock) + Number(item.qty));
@@ -1719,76 +1605,41 @@ const AddSale = () => {
 
   /*<========================================================================= save sale bill  ====================================================================> */
 
-  // const handleSubmit = async (draft) => {
-  //   if (isSubmitting) {
-  //     toast.warning("Please wait, request in progress...");
-  //     return;
-  //   }
-
-
-  //   await new Promise(resolve => setTimeout(resolve, 0));
-
-  //   const newErrors = {};
-  //   if (!customer) {
-  //     newErrors.customer = "Please select Customer";
-  //   }
-  //   if (totalAmount < 1) {
-  //     newErrors.totalAmount = "Total Amount must be greater than 0";
-  //     toast.dismiss();
-  //     toast.error("Total Amount must be greater than 0");
-  //   }
-  //   if (loyaltyVal > totalAmount) {
-  //     newErrors.totalAmount = "Total Amount must be greater than Loyalty points";
-  //     toast.dismiss();
-  //     toast.error("Total Amount must be greater than Loyalty points");
-  //   } else if (ItemSaleList?.sales_item.length == 0) {
-  //     newErrors.item = "Please Add any Item in Sale Bill";
-  //     toast.dismiss();
-  //     toast.error("Please Add any Item in Sale Bill");
-  //   }
-  //   setError(newErrors);
-  //   if (Object.keys(newErrors).length > 0) {
-  //     return;
-  //   }
-  //   setUnsavedItems(false);
-
-  //   submitSaleData(draft);
-  // };
-
-
-
   const handleSubmit = async (draft) => {
-    const newErrors = {};
-
-    if (!customer) {
-      newErrors.customer = "Please select Customer";
-    }
-
-    if (totalAmount < 1) {
-      newErrors.totalAmount = "Total Amount must be greater than 0";
-    }
-
-    if (loyaltyVal > totalAmount) {
-      newErrors.totalAmount =
-        "Total Amount must be greater than Loyalty points";
-    }
-
-    if (!ItemSaleList?.sales_item || ItemSaleList.sales_item.length === 0) {
-      newErrors.item = "Please Add any Item in Sale Bill";
-      toast.dismiss();
-      toast.error("Please select at least one item");
-    }
-
-    setError(newErrors);
-
-    if (Object.keys(newErrors).length > 0) {
+    if (isSubmitting) {
+      toast.warning("Please wait, request in progress...");
       return;
     }
 
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const newErrors = {};
+    if (!customer) {
+      newErrors.customer = "Please select Customer";
+    }
+    if (totalAmount < 1) {
+      newErrors.totalAmount = "Total Amount must be greater than 0";
+      toast.dismiss();
+      toast.error("Total Amount must be greater than 0");
+    }
+    if (loyaltyVal > totalAmount) {
+      newErrors.totalAmount = "Total Amount must be greater than Loyalty points";
+      toast.dismiss();
+      toast.error("Total Amount must be greater than Loyalty points");
+    } else if (!ItemSaleList?.sales_item || ItemSaleList.sales_item.length === 0) {
+      newErrors.item = "Please select atleast one item";
+      toast.dismiss();
+      toast.error("Please select atleast one item");
+    }
+    setError(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+    setUnsavedItems(false);
+
     submitSaleData(draft);
   };
-
-
 
   const submitSaleData = async (draft) => {
     if (isSubmitting) {
@@ -1951,30 +1802,46 @@ const AddSale = () => {
     setOpenModal(false);
     setUnsavedItems(false);
 
-    const navigateAway = () => {
-      localStorage.removeItem("RandomNumber");
-      if (nextPath) {
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 50);
-      }
-    };
-
+    // const params = {
+    //     random_number: localStorage.getItem('RandomNumber')
+    // };
     try {
       const response = await axios.post("all-sales-item-delete", data, {
+        // params: params,
         headers: { Authorization: `Bearer ${token}` },
       });
-      navigateAway();
+      if (response.data.status === 200) {
+        setOpenModal(false);
+        setUnsavedItems(false);
+        setTimeout(() => {
+          if (nextPath) {
+            history.push(nextPath);
+          }
+        }, 0);
+      }
+
+      setOpenModal(false);
+      setUnsavedItems(false);
+      localStorage.removeItem("RandomNumber");
+
+      // history.replace(nextPath);
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
+        setUnsavedItems(false);
+        setOpenModal(false);
+        localStorage.setItem("unsavedItems", unsavedItems.toString());
+        setTimeout(() => {
+          history.push(nextPath);
+        }, 0);
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       } else {
         console.error("Error deleting items:", error);
-        navigateAway();
       }
     }
   };
@@ -2059,22 +1926,16 @@ const AddSale = () => {
     setUnsavedItems(true);
 
     const newErrors = {};
-    if (!mrp) {
-      newErrors.mrp = "Please Select any Item Name";
-      toast.dismiss();
-      toast.error(newErrors.mrp);
-    }
-    if (!qty || qty <= 0) {
-      newErrors.qty = "Please enter a valid quantity.";
-      toast.dismiss();
-      toast.error(newErrors.qty);
-    } else {
-      // addSaleItem();
-      setIsVisible(false);
-      setSearchItem("");
-      setBarcodeItemName("");
-      setSelectedOption(null);
-    }
+    if (!selectedOption) newErrors.searchItem = true;
+    if (!unit) newErrors.unit = true;
+    if (!batch) newErrors.batch = true;
+    if (!expiryDate) newErrors.expiry = true;
+    if (!mrp) newErrors.mrp = true;
+    if (!base) newErrors.base = true;
+    if (gst === null || gst === undefined || gst === "") newErrors.gst = true;
+    if (!qty || qty <= 0) newErrors.qty = true;
+
+    setItemErrors(newErrors);
 
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -2083,8 +1944,11 @@ const AddSale = () => {
         searchInputRef.current.focus();
         setSelectedIndex(-1);
         setAutocompleteKey((prevKey) => prevKey + 1);
-
       }
+      setIsVisible(false);
+      setSearchItem("");
+      setBarcodeItemName("");
+      setSelectedOption(null);
     }
     return isValid;
   };
@@ -2439,13 +2303,6 @@ const AddSale = () => {
 
   {/*<====================================================================== UI =====================================================================> */ }
 
-  // Global submit shortcuts
-  useSubmitShortcut(() => handleSubmit(billSaveDraft), !openAddPopUp && !openPurchaseHistoryPopUp && !openCustomer && !openAddItemPopUp && !openReminderPopUp && !openModal && !openCustomerHistory && !isModalOpen);
-  useSubmitShortcut(AddDoctorRecord, openAddPopUp);
-  useSubmitShortcut(AddCustomerRecord, openCustomer);
-  useSubmitShortcut(handleAddNewItemValidation, openAddItemPopUp);
-  useSubmitShortcut(() => handleReminder(), openReminderPopUp);
-
   return (
     <>
 
@@ -2526,14 +2383,6 @@ const AddSale = () => {
               }}
               size="small"
               sx={{ minWidth: "150px" }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  if (pickupSelectRef.current) {
-                    pickupSelectRef.current.focus();
-                  }
-                }
-              }}
             >
               <MenuItem value="cash">Cash</MenuItem>
               <MenuItem value="credit">Credit</MenuItem>
@@ -2548,7 +2397,6 @@ const AddSale = () => {
               labelId="dropdown-label"
               id="dropdown"
               value={pickup}
-              inputRef={pickupSelectRef}
               className="payment_divv "
               onChange={(e) => {
                 setPickup(e.target.value);
@@ -2563,14 +2411,6 @@ const AddSale = () => {
                   alignItems: "center",
                   gap: "1rem",
                 },
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  if (submitButtonRef.current) {
-                    submitButtonRef.current.focus();
-                  }
-                }
               }}
             >
               {pickupOptions.map((option) => (
@@ -2688,16 +2528,18 @@ const AddSale = () => {
                 // loading={isLoading}
 
                 sx={{
+
                   width: "100%",
                   minWidth: "350px",
-
-                  '& .MuiOutlinedInput-root': {
-                    height: '40px',
-                    minHeight: '40px',
-                  },
+                  minHeight: "40px",
+                  "@media (max-width:600px)": { minWidth: "250px" },
 
                   '& .MuiAutocomplete-inputRoot': {
+                    padding: '0 !important',
                     paddingRight: customer ? '65px !important' : '39px !important',
+                  },
+                  '& .MuiInputBase-root': {
+                    padding: '0',
                   }
                 }}
 
@@ -2799,20 +2641,15 @@ const AddSale = () => {
                   />
                 )}
               />
-
-
               {error.customer && (
-                <span className="text-red-500 text-xs">
+                <span className="text-red-500 text-xs mt-1 block">
                   {error.customer}
                 </span>
               )}
+
             </div>
-
-
-
-
             <div>
-              <span className="title flex mb-2 items-center gap-2">
+              <span className="title mb-2 flex  items-center gap-2">
                 <span className="flex flex-row gap-1">
                   Doctor
                   <FaPlusCircle
@@ -2853,16 +2690,18 @@ const AddSale = () => {
 
                 // loading={isLoading}
                 sx={{
+
                   width: "100%",
                   minWidth: "350px",
-
-                  '& .MuiOutlinedInput-root': {
-                    height: '40px',
-                    minHeight: '40px',
-                  },
+                  minHeight: "40px",
+                  "@media (max-width:600px)": { minWidth: "250px" },
 
                   '& .MuiAutocomplete-inputRoot': {
+                    padding: '0 !important',
                     paddingRight: customer ? '65px !important' : '39px !important',
+                  },
+                  '& .MuiInputBase-root': {
+                    padding: '0',
                   }
                 }}
                 renderOption={(props, option) => (
@@ -2960,6 +2799,7 @@ const AddSale = () => {
               />
             </div>
           </div>
+
         </div>
 
         {/*<=========================================================== item table   ==========================================================> */}
@@ -2994,11 +2834,11 @@ const AddSale = () => {
                 <th>
                   MRP <span className="text-red-600 ">*</span>
                 </th>
-                <th>Base</th>
+                <th>Base <span className="text-red-600 ">*</span></th>
                 <th>
                   GST%<span className="text-red-600 ">*</span>
                 </th>
-                <th>Qty. </th>
+                <th>Qty. <span className="text-red-600 ">*</span></th>
                 <th>Loc.</th>
                 <th >Order</th>
                 <th>
@@ -3051,13 +2891,13 @@ const AddSale = () => {
                         )}
 
                         <tr className="customtable">
-                          <th style={{ textAlign: "left" }}>Item Name</th>
-                          <th style={{ textAlign: "left" }}>Batch Number</th>
-                          <th style={{ textAlign: "left" }}>Unit</th>
-                          <th style={{ textAlign: "left" }}>Expiry Date</th>
-                          <th style={{ textAlign: "left" }}>MRP</th>
-                          <th style={{ textAlign: "left" }}>QTY</th>
-                          <th style={{ textAlign: "left" }}>Loc</th>
+                          <th>Item Name</th>
+                          <th>Batch Number</th>
+                          <th>Unit</th>
+                          <th>Expiry Date</th>
+                          <th>MRP</th>
+                          <th>QTY</th>
+                          <th>Loc</th>
                         </tr>
                       </thead>
 
@@ -3091,25 +2931,25 @@ const AddSale = () => {
 
                               >
                                 <td className="text-base font-semibold">
-                                  {item.iteam_name ? item.iteam_name : "-"}
+                                  {item.iteam_name}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.batch_number ? item.batch_number : "-"}
+                                  {item.batch_number}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.unit ? item.unit : "-"}
+                                  {item.unit}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.expiry_date ? item.expiry_date : "-"}
+                                  {item.expiry_date}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.mrp ? item.mrp : "-"}
+                                  {item.mrp}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.qty ? item.qty : "-"}
+                                  {item.qty}
                                 </td>
                                 <td className="text-base font-semibold">
-                                  {item.location ? item.location : "-"}
+                                  {item.location}
                                 </td>
                               </tr>
                             ))}
@@ -3166,6 +3006,7 @@ const AddSale = () => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
+                          error={!!itemErrors.searchItem}
                           inputRef={searchInputRef}
                           variant="outlined"
                           id="searchResults"
@@ -3175,7 +3016,7 @@ const AddSale = () => {
                             ...params.InputProps,
                             style: {
                               height: 40,
-                              // textTransform: 'uppercase',
+                              textTransform: 'uppercase',
                             },
                             startAdornment: (
                               <InputAdornment position="start">
@@ -3253,7 +3094,7 @@ const AddSale = () => {
                           }}
                           sx={{
                             "& .MuiInputBase-input": {
-                              // textTransform: "uppercase",
+                              textTransform: "uppercase",
                             },
                             "& .MuiInputBase-input::placeholder": {
                               fontSize: "1rem",
@@ -3296,12 +3137,17 @@ const AddSale = () => {
                               e.preventDefault();
                               if (!selectedOption) {
                                 setTimeout(() => {
-                                  toast.dismiss();
-                                  toast.error("Please select an Item")
+                                  setItemErrors((prev) => ({ ...prev, searchItem: true }));
                                 }, 100);
                               } else {
                                 setTimeout(() => {
-                                  if (inputRef1.current) inputRef1.current.focus();
+                                  for (let i = 0; i < itemRowInputOrder.length; i++) {
+                                    const nextRef = itemRowInputOrder[i];
+                                    if (nextRef && nextRef.current && !nextRef.current.disabled) {
+                                      nextRef.current.focus();
+                                      return;
+                                    }
+                                  }
                                 }, 100);
                               }
                               return;
@@ -3317,20 +3163,10 @@ const AddSale = () => {
                     id="outlined-number"
                     disabled
                     type="number"
-                    inputRef={inputRef1}
+                    error={!!itemErrors.unit}
                     placeholder="Unit"
-                    onKeyDown={(e) => {
-                      if (e.key === "Tab" && e.shiftKey) {
-                        e.preventDefault();
-                        return;
-                      }
-                      if (e.key === "Enter" || e.key === "Tab") {
-                        e.preventDefault();
-                        if (itemRowInputOrder[1]?.current) {
-                          itemRowInputOrder[1].current.focus();
-                        }
-                      }
-                    }}
+                    inputRef={inputRef1}
+                    onKeyDown={(e) => handleKeyDown(e, 0)}
                     size="small"
                     value={unit}
                     sx={{
@@ -3342,6 +3178,7 @@ const AddSale = () => {
                     }}
                     onChange={(e) => {
                       setUnit(e.target.value);
+                      setItemErrors((prev) => ({ ...prev, unit: false }));
                     }}
                   />
                 </td>
@@ -3357,25 +3194,14 @@ const AddSale = () => {
                     }}
                     size="small"
                     disabled
-                    value={batch}
                     placeholder="Batch"
-                    onKeyDown={(e) => {
-                      if (e.key === "Tab" && e.shiftKey) {
-                        e.preventDefault();
-                        if (itemRowInputOrder[0]?.current) {
-                          itemRowInputOrder[0].current.focus();
-                        }
-                        return;
-                      }
-                      if (e.key === "Enter" || e.key === "Tab") {
-                        e.preventDefault();
-                        if (itemRowInputOrder[2]?.current) {
-                          itemRowInputOrder[2].current.focus();
-                        }
-                      }
-                    }}
+                    error={!!itemErrors.batch}
+                    inputRef={inputRef2}
+                    value={batch}
+                    onKeyDown={(e) => handleKeyDown(e, 1)}
                     onChange={(e) => {
                       setBatch(e.target.value);
+                      setItemErrors((prev) => ({ ...prev, batch: false }));
                     }}
                   />
                 </td>
@@ -3384,7 +3210,6 @@ const AddSale = () => {
                     id="outlined-number"
                     disabled
                     size="small"
-
                     sx={{
                       minWidth: "65px",
                       width: "100%",
@@ -3393,23 +3218,13 @@ const AddSale = () => {
                       },
                     }}
                     inputRef={inputRef3}
-                    onKeyDown={(e) => {
-                      if (e.key === "Tab" && e.shiftKey) {
-                        e.preventDefault();
-                        if (itemRowInputOrder[1]?.current) {
-                          itemRowInputOrder[1].current.focus();
-                        }
-                        return;
-                      }
-                      if (e.key === "Enter" || e.key === "Tab") {
-                        e.preventDefault();
-                        if (itemRowInputOrder[3]?.current) {
-                          itemRowInputOrder[3].current.focus();
-                        }
-                      }
-                    }}
+                    error={!!itemErrors.expiry}
+                    onKeyDown={(e) => handleKeyDown(e, 2)}
                     value={expiryDate}
-                    onChange={handleExpiryDateChange}
+                    onChange={(e) => {
+                      handleExpiryDateChange(e);
+                      setItemErrors((prev) => ({ ...prev, expiry: false }));
+                    }}
                     placeholder="MM/YY"
                   />
                 </td>
@@ -3417,8 +3232,9 @@ const AddSale = () => {
                   <TextField
                     disabled
                     id="outlined-number"
-                    placeholder="Mrp"
                     type="number"
+                    placeholder="Mrp"
+                    error={!!itemErrors.mrp}
                     sx={{
                       minWidth: "65px",
                       width: "100%",
@@ -3428,24 +3244,11 @@ const AddSale = () => {
                     }}
                     size="small"
                     inputRef={inputRef4}
-                    onKeyDown={(e) => {
-                      if (e.key === "Tab" && e.shiftKey) {
-                        e.preventDefault();
-                        if (itemRowInputOrder[2]?.current) {
-                          itemRowInputOrder[2].current.focus();
-                        }
-                        return;
-                      }
-                      if (e.key === "Enter" || e.key === "Tab") {
-                        e.preventDefault();
-                        if (itemRowInputOrder[4]?.current) {
-                          itemRowInputOrder[4].current.focus();
-                        }
-                      }
-                    }}
+                    onKeyDown={(e) => handleKeyDown(e, 3)}
                     value={mrp}
                     onChange={(e) => {
                       setMRP(e.target.value);
+                      setItemErrors((prev) => ({ ...prev, mrp: false }));
                     }}
                   />
                 </td>
@@ -3455,6 +3258,7 @@ const AddSale = () => {
                     id="outlined-number"
                     type="number"
                     placeholder="Base"
+                    error={!!itemErrors.base}
                     sx={{
                       minWidth: "65px",
                       width: "100%",
@@ -3464,65 +3268,44 @@ const AddSale = () => {
                     }}
                     size="small"
                     inputRef={inputRef5}
-                    onKeyDown={(e) => {
-                      if (e.key === "Tab" && e.shiftKey) {
-                        e.preventDefault();
-                        if (itemRowInputOrder[3]?.current) {
-                          itemRowInputOrder[3].current.focus();
-                        }
-                        return;
-                      }
-                      if (e.key === "Enter" || e.key === "Tab") {
-                        e.preventDefault();
-                        if (inputRef6.current) {
-                          inputRef6.current.focus();
-                        }
-                      }
-                    }}
+                    onKeyDown={(e) => handleKeyDown(e, 4)}
                     value={base}
                     onChange={(e) => {
                       setBase(e.target.value);
+                      setItemErrors((prev) => ({ ...prev, base: false }));
                     }}
-
                   />
                 </td>
                 <td>
-                  <Select
+                  <TextField
+                    select
+                    id="outlined-number"
+                    placeholder="Gst"
+                    error={!!itemErrors.gst}
                     size="small"
-                    value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
-                    onChange={(e) => {
-                      setGst(e.target.value !== "" ? Number(e.target.value) : "");
-                      setUnsavedItems(true);
-                    }}
                     inputRef={inputRef6}
+                    onKeyDown={(e) => handleKeyDown(e, 5)}
+                    SelectProps={{
+                      native: true,
+                    }}
                     sx={{
                       minWidth: "60px",
                       width: "100%",
-                      '& .MuiSelect-select': {
+                      '& .MuiInputBase-input': {
                         textAlign: 'center',
-                        paddingY: '8.5px',
                       },
                     }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Tab" && e.shiftKey) {
-                        e.preventDefault();
-                        if (inputRef5.current) {
-                          inputRef5.current.focus();
-                        }
-                        return;
-                      }
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        if (inputRef7.current) {
-                          inputRef7.current.focus();
-                        }
-                      }
+                    value={gst || ""}
+                    onChange={(e) => {
+                      setGst(e.target.value);
+                      setItemErrors((prev) => ({ ...prev, gst: false }));
                     }}
                   >
-                    <MenuItem value={0}>0</MenuItem>
-                    <MenuItem value={5}>5</MenuItem>
-                    <MenuItem value={18}>18</MenuItem>
-                  </Select>
+                    <option value="" disabled></option>
+                    <option value="0">0</option>
+                    <option value="5">5</option>
+                    <option value="18">18</option>
+                  </TextField>
                 </td>
                 <td >
                   <TextField
@@ -3530,6 +3313,7 @@ const AddSale = () => {
                     id="outlined-number"
                     type="number"
                     placeholder="Qty"
+                    error={!!itemErrors.qty}
                     sx={{
                       minWidth: "65px",
                       width: "100%",
@@ -3541,18 +3325,14 @@ const AddSale = () => {
                     inputRef={inputRef7}
                     value={qty}
                     onKeyDown={(e) => {
-                      if (e.key === "Tab" && e.shiftKey) {
-                        e.preventDefault();
-                        if (inputRef6.current) {
-                          inputRef6.current.focus();
-                        }
-                        return;
-                      }
                       if (e.key === "Enter" || e.key === "Tab") {
-                        e.preventDefault();
-                        if (itemRowInputOrder[7]?.current) {
-                          itemRowInputOrder[7].current.focus();
+                        if (qty === "" || qty === null || qty === undefined || qty <= 0) {
+                          setItemErrors((prev) => ({ ...prev, qty: true }));
+                        } else {
+                          handleKeyDown(e, 6);
                         }
+                      } else if (e.key === "Tab" && e.shiftKey) {
+                        handleKeyDown(e, 6);
                       }
                     }}
                     onChange={(e) => {
@@ -3567,6 +3347,7 @@ const AddSale = () => {
                         toast.dismiss();
                         toast.error("Can't add qty more than stock");
                       }
+                      setItemErrors((prev) => ({ ...prev, qty: false }));
                     }}
                   />
                 </td>
@@ -3577,21 +3358,7 @@ const AddSale = () => {
                     size="small"
                     placeholder="Loc"
                     inputRef={inputRef9}
-                    onKeyDown={(e) => {
-                      if (e.key === "Tab" && e.shiftKey) {
-                        e.preventDefault();
-                        if (itemRowInputOrder[6]?.current) {
-                          itemRowInputOrder[6].current.focus();
-                        }
-                        return;
-                      }
-                      if (e.key === "Enter" || e.key === "Tab") {
-                        e.preventDefault();
-                        if (itemRowInputOrder[8]?.current) {
-                          itemRowInputOrder[8].current.focus();
-                        }
-                      }
-                    }}
+                    onKeyDown={(e) => handleKeyDown(e, 7)}
                     disabled
                     sx={{
                       minWidth: "65px",
@@ -3610,7 +3377,6 @@ const AddSale = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
-                    placeholder="Order"
                     sx={{
                       minWidth: "40px",
                       width: "100%",
@@ -3623,14 +3389,7 @@ const AddSale = () => {
                     placeholder="O"
                     inputRef={inputRef8}
                     onKeyDown={(e) => {
-                      if (e.key === "Tab" && e.shiftKey) {
-                        e.preventDefault();
-                        if (itemRowInputOrder[7]?.current) {
-                          itemRowInputOrder[7].current.focus();
-                        }
-                        return;
-                      }
-                      handleKeyDown(e);
+                      handleKeyDown(e, 8);
                       if (e.key === "Enter") {
                         addItemValidation();
                       }
@@ -3692,7 +3451,7 @@ const AddSale = () => {
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-"}</td>
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.location || "-"}</td>
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "-"}</td>
-                  <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate || "-"}</td>
+                  <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
                 </tr>
               ))}
 
@@ -4136,11 +3895,9 @@ const AddSale = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={doctorName}
-                      error={!!errors.doctorName}
                       onChange={(e) => {
                         setDoctorName(e.target.value);
                         setUnsavedItems(true);
-                        setErrors({ ...errors, doctorName: "" });
                       }}
                       style={{ minWidth: 300 }}
                       inputRef={(el) => (inputRefs.current[0] = el)}
@@ -4149,17 +3906,7 @@ const AddSale = () => {
                         style: { textTransform: "uppercase" },
                         autoComplete: "off",
                       }}
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "red !important",
-                        },
-                      }}
                     />
-                    {errors.doctorName && (
-                      <p style={{ color: "red", fontSize: "12px" }}>
-                        {errors.doctorName}
-                      </p>
-                    )}
                   </div>
 
                   {/* Clinic Name */}
@@ -4171,11 +3918,9 @@ const AddSale = () => {
                       id="outlined-multiline-static"
                       size="small"
                       value={clinic}
-                      error={!!errors.clinic}
                       onChange={(e) => {
                         setClinic(e.target.value);
                         setUnsavedItems(true);
-                        setErrors({ ...errors, clinic: "" });
                       }}
                       style={{ minWidth: 300 }}
                       inputRef={(el) => (inputRefs.current[1] = el)}
@@ -4183,17 +3928,7 @@ const AddSale = () => {
                       inputProps={{
                         autoComplete: "off",
                       }}
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "red !important",
-                        },
-                      }}
                     />
-                    {errors.clinic && (
-                      <p style={{ color: "red", fontSize: "12px" }}>
-                        {errors.clinic}
-                      </p>
-                    )}
                   </div>
                 </div>
               </div>
@@ -4429,28 +4164,9 @@ const AddSale = () => {
                         onKeyDown={handleKeyDown}
                         size="small"
                         value={addItemName}
-                        placeholder="Item Name"
-                        error={!!addItemError.addItemName}
-                        sx={{
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "red !important",
-                          },
-                        }}
-                        // onChange={(e) => setAddItemName(e.target.value.toUpperCase())}
-                        onChange={(e) => {
-                          setAddItemName(e.target.value.toUpperCase());
-
-                          setAddItemError((prev) => ({
-                            ...prev,
-                            addItemName: "",
-                          }));
-                        }}
+                        onChange={(e) => setAddItemName(e.target.value.toUpperCase())}
                       />
-                      {addItemError.addItemName && (
-                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify" }}>
-                          {addItemError.addItemName}
-                        </div>
-                      )}
+
                     </div>
                   </div>
                   <div className="row gap-3 sm:flex-nowrap flex-wrap">
@@ -4464,7 +4180,6 @@ const AddSale = () => {
                         size="small"
                         sx={{ minWidth: "150px" }}
                         value={addBarcode}
-                        placeholder="Barcode"
                         onChange={(e) => setAddBarcode(Number(e.target.value))}
                       />
                     </div>
@@ -4475,25 +4190,9 @@ const AddSale = () => {
                         type="number"
                         inputRef={unitInputRef}
                         size="small"
-
+                        sx={{ minWidth: "150px" }}
                         value={addUnit}
-                        placeholder="Unit"
-                        error={!!addItemError.addUnit}
-                        // onChange={(e) => setAddUnit(e.target.value)}
-                        sx={{
-                          minWidth: "150px",
-                          "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "red !important",
-                          },
-                        }}
-                        onChange={(e) => {
-                          setAddUnit(e.target.value);
-
-                          setAddItemError((prev) => ({
-                            ...prev,
-                            addUnit: "",
-                          }));
-                        }}
+                        onChange={(e) => setAddUnit(e.target.value)}
                         onKeyDown={(e) => {
                           handleKeyDown(e);
                           if (e.key === "Enter") {
@@ -4501,11 +4200,6 @@ const AddSale = () => {
                           }
                         }}
                       />
-                      {addItemError.addUnit && (
-                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify" }}>
-                          {addItemError.addUnit}
-                        </div>
-                      )}
                     </div>
                     <div className="fields add_new_item_divv">
                       <label className="label secondary">Pack</label>
@@ -4687,49 +4381,9 @@ const AddSale = () => {
         </Dialog>
 
         {/*<======================================================== Customer History Modal  =======================================================> */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <Dialog
           open={openCustomerHistory}
-          onClose={() => {
-            setOpenCustomerHistory(false);
-            setCustomerSearch("");
-          }}
+          onClose={() => setOpenCustomerHistory(false)}
           className="custom-dialog"
           sx={{
             "& .MuiDialog-container": {
@@ -4740,107 +4394,12 @@ const AddSale = () => {
             },
           }}
         >
-          {/* <DialogTitle id="alert-dialog-title" className="secondary">
-            {customerHistoryData?.[0]?.customer_name || ""}
-            {customerHistoryData?.[0]?.mobile_number ? ` (${customerHistoryData[0].mobile_number})` : ""}
-          </DialogTitle> */}
-
-
-
-          <DialogTitle
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 1,
-            }}
-          >
-
-            <span style={{ fontWeight: 600, fontSize: "18px" }}>
-              Customer Sale History - {customerHistoryData?.[0]?.customer_name || ""}
-              {customerHistoryData?.[0]?.mobile_number ? ` (${customerHistoryData[0].mobile_number})` : ""}
-            </span>
-
-            {/* <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <TextField
-                autoComplete="off"
-                value={customerSearch}
-                onChange={(e) => setCustomerSearch(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleCustomerSearch();
-                }}
-                placeholder="Search items..."
-                variant="outlined"
-                size="small"
-              />
-
-              <IconButton
-                aria-label="close"
-                onClick={() => {
-                  setOpenCustomerHistory(false);
-                  setCustomerSearch("");
-                }}
-                sx={{ color: "#ffffff" }}
-              >
-
-              </IconButton>
-            </div> */}
-
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <TextField
-                autoComplete="off"
-                value={customerSearch}
-                onChange={(e) => setCustomerSearch(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleCustomerSearch();
-                }}
-                placeholder="Search items..."
-                variant="outlined"
-                size="small"
-                sx={{
-
-                  "& .MuiOutlinedInput-root": {
-                    color: "#ffffff",
-                    "& fieldset": {
-                      borderColor: "#ffffff",
-                      borderWidth: "1px",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#ffffff",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#ffffff",
-                    },
-                  },
-                  "& .MuiInputBase-input::placeholder": {
-                    color: "#ffffff",
-                    opacity: 0.7,
-                  },
-                }}
-              />
-              <IconButton
-                aria-label="close"
-                onClick={() => {
-                  setOpenCustomerHistory(false);
-                  setCustomerSearch("");
-                }}
-                sx={{
-                  color: "#ffffff",
-                  padding: "12px"
-                }}
-              >
-              </IconButton>
-            </div>
+          <DialogTitle id="alert-dialog-title" className="secondary">
+            Customer Sales History - {customerHistoryData?.name}
           </DialogTitle>
-
-
-
           <IconButton
             aria-label="close"
-            onClick={() => {
-              setOpenCustomerHistory(false);
-              setCustomerSearch("");
-            }}
+            onClick={() => setOpenCustomerHistory(false)}
             sx={{
               position: "absolute",
               right: 8,
@@ -4861,14 +4420,25 @@ const AddSale = () => {
                   className="flex"
                   style={{ flexDirection: "column", gap: "0" }}
                 >
-
-
-
-
-                  {/* <div className="custom-scroll-sale" style={{ width: "100%" }}>
+                  <div className="custom-scroll-sale" style={{ width: "100%" }}>
                     <table className="custom-table" style={{ background: "none", margin: 0 }}>
                       <thead>
                         <tr className="customtable">
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Customer Name</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Area</span>
+                            </div>
+                          </th>
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Doctor</span>
+                            </div>
+                          </th>
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
                               <span>Bill No</span>
@@ -4881,48 +4451,25 @@ const AddSale = () => {
                           </th>
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Item Name</span>
-                            </div>
-                          </th>
-
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Batch</span>
-                            </div>
-                          </th>
-
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Exp</span>
+                              <span>Type</span>
                             </div>
                           </th>
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Qty</span>
+                              <span>Amount</span>
                             </div>
                           </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Mrp</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Location</span>
-                            </div>
-                          </th>
-
                         </tr>
                       </thead>
                       <tbody>
-                        {customerHistoryData?.sales?.length > 0 ? (
-                          customerHistoryData.data.map((sale) => (
+                        {customerHistoryData?.sales && customerHistoryData.sales.length > 0 ? (
+                          customerHistoryData.sales.map((sale) => (
                             <tr
                               hover
                               tabIndex={-1}
-                              key={sale.sale_id}
+                              key={sale.id}
                               onClick={() => {
-                                history.push(`/saleView/${sale.sale_id}`)
+                                history.push(`/saleView/${sale.id}`)
                               }}
                             >
                               <td>{customerHistoryData.name}</td>
@@ -4932,7 +4479,6 @@ const AddSale = () => {
                               <td>{sale.bill_date}</td>
                               <td>{sale.payment_mode}</td>
                               <td>&#8377;{sale.amt}</td>
-
                             </tr>
                           ))
                         ) : (
@@ -4952,139 +4498,12 @@ const AddSale = () => {
                         )}
                       </tbody>
                     </table>
-                  </div> */}
-
-                  <div
-                    className="custom-scroll-sale"
-                    style={{ width: "100%", maxHeight: 400, overflowY: "auto" }}
-                  >
-                    <table className="custom-table" style={{ background: "none", margin: 0, width: "100%", borderCollapse: "collapse" }}>
-                      <thead>
-                        <tr className="customtable">
-                          {["Bill No", "Date", "Item Name", "Batch", "Exp", "Qty", "Mrp", "Location"].map((label, index) => (
-                            <th
-                              key={index}
-                              style={{
-                                position: "sticky",
-                                top: 0,
-                                background: "#E0E3DC",
-                                color: "black",
-                                fontWeight: 600,
-                                zIndex: 10,
-                                padding: "10px 8px",
-                                borderBottom: "1px solid #ccc",
-                                textAlign: "left",
-                              }}
-                            >
-                              <div className="headerStyle">
-                                <span>{label}</span>
-                              </div>
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {customerHistoryData?.length ? (
-                          customerHistoryData.map((sale) => (
-                            <tr
-                              key={sale.sale_id}
-                              hover
-                              tabIndex={-1}
-                              onClick={() => window.open(`/saleView/${sale.sale_id}`, "_blank")}
-                              style={{ cursor: "pointer" }}
-                            >
-                              <td>{sale.bill_no || "-"}</td>
-                              <td>{sale.bill_date || "-"}</td>
-                              <td>{sale.item_name || "-"}</td>
-                              <td>{sale.batch || "-"}</td>
-                              <td>{sale.exp || "-"}</td>
-                              <td>{sale.qty || "-"}</td>
-                              <td>{sale.mrp || "-"}</td>
-                              <td>{sale.location || "-"}</td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan={8} style={{ textAlign: "center", padding: "20px" }}>
-                              No Sales History Found
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
                   </div>
-
-                  {/* Pagination Controls */}
-                  {(historyPage > 1 || customerHistoryData?.length >= 10) && (
-                    <div
-                      className="flex justify-center items-center py-4 bg-[#F2F4EF]"
-                      style={{
-                        width: '100%',
-                        borderTop: '1px solid #ccc',
-                        gap: '8px'
-                      }}
-                    >
-                      <button
-                        onClick={() => fetchCustomerHistory(customer.id, customerSearch.toUpperCase(), historyPage - 1)}
-                        disabled={historyPage === 1}
-                        style={{
-                          padding: '6px 12px',
-                          borderRadius: '4px',
-                          backgroundColor: historyPage === 1 ? '#e0e0e0' : 'var(--color1)',
-                          color: historyPage === 1 ? '#9e9e9e' : '#fff',
-                          fontWeight: 600,
-                          cursor: historyPage === 1 ? 'not-allowed' : 'pointer',
-                          border: 'none',
-                        }}
-                      >
-                        Previous
-                      </button>
-                      <span className="text-sm font-semibold text-gray-700">
-                        Page {historyPage}
-                      </span>
-                      <button
-                        onClick={() => fetchCustomerHistory(customer.id, customerSearch.toUpperCase(), historyPage + 1)}
-                        disabled={!customerHistoryData || customerHistoryData.length < 10}
-                        style={{
-                          padding: '6px 12px',
-                          borderRadius: '4px',
-                          backgroundColor: (!customerHistoryData || customerHistoryData.length < 10) ? '#e0e0e0' : 'var(--color1)',
-                          color: (!customerHistoryData || customerHistoryData.length < 10) ? '#9e9e9e' : '#fff',
-                          fontWeight: 600,
-                          cursor: (!customerHistoryData || customerHistoryData.length < 10) ? 'not-allowed' : 'pointer',
-                          border: 'none',
-                        }}
-                      >
-                        Next
-                      </button>
-                    </div>
-                  )}
-
                 </div>
               )}
             </DialogContentText>
           </DialogContent>
         </Dialog>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         {/*<========================================================== Item History Modal  =========================================================> */}
         <Dialog
@@ -5358,4 +4777,4 @@ const AddSale = () => {
     </>
   );
 };
-export default AddSale;
+export default addSale;

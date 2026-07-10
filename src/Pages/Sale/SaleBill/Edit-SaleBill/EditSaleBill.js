@@ -152,7 +152,6 @@ const EditSaleBill = () => {
   const inputRef2 = useRef(null);
   const inputRef3 = useRef(null);
   const inputRef4 = useRef(null);
-  const inputRefGst = useRef(null);
 
 
 
@@ -160,19 +159,17 @@ const EditSaleBill = () => {
   const itemRowInputOrder = [
     inputRef1, // Item
     inputRef2, // Base
-    inputRefGst, // GST Select
     inputRef3, // Qty
     inputRef4, // Order
   ];
   /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
 
 
-  // Helpers to move focus in the Item → Base → GST → Qty → Order order
+  // Helpers to move focus in the Item → Base → Qty → Order order
   const focusByIndex = (i) => itemRowInputOrder[i]?.current?.focus();
   const focusItem = () => focusByIndex(0);
   const focusBase = () => focusByIndex(1);
-  const focusGst = () => focusByIndex(2);
-  const focusQty = () => focusByIndex(3);
+  const focusQty = () => focusByIndex(2);
 
 
   // Focus the main table and move selection (clamped). Also focuses the target row immediately.
@@ -795,37 +792,39 @@ const EditSaleBill = () => {
     setUnsavedItems(false);
     localStorage.removeItem("unsavedItems");
 
-    const navigateAway = () => {
-      if (nextPath) {
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 50);
-      }
-    };
-
     try {
-      axios
+      const response = axios
         .post("sales-history", data, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          navigateAway();
+          setUnsavedItems(false);
+          setOpenModal(false);
+          if (nextPath) {
+            history.replace(nextPath);
+          }
         })
         .catch((error) => {
           console.error("Error fetching sales history:", error);
-          if (error.response && error.response.status === 401) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("userId");
-            localStorage.removeItem("role");
-            localStorage.clear();
-            history.push("/");
-          } else {
-            navigateAway();
-          }
         });
     } catch (error) {
-      console.error("Unexpected error:", error);
-      navigateAway();
+      if (error.response && error.response.status === 401) {
+        setUnsavedItems(false);
+        setOpenModal(false);
+        localStorage.setItem("unsavedItems", unsavedItems.toString());
+        setTimeout(() => {
+          history.push(nextPath);
+        }, 0);
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
+      } else {
+        console.error("Error fetching sales history:", error);
+      }
     }
   };
 
@@ -1280,21 +1279,16 @@ const EditSaleBill = () => {
   };
 
   const handleSubmit = (draft) => {
-    if (isSubmitting) {
-      toast.warning("Please wait, request in progress...");
-      return;
-    }
+    // if (isSubmitting) {
+    //   toast.warning("Please wait, request in progress...");
+    //   return;
+    // }
 
     setUnsavedItems(false);
 
     const newErrors = {};
     if (!customer) {
       newErrors.customer = "Please select Customer";
-    }
-    if (!tableData?.sales_item || tableData.sales_item.length === 0) {
-      newErrors.item = "Please Add any Item in Sale Bill";
-      toast.dismiss();
-      toast.error("Please select at least one item");
     }
     setError(newErrors);
 
@@ -1869,7 +1863,7 @@ const EditSaleBill = () => {
                                   }}
                                   sx={{
                                     "& .MuiInputBase-input": {
-
+                                      textTransform: "uppercase",
                                     },
                                     "& .MuiInputBase-input::placeholder": {
                                       fontSize: "1rem",
@@ -2011,7 +2005,6 @@ const EditSaleBill = () => {
                   <td>
                     <TextField
                       id="outlined-number"
-                      placeholder="Batch"
                       sx={{
                         minWidth: "65px",
                         width: "100%",
@@ -2021,6 +2014,7 @@ const EditSaleBill = () => {
                       }}
                       size="small"
                       disabled
+                      placeholder="Batch"
                       value={batch}
                       onChange={(e) => {
                         setBatch(e.target.value);
@@ -2031,7 +2025,6 @@ const EditSaleBill = () => {
                     <TextField
                       id="outlined-number"
                       disabled
-
                       size="small"
                       sx={{
                         minWidth: "65px",
@@ -2048,7 +2041,6 @@ const EditSaleBill = () => {
                   <td>
                     <TextField
                       disabled
-                      placeholder="Mrp"
                       id="outlined-number"
                       type="number"
                       sx={{
@@ -2059,6 +2051,7 @@ const EditSaleBill = () => {
                         },
                       }}
                       size="small"
+                      placeholder="Mrp"
                       value={mrp}
                       onChange={(e) => {
                         setMRP(e.target.value);
@@ -2069,8 +2062,8 @@ const EditSaleBill = () => {
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
-                      placeholder="Base"
                       type="number"
+                      placeholder="Base"
                       sx={{
                         minWidth: "65px",
                         width: "100%",
@@ -2099,45 +2092,31 @@ const EditSaleBill = () => {
                             return;
                           }
                           e.preventDefault();
-                          focusGst();  // ← forward to GST Select
+                          focusQty();  // ← forward to Qty
                         }
                       }}
 
                     />
                   </td>
                   <td>
-                    <Select
+                    <TextField
+                      id="outlined-number"
+                      type="number"
+                      disabled
+                      placeholder="Gst"
                       size="small"
-                      value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
-                      onChange={(e) => {
-                        setGst(e.target.value !== "" ? Number(e.target.value) : "");
-                        localStorage.setItem("unsavedItems", "true");
-                      }}
-                      inputRef={inputRefGst}
                       sx={{
-                        minWidth: "60px",
+                        minWidth: "40px",
                         width: "100%",
-                        '& .MuiSelect-select': {
+                        '& .MuiInputBase-input': {
                           textAlign: 'center',
-                          paddingY: '8.5px',
                         },
                       }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Tab" && e.shiftKey) {
-                          e.preventDefault();
-                          focusBase();
-                          return;
-                        }
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          focusQty();
-                        }
+                      value={gst}
+                      onChange={(e) => {
+                        setGst(e.target.value);
                       }}
-                    >
-                      <MenuItem value={0}>0</MenuItem>
-                      <MenuItem value={5}>5</MenuItem>
-                      <MenuItem value={18}>18</MenuItem>
-                    </Select>
+                    />
                   </td>
                   <td>
                     <TextField
@@ -2159,7 +2138,7 @@ const EditSaleBill = () => {
                       onKeyDown={async (e) => {
                         if (e.key === "Tab" && e.shiftKey) {
                           e.preventDefault();
-                          focusGst(); // ← back to GST Select
+                          focusBase(); // ← back to Base
                           return;
                         }
                         if (e.key === "Enter" || e.key === "Tab") {
@@ -2192,8 +2171,8 @@ const EditSaleBill = () => {
                     <TextField
                       id="outlined-number"
                       size="small"
-                      placeholder="Loc."
                       disabled
+                      placeholder="Loc"
                       sx={{
                         minWidth: "65px",
                         width: "100%",
@@ -2212,7 +2191,6 @@ const EditSaleBill = () => {
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
-                      placeholder="Order"
                       sx={{
                         minWidth: "40px",
                         width: "100%",
@@ -2230,7 +2208,6 @@ const EditSaleBill = () => {
                         if (e.key === "Enter") {
                         }
                       }}
-
                     />
                   </td>
 
@@ -2279,16 +2256,16 @@ const EditSaleBill = () => {
                       </span>
                     </td>
                     {console.log(item)}
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.unit}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.batch}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.exp}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.mrp}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.base}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.gst_name}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.qty}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.location}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.order}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-"}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-"}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-"}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-"}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.base || "-"}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.gst_name || "-"}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-"}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.location || "-"}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.order || "-"}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.net_rate || "-"}</td>
                   </tr>
                 ))}
               </tbody>

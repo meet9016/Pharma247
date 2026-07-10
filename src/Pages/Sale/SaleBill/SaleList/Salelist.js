@@ -390,7 +390,7 @@ const Salelist = () => {
               <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
                 <div className="detail flex flex-col">
                   <span className="text-gray-500 block">Start Date</span>
-                  <div className="" style={{ width: "100%", zIndex: 9999 }}>
+                  <div className="" style={{ width: "100%" }}>
                     <DatePicker
                       className="custom-datepicker"
                       selected={PdfstartDate}
@@ -399,10 +399,9 @@ const Salelist = () => {
                     />
                   </div>
                 </div>
-
                 <div className="detail flex flex-col">
                   <span className="text-gray-500 block">End Date</span>
-                  <div className="" style={{ width: "100%", zIndex: 9999 }}>
+                  <div className="" style={{ width: "100%" }}>
                     <DatePicker
                       className="custom-datepicker"
                       selected={PdfendDate}
