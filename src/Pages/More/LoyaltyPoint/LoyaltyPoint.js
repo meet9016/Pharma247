@@ -401,205 +401,206 @@ const LoyaltyPoint = () => {
           width: '100%',
         }}
       >
-            <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
-              <div className="p-6">
-                <div
-                  className="mb-4 lyl_main_header_txt"
-                  style={{ display: "flex", gap: "4px" }}
+        <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+          <div className="p-6">
+            <div
+              className="mb-4 lyl_main_header_txt"
+              style={{ display: "flex", gap: "4px" }}
+            >
+              <div
+                style={{ display: "flex", gap: "5px", alignItems: "center" }}
+              >
+                <span
+                  className="primary"
+                  style={{
+                    display: "flex",
+                    fontWeight: 700,
+                    fontSize: "20px",
+                    // width: "130px",
+                    whiteSpace: "nowrap",
+                  }}
                 >
-                  <div
-                    style={{ display: "flex", gap: "5px", alignItems: "center" }}
-                  >
-                    <span
-                      className="primary"
-                      style={{
-                        display: "flex",
-                        fontWeight: 700,
-                        fontSize: "20px",
-                        // width: "130px",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      loyalty point
-                    </span>
-                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
-                  </div>
-                  <div className="headerList">
-                    <Button
-                      style={{
-                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                        color: "white",
-                        padding: "7px"
-                      }}
-                      className="add_lyl_btn"
-                      variant="contained"
-                      size="small"
-                      onClick={handelAddOpen}
-                    >
-                      <AddIcon />
-                      Add Loyalty point
-                    </Button>
-                  </div>
-                </div>
-                <div
-                  className="row border-b border-dashed"
-                  style={{ borderColor: "var(--color2)" }}
-                ></div>
-                <div className="firstrow mt-4">
-                  <div className="overflow-x-auto mt-4">
-                    <table
-                      className="w-full border-collapse custom-table"
-                      style={{
-                        whiteSpace: "nowrap",
-                        borderCollapse: "separate",
-                        borderSpacing: "0 6px",
-                      }}
-                    >
-                      <thead className="">
-                        <tr>
-                          <th style={{ minWidth: 150, padding: '8px' }}>SR No.</th>
-                          {loyaltyPointLabel.map((column) => (
-                            <th
-                              key={column.id}
-                              style={{ minWidth: column.minWidth, padding: '8px' }}
-                            >
-                              {column.label}
-                            </th>
-                          ))}
-                          <th style={{ padding: '8px' }}>Action</th>
-                        </tr>
-                      </thead>
-
-                      <tbody style={{ backgroundColor: "#3f621217" }}>
-                        {isLoading ? (
-                          <tr>
-                            <td
-                              colSpan={loyaltyPointLabel.length + 2}
-                              style={{
-                                textAlign: "center",
-                                padding: "40px",
-                              }}
-                            >
-                              <div className="flex justify-center items-center w-full">
-                                <Loader />
-                              </div>
-                            </td>
-                          </tr>
-                        ) : loyaltypointData.length === 0 ? (
-                          <tr>
-                            <td
-                              colSpan={loyaltyPointLabel.length + 2}
-                              className="text-center text-gray-500"
-                              style={{ borderRadius: "10px 10px 10px 10px" }}
-                            >
-                              No data found
-                            </td>
-                          </tr>
-                        ) : (
-                          loyaltypointData?.map((item, index) => (
-                            <tr
-                              key={index}
-                              className="bg-[#f5f8f3] align-middle"
-                            >
-                              <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
-                                {((currentPage - 1) * rowsPerPage) + index + 1}
-                              </td>
-                              {loyaltyPointLabel.map((column, colIndex) => {
-                                const tdClass = "px-4 py-2 font-semibold text-center";
-                                return (
-                                  <td
-                                    key={column.id}
-                                    className={`capitalize ${tdClass}`}
-                                  >
-                                    {item[column.id]}
-                                  </td>
-                                );
-                              })}
-                              <td className="rounded-r-[10px] px-4 py-2 font-semibold text-center">
-                                <div className="flex gap-2 px-2 justify-center">
-                                  <BorderColorIcon
-                                    style={{ color: "var(--color1)" }}
-                                    onClick={() => handleEditOpen(item)}
-                                  />
-                                  <DeleteIcon
-                                    className="delete-icon"
-                                    onClick={() => deleteOpen(item.id)}
-                                  />
-                                </div>
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                  loyalty point
+                </span>
+                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
+              </div>
+              <div className="headerList">
+                <Button
+                  style={{
+                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                    color: "white",
+                    padding: "7px"
+                  }}
+                  className="add_lyl_btn"
+                  variant="contained"
+                  size="small"
+                  onClick={handelAddOpen}
+                >
+                  <AddIcon />
+                  Add Loyalty point
+                </Button>
               </div>
             </div>
-
-            {/* Updated Pagination Section - same as ManageExpense */}
             <div
-              className="flex justify-center mt-4"
-              style={{
-                marginTop: 'auto',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '1rem',
-              }}
-            >
-              <button
-                onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handleClick(currentPage - 2)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              className="row border-b border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
+            <div className="firstrow mt-4">
+              <div className="overflow-x-auto mt-4">
+                <table
+                  className="w-full border-collapse custom-table"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                    position: 'relative'
+                  }}
                 >
-                  {currentPage - 2}
-                </button>
-              )}
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handleClick(currentPage - 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
-              <button
-                onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-              >
-                {currentPage}
-              </button>
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handleClick(currentPage + 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
-              <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage >= totalPages}
-              >
-                Next
-              </button>
+                  <thead style={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: 'white' }}>
+                    <tr>
+                      <th style={{ minWidth: 150, padding: '8px' }}>SR No.</th>
+                      {loyaltyPointLabel.map((column) => (
+                        <th
+                          key={column.id}
+                          style={{ minWidth: column.minWidth, padding: '8px' }}
+                        >
+                          {column.label}
+                        </th>
+                      ))}
+                      <th style={{ padding: '8px' }}>Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody style={{ backgroundColor: "#3f621217" }}>
+                    {isLoading ? (
+                      <tr>
+                        <td
+                          colSpan={loyaltyPointLabel.length + 2}
+                          style={{
+                            textAlign: "center",
+                            padding: "40px",
+                          }}
+                        >
+                          <div className="flex justify-center items-center w-full">
+                            <Loader />
+                          </div>
+                        </td>
+                      </tr>
+                    ) : loyaltypointData.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={loyaltyPointLabel.length + 2}
+                          className="text-center text-gray-500"
+                          style={{ borderRadius: "10px 10px 10px 10px" }}
+                        >
+                          No data found
+                        </td>
+                      </tr>
+                    ) : (
+                      loyaltypointData?.map((item, index) => (
+                        <tr
+                          key={index}
+                          className="bg-[#f5f8f3] align-middle"
+                        >
+                          <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
+                            {((currentPage - 1) * rowsPerPage) + index + 1}
+                          </td>
+                          {loyaltyPointLabel.map((column, colIndex) => {
+                            const tdClass = "px-4 py-2 font-semibold text-center";
+                            return (
+                              <td
+                                key={column.id}
+                                className={`capitalize ${tdClass}`}
+                              >
+                                {item[column.id]}
+                              </td>
+                            );
+                          })}
+                          <td className="rounded-r-[10px] px-4 py-2 font-semibold text-center">
+                            <div className="flex gap-2 px-2 justify-center">
+                              <BorderColorIcon
+                                style={{ color: "var(--color1)" }}
+                                onClick={() => handleEditOpen(item)}
+                              />
+                              <DeleteIcon
+                                className="delete-icon"
+                                onClick={() => deleteOpen(item.id)}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Updated Pagination Section - same as ManageExpense */}
+        <div
+          className="flex justify-center mt-4"
+          style={{
+            marginTop: 'auto',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1rem',
+          }}
+        >
+          <button
+            onClick={handlePrevious}
+            className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          {currentPage > 2 && (
+            <button
+              onClick={() => handleClick(currentPage - 2)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage - 2}
+            </button>
+          )}
+          {currentPage > 1 && (
+            <button
+              onClick={() => handleClick(currentPage - 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage - 1}
+            </button>
+          )}
+          <button
+            onClick={() => handleClick(currentPage)}
+            className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+          >
+            {currentPage}
+          </button>
+          {currentPage < totalPages && (
+            <button
+              onClick={() => handleClick(currentPage + 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+            >
+              {currentPage + 1}
+            </button>
+          )}
+          <button
+            onClick={handleNext}
+            className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage >= totalPages}
+          >
+            Next
+          </button>
+        </div>
 
         <Dialog
           open={openAddPopUp}

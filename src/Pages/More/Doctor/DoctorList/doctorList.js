@@ -651,780 +651,780 @@ const DoctorList = () => {
           width: '100%',
         }}
       >
-          <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
-            <div className="paddin12-8">
-              <div className="px-4 py-3">
+        <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+          <div className="paddin12-8">
+            <div className="px-4 py-3">
+              <div
+                className="cust_list_main_hdr_bg"
+                style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
+              >
                 <div
-                  className="cust_list_main_hdr_bg"
-                  style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
+                  style={{
+                    display: "flex",
+                    gap: "7px",
+                    alignItems: "center",
+                    whiteSpace: "nowrap",
+                  }}
+                  className=""
                 >
-                  <div
+                  <span
                     style={{
+                      color: "var(--color1)",
                       display: "flex",
-                      gap: "7px",
                       alignItems: "center",
-                      whiteSpace: "nowrap",
+                      fontWeight: 700,
+                      fontSize: "20px",
+                      marginRight: "10px",
+                      whiteSpace: "none"
                     }}
-                    className=""
                   >
-                    <span
-                      style={{
-                        color: "var(--color1)",
-                        display: "flex",
-                        alignItems: "center",
-                        fontWeight: 700,
-                        fontSize: "20px",
-                        marginRight: "10px",
-                        whiteSpace: "none"
-                      }}
-                    >
-                      Doctor List
-                    </span>
-                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
-                  </div>
-                  <div className="headerList cust_hdr_mn_bg mt-2">
-                    {hasPermission(permissions, "doctor import") && (
-                      <Button
-                        variant="contained"
-                        className="gap-2"
-                        style={{ background: "var(--color1)", display: "flex" }}
-                        onClick={openFilePopUP}
-                      >
-                        <CloudUploadIcon /> Import
-                      </Button>
-                    )}
-                    {hasPermission(permissions, "doctor create") && (
-                      <Button
-                        variant="contained"
-                        className="gap-2"
-                        style={{ background: "var(--color1)", display: "flex" }}
-                        onClick={handelAddOpen}
-                      >
-                        <AddIcon /> Add Doctor
-                      </Button>
-                    )}
-                    {hasPermission(permissions, "doctor download") && (
-                      <Button
-                        variant="contained"
-                        className="gap-7"
-                        style={{
-                          background: "var(--color1)",
-                          color: "white",
-                          // paddingLeft: "35px",
-                          textTransform: "none",
-                          display: "flex",
-                        }}
-                        onClick={exportToCSV}
-                      >
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img
-                            src="/csv-file.png"
-                            className="report-icon absolute mr-10"
-                            alt="csv "
-                          />
-                        </div>
-                        Download
-                      </Button>
-                    )}
-                  </div>
+                    Doctor List
+                  </span>
+                  <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
                 </div>
-
-                <div
-                  className="row border-b border-dashed"
-                  style={{ borderColor: "var(--color2)" }}
-                ></div>
+                <div className="headerList cust_hdr_mn_bg mt-2">
+                  {hasPermission(permissions, "doctor import") && (
+                    <Button
+                      variant="contained"
+                      className="gap-2"
+                      style={{ background: "var(--color1)", display: "flex" }}
+                      onClick={openFilePopUP}
+                    >
+                      <CloudUploadIcon /> Import
+                    </Button>
+                  )}
+                  {hasPermission(permissions, "doctor create") && (
+                    <Button
+                      variant="contained"
+                      className="gap-2"
+                      style={{ background: "var(--color1)", display: "flex" }}
+                      onClick={handelAddOpen}
+                    >
+                      <AddIcon /> Add Doctor
+                    </Button>
+                  )}
+                  {hasPermission(permissions, "doctor download") && (
+                    <Button
+                      variant="contained"
+                      className="gap-7"
+                      style={{
+                        background: "var(--color1)",
+                        color: "white",
+                        // paddingLeft: "35px",
+                        textTransform: "none",
+                        display: "flex",
+                      }}
+                      onClick={exportToCSV}
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src="/csv-file.png"
+                          className="report-icon absolute mr-10"
+                          alt="csv "
+                        />
+                      </div>
+                      Download
+                    </Button>
+                  )}
+                </div>
               </div>
-              {/*<====================================================================== table  =====================================================================> */}
 
-              <div className="firstrow px-4 ">
-                <div className="overflow-x-auto" style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
-                  <table
-                    className="w-full border-collapse custom-table"
-                    style={{
-                      whiteSpace: "nowrap",
-                      borderCollapse: "separate",
-                      borderSpacing: "0 6px",
-                    }}
-                  >
-                    <thead className="">
-                      <tr>
-                        <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
-                        {columns.map((column, index) => (
-                          <th
-                            key={column.id}
-                            style={{ minWidth: column.minWidth, padding: '8px' }}
-                          >
-                            <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-                              <span >{column.label}</span>
+              <div
+                className="row border-b border-dashed"
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
+            </div>
+            {/*<====================================================================== table  =====================================================================> */}
 
-                              <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+            <div className="firstrow px-4 ">
+              <div className="overflow-x-auto" style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none', position: 'relative' }}>
+                <table
+                  className="w-full border-collapse custom-table"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                  }}
+                >
+                  <thead style={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: 'white' }}>
+                    <tr>
+                      <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
+                      {columns.map((column, index) => (
+                        <th
+                          key={column.id}
+                          style={{ minWidth: column.minWidth, padding: '8px' }}
+                        >
+                          <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                            <span >{column.label}</span>
 
-                                <SwapVertIcon
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={() => sortByColumn(column.id)}
-                                />
-                                <TextField
-                                  autoComplete="off"
-                                  label="Type Here"
-                                  id="filled-basic"
-                                  size="small"
-                                  sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
-                                  value={searchTerms[index]}
-                                  onChange={(e) => handleSearchChange(index, e.target.value)}
-                                  InputProps={{
-                                    endAdornment: searchTerms[index] && (
-                                      <IconButton
-                                        size="small"
-                                        onClick={() => handleSearchChange(index, '')}
-                                        sx={{ padding: 0 }}
-                                      >
-                                        <CloseIcon fontSize="small" />
-                                      </IconButton>
-                                    ),
-                                  }}
-                                />
+                            <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
 
-                              </div>
-                            </div>
-
-                          </th>
-                        ))}
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody style={{ backgroundColor: "#3f621217" }}>
-                      {(isLoading || isSearchLoading) ? (
-                        <tr>
-                          <td
-                            colSpan={columns.length + 2}
-                            style={{
-                              textAlign: "center",
-                              padding: "40px",
-                            }}
-                          >
-                            <div className="flex justify-center items-center w-full">
-                              <Loader />
-                            </div>
-                          </td>
-                        </tr>
-                      ) : tableData.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={columns.length + 2}
-                            style={{
-                              textAlign: "center",
-                              color: "gray",
-                              borderRadius: "10px 10px 10px 10px",
-                            }}
-                          >
-                            No data found
-                          </td>
-                        </tr>
-                      ) : (
-                        tableData.map((row, index) => {
-                          return (
-                            <tr
-                              hover
-                              role="checkbox"
-                              tabIndex={-1}
-                              key={row.code}
-                            >
-                              <td style={{ borderRadius: "10px 0 0 10px" }}>
-                                {startIndex + index}
-                              </td>
-                              {columns.map((column) => {
-                                let value = row[column.id];
-
-                                // Show '-' if value is null, undefined, or empty string
-                                if (!value && value !== 0) {
-                                  value = "-";
-                                }
-
-                                if (column.id === "email") {
-                                  if (
-                                    value &&
-                                    value[0] !== value[0].toLowerCase()
-                                  ) {
-                                    value = value.toLowerCase();
-                                  }
-                                }
-
-                                if (column.id === "name") {
-                                  return (
-                                    <td
-                                      key={column.id}
-                                      align={column.align}
-                                      onClick={() => history.push(`/doctor/${row.id}`)}
+                              <SwapVertIcon
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => sortByColumn(column.id)}
+                              />
+                              <TextField
+                                autoComplete="off"
+                                label="Type Here"
+                                id="filled-basic"
+                                size="small"
+                                sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                                value={searchTerms[index]}
+                                onChange={(e) => handleSearchChange(index, e.target.value)}
+                                InputProps={{
+                                  endAdornment: searchTerms[index] && (
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => handleSearchChange(index, '')}
+                                      sx={{ padding: 0 }}
                                     >
-                                      <div className="flex items-center gap-2">
-                                        <span>{value}</span>
-                                        {row.default_doctor === "1" && (
-                                          <span className="cursor-pointer text-xs text-white bg-[var(--color2)] px-2 py-1 rounded-2xl">
-                                            default
-                                          </span>
-                                        )}
-                                      </div>
-                                    </td>
-                                  );
+                                      <CloseIcon fontSize="small" />
+                                    </IconButton>
+                                  ),
+                                }}
+                              />
+
+                            </div>
+                          </div>
+
+                        </th>
+                      ))}
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{ backgroundColor: "#3f621217" }}>
+                    {(isLoading || isSearchLoading) ? (
+                      <tr>
+                        <td
+                          colSpan={columns.length + 2}
+                          style={{
+                            textAlign: "center",
+                            padding: "40px",
+                          }}
+                        >
+                          <div className="flex justify-center items-center w-full">
+                            <Loader />
+                          </div>
+                        </td>
+                      </tr>
+                    ) : tableData.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={columns.length + 2}
+                          style={{
+                            textAlign: "center",
+                            color: "gray",
+                            borderRadius: "10px 10px 10px 10px",
+                          }}
+                        >
+                          No data found
+                        </td>
+                      </tr>
+                    ) : (
+                      tableData.map((row, index) => {
+                        return (
+                          <tr
+                            hover
+                            role="checkbox"
+                            tabIndex={-1}
+                            key={row.code}
+                          >
+                            <td style={{ borderRadius: "10px 0 0 10px" }}>
+                              {startIndex + index}
+                            </td>
+                            {columns.map((column) => {
+                              let value = row[column.id];
+
+                              // Show '-' if value is null, undefined, or empty string
+                              if (!value && value !== 0) {
+                                value = "-";
+                              }
+
+                              if (column.id === "email") {
+                                if (
+                                  value &&
+                                  value[0] !== value[0].toLowerCase()
+                                ) {
+                                  value = value.toLowerCase();
                                 }
+                              }
 
-
+                              if (column.id === "name") {
                                 return (
                                   <td
                                     key={column.id}
                                     align={column.align}
-                                    onClick={() => {
-                                      history.push(`/doctor/${row.id}`);
-                                    }}
-                                    style={
-                                      column.id === "email"
-                                        ? { textTransform: "none" }
-                                        : {}
-                                    }
+                                    onClick={() => history.push(`/doctor/${row.id}`)}
                                   >
-                                    {column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
+                                    <div className="flex items-center gap-2">
+                                      <span>{value}</span>
+                                      {row.default_doctor === "1" && (
+                                        <span className="cursor-pointer text-xs text-white bg-[var(--color2)] px-2 py-1 rounded-2xl">
+                                          default
+                                        </span>
+                                      )}
+                                    </div>
                                   </td>
                                 );
-                              })}
-                              <td style={{ borderRadius: "0 10px 10px 0" }}>
-                                <div
-                                  style={{
-                                    fontSize: "15px",
-                                    display: "flex",
-                                    gap: "5px",
-                                    color: "gray",
-                                    cursor: "pointer",
+                              }
+
+
+                              return (
+                                <td
+                                  key={column.id}
+                                  align={column.align}
+                                  onClick={() => {
+                                    history.push(`/doctor/${row.id}`);
                                   }}
+                                  style={
+                                    column.id === "email"
+                                      ? { textTransform: "none" }
+                                      : {}
+                                  }
                                 >
-                                  <VisibilityIcon
+                                  {column.format && typeof value === "number"
+                                    ? column.format(value)
+                                    : value}
+                                </td>
+                              );
+                            })}
+                            <td style={{ borderRadius: "0 10px 10px 0" }}>
+                              <div
+                                style={{
+                                  fontSize: "15px",
+                                  display: "flex",
+                                  gap: "5px",
+                                  color: "gray",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <VisibilityIcon
+                                  style={{ color: "var(--color1)" }}
+                                  onClick={() => {
+                                    history.push(`/doctor/${row.id}`);
+                                  }}
+                                />
+                                {hasPermission(permissions, "doctor edit") && (
+                                  <BorderColorIcon
                                     style={{ color: "var(--color1)" }}
-                                    onClick={() => {
-                                      history.push(`/doctor/${row.id}`);
-                                    }}
+                                    onClick={() => handleEditOpen(row)}
                                   />
-                                  {hasPermission(permissions, "doctor edit") && (
-                                    <BorderColorIcon
-                                      style={{ color: "var(--color1)" }}
-                                      onClick={() => handleEditOpen(row)}
-                                    />
-                                  )}
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-          {/*<====================================================================== pagination  =====================================================================> */}
+        </div>
+        {/*<====================================================================== pagination  =====================================================================> */}
 
-          <div
-            className="flex justify-center mt-4"
-            style={{
-              marginTop: 'auto',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '1rem',
-            }}
+        <div
+          className="flex justify-center mt-4"
+          style={{
+            marginTop: 'auto',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1rem',
+          }}
+        >
+          <button
+            onClick={handlePrevious}
+            className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage === 1}
           >
+            Previous
+          </button>
+          {currentPage > 2 && (
             <button
-              onClick={handlePrevious}
-              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                ? "bg-gray-200 text-gray-700"
-                : "secondary-bg text-white"
-                }`}
-              disabled={currentPage === 1}
+              onClick={() => handleClick(currentPage - 2)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
             >
-              Previous
+              {currentPage - 2}
             </button>
-            {currentPage > 2 && (
-              <button
-                onClick={() => handleClick(currentPage - 2)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage - 2}
-              </button>
-            )}
-            {currentPage > 1 && (
-              <button
-                onClick={() => handleClick(currentPage - 1)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage - 1}
-              </button>
-            )}
+          )}
+          {currentPage > 1 && (
             <button
-              onClick={() => handleClick(currentPage)}
-              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+              onClick={() => handleClick(currentPage - 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
             >
-              {currentPage}
+              {currentPage - 1}
             </button>
-            {currentPage < totalPages && (
-              <button
-                onClick={() => handleClick(currentPage + 1)}
-                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-              >
-                {currentPage + 1}
-              </button>
-            )}
+          )}
+          <button
+            onClick={() => handleClick(currentPage)}
+            className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+          >
+            {currentPage}
+          </button>
+          {currentPage < totalPages && (
             <button
-              onClick={handleNext}
-              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                ? "bg-gray-200 text-gray-700"
-                : "secondary-bg text-white"
-                }`}
-              disabled={currentPage >= totalPages}
+              onClick={() => handleClick(currentPage + 1)}
+              className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
             >
-              Next
+              {currentPage + 1}
             </button>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
-              <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
-              <Select
-                value={rowsPerPage}
-                onChange={(e) => {
-                  const newRows = parseInt(e.target.value, 10);
-                  setRowsPerPage(newRows);
-                  setCurrentPage(1);
-                }}
-                size="small"
-                sx={{
-                  height: '32px',
-                  borderRadius: '6px',
-                  color: 'var(--color1)',
-                  fontWeight: 'bold',
-                  fontFamily: 'inherit',
-                  fontSize: '14px',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'var(--color2) !important',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'var(--color2) !important',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'var(--color1) !important',
-                  },
-                  '& .MuiSelect-select': {
-                    paddingY: '4px',
-                    paddingLeft: '12px',
-                    paddingRight: '32px !important',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }
-                }}
-                MenuProps={{
-                  PaperProps: {
-                    sx: {
-                      '& .MuiMenuItem-root': {
-                        fontFamily: 'inherit',
-                        fontSize: '14px',
-                        color: 'var(--color1)',
-                        '&.Mui-selected': {
-                          backgroundColor: 'var(--color1) !important',
-                          color: 'white !important',
-                        },
-                        '&.Mui-selected:hover': {
-                          backgroundColor: 'var(--color1) !important',
-                          color: 'white !important',
-                        },
-                        '&:hover': {
-                          backgroundColor: 'rgba(98, 138, 47, 0.1) !important',
-                          color: 'var(--color1) !important',
-                        }
+          )}
+          <button
+            onClick={handleNext}
+            className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+              ? "bg-gray-200 text-gray-700"
+              : "secondary-bg text-white"
+              }`}
+            disabled={currentPage >= totalPages}
+          >
+            Next
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+            <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
+            <Select
+              value={rowsPerPage}
+              onChange={(e) => {
+                const newRows = parseInt(e.target.value, 10);
+                setRowsPerPage(newRows);
+                setCurrentPage(1);
+              }}
+              size="small"
+              sx={{
+                height: '32px',
+                borderRadius: '6px',
+                color: 'var(--color1)',
+                fontWeight: 'bold',
+                fontFamily: 'inherit',
+                fontSize: '14px',
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'var(--color2) !important',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'var(--color2) !important',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'var(--color1) !important',
+                },
+                '& .MuiSelect-select': {
+                  paddingY: '4px',
+                  paddingLeft: '12px',
+                  paddingRight: '32px !important',
+                  display: 'flex',
+                  alignItems: 'center',
+                }
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    '& .MuiMenuItem-root': {
+                      fontFamily: 'inherit',
+                      fontSize: '14px',
+                      color: 'var(--color1)',
+                      '&.Mui-selected': {
+                        backgroundColor: 'var(--color1) !important',
+                        color: 'white !important',
+                      },
+                      '&.Mui-selected:hover': {
+                        backgroundColor: 'var(--color1) !important',
+                        color: 'white !important',
+                      },
+                      '&:hover': {
+                        backgroundColor: 'rgba(98, 138, 47, 0.1) !important',
+                        color: 'var(--color1) !important',
                       }
                     }
                   }
-                }}
-              >
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={20}>20</MenuItem>
-                <MenuItem value={50}>50</MenuItem>
-                <MenuItem value={100}>100</MenuItem>
-              </Select>
-            </div>
+                }
+              }}
+            >
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+              <MenuItem value={100}>100</MenuItem>
+            </Select>
           </div>
-          {/*<====================================================================== upload import doctor  =====================================================================> */}
+        </div>
+        {/*<====================================================================== upload import doctor  =====================================================================> */}
 
-          <Dialog open={openUpload} className="custom-dialog">
-            <DialogTitle id="alert-dialog-title" className="primary">
-              Import Doctor
-            </DialogTitle>
-            <div className="">
-              <Alert severity="warning">
-                <AlertTitle>Warning</AlertTitle>
-                Please Make Sure Repeated Email ID record is not accepted.
-              </Alert>
-            </div>
-            <IconButton
-              aria-label="close"
-              onClick={() => setOpenUpload(false)}
-              sx={{
-                position: "absolute",
-                right: 8,
-                top: 8,
-                color: "#ffffff",
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                <div className="primary">Item File Upload</div>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "15px",
-                    flexDirection: "column",
-                  }}
-                >
-                  <div className="mt-2">
-                    <input
-                      className="File-upload"
-                      type="file"
-                      accept=".csv"
-                      id="file-upload"
-                      onChange={handleFileChange}
-                    />
-                    <span className="errorFile" style={{ fontSize: "small" }}>
-                      *select only .csv, File.
-                    </span>
-                  </div>
-                  <div className="mt-2">
-                    <Button
-                      onClick={handleDownload}
-                      style={{
-                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                        color: "white",
-                      }}
-                      className="downloadFile"
-                    >
-                      <CloudDownloadIcon className="mr-2" />
-                      Download Sample File
-                    </Button>
-                  </div>
-                </div>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions style={{ padding: "0 24px 24px" }}>
-              <Button
-                autoFocus
-                variant="contained"
+        <Dialog open={openUpload} className="custom-dialog">
+          <DialogTitle id="alert-dialog-title" className="primary">
+            Import Doctor
+          </DialogTitle>
+          <div className="">
+            <Alert severity="warning">
+              <AlertTitle>Warning</AlertTitle>
+              Please Make Sure Repeated Email ID record is not accepted.
+            </Alert>
+          </div>
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenUpload(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "#ffffff",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <div className="primary">Item File Upload</div>
+              <div
                 style={{
-                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                  color: "white",
+                  display: "flex",
+                  gap: "15px",
+                  flexDirection: "column",
                 }}
-                onClick={uploadDoctorFile}
               >
-                Save
-              </Button>
-            </DialogActions>
-          </Dialog>
-
-          {/*<====================================================================== Add edit doctor  =====================================================================> */}
-
-
-          <Dialog open={openAddPopUp} className="custom-dialog modal_991">
-            <DialogTitle id="alert-dialog-title" className="primary">
-              {header}
-            </DialogTitle>
-
-            <IconButton
-              aria-label="close"
-              onClick={resetAddDialog}
-              className="text-gray-500"
-              sx={{
-                position: "absolute",
-                right: 12,
-                top: 8,
-                color: "#ffffff",
+                <div className="mt-2">
+                  <input
+                    className="File-upload"
+                    type="file"
+                    accept=".csv"
+                    id="file-upload"
+                    onChange={handleFileChange}
+                  />
+                  <span className="errorFile" style={{ fontSize: "small" }}>
+                    *select only .csv, File.
+                  </span>
+                </div>
+                <div className="mt-2">
+                  <Button
+                    onClick={handleDownload}
+                    style={{
+                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                      color: "white",
+                    }}
+                    className="downloadFile"
+                  >
+                    <CloudDownloadIcon className="mr-2" />
+                    Download Sample File
+                  </Button>
+                </div>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions style={{ padding: "0 24px 24px" }}>
+            <Button
+              autoFocus
+              variant="contained"
+              style={{
+                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                color: "white",
               }}
+              onClick={uploadDoctorFile}
             >
-              <CloseIcon />
-            </IconButton>
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                <div className="flex flex-col gap-5">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
-
-                    {/* Doctor Name - full width */}
+        {/*<====================================================================== Add edit doctor  =====================================================================> */}
 
 
-                    <div className="flex flex-col col-span-6 ">
-                      <div className="mb-1">
-                        <span className="label primary mb-4">Doctor Name</span>
-                        <span className="text-red-600 ml-1">*</span>
-                      </div>
-                      <Autocomplete
-                        value={doctor}
-                        size="small"
-                        onChange={handleOptionChange}
-                        onInputChange={(e, value) => handleInputChange(e, value.toUpperCase())}
-                        getOptionLabel={(option) =>
-                          typeof option === "string" ? option : option.name
-                        }
-                        options={popupSearchOptions}
-                        renderOption={(props, option) => (
-                          <ListItem {...props}>
-                            <ListItemText primary={option.name} />
-                          </ListItem>
-                        )}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            autoComplete="off"
-                            placeholder="Enter Doctor Name"
-                            error={!!errors.Doctor}
-                            sx={{
-                              "& .MuiOutlinedInput-input": {
-                                paddingLeft: "8px !important",
-                              },
+        <Dialog open={openAddPopUp} className="custom-dialog modal_991">
+          <DialogTitle id="alert-dialog-title" className="primary">
+            {header}
+          </DialogTitle>
 
-                              "& .MuiOutlinedInput-notchedOutline": {
-                                borderColor: errors.Doctor ? "#d32f2f !important" : "rgba(0,0,0,0.23)",
-                              },
+          <IconButton
+            aria-label="close"
+            onClick={resetAddDialog}
+            className="text-gray-500"
+            sx={{
+              position: "absolute",
+              right: 12,
+              top: 8,
+              color: "#ffffff",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
 
-                              "&:hover .MuiOutlinedInput-notchedOutline": {
-                                borderColor: errors.Doctor ? "#d32f2f !important" : "rgba(0,0,0,0.87)",
-                              },
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <div className="flex flex-col gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
 
-                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                borderColor: errors.Doctor ? "#d32f2f !important" : "#1976d2",
-                              },
-                            }}
-                          />
-                        )}
-                        freeSolo
-                      />
-                      {errors.Doctor && (
-                        <span style={{ color: "red", fontSize: "12px" }}>
-                          {errors.Doctor}
-                        </span>
-                      )}
+                  {/* Doctor Name - full width */}
+
+
+                  <div className="flex flex-col col-span-6 ">
+                    <div className="mb-1">
+                      <span className="label primary mb-4">Doctor Name</span>
+                      <span className="text-red-600 ml-1">*</span>
                     </div>
+                    <Autocomplete
+                      value={doctor}
+                      size="small"
+                      onChange={handleOptionChange}
+                      onInputChange={(e, value) => handleInputChange(e, value.toUpperCase())}
+                      getOptionLabel={(option) =>
+                        typeof option === "string" ? option : option.name
+                      }
+                      options={popupSearchOptions}
+                      renderOption={(props, option) => (
+                        <ListItem {...props}>
+                          <ListItemText primary={option.name} />
+                        </ListItem>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          autoComplete="off"
+                          placeholder="Enter Doctor Name"
+                          error={!!errors.Doctor}
+                          sx={{
+                            "& .MuiOutlinedInput-input": {
+                              paddingLeft: "8px !important",
+                            },
+
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: errors.Doctor ? "#d32f2f !important" : "rgba(0,0,0,0.23)",
+                            },
+
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: errors.Doctor ? "#d32f2f !important" : "rgba(0,0,0,0.87)",
+                            },
+
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              borderColor: errors.Doctor ? "#d32f2f !important" : "#1976d2",
+                            },
+                          }}
+                        />
+                      )}
+                      freeSolo
+                    />
+                    {errors.Doctor && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors.Doctor}
+                      </span>
+                    )}
+                  </div>
 
 
-                    <div className="flex flex-col col-span-6">
-                      <span className="label primary">Set Default Doctor ?</span>
-                      <Autocomplete
-                        value={
-                          [
-                            { value: "1", label: "Yes" },
-                            { value: "0", label: "No" }
-                          ].find((option) => option.value === defaultDr) || null
-                        }
-                        size="small"
-                        onChange={(event, newValue) => {
-                          setDefaultDr(newValue ? newValue.value : "");
-                        }}
-                        options={[
+                  <div className="flex flex-col col-span-6">
+                    <span className="label primary">Set Default Doctor ?</span>
+                    <Autocomplete
+                      value={
+                        [
                           { value: "1", label: "Yes" },
                           { value: "0", label: "No" }
-                        ]}
-                        getOptionLabel={(option) => option.label}
-                        renderInput={(params) => (
-                          <TextField
-                            autoComplete="off"
-                            {...params}
-                            placeholder="Select Default Doctor"
-                          />
-                        )}
-                      />
+                        ].find((option) => option.value === defaultDr) || null
+                      }
+                      size="small"
+                      onChange={(event, newValue) => {
+                        setDefaultDr(newValue ? newValue.value : "");
+                      }}
+                      options={[
+                        { value: "1", label: "Yes" },
+                        { value: "0", label: "No" }
+                      ]}
+                      getOptionLabel={(option) => option.label}
+                      renderInput={(params) => (
+                        <TextField
+                          autoComplete="off"
+                          {...params}
+                          placeholder="Select Default Doctor"
+                        />
+                      )}
+                    />
+                  </div>
+
+                  {/* Clinic Name - full width */}
+                  <div className="flex flex-col col-span-6 w-full">
+                    <div className="mb-1">
+                      <span className="label primary">Clinic Name</span>
+                      <span className="text-red-600 ml-1">*</span>
                     </div>
-
-                    {/* Clinic Name - full width */}
-                    <div className="flex flex-col col-span-6 w-full">
-                      <div className="mb-1">
-                        <span className="label primary">Clinic Name</span>
-                        <span className="text-red-600 ml-1">*</span>
-                      </div>
-                      <TextField
-                        autoComplete="off"
-                        size="small"
-                        placeholder="Enter Clinic Name"
-                        value={clinic}
-                        error={!!errors.clinic}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: errors.clinic
-                                ? "#d32f2f"
-                                : "rgba(0, 0, 0, 0.23)",
-                            },
-                            "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "#d32f2f !important",
-                            },
+                    <TextField
+                      autoComplete="off"
+                      size="small"
+                      placeholder="Enter Clinic Name"
+                      value={clinic}
+                      error={!!errors.clinic}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: errors.clinic
+                              ? "#d32f2f"
+                              : "rgba(0, 0, 0, 0.23)",
                           },
-                        }}
-                        onChange={(e) => {
-                          setClinic(e.target.value.toUpperCase());
+                          "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "#d32f2f !important",
+                          },
+                        },
+                      }}
+                      onChange={(e) => {
+                        setClinic(e.target.value.toUpperCase());
 
+                        setErrors((prev) => ({
+                          ...prev,
+                          clinic: "",
+                        }));
+                      }}
+                      className="w-full"
+                      variant="outlined"
+                    />
+                    {errors.clinic && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors.clinic}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Email ID */}
+                  <div className="flex flex-col col-span-6">
+                    <span className="label primary">Email ID</span>
+                    <TextField
+                      autoComplete="off"
+                      size="small"
+                      placeholder="Enter Email ID"
+                      value={emailId}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\s/g, "");
+                        setEmailId(value);
+                        if (errors.emailId) {
                           setErrors((prev) => ({
                             ...prev,
-                            clinic: "",
+                            emailId: "",
                           }));
-                        }}
-                        className="w-full"
-                        variant="outlined"
-                      />
-                      {errors.clinic && (
-                        <span style={{ color: "red", fontSize: "12px" }}>
-                          {errors.clinic}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Email ID */}
-                    <div className="flex flex-col col-span-6">
-                      <span className="label primary">Email ID</span>
-                      <TextField
-                        autoComplete="off"
-                        size="small"
-                        placeholder="Enter Email ID"
-                        value={emailId}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\s/g, "");
-                          setEmailId(value);
-                          if (errors.emailId) {
-                            setErrors((prev) => ({
-                              ...prev,
-                              emailId: "",
-                            }));
-                          }
-                        }}
-                        className="w-full"
-                        variant="outlined"
-                        error={!!errors.emailId}
-                      />
-                      {errors.emailId && (
-                        <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-                          {errors.emailId}
-                        </span>
-                      )}
-                    </div>
+                        }
+                      }}
+                      className="w-full"
+                      variant="outlined"
+                      error={!!errors.emailId}
+                    />
+                    {errors.emailId && (
+                      <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.emailId}
+                      </span>
+                    )}
+                  </div>
 
 
-                    {/* Mobile No */}
-                    <div className="flex flex-col col-span-6">
-                      <div className="mb-1">
-                        <span className="label primary">Mobile No</span>
-                        <span className="text-red-600 ml-1">*</span>
-                      </div>
-                      <OutlinedInput
-                        type="number"
-                        value={mobileNo}
-                        placeholder="Enter Mobile Number"
-                        onChange={handleChange}
-                        startAdornment={<InputAdornment position="start">+91</InputAdornment>}
-                        className="w-full"
-                        size="small"
-                        error={!!errors.mobileNo}
-                        sx={{
-                          "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#d32f2f !important",
-                          },
-                        }}
-                      />
-                      {errors.mobileNo && (
-                        <span style={{ color: "red", fontSize: "12px" }}>
-                          {errors.mobileNo}
-                        </span>
-                      )}
+                  {/* Mobile No */}
+                  <div className="flex flex-col col-span-6">
+                    <div className="mb-1">
+                      <span className="label primary">Mobile No</span>
+                      <span className="text-red-600 ml-1">*</span>
                     </div>
+                    <OutlinedInput
+                      type="number"
+                      value={mobileNo}
+                      placeholder="Enter Mobile Number"
+                      onChange={handleChange}
+                      startAdornment={<InputAdornment position="start">+91</InputAdornment>}
+                      className="w-full"
+                      size="small"
+                      error={!!errors.mobileNo}
+                      sx={{
+                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#d32f2f !important",
+                        },
+                      }}
+                    />
+                    {errors.mobileNo && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors.mobileNo}
+                      </span>
+                    )}
+                  </div>
 
-                    {/* Licence No */}
-                    <div className="flex flex-col col-span-6">
-                      <span className="label primary">Licence No.</span>
-                      <OutlinedInput
-                        type="text"
-                        placeholder="Enter Licence No."
-                        value={licence}
-                        error={!!errors.licence}
-                        onChange={(e) => {
-                          setLicence(e.target.value.toUpperCase());
-                          if (errors.licence) {
-                            setErrors((prev) => ({
-                              ...prev,
-                              licence: "",
-                            }));
-                          }
-                        }}
-                        className="w-full"
-                        size="small"
-                        sx={{
-                          "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#d32f2f !important",
-                          },
-                        }}
-                      />
-                      {errors.licence && (
-                        <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-                          {errors.licence}
-                        </span>
-                      )}
-                    </div>
+                  {/* Licence No */}
+                  <div className="flex flex-col col-span-6">
+                    <span className="label primary">Licence No.</span>
+                    <OutlinedInput
+                      type="text"
+                      placeholder="Enter Licence No."
+                      value={licence}
+                      error={!!errors.licence}
+                      onChange={(e) => {
+                        setLicence(e.target.value.toUpperCase());
+                        if (errors.licence) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            licence: "",
+                          }));
+                        }
+                      }}
+                      className="w-full"
+                      size="small"
+                      sx={{
+                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#d32f2f !important",
+                        },
+                      }}
+                    />
+                    {errors.licence && (
+                      <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.licence}
+                      </span>
+                    )}
+                  </div>
 
-                    {/* Address - full width */}
-                    <div className="flex flex-col col-span-12 w-full">
-                      <span className="label primary">Address</span>
-                      <TextField
-                        autoComplete="off"
-                        size="small"
-                        placeholder="Enter Address"
-                        value={address}
-                        error={!!errors.address}
-                        onChange={(e) => {
-                          setAddress(e.target.value.toUpperCase());
-                          if (errors.address) {
-                            setErrors((prev) => ({
-                              ...prev,
-                              address: "",
-                            }));
-                          }
-                        }}
-                        className="w-full"
-                        variant="outlined"
-                      />
-                      {errors.address && (
-                        <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-                          {errors.address}
-                        </span>
-                      )}
-                    </div>
+                  {/* Address - full width */}
+                  <div className="flex flex-col col-span-12 w-full">
+                    <span className="label primary">Address</span>
+                    <TextField
+                      autoComplete="off"
+                      size="small"
+                      placeholder="Enter Address"
+                      value={address}
+                      error={!!errors.address}
+                      onChange={(e) => {
+                        setAddress(e.target.value.toUpperCase());
+                        if (errors.address) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            address: "",
+                          }));
+                        }
+                      }}
+                      className="w-full"
+                      variant="outlined"
+                    />
+                    {errors.address && (
+                      <span style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.address}
+                      </span>
+                    )}
                   </div>
                 </div>
-              </DialogContentText>
-            </DialogContent>
+              </div>
+            </DialogContentText>
+          </DialogContent>
 
-            <DialogActions style={{ padding: "20px 24px" }}>
-              <Button
-                autoFocus
-                variant="contained"
-                style={{
-                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                  color: "white",
-                }}
-                onClick={AddDoctor}
-              >
-                {buttonLabel}
-              </Button>
-              <Button
-                autoFocus
-                variant="contained"
-                color="error"
-                onClick={resetAddDialog}
-              >
-                Cancel
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <DialogActions style={{ padding: "20px 24px" }}>
+            <Button
+              autoFocus
+              variant="contained"
+              style={{
+                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                color: "white",
+              }}
+              onClick={AddDoctor}
+            >
+              {buttonLabel}
+            </Button>
+            <Button
+              autoFocus
+              variant="contained"
+              color="error"
+              onClick={resetAddDialog}
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </>
   );

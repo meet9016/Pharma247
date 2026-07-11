@@ -336,7 +336,7 @@ const DrugGroup = () => {
               </div>
             </div>
             <div className="row border-b border-dashed" style={{ borderColor: "var(--color2)" }}></div>
-            <div className="overflow-x-auto mt-4 px-4 py-3 " style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
+            <div className="overflow-x-auto mt-4 px-4 py-0 " style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none', position: 'relative' }}>
               <table
                 className="w-full border-collapse custom-table"
                 style={{
@@ -345,7 +345,7 @@ const DrugGroup = () => {
                   borderSpacing: "0 6px",
                 }}
               >
-                <thead>
+                <thead style={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: 'white' }}>
                   <tr>
                     <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
                     {drugGroupColumns.map((column, colIndex) => (

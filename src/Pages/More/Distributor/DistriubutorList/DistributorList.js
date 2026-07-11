@@ -682,7 +682,7 @@ const DistributerList = () => {
               {/*<====================================================================== table  =====================================================================> */}
 
               <div className=" firstrow px-4 ">
-                <div className="overflow-x-auto" style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
+                <div className="overflow-x-auto" style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none', position: 'relative' }}>
                   <table
                     className="w-full border-collapse custom-table"
                     style={{
@@ -691,7 +691,7 @@ const DistributerList = () => {
                       borderSpacing: "0 6px",
                     }}
                   >
-                    <thead>
+                    <thead style={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: 'white' }}>
                       <tr>
                         <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
                         {columns.map((column, index) => (
@@ -878,7 +878,7 @@ const DistributerList = () => {
             >
               Next
             </button>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
               <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
               <Select
                 value={rowsPerPage}

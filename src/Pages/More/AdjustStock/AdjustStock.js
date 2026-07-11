@@ -597,7 +597,7 @@ const AdjustStock = () => {
 
             {/*<====================================================================== table  =====================================================================> */}
             <div className=" firstrow px-4 ">
-              <div className="overflow-x-auto" style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
+              <div className="overflow-x-auto" style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none', position: 'relative' }}>
                 <table
                   className="w-full border-collapse custom-table"
                   style={{
@@ -606,7 +606,7 @@ const AdjustStock = () => {
                     borderSpacing: "0 6px",
                   }}
                 >
-                  <thead>
+                  <thead style={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: 'white' }}>
                     <tr>
                       <th style={{ minWidth: 100, padding: '8px' }}>SR. No</th>
                       {stockList.map((column, index) => (

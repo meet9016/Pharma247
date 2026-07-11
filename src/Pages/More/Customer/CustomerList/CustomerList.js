@@ -781,7 +781,7 @@ const CustomerList = () => {
           </div> */}
           <div className=" firstrow px-4 ">
 
-            <div className="overflow-x-auto " style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none' }}>
+            <div className="overflow-x-auto " style={{ maxHeight: '75vh', overflowY: 'auto', scrollbarWidth: 'none', position: 'relative' }}>
               <table
                 className="w-full border-collapse custom-table"
                 style={{
@@ -790,7 +790,7 @@ const CustomerList = () => {
                   borderSpacing: "0 6px",
                 }}
               >
-                <thead className="">
+                <thead style={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: 'white' }}>
                   <tr>
                     <th>SR. No</th>
                     {columns.map((column, index) => (

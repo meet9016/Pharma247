@@ -309,287 +309,288 @@ const SehatMembersList = () => {
                 draggable
                 pauseOnHover
             />
-                <div
-                    style={{
-                        minHeight: 'calc(100vh - 64px)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        width: '100%',
-                    }}
-                >
-                    <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
-                        <div className="paddin12-8">
-                            <div className="px-4 py-3">
+            <div
+                style={{
+                    minHeight: 'calc(100vh - 64px)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
+                }}
+            >
+                <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+                    <div className="paddin12-8">
+                        <div className="px-4 py-3">
+                            <div
+                                className="cust_list_main_hdr_bg"
+                                style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
+                            >
                                 <div
-                                    className="cust_list_main_hdr_bg"
-                                    style={{ display: "flex", gap: "4px", marginBottom: "13px" }}
+                                    style={{
+                                        display: "flex",
+                                        gap: "7px",
+                                        alignItems: "center",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                    className=""
                                 >
-                                    <div
+                                    <span
                                         style={{
+                                            color: "var(--color1)",
                                             display: "flex",
-                                            gap: "7px",
                                             alignItems: "center",
-                                            whiteSpace: "nowrap",
+                                            fontWeight: 700,
+                                            fontSize: "20px",
+                                            marginRight: "10px",
                                         }}
-                                        className=""
                                     >
-                                        <span
-                                            style={{
-                                                color: "var(--color1)",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                fontWeight: 700,
-                                                fontSize: "20px",
-                                                marginRight: "10px",
-                                            }}
-                                        >
-                                            Members List
-                                        </span>
-                                        <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
-                                    </div>
-                                    <div className="headerList cust_hdr_mn_bg">
-
-
-                                        <Button
-                                            variant="contained"
-                                            style={{ background: "var(--color1)", display: "flex" }}
-                                            onClick={() => {
-                                                setCustomerId(0)
-                                                setAddMember(true)
-
-                                            }}
-                                            className="gap-2"
-                                        >
-                                            <AddIcon className="" />
-                                            Add Member
-                                        </Button>
-
-                                        <Button
-                                            variant="contained"
-                                            style={{ background: "var(--color1)", display: "flex" }}
-                                            onClick={() => { setShowPlans(true) }}
-                                            className="gap-2"
-                                        >
-                                            <VisibilityIcon
-
-                                            />
-                                            View Plan
-                                        </Button>
-                                    </div>
+                                        Members List
+                                    </span>
+                                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
                                 </div>
-                                <div
-                                    className="row border-b px-4 border-dashed"
-                                    style={{ borderColor: "var(--color2)" }}
-                                ></div>
+                                <div className="headerList cust_hdr_mn_bg">
+
+
+                                    <Button
+                                        variant="contained"
+                                        style={{ background: "var(--color1)", display: "flex" }}
+                                        onClick={() => {
+                                            setCustomerId(0)
+                                            setAddMember(true)
+
+                                        }}
+                                        className="gap-2"
+                                    >
+                                        <AddIcon className="" />
+                                        Add Member
+                                    </Button>
+
+                                    <Button
+                                        variant="contained"
+                                        style={{ background: "var(--color1)", display: "flex" }}
+                                        onClick={() => { setShowPlans(true) }}
+                                        className="gap-2"
+                                    >
+                                        <VisibilityIcon
+
+                                        />
+                                        View Plan
+                                    </Button>
+                                </div>
                             </div>
-                            {/*<====================================================================== table  =====================================================================> */}
+                            <div
+                                className="row border-b px-4 border-dashed"
+                                style={{ borderColor: "var(--color2)" }}
+                            ></div>
+                        </div>
+                        {/*<====================================================================== table  =====================================================================> */}
 
-                            <div className=" firstrow px-4 ">
-                                <div className="overflow-x-auto">
-                                    <table
-                                        className="w-full border-collapse custom-table"
-                                        style={{
-                                            whiteSpace: "nowrap",
-                                            borderCollapse: "separate",
-                                            borderSpacing: "0 6px",
-                                        }}
-                                    >
-                                        <thead>
-                                            <tr>
-                                                <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
-                                                {columns.map((column, index) => (
-                                                    <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
-                                                        <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-                                                            <span>{column.label}</span>
-                                                            <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                                                                <SwapVertIcon
-                                                                    style={{ cursor: 'pointer' }}
-                                                                    onClick={() => sortByColumn(column.id)}
-                                                                />
-                                                                <TextField
-                                                                    autoComplete="off"
-                                                                    label="Type Here"
-                                                                    id="filled-basic"
-                                                                    size="small"
-                                                                    sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
-                                                                    value={searchTerms[index]}
-                                                                    onChange={(e) => handleSearchChange(index, e.target.value)}
-                                                                    onKeyDown={handleKeyDown}
-                                                                    InputProps={{
-                                                                        endAdornment: searchTerms[index] && (
-                                                                            <IconButton
-                                                                                size="small"
-                                                                                onClick={() => handleSearchChange(index, '')}
-                                                                                sx={{ padding: 0 }}
-                                                                            >
-                                                                                <CloseIcon fontSize="small" />
-                                                                            </IconButton>
-                                                                        ),
-                                                                    }}
-                                                                />
-                                                            </div>
+                        <div className=" firstrow px-4 ">
+                            <div className="overflow-x-auto">
+                                <table
+                                    className="w-full border-collapse custom-table"
+                                    style={{
+                                        whiteSpace: "nowrap",
+                                        borderCollapse: "separate",
+                                        borderSpacing: "0 6px",
+                                        position: 'relative'
+                                    }}
+                                >
+                                    <thead style={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: 'white' }}>
+                                        <tr>
+                                            <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
+                                            {columns.map((column, index) => (
+                                                <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
+                                                    <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                                                        <span>{column.label}</span>
+                                                        <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                                                            <SwapVertIcon
+                                                                style={{ cursor: 'pointer' }}
+                                                                onClick={() => sortByColumn(column.id)}
+                                                            />
+                                                            <TextField
+                                                                autoComplete="off"
+                                                                label="Type Here"
+                                                                id="filled-basic"
+                                                                size="small"
+                                                                sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                                                                value={searchTerms[index]}
+                                                                onChange={(e) => handleSearchChange(index, e.target.value)}
+                                                                onKeyDown={handleKeyDown}
+                                                                InputProps={{
+                                                                    endAdornment: searchTerms[index] && (
+                                                                        <IconButton
+                                                                            size="small"
+                                                                            onClick={() => handleSearchChange(index, '')}
+                                                                            sx={{ padding: 0 }}
+                                                                        >
+                                                                            <CloseIcon fontSize="small" />
+                                                                        </IconButton>
+                                                                    ),
+                                                                }}
+                                                            />
                                                         </div>
-                                                    </th>
-                                                ))}
-                                                <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
+                                                    </div>
+                                                </th>
+                                            ))}
+                                            <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style={{ background: "#3f621217" }}>
+                                        {(isLoading || isSearchLoading) ? (
+                                            <tr>
+                                                <td
+                                                    colSpan={columns.length + 1}
+                                                    style={{
+                                                        textAlign: "center",
+                                                        padding: "40px",
+                                                    }}
+                                                >
+                                                    <div className="flex justify-center items-center w-full">
+                                                        <Loader />
+                                                    </div>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                            <tbody style={{ background: "#3f621217" }}>
-                                                {(isLoading || isSearchLoading) ? (
-                                                    <tr>
-                                                        <td
-                                                            colSpan={columns.length + 1}
-                                                            style={{
-                                                                textAlign: "center",
-                                                                padding: "40px",
-                                                            }}
-                                                        >
-                                                            <div className="flex justify-center items-center w-full">
-                                                                <Loader />
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ) : tableData.length === 0 ? (
-                                                    <tr>
-                                                        <td
-                                                            colSpan={columns.length + 1}
-                                                            className="text-center text-gray-500"
-                                                            style={{ borderRadius: "10px 10px 10px 10px" }}
-                                                        >
-                                                            No data found
-                                                        </td>
-                                                    </tr>
-                                                ) : (
-                                                    tableData.map((row, index) => (
-                                                        <tr
-                                                            className="bg-[#f5f8f3] align-middle"
-                                                            key={row.code}
-                                                        >
-                                                            <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
-                                                                {((currentPage - 1) * rowsPerPage) + index + 1}
+                                        ) : tableData.length === 0 ? (
+                                            <tr>
+                                                <td
+                                                    colSpan={columns.length + 1}
+                                                    className="text-center text-gray-500"
+                                                    style={{ borderRadius: "10px 10px 10px 10px" }}
+                                                >
+                                                    No data found
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            tableData.map((row, index) => (
+                                                <tr
+                                                    className="bg-[#f5f8f3] align-middle"
+                                                    key={row.code}
+                                                >
+                                                    <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
+                                                        {((currentPage - 1) * rowsPerPage) + index + 1}
+                                                    </td>
+
+                                                    {columns.map((column, colIndex) => {
+                                                        let value = row[column.id];
+                                                        if (column.id === "email") {
+                                                            if (value && value[0] !== value[0].toLowerCase()) {
+                                                                value = value.toLowerCase();
+                                                            }
+                                                        }
+                                                        // Remove right border radius from last data cell
+                                                        const tdClass =
+                                                            "px-4 py-2 font-semibold text-center";
+                                                        return (
+                                                            <td
+                                                                style={{
+                                                                    textTransform: column.id === "email" ? "none" : "uppercase",
+                                                                }}
+                                                                key={column.id}
+                                                                className={`capitalize ${tdClass}`}
+
+                                                            >
+                                                                {column.format && typeof value === "number"
+                                                                    ? column.format(value)
+                                                                    : (value !== null && value !== undefined && value !== "" ? value : "-")}
                                                             </td>
+                                                        );
+                                                    })}
+                                                    <td className="rounded-r-[10px] px-4 py-2 text-center">
+                                                        <div
+                                                            className="px-2 flex gap-2 items-center justify-center"
+                                                            style={{ height: "100%" }}
+                                                        >
+                                                            <VisibilityIcon
+                                                                style={{ color: "var(--color1)", cursor: "pointer" }}
+                                                                onClick={() => { getMember(row?.id) }}
+                                                            />
+                                                            <BorderColorIcon
+                                                                style={{ color: "var(--color1)", cursor: "pointer" }}
+                                                                onClick={() => {
 
-                                                            {columns.map((column, colIndex) => {
-                                                                let value = row[column.id];
-                                                                if (column.id === "email") {
-                                                                    if (value && value[0] !== value[0].toLowerCase()) {
-                                                                        value = value.toLowerCase();
-                                                                    }
-                                                                }
-                                                                // Remove right border radius from last data cell
-                                                                const tdClass =
-                                                                    "px-4 py-2 font-semibold text-center";
-                                                                return (
-                                                                    <td
-                                                                        style={{
-                                                                            textTransform: column.id === "email" ? "none" : "uppercase",
-                                                                        }}
-                                                                        key={column.id}
-                                                                        className={`capitalize ${tdClass}`}
+                                                                    setCustomerId(row?.id)
+                                                                    setAddMember(true)
 
-                                                                    >
-                                                                        {column.format && typeof value === "number"
-                                                                            ? column.format(value)
-                                                                            : (value !== null && value !== undefined && value !== "" ? value : "-")}
-                                                                    </td>
-                                                                );
-                                                            })}
-                                                            <td className="rounded-r-[10px] px-4 py-2 text-center">
-                                                                <div
-                                                                    className="px-2 flex gap-2 items-center justify-center"
-                                                                    style={{ height: "100%" }}
-                                                                >
-                                                                    <VisibilityIcon
-                                                                        style={{ color: "var(--color1)", cursor: "pointer" }}
-                                                                        onClick={() => { getMember(row?.id) }}
-                                                                    />
-                                                                    <BorderColorIcon
-                                                                        style={{ color: "var(--color1)", cursor: "pointer" }}
-                                                                        onClick={() => {
-
-                                                                            setCustomerId(row?.id)
-                                                                            setAddMember(true)
-
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                                )}
-                                            </tbody>
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
                                         )}
-                                    </table>
-                                </div>
+                                    </tbody>
+
+                                </table>
                             </div>
                         </div>
                     </div>
-
-                    {/*<====================================================================== pagination  =====================================================================> */}
-
-                    <div
-                        className="flex justify-center mt-4"
-                        style={{
-                            marginTop: 'auto',
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            padding: '1rem',
-                        }}
-                    >
-                        <button
-                            onClick={handlePrevious}
-                            className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                                ? "bg-gray-200 text-gray-700"
-                                : "secondary-bg text-white"
-                                }`}
-                            disabled={currentPage === 1}
-                        >
-                            Previous
-                        </button>
-                        {currentPage > 2 && (
-                            <button
-                                onClick={() => handleClick(currentPage - 2)}
-                                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                            >
-                                {currentPage - 2}
-                            </button>
-                        )}
-                        {currentPage > 1 && (
-                            <button
-                                onClick={() => handleClick(currentPage - 1)}
-                                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                            >
-                                {currentPage - 1}
-                            </button>
-                        )}
-                        <button
-                            onClick={() => handleClick(currentPage)}
-                            className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-                        >
-                            {currentPage}
-                        </button>
-                        {currentPage < totalPages && (
-                            <button
-                                onClick={() => handleClick(currentPage + 1)}
-                                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                            >
-                                {currentPage + 1}
-                            </button>
-                        )}
-                        <button
-                            onClick={handleNext}
-                            className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                                ? "bg-gray-200 text-gray-700"
-                                : "secondary-bg text-white"
-                                }`}
-                            disabled={currentPage >= totalPages}
-                        >
-                            Next
-                        </button>
-                    </div>
                 </div>
+
+                {/*<====================================================================== pagination  =====================================================================> */}
+
+                <div
+                    className="flex justify-center mt-4"
+                    style={{
+                        marginTop: 'auto',
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: '1rem',
+                    }}
+                >
+                    <button
+                        onClick={handlePrevious}
+                        className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                            ? "bg-gray-200 text-gray-700"
+                            : "secondary-bg text-white"
+                            }`}
+                        disabled={currentPage === 1}
+                    >
+                        Previous
+                    </button>
+                    {currentPage > 2 && (
+                        <button
+                            onClick={() => handleClick(currentPage - 2)}
+                            className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                        >
+                            {currentPage - 2}
+                        </button>
+                    )}
+                    {currentPage > 1 && (
+                        <button
+                            onClick={() => handleClick(currentPage - 1)}
+                            className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                        >
+                            {currentPage - 1}
+                        </button>
+                    )}
+                    <button
+                        onClick={() => handleClick(currentPage)}
+                        className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+                    >
+                        {currentPage}
+                    </button>
+                    {currentPage < totalPages && (
+                        <button
+                            onClick={() => handleClick(currentPage + 1)}
+                            className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+                        >
+                            {currentPage + 1}
+                        </button>
+                    )}
+                    <button
+                        onClick={handleNext}
+                        className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                            ? "bg-gray-200 text-gray-700"
+                            : "secondary-bg text-white"
+                            }`}
+                        disabled={currentPage >= totalPages}
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
 
             {addMember && <AddMemberDialog addMember={addMember} setAddMember={setAddMember} customerId={customerId} />}
             {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} setAddMember={setAddMember} />}
