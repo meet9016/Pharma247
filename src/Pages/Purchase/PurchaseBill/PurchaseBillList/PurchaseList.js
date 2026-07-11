@@ -11,7 +11,9 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  Select,
+  MenuItem
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
@@ -45,7 +47,7 @@ const Purchasebill = () => {
 
   const [tableData, setTableData] = useState([]);
   const [id, setId] = useState(null);
-  const rowsPerPage = 10;
+
   const initialSearchTerms = columns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
   const [sortConfig, setSortConfig] = useState({
@@ -53,6 +55,7 @@ const Purchasebill = () => {
     direction: "ascending",
   });
   const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [startDate, setStartDate] = useState(subDays(new Date(), 15));
   const [endDate, setEndDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +63,7 @@ const Purchasebill = () => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [IsDelete, setIsDelete] = useState(false);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
+  const [isPdfLoading, setIsPdfLoading] = useState(false);
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
 
@@ -78,12 +82,12 @@ const Purchasebill = () => {
     } else {
       localStorage.setItem("Purchase_SrNoPurchase_SrNo", 1);
     }
-  }, [tableData, currentPage]);
+  }, [tableData, currentPage, rowsPerPage]);
 
   useEffect(() => {
     purchaseBillList(currentPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, startDate, endDate]);
+  }, [startDate, endDate, currentPage, rowsPerPage]);
 
   // Effect for handling search with debouncing
   useEffect(() => {
@@ -209,6 +213,7 @@ const Purchasebill = () => {
     data.append("start_date", startDate ? format(startDate, "yyyy-MM-dd") : "");
     data.append("from_date", endDate ? format(endDate, "yyyy-MM-dd") : "");
     data.append("page", page);
+    data.append("limit", rowsPerPage);
 
     // Add search parameters when any search term has a value
     currentSearchTerms.current.forEach((term, index) => {
@@ -282,25 +287,33 @@ const Purchasebill = () => {
       purches_id: id,
     };
     try {
-      await axios
-        .post("purches-delete?", data, {
+  const response = await axios.post("purches-delete?", data, {
           params: params,
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        })
-        .then((response) => {
+  });
+
           setIsDelete(false);
+
           // Refresh current page after deletion
           purchaseBillList(currentPage);
+
+  toast.dismiss();
+
+  toast.success(response?.data?.message || "Purchase bill deleted successfully");
+
           if (response.data.status === 401) {
             history.push("/");
             localStorage.clear();
           }
-        });
     } catch (error) {
       console.error("API error:", error);
+
+  toast.dismiss();
+  toast.error(error?.response?.data?.message || "Something went wrong");
+
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
@@ -314,7 +327,7 @@ const Purchasebill = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsLoading(true);
+    setIsPdfLoading(true);
     try {
       await axios
         .post("purches-pdf-downloads", data, {
@@ -328,7 +341,7 @@ const Purchasebill = () => {
           toast.dismiss();
           toast.success(response.data.meassage);
 
-          setIsLoading(false);
+          setIsPdfLoading(false);
           handlePdf(PDFURL);
           if (response.data.status === 401) {
             history.push("/");
@@ -337,7 +350,7 @@ const Purchasebill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-      setIsLoading(false);
+      setIsPdfLoading(false);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
@@ -368,7 +381,7 @@ const Purchasebill = () => {
     );
     data.append("end_date", PdfendDate ? format(PdfendDate, "yyyy-MM-dd") : "");
 
-    setIsLoading(true);
+    setIsPdfLoading(true);
     try {
       await axios
         .post("multiple-purches-pdf-downloads", data, {
@@ -380,7 +393,7 @@ const Purchasebill = () => {
           const PDFURL = response.data.data.pdf_url;
           toast.dismiss();
           toast.success(response.data.meassage);
-          setIsLoading(false);
+          setIsPdfLoading(false);
           handlePdf(PDFURL);
           if (response.data.status === 401) {
             history.push("/");
@@ -389,7 +402,7 @@ const Purchasebill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-      setIsLoading(false);
+      setIsPdfLoading(false);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
@@ -482,12 +495,20 @@ const Purchasebill = () => {
                 <Button
                   variant="contained"
                   className="sale_add_pdf"
-                  style={{ background: "var(--color1)" }}
+                  style={{ background: "var(--color1)", minWidth: 130 }}
+                  disabled={isPdfLoading}
                   onClick={() => {
                     setOpenAddPopUp(true);
                   }}
                 >
-                  Generate PDF
+                  {isPdfLoading ? (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span className=" text-white inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Generating...
+                    </span>
+                  ) : (
+                    "Generate PDF"
+                  )}
                 </Button>
               </div>
             </div>
@@ -731,6 +752,70 @@ const Purchasebill = () => {
           >
             Next
           </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+            <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
+            <Select
+              value={rowsPerPage}
+              onChange={(e) => {
+                const newRows = parseInt(e.target.value, 10);
+                setRowsPerPage(newRows);
+                setCurrentPage(1);
+              }}
+              size="small"
+              sx={{
+                height: '32px',
+                borderRadius: '6px',
+                color: 'var(--color1)',
+                fontWeight: 'bold',
+                fontFamily: 'inherit',
+                fontSize: '14px',
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'var(--color2) !important',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'var(--color2) !important',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'var(--color1) !important',
+                },
+                '& .MuiSelect-select': {
+                  paddingY: '4px',
+                  paddingLeft: '12px',
+                  paddingRight: '32px !important',
+                  display: 'flex',
+                  alignItems: 'center',
+                }
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    '& .MuiMenuItem-root': {
+                      fontFamily: 'inherit',
+                      fontSize: '14px',
+                      color: 'var(--color1)',
+                      '&.Mui-selected': {
+                        backgroundColor: 'var(--color1) !important',
+                        color: 'white !important',
+                      },
+                      '&.Mui-selected:hover': {
+                        backgroundColor: 'var(--color1) !important',
+                        color: 'white !important',
+                      },
+                      '&:hover': {
+                        backgroundColor: 'rgba(98, 138, 47, 0.1) !important',
+                        color: 'var(--color1) !important',
+                      }
+                    }
+                  }
+                }
+              }}
+            >
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+              <MenuItem value={100}>100</MenuItem>
+            </Select>
+          </div>
         </div>
       </div>
 

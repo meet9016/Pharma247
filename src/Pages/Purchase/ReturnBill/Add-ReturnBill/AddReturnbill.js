@@ -44,6 +44,12 @@ import { FaCaretUp } from "react-icons/fa6";
 import SaveIcon from "@mui/icons-material/Save";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import IconButton from "@mui/material/IconButton";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import SyncAltIcon from "@mui/icons-material/SyncAlt";
+import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import TipsModal from "../../../../componets/Tips/TipsModal";
 
 const AddReturnbill = () => {
@@ -138,6 +144,9 @@ const AddReturnbill = () => {
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
   const inputRefs = useRef([]);
+  const billDateRef = useRef(null);
+  const startDateRef = useRef(null);
+  const endDateRef = useRef(null);
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Enter") {
@@ -520,6 +529,8 @@ const AddReturnbill = () => {
           setUnsavedItems(true);
           purcheseReturnFilter();
           setIsDelete(false);
+          toast.dismiss();
+          toast.success("Item deleted successfully");
         });
     } catch (error) {
       console.error("API error:", error);
@@ -1135,8 +1146,14 @@ const AddReturnbill = () => {
                       "@media (max-width:600px)": { minWidth: "200px" },
                     }}
                     value={billNo}
-                    disabled
+                    InputProps={{ readOnly: true }}
                     inputRef={(el) => (inputRefs.current[1] = el)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        setTimeout(() => billDateRef.current?.setFocus(), 10);
+                      }
+                    }}
                   />
                 </div>
 
@@ -1151,9 +1168,23 @@ const AddReturnbill = () => {
                       onChange={(newDate) => setSelectedDate(newDate)}
                       dateFormat="dd/MM/yyyy"
                       filterDate={(date) => !isDateDisabled(date)}
-                      ref={(el) => (inputRefs.current[2] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 2)}
-
+                      ref={(el) => {
+                        inputRefs.current[2] = el;
+                        billDateRef.current = el;
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'ArrowDown') {
+                          billDateRef.current?.setOpen(true);
+                        } else if (e.key === 'Enter') {
+                          e.preventDefault();
+                          billDateRef.current?.setOpen(false);
+                          setTimeout(() => {
+                            if (inputRefs.current[3]) {
+                                inputRefs.current[3].focus();
+                            }
+                          }, 10);
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -1169,10 +1200,23 @@ const AddReturnbill = () => {
                       }}
                       dateFormat="MM/yyyy"
                       showMonthYearPicker
-                      ref={(el) => (inputRefs.current[3] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 3)}
+                      ref={startDateRef}
+                      onKeyDown={(e) => {
+                        if (e.key === 'ArrowDown') {
+                          startDateRef.current?.setOpen(true);
+                        } else if (e.key === 'Enter') {
+                          e.preventDefault();
+                          startDateRef.current?.setOpen(false);
+                          setTimeout(() => {
+                            if (inputRefs.current[4]) {
+                                inputRefs.current[4].focus();
+                            }
+                          }, 10);
+                        }
+                      }}
                       customInput={
                         <TextField
+                          inputRef={(el) => (inputRefs.current[3] = el)}
                           size="small"
                           error={!!errors.startDate}
                           helperText={errors.startDate}
@@ -1201,10 +1245,23 @@ const AddReturnbill = () => {
                       }}
                       dateFormat="MM/yyyy"
                       showMonthYearPicker
-                      ref={(el) => (inputRefs.current[4] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 4)}
+                      ref={endDateRef}
+                      onKeyDown={(e) => {
+                        if (e.key === 'ArrowDown') {
+                          endDateRef.current?.setOpen(true);
+                        } else if (e.key === 'Enter') {
+                          e.preventDefault();
+                          endDateRef.current?.setOpen(false);
+                          setTimeout(() => {
+                            if (inputRefs.current[5]) {
+                                inputRefs.current[5].focus();
+                            }
+                          }, 10);
+                        }
+                      }}
                       customInput={
                         <TextField
+                          inputRef={(el) => (inputRefs.current[4] = el)}
                           size="small"
                           error={!!errors.endDate}
                           helperText={errors.endDate}
@@ -1252,7 +1309,7 @@ const AddReturnbill = () => {
                   <tr className="input-row">
                     <th>
                       <div className="flex justify-center items-center gap-2">
-                        Search Item Name <span className="text-red-600 ">*</span>
+                        Search Item Namefff <span className="text-red-600 ">*</span>
                         <FaPlusCircle
                           className="primary cursor-pointer"
                           onClick={() => history.push('/itemMaster')}
@@ -1572,7 +1629,7 @@ const AddReturnbill = () => {
                           },
                         }}
                         select
-                        SelectProps={{ native: true }}
+                        // SelectProps={{ native: true }}
                         variant="outlined"
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
@@ -1587,9 +1644,9 @@ const AddReturnbill = () => {
                         size="small"
                         error={!!errors.gst}
                       >
-                        <option value="0">0</option>
-                        <option value="5">5</option>
-                        <option value="18">18</option>
+                        <MenuItem value="0">0</MenuItem>
+                        <MenuItem value="5">5</MenuItem>
+                        <MenuItem value="18">18</MenuItem>
                       </TextField>
                     </td>
 
@@ -1779,148 +1836,143 @@ const AddReturnbill = () => {
 
                 <Modal
                   show={isModalOpen}
-                  onClose={() => {
-                    setIsModalOpen(!isModalOpen);
-                  }}
-                  size="lg"
+                  onClose={() => setIsModalOpen(false)}
+                  size="md"
                   position="bottom-center"
                   className="modal_amount"
-                // style={{ width: "50%" }}
                 >
-                  <div
-                    style={{
-                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                      color: "white",
-                      padding: "20px",
-                      fontSize: "larger",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <h2 style={{ textTransform: "uppercase" }}>
-                      invoice total
-                    </h2>
-                    <IoMdClose
-                      onClick={() => {
-                        setIsModalOpen(!isModalOpen);
-                      }}
-                      cursor={"pointer"}
-                      size={30}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      background: "white",
-                      padding: "20px",
-                      width: "100%",
-                      maxWidth: "600px",
-                      margin: "0 auto",
-                      lineHeight: "2.5rem",
-                    }}
-                  >
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <label className="font-bold">Total Amount : </label>
-                      <span style={{ fontWeight: 600 }}>
-                        {totalAmount ? totalAmount : 0}
-                      </span>
-                    </div>
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <label className="font-bold">Other Amount : </label>
-                      <div className="border-green">
-                        <Input
-                          type="number"
-                          value={otherAmount}
-                          onChange={handleOtherAmount}
-                          size="small"
-                          style={{
-                            width: "70px",
-                            background: "none",
-                            justifyItems: "end",
-                            outline: "none",
-                          }}
-                          sx={{
-                            "& .MuiInputBase-root": {
-                              height: "35px",
-                            },
-                            "& .MuiInputBase-input": { textAlign: "end" },
-                          }}
-                        />
+                  {/* ── Header ── */}
+                  <div style={{
+                    background: "linear-gradient(135deg, var(--COLOR_UI_PHARMACY) 0%, var(--color2, #2d6a2d) 100%)",
+                    color: "white",
+                    padding: "18px 24px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderRadius: "8px 8px 0 0",
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{
+                        width: 36, height: 36, borderRadius: "50%",
+                        background: "rgba(255,255,255,0.2)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}><ReceiptLongIcon style={{ fontSize: 20 }} /></div>
+                      <div>
+                        <div style={{ fontSize: 11, opacity: 0.8, letterSpacing: 1.5, textTransform: "uppercase" }}>Purchase Return</div>
+                        <div style={{ fontSize: 17, fontWeight: 700, letterSpacing: 0.5 }}>Invoice Summary</div>
                       </div>
                     </div>
-
                     <div
-                      className=""
+                      onClick={() => setIsModalOpen(false)}
                       style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        paddingBottom: "5px",
+                        cursor: "pointer", width: 32, height: 32, borderRadius: "50%",
+                        background: "rgba(255,255,255,0.15)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        transition: "background 0.2s",
                       }}
                     >
-                      <label className="font-bold">Total Net Rate : </label>
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          color: "#F31C1C",
-                        }}
-                      >
-                        {totalNetRate}
-                      </span>
+                      <IoMdClose size={20} />
                     </div>
+                  </div>
 
-                    <div
-                      className="font-bold"
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        paddingBottom: "5px",
-                        borderTop:
-                          "1px solid var(--toastify-spinner-color-empty-area)",
-                        paddingTop: "5px",
-                      }}
-                    >
-                      <label className="font-bold">Round Off : </label>
-                      <span>
-                        {roundOff === "0.00"
-                          ? roundOff
-                          : roundOff < 0.49
-                            ? `- ${roundOff}`
-                            : `${parseFloat(1 - roundOff).toFixed(2)}`}
-                      </span>
-                    </div>
+                  {/* ── Body ── */}
+                  <div style={{
+                    background: "#f8fafc",
+                    padding: "20px 24px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 0,
+                  }}>
 
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        cursor: "pointer",
-                        justifyContent: "space-between",
-                        borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
-                        paddingTop: "5px",
-                      }}
-                    >
-                      <label className="font-bold">Net Amount: </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          fontSize: "22px",
-                          color: "var(--COLOR_UI_PHARMACY)",
-                        }}
-                      >
-                        {!netAmount ? 0 : netAmount}
-                      </span>
+                    {[
+                      {
+                        label: "Total Amount",
+                        icon: <Inventory2Icon style={{ fontSize: 18, color: "var(--COLOR_UI_PHARMACY)" }} />,
+                        value: <span style={{ fontWeight: 600, color: "#1e293b" }}>{totalAmount ? totalAmount : 0}</span>,
+                      },
+                      {
+                        label: "Other Amount",
+                        icon: <AddCircleOutlineIcon style={{ fontSize: 18, color: "#0ea5e9" }} />,
+                        value: (
+                          <Input
+                            type="number"
+                            value={otherAmount}
+                            onChange={handleOtherAmount}
+                            size="small"
+                            style={{ width: "80px", background: "none", outline: "none" }}
+                            sx={{
+                              "& .MuiInputBase-root": { height: "32px" },
+                              "& .MuiInputBase-input": { textAlign: "end", fontWeight: 600 },
+                              "& .MuiInput-underline:before": { borderBottomColor: "var(--COLOR_UI_PHARMACY)" },
+                            }}
+                          />
+                        ),
+                      },
+                      {
+                        label: "Total Net Rate",
+                        icon: <TrendingDownIcon style={{ fontSize: 18, color: "#e53e3e" }} />,
+                        value: <span style={{ fontWeight: 600, color: "#e53e3e" }}>{totalNetRate}</span>,
+                      },
+                      {
+                        label: "Round Off",
+                        icon: <SyncAltIcon style={{ fontSize: 18, color: "#64748b" }} />,
+                        value: (
+                          <span style={{ fontWeight: 600, color: "#64748b" }}>
+                            {roundOff === "0.00"
+                              ? roundOff
+                              : roundOff < 0.49
+                                ? `- ${roundOff}`
+                                : `${parseFloat(1 - roundOff).toFixed(2)}`}
+                          </span>
+                        ),
+                        divider: true,
+                      },
+                    ].map((row, i) => (
+                      <div key={i}>
+                        {row.divider && (
+                          <div style={{ borderTop: "1px dashed #cbd5e1", margin: "4px 0" }} />
+                        )}
+                        <div style={{
+                          display: "flex", justifyContent: "space-between", alignItems: "center",
+                          padding: "10px 14px",
+                          background: i % 2 === 0 ? "#ffffff" : "#f1f5f9",
+                          borderRadius: 8,
+                          marginBottom: 6,
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                        }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#475569", fontWeight: 600, fontSize: 14 }}>
+                            {row.icon}
+                            {row.label}
+                          </div>
+                          {row.value}
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Net Amount highlighted block */}
+                    <div style={{
+                      marginTop: 10,
+                      background: "linear-gradient(135deg, var(--COLOR_UI_PHARMACY) 0%, var(--color2, #2d6a2d) 100%)",
+                      borderRadius: 12,
+                      padding: "16px 20px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
+                    }}>
+                      <div style={{ color: "rgba(255,255,255,0.85)", fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
+                        <CurrencyRupeeIcon style={{ fontSize: 18 }} /> Net Amount Payable
+                      </div>
+                      <div style={{
+                        color: "white",
+                        fontWeight: 800,
+                        fontSize: 24,
+                        letterSpacing: 0.5,
+                        display: "flex", alignItems: "baseline", gap: 2,
+                      }}>
+                        <span style={{ fontSize: 16, fontWeight: 600, opacity: 0.9 }}>₹</span>
+                        {!netAmount ? "0.00" : Number(netAmount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
                     </div>
                   </div>
                 </Modal>

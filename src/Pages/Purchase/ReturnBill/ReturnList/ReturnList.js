@@ -20,6 +20,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Select,
+  MenuItem
 } from "@mui/material";
 import DatePicker from "react-datepicker";
 import { format, subDays } from "date-fns";
@@ -28,7 +30,6 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const ReturnList = () => {
   const history = useHistory();
-  const rowsPerPage = 10;
   const token = localStorage.getItem("token");
   const permissions = usePermissions();
 
@@ -56,9 +57,11 @@ const ReturnList = () => {
   const initialSearchTerms = columns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPdfLoading, setIsPdfLoading] = useState(false);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
 
   // Search state management (copied from PaymentList)
@@ -127,7 +130,7 @@ const ReturnList = () => {
     if (currentPage > 0) {
       ReturnBillList(currentPage);
     }
-  }, [currentPage]);
+  }, [currentPage, rowsPerPage]);
 
   useEffect(() => {
     ReturnBillList(1);
@@ -207,7 +210,7 @@ const ReturnList = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsLoading(true);
+    setIsPdfLoading(true);
     try {
       await axios
         .post("purches-return-pdf", data, {
@@ -220,11 +223,12 @@ const ReturnList = () => {
           const PDFURL = response.data.data.pdf_url;
           toast.dismiss();
           toast.success(response.data.meassage);
-          setIsLoading(false);
+          setIsPdfLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
       console.error("API error:", error);
+      setIsPdfLoading(false);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
@@ -296,6 +300,7 @@ const ReturnList = () => {
 
     let data = new FormData();
     data.append("page", page);
+    data.append("limit", rowsPerPage);
 
     // Add search parameters when any search term has a value
     columns.forEach((column, index) => {
@@ -355,7 +360,7 @@ const ReturnList = () => {
     );
     data.append("end_date", PdfendDate ? format(PdfendDate, "yyyy-MM-dd") : "");
 
-    setIsLoading(true);
+    setIsPdfLoading(true);
     try {
       await axios
         .post("multiple-purches-return-pdf-downloads", data, {
@@ -367,11 +372,12 @@ const ReturnList = () => {
           const PDFURL = response.data.data.pdf_url;
           toast.dismiss();
           toast.success(response.data.meassage);
-          setIsLoading(false);
+          setIsPdfLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
       console.error("API error:", error);
+      setIsPdfLoading(false);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
@@ -465,12 +471,20 @@ const ReturnList = () => {
                     <Button
                       variant="contained"
                       className="sale_add_pdf"
-                      style={{ background: "var(--color1) " }}
+                      style={{ background: "var(--color1) ", minWidth: 130 }}
+                      disabled={isPdfLoading}
                       onClick={() => {
                         setOpenAddPopUp(true);
                       }}
                     >
-                      Generate PDF
+                      {isPdfLoading ? (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          Generating...
+                        </span>
+                      ) : (
+                        "Generate PDF"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -827,6 +841,70 @@ const ReturnList = () => {
             >
               Next
             </button>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+              <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
+              <Select
+                value={rowsPerPage}
+                onChange={(e) => {
+                  const newRows = parseInt(e.target.value, 10);
+                  setRowsPerPage(newRows);
+                  setCurrentPage(1);
+                }}
+                size="small"
+                sx={{
+                  height: '32px',
+                  borderRadius: '6px',
+                  color: 'var(--color1)',
+                  fontWeight: 'bold',
+                  fontFamily: 'inherit',
+                  fontSize: '14px',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--color2) !important',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--color2) !important',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--color1) !important',
+                  },
+                  '& .MuiSelect-select': {
+                    paddingY: '4px',
+                    paddingLeft: '12px',
+                    paddingRight: '32px !important',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      '& .MuiMenuItem-root': {
+                        fontFamily: 'inherit',
+                        fontSize: '14px',
+                        color: 'var(--color1)',
+                        '&.Mui-selected': {
+                          backgroundColor: 'var(--color1) !important',
+                          color: 'white !important',
+                        },
+                        '&.Mui-selected:hover': {
+                          backgroundColor: 'var(--color1) !important',
+                          color: 'white !important',
+                        },
+                        '&:hover': {
+                          backgroundColor: 'rgba(98, 138, 47, 0.1) !important',
+                          color: 'var(--color1) !important',
+                        }
+                      }
+                    }
+                  }
+                }}
+              >
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+                <MenuItem value={100}>100</MenuItem>
+              </Select>
+            </div>
           </div>
 
           <div
