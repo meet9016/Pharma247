@@ -267,7 +267,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <nav className="text-sm shadow ">
+      <nav className="text-sm shadow" style={{ position: 'sticky', top: 0, zIndex: 1000 }}>
         <div className="logomenu flex h-14">
           <div className="flex-shrink-0 pr-5 pl-5  sm:flex-wrap">
             <Link to="/adminDashboard">

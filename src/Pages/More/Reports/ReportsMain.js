@@ -116,7 +116,7 @@ const ReportsMain = () => {
 
 
 
- 
+
 
 
 
@@ -280,15 +280,6 @@ const ReportsMain = () => {
 
 
 
-
-
-
-
-
-
-
-
-
   const combinedReports = [
     ...gstReports,
     ...marginReports,
@@ -298,7 +289,7 @@ const ReportsMain = () => {
     ...othersReports,
   ];
 
-  
+
 
   useEffect(() => {
     const storedFavorites = localStorage.getItem("favorites");
@@ -331,14 +322,24 @@ const ReportsMain = () => {
 
 
 
-  
+
 
 
 
   return (
-    <div>
+    <div
+      style={{
+        height: "100vh",
+        overflow: "hidden",
+      }}>
       <Header />
-      <Box className="flex flex-wrap">
+
+      <Box className="flex flex-wrap"
+        sx={{
+          height: "calc(100vh - 64px)",
+          overflow: "hidden",
+        }}
+      >
         <Box
           className="custom-scroll"
           sx={{
@@ -363,6 +364,7 @@ const ReportsMain = () => {
               md: "0%",
             },
             overflowY: "auto",
+            overflowX: "hidden",
             padding: "24px",
           }}
           role="presentation"
@@ -482,26 +484,15 @@ const ReportsMain = () => {
             </Accordion>
           ))}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           {/* <Divider /> */}
         </Box>
-        <Box sx={{ flex: 1, overflow: "auto", padding: "16px" }}>
+        <Box sx={{
+          flex: 1,
+          overflowY: "auto",
+          overflowX: "hidden",
+          height: "calc(100vh - 64px)",
+          padding: "16px",
+        }}>
           <div className="p-2" style={{ width: "100%" }}>
             {favoriteReports.length > 0 ? (
               <>
@@ -515,7 +506,7 @@ const ReportsMain = () => {
                       key={favorite.id}
                       className="font-semibold report_main_card"
                     >
-                      <div className="custom-box-report"  onClick={() => history.push(`/${favorite.path}`)}>
+                      <div className="custom-box-report" onClick={() => history.push(`/${favorite.path}`)}>
                         <img
                           src={favorite.icon}
                           className="w-1/2"
@@ -550,6 +541,7 @@ const ReportsMain = () => {
           </div>
         </Box>
       </Box>
+
     </div>
   );
 };

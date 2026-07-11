@@ -1207,7 +1207,7 @@ const Itemmaster = () => {
   useSubmitShortcut(handleFileUpload, openFile);
 
   return (
-    <div>
+    <div style={{ height: "100vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
       <Header />
       <ToastContainer
 
@@ -1221,24 +1221,28 @@ const Itemmaster = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div className="item_add_box paddin12-8" style={{ gap: "0px" }}>
-          {/* //content className*/}
-          <div className="flex justify-between header_bx px-4 py-3">
-            <h1
-              style={{
-                color: "var(--color1)",
-                alignItems: "center",
-                fontWeight: 700,
-                fontSize: "28px",
+      <div style={{
+        flex: 1, overflowY: "auto", minHeight: 0, scrollbarWidth: "none",
+        msOverflowStyle: "none",
+      }}>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <div className="item_add_box paddin12-8" style={{ gap: "0px" }}>
+            {/* //content className*/}
+            <div className="flex justify-between header_bx px-4 py-3">
+              <h1
+                style={{
+                  color: "var(--color1)",
+                  alignItems: "center",
+                  fontWeight: 700,
+                  fontSize: "28px",
 
-              }}
-            >
-              Add Item Master
-            </h1>
-            {/* <Button
+                }}
+              >
+                Add Item Master
+              </h1>
+              {/* <Button
               variant="contained"
               style={{
                 background: "var(--color1)",
@@ -1249,298 +1253,67 @@ const Itemmaster = () => {
             >
               <CloudUploadIcon /> Import
               </Button> */}
-          </div>
-          <div
-            className="mainform bg-white rounded-lg px-4 pb-3 pt-0"
-          >
-            <div className="row border-b border-dashed" style={{ borderColor: "var(--color2)" }}></div>
-
-            <div className="pt-2">
-              <h1 className="product" style={{ color: "var(--color1)", textAlign: "center" }}>
-                Product Information
-              </h1>
             </div>
-            <div className="row border-b border-dashed pt-2" style={{ borderColor: "var(--color2)" }}></div>
+            <div
+              className="mainform bg-white rounded-lg px-4 pb-3 pt-0"
+            >
+              <div className="row border-b border-dashed" style={{ borderColor: "var(--color2)" }}></div>
 
-            <div className="row gap-4 item_boxes">
-              <div className="bg-white rounded-lg items-center mt-4 mb-5 p-4 item_inner_box" style={{
-                border: '1px solid #628a2f73',
-                boxShadow: 'rgb(184 202 161 / 7%) 11px 12px 20px',
-                width: '50%',
-                height: '100%'
-              }}>
-                <div className="row">
-                  <div className="fields" style={{ width: "100%", flexDirection: "column", borderColor: 'var(--color1)' }}>
-                    <label className="label">Item Name <span className="text-red-600  ">*</span></label>
-                    <Autocomplete
-                      value={value}
-                      error={!!error.searchItem}
-                      inputValue={(searchItem || "").toUpperCase()}
-                      size="small"
-                      onChange={handleOptionChange}
-                      onInputChange={handleInputChange} // Handles input changes while typing
-                      ListboxProps={{
-                        onScroll: handleScroll,
-                      }}
-                      getOptionLabel={(option) =>
-                        typeof option === "string" ? option : option.iteam_name
-                      }
-                      options={itemList} // The list of available options
-                      renderOption={(props, option) => (
-                        <ListItem {...props}>
-                          <ListItemText primary={option.iteam_name} />
-                        </ListItem>
-                      )}
-                      renderInput={(params) => (
-                        <TextField {...params} placeholder="Search Item Name" autoFocus />
-
-                      )}
-                      freeSolo
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.searchItem
-                              ? "#d32f2f"
-                              : "rgba(0, 0, 0, 0.38)",
-                          },
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.searchItem
-                              ? "#d32f2f"
-                              : "var(--color1)",
-                          },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.searchItem
-                              ? "#d32f2f"
-                              : "var(--color1)",
-                          },
-                        },
-                      }}
-                    />
-
-                    {error.searchItem && (
-                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-                        {error.searchItem}
-                      </div>
-                    )}
-
-                  </div>
-                </div>
-                <div className="row item_fld_rw gap-3 md:pt-2">
-                  <div className="fields Unit_divvv itm_divv_wid">
-                    <label className="label">Unit <span className="text-red-600  ">*</span></label>
-                    <TextField
-                      id="outlined-number"
-                      type="number"
-                      size="small"
-                      error={!!error.weightage}
-                      value={weightage}
-                      onChange={handlePack}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.weightage
-                              ? "#d32f2f"
-                              : "rgba(0, 0, 0, 0.38)",
-                          },
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.weightage
-                              ? "#d32f2f"
-                              : "var(--color1)",
-                          },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: error.weightage
-                              ? "#d32f2f"
-                              : "var(--color1)",
-                          },
-                          "& .MuiOutlinedInput-input": {
-                            padding: "12px 8px !important",
-
-                          },
-                        },
-                      }}
-                    />
-
-                    {error.weightage && (
-                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
-                        {error.weightage}
-                      </div>
-                    )}
-                  </div>
-                  <div className="fields Unit_divvv itm_divv_wid">
-                    <label className="label">Pack</label>
-                    <TextField
-                      id="outlined-number"
-                      disabled
-                      // style={{ width: "160px" }}
-                      size="small"
-                      value={pack}
-                      onChange={(e) => {
-                        setPack(e.target.value);
-                      }}
-                    />
-                    {/* {error.pack && <span style={{ color: 'red', fontSize: '14px' }}>{error.pack}</span>} */}
-                  </div>
-                </div>
-                <div className="row item_fld_rw gap-3 md:pt-2">
-                  <div className="fields" style={{ width: "100%", flexDirection: "column" }}>
-                    <div
-                      style={{ display: "flex", gap: "10px", cursor: "pointer" }}
-                    >
-                      <label className="label">Drug Group <span className="text-red-600  ">*</span></label>
-                      <FaPlusCircle
-                        className="mt-1.5 cursor-pointer"
-                        onClick={() => setOpenDrugGroup(true)}
-                      />
-                    </div>
-                    <FormControl fullWidth>
-                      <Autocomplete
-                        disablePortal
-                        options={drugGroupList}
-                        size="small"
-                        value={drugGroup}
-                        style={{ width: "100%" }}
-                        // onChange={(e, value) => setDrugGroup(value)}
-
-                        onChange={(e, value) => {
-                          setDrugGroup(value);
-
-                          setError((prev) => ({
-                            ...prev,
-                            drugGroup: "",
-                          }));
-                        }}
-                        onInputChange={(e, newInputValue) => {
-                          setDrugGroupSearch(newInputValue);
-                          if (newInputValue.trim() !== "") {
-                            handleDrugGroupSearch(newInputValue);
-                          }
-                        }}
-                        onOpen={() => {
-                          handleDrugGroupSearch("");
-                        }}
-                        getOptionLabel={(option) => option ? (option.name || "") : ""}
-                        renderInput={(params) => (
-                          <TextField {...params} placeholder="Search Drug Group" />
-                        )}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: error.drugGroup
-                                ? "#d32f2f"
-                                : "rgba(0, 0, 0, 0.38)",
-                            },
-                            "&:hover .MuiOutlinedInput-notchedOutline": {
-                              borderColor: error.drugGroup
-                                ? "#d32f2f"
-                                : "var(--color1)",
-                            },
-                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                              borderColor: error.drugGroup
-                                ? "#d32f2f"
-                                : "var(--color1)",
-                            },
-                          },
-                        }}
-                      />
-                      {error.drugGroup && (
-                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
-                          {error.drugGroup}
-                        </div>
-                      )}
-                    </FormControl>
-                  </div>
-                </div>
-
-                <div className="row item_fld_rw gap-3 md:pt-2">
-                  <div className="fields four_divv" style={{ width: "100%" }}>
-                    <label className="label">Packaging In</label>
-                    <Select
-                      labelId="dropdown-label"
-                      id="dropdown"
-                      value={packaging || ""}
-                      // sx={{ minWidth: "250px" }}
-                      onChange={handlePackagingChange}
-                      size="small"
-                      displayEmpty
-                      renderValue={(selected) => {
-                        if (selected === "") {
-                          return <span style={{ color: "rgba(0, 0, 0, 0.38)" }}>Select Packaging</span>;
-                        }
-                        const selectedOption = packList.find((option) => option.id == selected);
-                        return selectedOption ? selectedOption.packging_name : "";
-                      }}
-                      sx={{
-                        ".MuiSelect-select": {
-                          color: packaging ? "inherit" : "rgba(0, 0, 0, 0.38)",
-                          padding: "8.5px 12px !important",
-                        },
-                      }}
-                    >
-                      {packList.map((option) => (
-                        <MenuItem key={option.id} value={option.id}>
-                          {option.packging_name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </div>
-                </div>
+              <div className="pt-2">
+                <h1 className="product" style={{ color: "var(--color1)", textAlign: "center" }}>
+                  Product Information
+                </h1>
               </div>
+              <div className="row border-b border-dashed pt-2" style={{ borderColor: "var(--color2)" }}></div>
 
-
-              <div className="bg-white rounded-lg items-center mt-4 mb-5 p-4 item_inner_box" style={{
-                border: '1px solid #628a2f73',
-                boxShadow: 'rgb(184 202 161 / 7%) 11px 12px 20px',
-                width: "50%",
-                height: '100%'
-
-              }}>
-                <div className="row gap-3 item_fld_rw">
-                  <div className="fields Unit_divvv itm_divv_wid" style={{ width: "50%" }}>
-                    <div
-                      style={{ display: "flex", gap: "10px", cursor: "pointer" }}
-                    >
-                      <label className="label">Company <span className="text-red-600  ">*</span></label>
-                      <FaPlusCircle
-                        className="mt-1.5 cursor-pointer"
-                        onClick={() => setOpenCompany(true)}
-                      />
-                    </div>
-                    {/* <label className="label"></label> */}
-                    <Box>
+              <div className="row gap-4 item_boxes">
+                <div className="bg-white rounded-lg items-center mt-4 mb-5 p-4 item_inner_box" style={{
+                  border: '1px solid #628a2f73',
+                  boxShadow: 'rgb(184 202 161 / 7%) 11px 12px 20px',
+                  width: '50%',
+                  height: '100%'
+                }}>
+                  <div className="row">
+                    <div className="fields" style={{ width: "100%", flexDirection: "column", borderColor: 'var(--color1)' }}>
+                      <label className="label">Item Name <span className="text-red-600  ">*</span></label>
                       <Autocomplete
-                        disablePortal
-                        id="combo-box-demo"
-                        options={companyList}
+                        value={value}
+                        error={!!error.searchItem}
+                        inputValue={(searchItem || "").toUpperCase()}
                         size="small"
-                        value={selectedCompany}
-                        // onChange={(e, value) => setSelectedCompany(value)}
-                        onChange={(e, value) => {
-                          setSelectedCompany(value);
-
-                          setError((prev) => ({
-                            ...prev,
-                            selectedCompany: "",
-                          }));
+                        onChange={handleOptionChange}
+                        onInputChange={handleInputChange} // Handles input changes while typing
+                        ListboxProps={{
+                          onScroll: handleScroll,
                         }}
-                        error={!!error.selectedCompany}
-                        getOptionLabel={(option) => option.company_name}
-                        renderInput={(params) => (
-                          <TextField {...params} placeholder="Select Company" />
+                        getOptionLabel={(option) =>
+                          typeof option === "string" ? option : option.iteam_name
+                        }
+                        options={itemList} // The list of available options
+                        renderOption={(props, option) => (
+                          <ListItem {...props}>
+                            <ListItemText primary={option.iteam_name} />
+                          </ListItem>
                         )}
+                        renderInput={(params) => (
+                          <TextField {...params} placeholder="Search Item Name" autoFocus />
+
+                        )}
+                        freeSolo
                         sx={{
                           "& .MuiOutlinedInput-root": {
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: error.selectedCompany
+                              borderColor: error.searchItem
                                 ? "#d32f2f"
                                 : "rgba(0, 0, 0, 0.38)",
                             },
                             "&:hover .MuiOutlinedInput-notchedOutline": {
-                              borderColor: error.selectedCompany
+                              borderColor: error.searchItem
                                 ? "#d32f2f"
                                 : "var(--color1)",
                             },
                             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                              borderColor: error.selectedCompany
+                              borderColor: error.searchItem
                                 ? "#d32f2f"
                                 : "var(--color1)",
                             },
@@ -1548,270 +1321,273 @@ const Itemmaster = () => {
                         }}
                       />
 
-                      {error.selectedCompany && (
-                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
-                          {error.selectedCompany}
+                      {error.searchItem && (
+                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                          {error.searchItem}
                         </div>
                       )}
-                      {/* {error.selectedCompany && <span style={{ color: 'red', fontSize: '14px' }}>{error.selectedCompany}</span>} */}
-                    </Box>
-                  </div>
 
-                  <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
-                    <div
-                      style={{ display: "flex", gap: "10px", cursor: "pointer" }}
-                    >
-                      <label className="label">Suppliers </label>
-                      <FaPlusCircle
-                        className="mt-1.5 cursor-pointer"
-                        onClick={() => setOpenDistributor(true)}
-                      />
                     </div>
-                    {/* <label className="label"></label> */}
-                    {/* <Box sx={{ minWidth: 350 }}> */}
-                    <Box >
-                      <Autocomplete
-                        disablePortal
-                        id="combo-box-demo"
-                        options={suppliersList}
-                        value={selectedSuppliers}
+                  </div>
+                  <div className="row item_fld_rw gap-3 md:pt-2">
+                    <div className="fields Unit_divvv itm_divv_wid">
+                      <label className="label">Unit <span className="text-red-600  ">*</span></label>
+                      <TextField
+                        id="outlined-number"
+                        type="number"
                         size="small"
-                        // sx={{ width: 350 }}
-                        onChange={(e, value) => setSelectedSuppliers(value)}
-                        getOptionLabel={(option) => {
-                          if (!option) return "";
-                          return (option.name || option.distributor_name || "").toUpperCase();
-                        }}
-                        renderInput={(params) => (
-                          <TextField {...params} placeholder="Select Suppliers" />
-                        )}
+                        error={!!error.weightage}
+                        value={weightage}
+                        onChange={handlePack}
                         sx={{
                           "& .MuiOutlinedInput-root": {
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "rgba(0, 0, 0, 0.38) "
+                              borderColor: error.weightage
+                                ? "#d32f2f"
+                                : "rgba(0, 0, 0, 0.38)",
                             },
-                            "&:hover fieldset": {
-                              borderColor: "var(--color1)", // Hover border color
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: error.weightage
+                                ? "#d32f2f"
+                                : "var(--color1)",
                             },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "var(--color1)", // Focused border color
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              borderColor: error.weightage
+                                ? "#d32f2f"
+                                : "var(--color1)",
+                            },
+                            "& .MuiOutlinedInput-input": {
+                              padding: "12px 8px !important",
+
                             },
                           },
                         }}
                       />
-                      {error.selectedSuppliers && (
-                        <span style={{ color: "var(--color6)", fontSize: "14px" }}>
-                          {error.selectedSuppliers}
-                        </span>
+
+                      {error.weightage && (
+                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                          {error.weightage}
+                        </div>
                       )}
-                    </Box>
-                  </div>
-                </div>
-                <div className="row item_fld_rw gap-3 md:pt-2">
-
-                  <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
-                    <label className="label">GST%</label>
-                    <Select
-                      labelId="dropdown-label"
-                      id="dropdown"
-                      value={gst || ""}
-                      onChange={(e) => {
-                        setGST(e.target.value);
-                      }}
-                      size="small"
-                      displayEmpty
-                      renderValue={(selected) => {
-                        if (selected === "") {
-                          return <span style={{ color: "rgba(0, 0, 0, 0.38)" }}>Select GST%</span>;
-                        }
-                        const selectedOption = gstList.find((option) => option.id == selected);
-                        return selectedOption ? selectedOption.name : "";
-                      }}
-                      sx={{
-                        ".MuiSelect-select": {
-                          color: gst ? "inherit" : "rgba(0, 0, 0, 0.38)",
-                          padding: "8.5px 12px !important",
-                        },
-                      }}
-                    >
-                      {gstList.map((option) => (
-                        <MenuItem key={option.id} value={option.id}>
-                          {option.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </div>
-
-                  {/* <div className="row border-b pb-6 " style={{ borderColor: "var(--color2)" }}> */}
-                  <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
-                    <label className="label">MRP</label>
-                    <TextField
-                      required
-                      id="outlined-number"
-                      placeholder="Enter MRP"
-                      // style={{ width: "350px" }}
-                      size="small"
-                      type="number"
-                      value={MRP}
-                      onChange={(e) => {
-                        setMRP(e.target.value);
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38) "
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "var(--color1)", // Hover border color
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", // Focused border color
-                          },
-                        },
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row item_fld_rw gap-3 md:pt-2">
-
-                  <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
-                    <label className="label">Location</label>
-                    {/* <TextField
-                  id="outlined-number"
-                  label="Location"
-                  style={{ width: '350px' }}
-                  size="small"
-                  value={location.toUpperCase()}
-                  onChange={(e) => { setLocation(e.target.value) }}
-                /> */}
-
-                    <Autocomplete
-                      value={locationvalue}
-                      inputValue={location}
-                      size="small"
-                      onChange={handleLocationOptionChange}
-                      onInputChange={handleLocationInputChange}
-                      getOptionLabel={(option) =>
-                        typeof option === "string" ? option : option
-                      }
-                      options={locationList}
-                      renderOption={(props, option) => (
-                        <ListItem {...props}>
-                          <ListItemText primary={option} />
-                        </ListItem>
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          placeholder="Select Location"
-                          InputProps={{
-                            ...params.InputProps,
-                          }}
-                          inputProps={{
-                            ...params.inputProps,
-                            style: { textTransform: "capitalize" }, // ✅ Apply directly to input
-                          }}
-                        />
-                      )}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38)"
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "var(--color1)",
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)",
-                          },
-                        },
-                      }}
-                    // freeSolo
-                    />
-
-
-                  </div>
-
-                  <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
-                    <label className="label">Barcode</label>
-                    <TextField
-                      required
-                      id="outlined-number"
-                      placeholder="Enter Barcode"
-                      // style={{ width: "350px" }}
-                      size="small"
-                      type="number"
-                      value={barcode}
-                      onChange={(e) => {
-                        setBarcode(e.target.value);
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38) "
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "var(--color1)",
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)",
-                          },
-                        },
-                      }}
-                    />
-                  </div>
-                </div>
-
-
-                <div className="row item_fld_rw gap-3 md:pt-2">
-                  <div className="fields four_divv itm_divv_wid" style={{ width: "50%" }}>
-                    <label className="label">HSN code</label>
-                    <TextField
-                      id="outlined-number"
-                      placeholder="Enter HSN Code"
-                      type="number"
-                      // style={{ width: "232px" }}
-                      size="small"
-                      value={hsn_code}
-                      onChange={(e) => {
-                        sethsnCode(e.target.value);
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38) "
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "var(--color1)", // Hover border color
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", // Focused border color
-                          },
-                        },
-                      }}
-                    />
-                  </div>
-
-                  <div className="fields four_divv itm_divv_wid" style={{ width: "50%" }}>
-                    <div
-                      style={{ display: "flex", gap: "10px", cursor: "pointer" }}
-                    >
-                      <label className="label">Category </label>
-                      {/* <FaPlusCircle className='mt-1.5' onClick={() => setOpen(true)} /> */}
                     </div>
-                    <Box>
+                    <div className="fields Unit_divvv itm_divv_wid">
+                      <label className="label">Pack</label>
+                      <TextField
+                        id="outlined-number"
+                        disabled
+                        // style={{ width: "160px" }}
+                        size="small"
+                        value={pack}
+                        onChange={(e) => {
+                          setPack(e.target.value);
+                        }}
+                      />
+                      {/* {error.pack && <span style={{ color: 'red', fontSize: '14px' }}>{error.pack}</span>} */}
+                    </div>
+                  </div>
+                  <div className="row item_fld_rw gap-3 md:pt-2">
+                    <div className="fields" style={{ width: "100%", flexDirection: "column" }}>
+                      <div
+                        style={{ display: "flex", gap: "10px", cursor: "pointer" }}
+                      >
+                        <label className="label">Drug Group <span className="text-red-600  ">*</span></label>
+                        <FaPlusCircle
+                          className="mt-1.5 cursor-pointer"
+                          onClick={() => setOpenDrugGroup(true)}
+                        />
+                      </div>
                       <FormControl fullWidth>
                         <Autocomplete
                           disablePortal
-                          id="combo-box-demo"
-                          options={categoryList}
+                          options={drugGroupList}
                           size="small"
-                          value={selectedCategory}
-                          // sx={{ width: 350 }}
-                          onChange={(e, value) => setSelectedCategory(value)}
-                          getOptionLabel={(option) => option.category_name}
+                          value={drugGroup}
+                          style={{ width: "100%" }}
+                          // onChange={(e, value) => setDrugGroup(value)}
+
+                          onChange={(e, value) => {
+                            setDrugGroup(value);
+
+                            setError((prev) => ({
+                              ...prev,
+                              drugGroup: "",
+                            }));
+                          }}
+                          onInputChange={(e, newInputValue) => {
+                            setDrugGroupSearch(newInputValue);
+                            if (newInputValue.trim() !== "") {
+                              handleDrugGroupSearch(newInputValue);
+                            }
+                          }}
+                          onOpen={() => {
+                            handleDrugGroupSearch("");
+                          }}
+                          getOptionLabel={(option) => option ? (option.name || "") : ""}
                           renderInput={(params) => (
-                            <TextField {...params} placeholder="Select Category " />
+                            <TextField {...params} placeholder="Search Drug Group" />
+                          )}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: error.drugGroup
+                                  ? "#d32f2f"
+                                  : "rgba(0, 0, 0, 0.38)",
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: error.drugGroup
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: error.drugGroup
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                            },
+                          }}
+                        />
+                        {error.drugGroup && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                            {error.drugGroup}
+                          </div>
+                        )}
+                      </FormControl>
+                    </div>
+                  </div>
+
+                  <div className="row item_fld_rw gap-3 md:pt-2">
+                    <div className="fields four_divv" style={{ width: "100%" }}>
+                      <label className="label">Packaging In</label>
+                      <Select
+                        labelId="dropdown-label"
+                        id="dropdown"
+                        value={packaging || ""}
+                        // sx={{ minWidth: "250px" }}
+                        onChange={handlePackagingChange}
+                        size="small"
+                        displayEmpty
+                        renderValue={(selected) => {
+                          if (selected === "") {
+                            return <span style={{ color: "rgba(0, 0, 0, 0.38)" }}>Select Packaging</span>;
+                          }
+                          const selectedOption = packList.find((option) => option.id == selected);
+                          return selectedOption ? selectedOption.packging_name : "";
+                        }}
+                        sx={{
+                          ".MuiSelect-select": {
+                            color: packaging ? "inherit" : "rgba(0, 0, 0, 0.38)",
+                            padding: "8.5px 12px !important",
+                          },
+                        }}
+                      >
+                        {packList.map((option) => (
+                          <MenuItem key={option.id} value={option.id}>
+                            {option.packging_name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div className="bg-white rounded-lg items-center mt-4 mb-5 p-4 item_inner_box" style={{
+                  border: '1px solid #628a2f73',
+                  boxShadow: 'rgb(184 202 161 / 7%) 11px 12px 20px',
+                  width: "50%",
+                  height: '100%'
+
+                }}>
+                  <div className="row gap-3 item_fld_rw">
+                    <div className="fields Unit_divvv itm_divv_wid" style={{ width: "50%" }}>
+                      <div
+                        style={{ display: "flex", gap: "10px", cursor: "pointer" }}
+                      >
+                        <label className="label">Company <span className="text-red-600  ">*</span></label>
+                        <FaPlusCircle
+                          className="mt-1.5 cursor-pointer"
+                          onClick={() => setOpenCompany(true)}
+                        />
+                      </div>
+                      {/* <label className="label"></label> */}
+                      <Box>
+                        <Autocomplete
+                          disablePortal
+                          id="combo-box-demo"
+                          options={companyList}
+                          size="small"
+                          value={selectedCompany}
+                          // onChange={(e, value) => setSelectedCompany(value)}
+                          onChange={(e, value) => {
+                            setSelectedCompany(value);
+
+                            setError((prev) => ({
+                              ...prev,
+                              selectedCompany: "",
+                            }));
+                          }}
+                          error={!!error.selectedCompany}
+                          getOptionLabel={(option) => option.company_name}
+                          renderInput={(params) => (
+                            <TextField {...params} placeholder="Select Company" />
+                          )}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: error.selectedCompany
+                                  ? "#d32f2f"
+                                  : "rgba(0, 0, 0, 0.38)",
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: error.selectedCompany
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: error.selectedCompany
+                                  ? "#d32f2f"
+                                  : "var(--color1)",
+                              },
+                            },
+                          }}
+                        />
+
+                        {error.selectedCompany && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px", textAlign: "justify", }}>
+                            {error.selectedCompany}
+                          </div>
+                        )}
+                        {/* {error.selectedCompany && <span style={{ color: 'red', fontSize: '14px' }}>{error.selectedCompany}</span>} */}
+                      </Box>
+                    </div>
+
+                    <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
+                      <div
+                        style={{ display: "flex", gap: "10px", cursor: "pointer" }}
+                      >
+                        <label className="label">Suppliers </label>
+                        <FaPlusCircle
+                          className="mt-1.5 cursor-pointer"
+                          onClick={() => setOpenDistributor(true)}
+                        />
+                      </div>
+                      {/* <label className="label"></label> */}
+                      {/* <Box sx={{ minWidth: 350 }}> */}
+                      <Box >
+                        <Autocomplete
+                          disablePortal
+                          id="combo-box-demo"
+                          options={suppliersList}
+                          value={selectedSuppliers}
+                          size="small"
+                          // sx={{ width: 350 }}
+                          onChange={(e, value) => setSelectedSuppliers(value)}
+                          getOptionLabel={(option) => {
+                            if (!option) return "";
+                            return (option.name || option.distributor_name || "").toUpperCase();
+                          }}
+                          renderInput={(params) => (
+                            <TextField {...params} placeholder="Select Suppliers" />
                           )}
                           sx={{
                             "& .MuiOutlinedInput-root": {
@@ -1827,232 +1603,461 @@ const Itemmaster = () => {
                             },
                           }}
                         />
-                      </FormControl>
-                    </Box>
+                        {error.selectedSuppliers && (
+                          <span style={{ color: "var(--color6)", fontSize: "14px" }}>
+                            {error.selectedSuppliers}
+                          </span>
+                        )}
+                      </Box>
+                    </div>
                   </div>
-                </div>
+                  <div className="row item_fld_rw gap-3 md:pt-2">
 
-              </div>
-            </div>
-            <div className="row border-b border-dashed " style={{ borderColor: "var(--color2)" }}></div>
-            <div >
-              <div className="row pb-2"></div>
-              <div>
-                <h1 className="product" style={{ color: "var(--color1)", textAlign: "center" }}>
-                  Product Images
-                </h1>
-              </div>
-              <div className="row border-b border-dashed pt-2" style={{ borderColor: "var(--color2)" }}></div>
-              <div className="row justify-center product_img_divv mt-4 gap-4 ">
-                <div className="upload_bx1 w-full">
-                  <div className="uploadBox">
-                    <h1 className="text-gray-600 font-semibold text-lg md:text-xl">
-                      Front Photo
-                    </h1>
-                  </div>
-                  <div className="upload w-full">
-                    <input
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      id="front-photo-file"
-                      type="file"
-                      onChange={handleFrontPhoto}
-                    />
-                    {selectedFrontFile == null || selectedFrontFile === "null" || selectedFrontFile === "undefined" || selectedFrontFile === "" || !frontImgUrl || frontImgUrl === "null" || frontImgUrl.endsWith("/null") || frontImgUrl.endsWith("/undefined") ? (
-                      <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
-                        <img src="./tablet_2.png" width="40%" height="40%" style={{
-                          marginTop: "18px",
-                          height: "200px",
-                          width: "250px",
-                          objectFit: "contain",
-                        }} />
-                        <span>Drop your image here</span>
-                      </div>
-                    ) : (
-                      <img
-                        src={frontImgUrl}
-                        alt="Uploaded"
-                        className="rounded-md"
-                        style={{
-                          marginTop: "18px",
-                          height: "200px",
-                          width: "250px",
-                          objectFit: "contain",
+                    <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
+                      <label className="label">GST%</label>
+                      <Select
+                        labelId="dropdown-label"
+                        id="dropdown"
+                        value={gst || ""}
+                        onChange={(e) => {
+                          setGST(e.target.value);
+                        }}
+                        size="small"
+                        displayEmpty
+                        renderValue={(selected) => {
+                          if (selected === "") {
+                            return <span style={{ color: "rgba(0, 0, 0, 0.38)" }}>Select GST%</span>;
+                          }
+                          const selectedOption = gstList.find((option) => option.id == selected);
+                          return selectedOption ? selectedOption.name : "";
+                        }}
+                        sx={{
+                          ".MuiSelect-select": {
+                            color: gst ? "inherit" : "rgba(0, 0, 0, 0.38)",
+                            padding: "8.5px 12px !important",
+                          },
+                        }}
+                      >
+                        {gstList.map((option) => (
+                          <MenuItem key={option.id} value={option.id}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </div>
+
+                    {/* <div className="row border-b pb-6 " style={{ borderColor: "var(--color2)" }}> */}
+                    <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
+                      <label className="label">MRP</label>
+                      <TextField
+                        required
+                        id="outlined-number"
+                        placeholder="Enter MRP"
+                        // style={{ width: "350px" }}
+                        size="small"
+                        type="number"
+                        value={MRP}
+                        onChange={(e) => {
+                          setMRP(e.target.value);
+                        }}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "rgba(0, 0, 0, 0.38) "
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "var(--color1)", // Hover border color
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "var(--color1)", // Focused border color
+                            },
+                          },
                         }}
                       />
-                    )}
-                    <label
-                      htmlFor="front-photo-file"
-                      style={{ margin: "0px 0 16px" }}
-                    >
-                      <Button
-                        variant="contained"
-                        component="span"
-                        style={{ padding: "7px", background: "var(--color1)" }}
-                      >
-                        Choose Photo
-                      </Button>
-                    </label>
+                    </div>
                   </div>
-                  {error.selectedFrontFile && (
-                    <span style={{ color: "var(--color6)", fontSize: "14px" }}>
-                      {error.selectedFrontFile}
-                    </span>
-                  )}
-                </div>
-                <div className="upload_bx2 w-full">
-                  <div className="uploadBox">
-                    <h1 className="text-gray-600 font-semibold text-lg md:text-xl">
-                      Backside Photo
-                    </h1>
-                  </div>
-                  <div className="upload w-full">
-                    <input
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      id="back-button-file"
-                      type="file"
-                      onChange={handleBackPhoto}
-                    />
-                    {selectedBackFile == null || selectedBackFile === "null" || selectedBackFile === "undefined" || selectedBackFile === "" || !backImgUrl || backImgUrl === "null" || backImgUrl.endsWith("/null") || backImgUrl.endsWith("/undefined") ? (
-                      <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
-                        <img src="./tablet_2.png" alt="tablet" width="40%" height="40%" style={{
-                          marginTop: "18px",
-                          height: "200px",
-                          width: "250px",
-                          objectFit: "contain",
-                        }} />
-                        <span>Drop your image here</span>
-                      </div>
-                    ) : (
-                      <img
-                        src={backImgUrl}
-                        alt="Uploaded"
-                        className="rounded-md"
-                        style={{
-                          marginTop: "18px",
-                          height: "200px",
-                          width: "250px",
-                          objectFit: "contain",
+                  <div className="row item_fld_rw gap-3 md:pt-2">
+
+                    <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
+                      <label className="label">Location</label>
+                      {/* <TextField
+                  id="outlined-number"
+                  label="Location"
+                  style={{ width: '350px' }}
+                  size="small"
+                  value={location.toUpperCase()}
+                  onChange={(e) => { setLocation(e.target.value) }}
+                /> */}
+
+                      <Autocomplete
+                        value={locationvalue}
+                        inputValue={location}
+                        size="small"
+                        onChange={handleLocationOptionChange}
+                        onInputChange={handleLocationInputChange}
+                        getOptionLabel={(option) =>
+                          typeof option === "string" ? option : option
+                        }
+                        options={locationList}
+                        renderOption={(props, option) => (
+                          <ListItem {...props}>
+                            <ListItemText primary={option} />
+                          </ListItem>
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            placeholder="Select Location"
+                            InputProps={{
+                              ...params.InputProps,
+                            }}
+                            inputProps={{
+                              ...params.inputProps,
+                              style: { textTransform: "capitalize" }, // ✅ Apply directly to input
+                            }}
+                          />
+                        )}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "rgba(0, 0, 0, 0.38)"
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "var(--color1)",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "var(--color1)",
+                            },
+                          },
+                        }}
+                      // freeSolo
+                      />
+
+
+                    </div>
+
+                    <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
+                      <label className="label">Barcode</label>
+                      <TextField
+                        required
+                        id="outlined-number"
+                        placeholder="Enter Barcode"
+                        // style={{ width: "350px" }}
+                        size="small"
+                        type="number"
+                        value={barcode}
+                        onChange={(e) => {
+                          setBarcode(e.target.value);
+                        }}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "rgba(0, 0, 0, 0.38) "
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "var(--color1)",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "var(--color1)",
+                            },
+                          },
                         }}
                       />
-                    )}
-                    <label
-                      htmlFor="back-button-file"
-                      style={{ margin: "0px 0 16px" }}
-                    >
-                      <Button
-                        variant="contained"
-                        component="span"
-                        style={{ padding: "7px", background: "var(--color1)" }}
-                      >
-                        Choose Photo
-                      </Button>
-                    </label>
+                    </div>
                   </div>
-                  {error.selectedBackFile && (
-                    <span style={{ color: "var(--color6)", fontSize: "14px" }}>
-                      {error.selectedBackFile}
-                    </span>
-                  )}
-                </div>
-                <div className="upload_bx3 w-full">
-                  <div className="uploadBox">
-                    <h1 className="text-gray-600 font-semibold text-lg md:text-xl">
-                      MRP Photo
-                    </h1>
-                  </div>
-                  <div className="upload w-full">
-                    <input
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      id="mrp-photo-file"
-                      type="file"
-                      onChange={handleMRPPhoto}
-                    />
-                    {selectedMRPFile == null || selectedMRPFile === "null" || selectedMRPFile === "undefined" || selectedMRPFile === "" || !mrpImgUrl || mrpImgUrl === "null" || mrpImgUrl.endsWith("/null") || mrpImgUrl.endsWith("/undefined") ? (
-                      <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
-                        <img src="./tablet_2.png" alt="tablet" width="40%" height="40%" style={{
-                          marginTop: "18px",
-                          height: "200px",
-                          width: "250px",
-                          objectFit: "contain",
-                        }} />
-                        <span>Drop your image here</span>
-                      </div>
-                    ) : (
-                      <img
-                        src={mrpImgUrl}
-                        alt="Uploaded"
-                        className="rounded-md"
-                        style={{
-                          marginTop: "18px",
-                          height: "200px",
-                          width: "250px",
-                          objectFit: "contain",
+
+
+                  <div className="row item_fld_rw gap-3 md:pt-2">
+                    <div className="fields four_divv itm_divv_wid" style={{ width: "50%" }}>
+                      <label className="label">HSN code</label>
+                      <TextField
+                        id="outlined-number"
+                        placeholder="Enter HSN Code"
+                        type="number"
+                        // style={{ width: "232px" }}
+                        size="small"
+                        value={hsn_code}
+                        onChange={(e) => {
+                          sethsnCode(e.target.value);
+                        }}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "rgba(0, 0, 0, 0.38) "
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "var(--color1)", // Hover border color
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "var(--color1)", // Focused border color
+                            },
+                          },
                         }}
                       />
-                    )}
-                    <label htmlFor="mrp-photo-file" style={{ margin: "0px 0 16px" }}>
-                      <Button
-                        variant="contained"
-                        component="span"
-                        style={{ padding: "7px", background: "var(--color1)" }}
+                    </div>
+
+                    <div className="fields four_divv itm_divv_wid" style={{ width: "50%" }}>
+                      <div
+                        style={{ display: "flex", gap: "10px", cursor: "pointer" }}
                       >
-                        Choose Photo
-                      </Button>
-                    </label>
+                        <label className="label">Category </label>
+                        {/* <FaPlusCircle className='mt-1.5' onClick={() => setOpen(true)} /> */}
+                      </div>
+                      <Box>
+                        <FormControl fullWidth>
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={categoryList}
+                            size="small"
+                            value={selectedCategory}
+                            // sx={{ width: 350 }}
+                            onChange={(e, value) => setSelectedCategory(value)}
+                            getOptionLabel={(option) => option.category_name}
+                            renderInput={(params) => (
+                              <TextField {...params} placeholder="Select Category " />
+                            )}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "rgba(0, 0, 0, 0.38) "
+                                },
+                                "&:hover fieldset": {
+                                  borderColor: "var(--color1)", // Hover border color
+                                },
+                                "&.Mui-focused fieldset": {
+                                  borderColor: "var(--color1)", // Focused border color
+                                },
+                              },
+                            }}
+                          />
+                        </FormControl>
+                      </Box>
+                    </div>
                   </div>
-                  {error.selectedMRPFile && (
-                    <span style={{ color: "var(--color6)", fontSize: "14px" }}>
-                      {error.selectedMRPFile}
-                    </span>
-                  )}
+
+                </div>
+              </div>
+              <div className="row border-b border-dashed " style={{ borderColor: "var(--color2)" }}></div>
+              <div >
+                <div className="row pb-2"></div>
+                <div>
+                  <h1 className="product" style={{ color: "var(--color1)", textAlign: "center" }}>
+                    Product Images
+                  </h1>
+                </div>
+                <div className="row border-b border-dashed pt-2" style={{ borderColor: "var(--color2)" }}></div>
+                <div className="row justify-center product_img_divv mt-4 gap-4 ">
+                  <div className="upload_bx1 w-full">
+                    <div className="uploadBox">
+                      <h1 className="text-gray-600 font-semibold text-lg md:text-xl">
+                        Front Photo
+                      </h1>
+                    </div>
+                    <div className="upload w-full">
+                      <input
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        id="front-photo-file"
+                        type="file"
+                        onChange={handleFrontPhoto}
+                      />
+                      {selectedFrontFile == null || selectedFrontFile === "null" || selectedFrontFile === "undefined" || selectedFrontFile === "" || !frontImgUrl || frontImgUrl === "null" || frontImgUrl.endsWith("/null") || frontImgUrl.endsWith("/undefined") ? (
+                        <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
+                          <img src="./tablet_2.png" width="40%" height="40%" style={{
+                            marginTop: "18px",
+                            height: "200px",
+                            width: "250px",
+                            objectFit: "contain",
+                          }} />
+                          <span>Drop your image here</span>
+                        </div>
+                      ) : (
+                        <img
+                          src={frontImgUrl}
+                          alt="Uploaded"
+                          className="rounded-md"
+                          style={{
+                            marginTop: "18px",
+                            height: "200px",
+                            width: "250px",
+                            objectFit: "contain",
+                          }}
+                        />
+                      )}
+                      <label
+                        htmlFor="front-photo-file"
+                        style={{ margin: "0px 0 16px" }}
+                      >
+                        <Button
+                          variant="contained"
+                          component="span"
+                          style={{ padding: "7px", background: "var(--color1)" }}
+                        >
+                          Choose Photo
+                        </Button>
+                      </label>
+                    </div>
+                    {error.selectedFrontFile && (
+                      <span style={{ color: "var(--color6)", fontSize: "14px" }}>
+                        {error.selectedFrontFile}
+                      </span>
+                    )}
+                  </div>
+                  <div className="upload_bx2 w-full">
+                    <div className="uploadBox">
+                      <h1 className="text-gray-600 font-semibold text-lg md:text-xl">
+                        Backside Photo
+                      </h1>
+                    </div>
+                    <div className="upload w-full">
+                      <input
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        id="back-button-file"
+                        type="file"
+                        onChange={handleBackPhoto}
+                      />
+                      {selectedBackFile == null || selectedBackFile === "null" || selectedBackFile === "undefined" || selectedBackFile === "" || !backImgUrl || backImgUrl === "null" || backImgUrl.endsWith("/null") || backImgUrl.endsWith("/undefined") ? (
+                        <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
+                          <img src="./tablet_2.png" alt="tablet" width="40%" height="40%" style={{
+                            marginTop: "18px",
+                            height: "200px",
+                            width: "250px",
+                            objectFit: "contain",
+                          }} />
+                          <span>Drop your image here</span>
+                        </div>
+                      ) : (
+                        <img
+                          src={backImgUrl}
+                          alt="Uploaded"
+                          className="rounded-md"
+                          style={{
+                            marginTop: "18px",
+                            height: "200px",
+                            width: "250px",
+                            objectFit: "contain",
+                          }}
+                        />
+                      )}
+                      <label
+                        htmlFor="back-button-file"
+                        style={{ margin: "0px 0 16px" }}
+                      >
+                        <Button
+                          variant="contained"
+                          component="span"
+                          style={{ padding: "7px", background: "var(--color1)" }}
+                        >
+                          Choose Photo
+                        </Button>
+                      </label>
+                    </div>
+                    {error.selectedBackFile && (
+                      <span style={{ color: "var(--color6)", fontSize: "14px" }}>
+                        {error.selectedBackFile}
+                      </span>
+                    )}
+                  </div>
+                  <div className="upload_bx3 w-full">
+                    <div className="uploadBox">
+                      <h1 className="text-gray-600 font-semibold text-lg md:text-xl">
+                        MRP Photo
+                      </h1>
+                    </div>
+                    <div className="upload w-full">
+                      <input
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        id="mrp-photo-file"
+                        type="file"
+                        onChange={handleMRPPhoto}
+                      />
+                      {selectedMRPFile == null || selectedMRPFile === "null" || selectedMRPFile === "undefined" || selectedMRPFile === "" || !mrpImgUrl || mrpImgUrl === "null" || mrpImgUrl.endsWith("/null") || mrpImgUrl.endsWith("/undefined") ? (
+                        <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
+                          <img src="./tablet_2.png" alt="tablet" width="40%" height="40%" style={{
+                            marginTop: "18px",
+                            height: "200px",
+                            width: "250px",
+                            objectFit: "contain",
+                          }} />
+                          <span>Drop your image here</span>
+                        </div>
+                      ) : (
+                        <img
+                          src={mrpImgUrl}
+                          alt="Uploaded"
+                          className="rounded-md"
+                          style={{
+                            marginTop: "18px",
+                            height: "200px",
+                            width: "250px",
+                            objectFit: "contain",
+                          }}
+                        />
+                      )}
+                      <label htmlFor="mrp-photo-file" style={{ margin: "0px 0 16px" }}>
+                        <Button
+                          variant="contained"
+                          component="span"
+                          style={{ padding: "7px", background: "var(--color1)" }}
+                        >
+                          Choose Photo
+                        </Button>
+                      </label>
+                    </div>
+                    {error.selectedMRPFile && (
+                      <span style={{ color: "var(--color6)", fontSize: "14px" }}>
+                        {error.selectedMRPFile}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+
+              <div className="row item_add_box_1">
+                <div className="w-full pt-4">
+                  <label className="label block text-sm font-medium text-gray-700 mb-2">
+                    Message
+                  </label>
+                  <TextField
+                    id="outlined-multiline-static"
+                    placeholder="Message"
+                    multiline
+                    value={message}
+                    onChange={(e) => {
+                      setMessage(e.target.value);
+                    }}
+                    className="w-full"
+                    rows={4}
+                    variant="outlined"
+                    inputProps={{
+                      style: { textTransform: "capitalize" }, // ✅ applies to textarea
+                    }}
+                  />
+
+
                 </div>
               </div>
 
-            </div>
+              <div className="item_add_box_1" style={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button
+                  variant="contained"
+                  style={{ margin: "10px", marginLeft: "0px", background: "var(--color1)" }}
+                  onClick={handleSubmit}
+                >Submit</Button>
 
-            <div className="row item_add_box_1">
-              <div className="w-full pt-4">
-                <label className="label block text-sm font-medium text-gray-700 mb-2">
-                  Message
-                </label>
-                <TextField
-                  id="outlined-multiline-static"
-                  placeholder="Message"
-                  multiline
-                  value={message}
-                  onChange={(e) => {
-                    setMessage(e.target.value);
-                  }}
-                  className="w-full"
-                  rows={4}
-                  variant="outlined"
-                  inputProps={{
-                    style: { textTransform: "capitalize" }, // ✅ applies to textarea
-                  }}
-                />
-
-
+                <Button variant="contained" style={{ margin: "10px 0 10px 0", background: "var(--color6)" }} onClick={resetData}>
+                  Cancel
+                </Button>
               </div>
             </div>
-
-            <div className="item_add_box_1" style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button
-                variant="contained"
-                style={{ margin: "10px", marginLeft: "0px", background: "var(--color1)" }}
-                onClick={handleSubmit}
-              >Submit</Button>
-
-              <Button variant="contained" style={{ margin: "10px 0 10px 0", background: "var(--color6)" }} onClick={resetData}>
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div >
-      )
-      }
+          </div >
+        )
+        }
+      </div>
       {/* Category Dialog Box */}
       <Dialog id="modal" className="custom-dialog" open={open} onClose={handleClose}>
         <DialogTitle>Create Catagory</DialogTitle>

@@ -1799,7 +1799,6 @@ const InventoryList = () => {
       // style={{ overflow: "hidden" }}
       >
 
-
         <Box className="p-6 tbl_content_inv" sx={{ width: "100%" }}>
           <div className="flex flex-wrap justify-between items-center gap-3 mb-3 w-full">
             <div className="flex flex-wrap gap-3">
@@ -1975,7 +1974,10 @@ const InventoryList = () => {
                 marginInline: "10px",
               }}
             >
-              <div className="table-responsive">
+              <div className="table-responsive" style={{
+                height: "600px", overflowY: "auto", scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}>
                 <table
                   className="custom-table custom-table-invantory cusror-pointer"
                   style={{
@@ -1984,7 +1986,7 @@ const InventoryList = () => {
                     borderSpacing: "0 6px",
                   }}
                 >
-                  <thead>
+                  <thead style={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "#fff" }}>
                     <tr>
                       <th>
                         {/* <input

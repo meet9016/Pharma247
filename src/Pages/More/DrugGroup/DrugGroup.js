@@ -309,8 +309,15 @@ const DrugGroup = () => {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
+        overflow: "hidden",
       }}>
-        <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+        <div style={{
+          flex: 1,
+          overflowY: "auto",
+          overflowX: "hidden",
+          width: "100%",
+          minHeight: 0,
+        }}>
           <div className="p-6">
             <div className="mb-4 add_company_hdr" style={{ display: "flex", gap: "4px" }}>
               <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
@@ -452,14 +459,10 @@ const DrugGroup = () => {
         </div>
         {/* Pagination UI like PurchaseList */}
         <div
-          className="flex justify-center mt-4"
+          className="flex justify-center"
           style={{
-            marginTop: 'auto',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '1rem',
+            marginTop: 0,
+            padding: "10px",
           }}
         >
           <button

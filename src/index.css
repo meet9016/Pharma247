@@ -2,6 +2,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+
+
 .item-table {
     border-collapse: collapse;
     width: 100%;
