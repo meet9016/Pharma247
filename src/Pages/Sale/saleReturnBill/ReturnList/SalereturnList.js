@@ -513,8 +513,8 @@ const SalereturnList = () => {
                                 <div className="flex gap-5 justify-center">
                                   <VisibilityIcon
                                     className="cursor-pointer primary"
-                                    onClick={() => {
-                                      history.push(`/purchaseView/${row.id}`);
+                                  onClick={() => {
+                                      history.push(`/SaleReturnView/${row.id}`);
                                     }}
                                   />
                                   <FaFilePdf

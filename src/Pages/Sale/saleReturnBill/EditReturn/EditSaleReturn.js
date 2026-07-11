@@ -277,7 +277,7 @@ const EditSaleReturn = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -348,7 +348,7 @@ const EditSaleReturn = () => {
     } catch (error) {
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -376,7 +376,7 @@ const EditSaleReturn = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-   if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -411,7 +411,7 @@ const EditSaleReturn = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-   if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -494,13 +494,13 @@ const EditSaleReturn = () => {
       } catch (error) {
         console.error("API error:", error);
         setIsSubmitting(false);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
 
       }
     }
@@ -586,7 +586,7 @@ const EditSaleReturn = () => {
       }
     } catch (e) {
       console.error(e);
-         if (e?.response?.status === 401) {
+      if (e?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -713,7 +713,7 @@ const EditSaleReturn = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -759,7 +759,7 @@ const EditSaleReturn = () => {
       }
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -855,13 +855,13 @@ const EditSaleReturn = () => {
       if (error.response && error.response.status === 401) {
         setUnsavedItems(false);
         localStorage.setItem("unsavedItems", unsavedItems.toString());
-   
+
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.clear();
         history.push("/");
-      
+
       } else {
         console.error("Error deleting items:", error);
 
@@ -939,7 +939,7 @@ const EditSaleReturn = () => {
             <span className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
               onClick={() => { history.push("/saleReturn") }}
             >
-              Sales Return 
+              Sales Return
             </span>
 
             <span className="w-6 h-6">
@@ -1501,19 +1501,19 @@ const EditSaleReturn = () => {
                     </div>
 
                     <span style={{ alignSelf: "center" }}>
-                      {item.iteam_name || "-----"}
+                      {item.iteam_name || "-"}
                     </span>
 
                   </td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.unit ? item.unit : '-----'}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch ? item.batch : '-----'}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.exp ? item.exp : '-----'}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : '-----'}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.base ? item.base : '-----'}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst ? item.gst : '-----'}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty ? item.qty : '-----'}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : '-----'}</td>
-                  <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.net_rate ? item.net_rate : '-----'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.unit ? item.unit : '-'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch ? item.batch : '-'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.exp ? item.exp : '-'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : '-'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.base ? item.base : '-'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst ? item.gst : '-'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty ? item.qty : '-'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : '-'}</td>
+                  <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.net_rate ? item.net_rate : '-'}</td>
                 </tr>
               ))}
 

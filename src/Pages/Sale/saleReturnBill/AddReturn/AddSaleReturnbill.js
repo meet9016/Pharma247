@@ -103,6 +103,8 @@ const Salereturn = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [gstOpen, setGstOpen] = useState(false);
+    const [fieldErrors, setFieldErrors] = useState({});
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
@@ -320,10 +322,13 @@ const Salereturn = () => {
 
     const BankList = async () => {
         try {
-            await axios.post('bank-list', {
+            console.log("Token :", token);
+            await axios.post('bank-list', {}, {
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 }
+
             }
             ).then((response) => {
                 setBankData(response.data.data);
@@ -396,11 +401,13 @@ const Salereturn = () => {
                 try {
                     const response = await axios.post(
                         "list-customer?",
+                        {},
                         {
                             params: params,
                             headers: {
+                                "Content-Type": "application/json",
                                 Authorization: `Bearer ${token}`,
-                            },
+                            }
                         }
                     );
                     setCustomerDetails(response.data.data);
@@ -1289,7 +1296,10 @@ const Salereturn = () => {
                             <tr className="input-row">
                                 <td className="p-0">
                                     {isEditMode ? (
-                                        <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'flex-end' }}>
+                                        <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'flex-end',
+                                            border: isEditMode && !searchItem?.trim() ? '1.5px solid red' : '1.5px solid transparent',
+                                            borderRadius: 4, padding: '4px 6px'
+                                        }}>
                                             <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
                                             {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
                                         </div>
@@ -1418,10 +1428,24 @@ const Salereturn = () => {
                                             '& .MuiInputBase-input': {
                                                 textAlign: 'center',
                                             },
+                                            '& .MuiOutlinedInput-notchedOutline': isEditMode && !base ? { borderColor: 'red !important' } : {},
                                         }}
                                         size="small"
                                         inputRef={el => inputRefs.current[10] = el}
-                                        onKeyDown={handleKeyDown}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                // Open GST dropdown
+                                                setGstOpen(true);
+                                                setTimeout(() => {
+                                                    if (inputRefs.current[11]) {
+                                                        inputRefs.current[11].focus();
+                                                    }
+                                                }, 0);
+                                                return;
+                                            }
+                                            handleKeyDown(e);
+                                        }}
                                         value={base}
                                         onChange={(e) => { setBase(e.target.value) }}
                                     />
@@ -1429,10 +1453,19 @@ const Salereturn = () => {
                                 <td>
                                     <Select
                                         size="small"
+                                        open={gstOpen}
+                                        onOpen={() => setGstOpen(true)}
+                                        onClose={() => setGstOpen(false)}
                                         value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
                                         onChange={(e) => {
                                             setGst(e.target.value !== "" ? Number(e.target.value) : "");
                                             setUnsavedItems(true);
+                                            setGstOpen(false);
+                                            setTimeout(() => {
+                                                if (inputRefs.current[12]) {
+                                                    inputRefs.current[12].focus();
+                                                }
+                                            }, 0);
                                         }}
                                         inputRef={el => inputRefs.current[11] = el}
                                         sx={{
@@ -1442,10 +1475,12 @@ const Salereturn = () => {
                                                 textAlign: 'center',
                                                 paddingY: '8.5px',
                                             },
+                                            '& .MuiOutlinedInput-notchedOutline': isEditMode && (gst === '' || gst === null || gst === undefined) ? { borderColor: 'red !important' } : {},
                                         }}
                                         onKeyDown={(e) => {
                                             if (e.key === "Tab" && e.shiftKey) {
                                                 e.preventDefault();
+                                                setGstOpen(false);
                                                 if (inputRefs.current[10]) {
                                                     inputRefs.current[10].focus();
                                                 }
@@ -1453,14 +1488,27 @@ const Salereturn = () => {
                                             }
                                             if (e.key === "Enter") {
                                                 e.preventDefault();
-                                                if (inputRefs.current[12]) {
-                                                    inputRefs.current[12].focus();
+                                                if (!gstOpen) {
+                                                    // First Enter: open the dropdown
+                                                    setGstOpen(true);
+                                                } else {
+                                                    // Second Enter: close dropdown and move to Qty
+                                                    setGstOpen(false);
+                                                    setTimeout(() => {
+                                                        if (inputRefs.current[12]) {
+                                                            inputRefs.current[12].focus();
+                                                        }
+                                                    }, 50);
                                                 }
+                                            }
+                                            if (e.key === "Escape") {
+                                                setGstOpen(false);
                                             }
                                         }}
                                     >
                                         <MenuItem value={0}>0</MenuItem>
                                         <MenuItem value={5}>5</MenuItem>
+                                        <MenuItem value={12}>12</MenuItem>
                                         <MenuItem value={18}>18</MenuItem>
                                     </Select>
                                 </td>
@@ -1538,18 +1586,18 @@ const Salereturn = () => {
                                                     className="cursor-pointer" />
                                             </div>
                                             <span style={{ alignSelf: "center" }}>
-                                                {item.iteam_name || "-----"}
+                                                {item.iteam_name || "-"}
                                             </span>
                                         </td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.unit}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.exp}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.base}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location}</td>
-                                        <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.net_rate}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.unit || "-"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch || "-"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.exp || "-"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp || "-"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.base || "-"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst || "-"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty || "-"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location || "-"}</td>
+                                        <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.net_rate || "-"}</td>
                                     </tr>
                                 ))
                             )}
