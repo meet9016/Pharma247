@@ -445,4 +445,8 @@
     background-color: transparent !important;
 }
 
+.react-datepicker-popper {
+    z-index: 9999 !important;
+}
+
 /* NEW CSS END */

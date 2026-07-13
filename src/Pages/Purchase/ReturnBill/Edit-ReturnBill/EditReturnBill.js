@@ -1070,7 +1070,7 @@ const EditReturnBill = () => {
                 returnBillEditID()
                 setIsDelete(false);
                 toast.dismiss();
-                toast.success("Item deleted successfully");
+                toast.success(response?.data?.message || "Item deleted successfully");
             })
         } catch (error) {
             console.error("API error:", error);
@@ -1081,7 +1081,8 @@ const EditReturnBill = () => {
                 localStorage.clear();
                 history.push("/");
             }
-
+            toast.dismiss();
+            toast.error(error?.response?.data?.message || "Item not deleted successfully");
         }
     }
 

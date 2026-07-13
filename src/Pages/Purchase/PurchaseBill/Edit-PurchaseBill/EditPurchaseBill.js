@@ -1205,7 +1205,7 @@ const EditPurchaseBill = () => {
           purchaseBillGetByID();
           setIsDelete(false);
            toast.dismiss();
-          toast.success("Item deleted successfully");
+          toast.success(response?.data?.message || "Item deleted successfully");
           removeItem()
         });
     } catch (error) {
@@ -1217,7 +1217,8 @@ const EditPurchaseBill = () => {
         history.push("/");
       }
       console.error("API error:", error);
-      toast.error("Item not deleted successfully");
+      toast.dismiss();
+      toast.error(error?.response?.data?.message || "Item not deleted successfully");
     }
   };
   /*<===================================================================== submit purchase bill   ================================================================> */

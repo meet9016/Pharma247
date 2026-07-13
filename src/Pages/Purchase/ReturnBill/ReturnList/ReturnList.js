@@ -267,6 +267,8 @@ const ReturnList = () => {
         .then((response) => {
           setIsDelete(false);
           ReturnBillList(currentPage);
+          toast.dismiss();
+          toast.success(response?.data?.message || "Purchase return bill deleted successfully");
         });
     } catch (error) {
       console.error("API error:", error);
@@ -277,6 +279,8 @@ const ReturnList = () => {
         localStorage.clear();
         history.push("/");
       }
+      toast.dismiss();
+      toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };
 
