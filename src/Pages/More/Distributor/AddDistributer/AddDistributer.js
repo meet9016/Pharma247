@@ -276,7 +276,7 @@ const AddDistributer = () => {
 
   const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
   const mobileRegex = /^[6-9][0-9]{9}$/;
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com)$/i;
   const pincodeRegex = /^[1-9][0-9]{5}$/;
   const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
   const accountRegex = /^[0-9]{9,18}$/;
@@ -964,7 +964,29 @@ const AddDistributer = () => {
                     <button
                       type="button"
                       onClick={() => history.push("/DistributorList")}
-                      className="py-2 min-w-16 px-5 h-10 text-white rounded-md bg-red-600 ml-2"
+                      style={{
+                        marginLeft: "8px",
+                        backgroundColor: "#dbdce0",
+                        color: "#4b5563",
+                        border: "1px solid #d1d5db",
+                        boxShadow: "none",
+                        textTransform: "none",
+
+                        padding: "8px 20px",
+                        minWidth: "64px",
+                        height: "40px",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#c9cacd";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "#dbdce0";
+                      }}
                     >
                       Cancel
                     </button>

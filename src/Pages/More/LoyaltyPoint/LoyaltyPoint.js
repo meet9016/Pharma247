@@ -39,7 +39,6 @@ const LoyaltyPoint = () => {
   const [minimumAmount, setMinimumAmount] = useState("");
   const [maximumAmount, setMaximumAmount] = useState("");
   const [percentage, setPercentage] = useState("");
-
   const [loyaltypointData, setLoyaltyPointData] = useState([]);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [header, setHeader] = useState("");
@@ -471,15 +470,12 @@ const LoyaltyPoint = () => {
                     </tr>
                   </thead>
 
-                  <tbody style={{ backgroundColor: "#3f621217" }}>
+                  <tbody >
                     {isLoading ? (
                       <tr>
                         <td
                           colSpan={loyaltyPointLabel.length + 2}
-                          style={{
-                            textAlign: "center",
-                            padding: "40px",
-                          }}
+                          style={{ position: "relative", height: "400px" }}
                         >
                           <div className="flex justify-center items-center w-full">
                             <Loader />

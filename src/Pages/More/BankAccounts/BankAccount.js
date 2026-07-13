@@ -336,11 +336,6 @@ const BankAccount = () => {
         .then((response) => {
           const list = response.data.data || [];
           setBankData(list);
-          if (list.length > 0 && (selectedAccountId === null || selectedAccountId === undefined)) {
-            setSelectedAccountId(list[0].id);
-            setDetails(list[0]);
-            BankDetailgetByID(list[0].id);
-          }
           if (response.data.status === 401) {
             history.push("/");
             localStorage.clear();
@@ -701,7 +696,7 @@ const BankAccount = () => {
               </List>
             )} */}
 
-            {bankData.length > 0 ? (
+            {bankData.filter(a => a.bank_account_name === "Saving" || a.bank_account_name === "Current").length > 0 ? (
               <>
                 {/* Savings Accounts */}
                 {bankData.filter(account => account.bank_account_name === "Saving").length > 0 && (
@@ -822,15 +817,13 @@ const BankAccount = () => {
                 )}
               </>
             ) : (
-              <div className="flex flex-col items-center w-full h-[400px]">
+              <div className="flex flex-col items-center justify-center w-full" style={{ paddingTop: "310px" }}>
                 <img
                   src={image1}
                   alt="No Data"
-                  className="w-48 h-auto object-contain  select-none pointer-events-none"
-                  style={{ marginTop: "120%" }}
+                  className="w-36 h-auto object-contain select-none pointer-events-none"
                 />
-
-                <p className="mt-4 text-black text-lg font-medium">
+                <p className="mt-3 text-gray-500 text-sm font-medium">
                   No Bank Details
                 </p>
               </div>
@@ -1266,7 +1259,13 @@ const BankAccount = () => {
         </Box>
 
 
-        <Dialog className="custom-dialog" open={openAddPopUp} onClose={handleCloseDialog}>
+        <Dialog className="custom-dialog" open={openAddPopUp} onClose={handleCloseDialog} fullWidth
+          PaperProps={{
+            sx: {
+              maxWidth: "800px !important",
+            },
+          }}
+        >
           <DialogTitle id="alert-dialog-title" className="primary">
             Add Bank Account
           </DialogTitle>
@@ -1449,8 +1448,6 @@ const BankAccount = () => {
                       <span className="error">{errors.accountType}</span>
                     )}
                   </div>
-                </div>
-                <div className="flex flex-col md:flex-row gap-5">
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
                       <span className="label primary mb-4">
@@ -1475,7 +1472,6 @@ const BankAccount = () => {
                             toast.dismiss();
                             toast.error("Opening Balance is Required");
                           }
-                          // Shift + Tab is allowed by default; do not prevent it
                         }
                       }}
                       onChange={(e) => {
@@ -1486,7 +1482,9 @@ const BankAccount = () => {
                       fullWidth={fullScreen}
                     />
                   </div>
-                  <div style={{ width: "100%" }}>
+                </div>
+                <div className="flex flex-col md:flex-row gap-5">
+                  <div style={{ width: "32.2%" }}>
                     <div className="mb-2">
                       <span className="label primary">As of Date</span>
                     </div>
@@ -1616,8 +1614,7 @@ const BankAccount = () => {
                       </span>
                     )}
                   </div>
-                </div>
-                <div className="flex flex-col md:flex-row gap-5 my-4">
+
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
                       <span className="label primary mb-4">IFSC Code</span>
@@ -1674,6 +1671,9 @@ const BankAccount = () => {
                       <span className="error">{errors.ifscCode}</span>
                     )}
                   </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-5">
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
                       <span className="label primary">Branch Name</span>
@@ -1731,8 +1731,6 @@ const BankAccount = () => {
                       )}
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-col md:flex-row gap-5">
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
                       <span className="label primary mb-4">
@@ -1841,8 +1839,12 @@ const BankAccount = () => {
         <Dialog
           open={openAddPopUpAdjust}
           className="custom-dialog"
-          maxWidth="sm"
           fullWidth
+          PaperProps={{
+            sx: {
+              maxWidth: "800px !important",
+            },
+          }}
         >
           <DialogTitle
             id="alert-dialog-title"
@@ -1875,137 +1877,125 @@ const BankAccount = () => {
 
           <DialogContent sx={{ padding: "24px", backgroundColor: "#f8f9fa" }}>
             <DialogContentText component="div" sx={{ margin: 0 }}>
-              {/* Select Account */}
-              <div className="detail mb-4 mt-4">
-                <span className="label primary">Select Account   <span className="text-red-600 ml-1">*</span> </span>
-                <Autocomplete
-                  id="select-account-autocomplete"
-                  // options={[
-                  //   { value: "cash", label: "Cash" },
-                  //   ...(bankData || []).map((option) => ({
-                  //     value: option.id,
-                  //     label: `${option.bank_user_name} (${option.bank_account_name})`
-                  //   }))
-                  // ]}
-                  options={(bankData || []).map((option) => ({
-                    value: option.id === 0 ? "cash" : option.id,
-                    label: option.bank_user_name === "Cash"
-                      ? "Cash"
-                      : `${option.bank_user_name} (${option.bank_account_name})`
-                  }))}
-                  getOptionLabel={(option) => option.label || ""}
-                  // value={
-                  //   [
-                  //     { value: "cash", label: "Cash" },
-                  //     ...(bankData || []).map((option) => ({
-                  //       value: option.id,
-                  //       label: `${option.bank_user_name} (${option.bank_account_name})`
-                  //     }))
-                  //   ].find((option) => option.value === paymentType) || null
-                  // }
-                  value={
-                    (bankData || [])
-                      .map((option) => ({
+              <div className="flex flex-col gap-5 mt-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {/* Select Account */}
+                  <div className="flex flex-col w-full">
+                    <span className="label primary mb-2">Select Account   <span className="text-red-600 ml-1">*</span> </span>
+                    <Autocomplete
+                      id="select-account-autocomplete"
+                      options={(bankData || []).map((option) => ({
                         value: option.id === 0 ? "cash" : option.id,
-                        label:
-                          option.bank_user_name === "Cash"
-                            ? "Cash"
-                            : `${option.bank_user_name} (${option.bank_account_name})`,
-                      }))
-                      .find((option) => option.value === paymentType) || null
-                  }
-                  onChange={(event, newValue) => {
-                    const fakeEvent = { target: { value: newValue ? newValue.value : "" } };
-                    handlePaymentTypeChange(fakeEvent);
+                        label: option.bank_user_name === "Cash"
+                          ? "Cash"
+                          : `${option.bank_user_name} (${option.bank_account_name})`
+                      }))}
+                      getOptionLabel={(option) => option.label || ""}
+                      value={
+                        (bankData || [])
+                          .map((option) => ({
+                            value: option.id === 0 ? "cash" : option.id,
+                            label:
+                              option.bank_user_name === "Cash"
+                                ? "Cash"
+                                : `${option.bank_user_name} (${option.bank_account_name})`,
+                          }))
+                          .find((option) => option.value === paymentType) || null
+                      }
+                      onChange={(event, newValue) => {
+                        const fakeEvent = { target: { value: newValue ? newValue.value : "" } };
+                        handlePaymentTypeChange(fakeEvent);
 
-                    setErrors((prev) => ({
-                      ...prev,
-                      paymentType: "",
-                    }));
-                  }}
-                  size="small"
-                  renderInput={(params) => (
-                    <TextField
-                      autoComplete="off"
-                      {...params}
-                      placeholder="Select Account"
-                      error={!!errors.paymentType}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": {
-                            borderColor: errors.paymentType ? "red" : "",
-                          },
-                          "&:hover fieldset": {
-                            borderColor: errors.paymentType ? "red" : "",
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: errors.paymentType ? "red" : "",
-                          },
-                        },
+                        setErrors((prev) => ({
+                          ...prev,
+                          paymentType: "",
+                        }));
                       }}
+                      size="small"
+                      renderInput={(params) => (
+                        <TextField
+                          autoComplete="off"
+                          {...params}
+                          placeholder="Select Account"
+                          error={!!errors.paymentType}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderColor: errors.paymentType ? "red" : "",
+                              },
+                              "&:hover fieldset": {
+                                borderColor: errors.paymentType ? "red" : "",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: errors.paymentType ? "red" : "",
+                              },
+                            },
+                          }}
+                        />
+                      )}
                     />
-                  )}
-                />
-                {errors.paymentType && (
-                  <div className="error" style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-                    {errors.paymentType}
+                    {errors.paymentType && (
+                      <div className="error" style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.paymentType}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              {/* Add or Reduce Buttons */}
-              <div className="detail mb-4">
-                <span className="label primary mb-2">Add or Reduce   <span className="text-red-600 ml-1">*</span></span>
-                <div className="flex flex-col sm:flex-row gap-3 mb-2">
-                  <Button
-                    autoFocus
-                    onClick={handleAddBtn}
-                    variant="outlined"
-                    startIcon={<AddIcon />}
-                    sx={{
-                      flex: 1,
-                      backgroundColor: clicked ? "#3F6212" : "transparent",
-                      color: clicked ? "#ffffff" : "#3F6212",
-                      borderColor: "#3F6212",
-                      '&:hover': {
-                        backgroundColor: clicked ? "#2e480d !important" : "#f1f8e9 !important",
-                        borderColor: "#3F6212 !important"
-                      }
-                    }}
-                  >
-                    Add Money
-                  </Button>
-                  <Button
-                    autoFocus
-                    onClick={handleReduceBtn}
-                    variant="outlined"
-                    startIcon={<RemoveIcon />}
-                    sx={{
-                      flex: 1,
-                      backgroundColor: reduceclicked ? "#c62828" : "transparent",
-                      color: reduceclicked ? "#ffffff" : "#c62828",
-                      borderColor: "#c62828",
-                      '&:hover': {
-                        backgroundColor: reduceclicked ? "#b71c1c !important" : "#ffebee !important",
-                        borderColor: "#c62828 !important"
-                      }
-                    }}
-                  >
-                    Reduce Money
-                  </Button>
-                </div>
-                {errors.reduceclicked && (
-                  <div className="error" style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
-                    {errors.reduceclicked}
+                  {/* Add or Reduce Buttons */}
+                  <div className="flex flex-col w-full">
+                    <span className="label primary mb-2">Add or Reduce   <span className="text-red-600 ml-1">*</span></span>
+                    <div className="flex flex-row gap-2 h-10">
+                      <Button
+                        autoFocus
+                        onClick={handleAddBtn}
+                        variant="outlined"
+                        startIcon={<AddIcon />}
+                        sx={{
+                          flex: 1,
+                          padding: "4px 8px",
+                          fontSize: "0.8rem",
+                          backgroundColor: clicked ? "#3F6212" : "transparent",
+                          color: clicked ? "#ffffff" : "#3F6212",
+                          borderColor: "#3F6212",
+                          '&:hover': {
+                            backgroundColor: clicked ? "#2e480d !important" : "#f1f8e9 !important",
+                            borderColor: "#3F6212 !important"
+                          }
+                        }}
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        autoFocus
+                        onClick={handleReduceBtn}
+                        variant="outlined"
+                        startIcon={<RemoveIcon />}
+                        sx={{
+                          flex: 1,
+                          padding: "4px 8px",
+                          fontSize: "0.8rem",
+                          backgroundColor: reduceclicked ? "#c62828" : "transparent",
+                          color: reduceclicked ? "#ffffff" : "#c62828",
+                          borderColor: "#c62828",
+                          '&:hover': {
+                            backgroundColor: reduceclicked ? "#b71c1c !important" : "#ffebee !important",
+                            borderColor: "#c62828 !important"
+                          }
+                        }}
+                      >
+                        Reduce
+                      </Button>
+                    </div>
+                    {errors.reduceclicked && (
+                      <div className="error" style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+                        {errors.reduceclicked}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              {/* Current Balance & Date */}
-              <div className="detail mb-4">
-                <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                  <div>
-                    <span className="label primary">Current Balance </span>
+                  {/* Current Balance */}
+                  <div className="flex flex-col w-full">
+                    <span className="label primary mb-2">Current Balance </span>
                     <OutlinedInput
                       type="number"
                       value={currentBalance}
@@ -2022,11 +2012,11 @@ const BankAccount = () => {
                       }}
                       size="small"
                     />
-
-
                   </div>
-                  <div>
-                    <span className="label primary">Date</span>
+
+                  {/* Date */}
+                  <div className="flex flex-col w-full">
+                    <span className="label primary mb-2">Date</span>
                     <DatePicker
                       className="custom-datepicker"
                       selected={adjustDate}
@@ -2040,14 +2030,10 @@ const BankAccount = () => {
                       }
                     />
                   </div>
-                </div>
-              </div>
 
-              {/* Enter Amount & Latest Balance */}
-              <div className="detail mb-4">
-                <div className="grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                  <div>
-                    <span className="label primary">Enter Amount<span className="text-red-600 ml-1">*</span></span>
+                  {/* Enter Amount */}
+                  <div className="flex flex-col w-full">
+                    <span className="label primary mb-2">Enter Amount<span className="text-red-600 ml-1">*</span></span>
                     <OutlinedInput
                       type="number"
                       value={enterAmt}
@@ -2062,7 +2048,6 @@ const BankAccount = () => {
                         }));
                       }}
                       startAdornment={<InputAdornment position="start">₹</InputAdornment>}
-
                       sx={{
                         width: "100%",
                         backgroundColor: "#fff",
@@ -2084,8 +2069,10 @@ const BankAccount = () => {
                       </div>
                     )}
                   </div>
-                  <div>
-                    <span className="label primary">Latest Balance</span>
+
+                  {/* Latest Balance */}
+                  <div className="flex flex-col w-full">
+                    <span className="label primary mb-2">Latest Balance</span>
                     <OutlinedInput
                       type="number"
                       value={latestAmt}
@@ -2103,27 +2090,27 @@ const BankAccount = () => {
                       size="small"
                     />
                   </div>
-                </div>
-              </div>
 
-              {/* Remarks */}
-              <div className="detail mb-2">
-                <span className="label primary">Remarks</span>
-                <OutlinedInput
-                  value={remarks}
-                  onChange={(e) => setRemarks(e.target.value)}
-                  sx={{
-                    width: "100%",
-                    backgroundColor: "#ffffff",
-                    '& .MuiOutlinedInput-input': {
-                      padding: "8.5px 0px"
-                    }
-                  }}
-                  size="small"
-                  placeholder="Add remarks here..."
-                  multiline
-                  rows={2}
-                />
+                  {/* Remarks */}
+                  <div className="flex flex-col w-full md:col-span-3">
+                    <span className="label primary mb-2">Remarks</span>
+                    <OutlinedInput
+                      value={remarks}
+                      onChange={(e) => setRemarks(e.target.value)}
+                      sx={{
+                        width: "100%",
+                        backgroundColor: "#ffffff",
+                        '& .MuiOutlinedInput-input': {
+                          padding: "8.5px 0px"
+                        }
+                      }}
+                      size="small"
+                      placeholder="Add remarks here..."
+                      multiline
+                      rows={2}
+                    />
+                  </div>
+                </div>
               </div>
             </DialogContentText>
           </DialogContent>
@@ -2152,13 +2139,21 @@ const BankAccount = () => {
             <Button
               onClick={resetAdjustDialog}
               variant="outlined"
+
+              style={{
+                borderColor: "#9ca3af !important",
+                background: "#dbdce0ff",       // Light Gray
+                color: "#4b5563",            // Dark Gray Text
+                border: "1px solid #d1d5db", // Gray Border
+                boxShadow: "none",
+                textTransform: "none",
+              }}
               sx={{
-                color: "#666",
-                borderColor: "#ccc",
-                '&:hover': {
-                  borderColor: "#999",
-                  backgroundColor: "#f5f5f5 !important"
-                }
+                "&:hover": {
+                  background: "#e5e7eb",     // Slightly Darker Gray
+                  borderColor: "#9ca3af !important",
+                  boxShadow: "none",
+                },
               }}
             >
               Cancel

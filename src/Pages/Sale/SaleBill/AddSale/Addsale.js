@@ -4227,8 +4227,8 @@ const addSale = () => {
               }}
               onClick={handleAddNewItemValidation}
             >
-              <ControlPointIcon className="mr-2" />
-              Add New Item
+
+              Save
             </Button>
           </DialogActions>
         </Dialog>

@@ -512,8 +512,14 @@ const SalereturnList = () => {
                               <td style={{ borderRadius: "0 10px 10px 0" }}>
                                 <div className="flex gap-5 justify-center">
                                   <VisibilityIcon
-                                    className="cursor-pointer primary"
-                                  onClick={() => {
+                                    sx={{
+                                      color: "#2563eb",
+                                      cursor: "pointer",
+                                      "&:hover": {
+                                        color: "#1d4ed8",
+                                      },
+                                    }}
+                                    onClick={() => {
                                       history.push(`/SaleReturnView/${row.id}`);
                                     }}
                                   />

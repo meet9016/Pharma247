@@ -199,15 +199,25 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
 
     // Handlers
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const emailRegex =
+        /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com)$/i;
 
     const handleChange = (field, value) => {
         let error = "";
+        // if (field === "email") {
+        //     if (!value) {
+        //         error = "Email is required";
+        //     } else if (!emailRegex.test(value)) {
+        //         error = "Enter a valid email address";
+        //     }
+        // }
         if (field === "email") {
-            if (!value) {
+            const email = value.trim();
+
+            if (!email) {
                 error = "Email is required";
-            } else if (!emailRegex.test(value)) {
-                error = "Enter a valid email address";
+            } else if (!emailRegex.test(email)) {
+                error = "Please enter a valid email address";
             }
         }
 
@@ -254,9 +264,13 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
             newErrors.email = "Email is required";
             isValid = false;
         } else {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formData.email)) {
-                newErrors.email = "Enter a valid email address";
+
+            // if (!emailRegex.test(formData.email)) {
+            //     newErrors.email = "Enter a valid email address";
+            //     isValid = false;
+            // }
+            if (!emailRegex.test(formData.email.trim())) {
+                newErrors.email = "Please enter a valid email address";
                 isValid = false;
             }
         }
@@ -634,30 +648,12 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                     ))}
 
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
-                        <Button
-                            variant="outlined"
-                            onClick={() => setAddMember(false)}
-                            sx={{
-                                borderColor: "#cbd5e1",
-                                color: "#475569",
-                                borderRadius: "8px",
-                                px: 4,
-                                py: 1,
-                                textTransform: "none",
-                                fontWeight: 500,
-                                "&:hover": {
-                                    borderColor: "#94a3b8",
-                                    backgroundColor: "#f8fafc !important"
-                                }
-                            }}
-                        >
-                            Cancel
-                        </Button>
+
                         <Button
                             variant="contained"
                             sx={{
                                 backgroundColor: "#3f6212",
-                                borderRadius: "8px",
+
                                 px: 4,
                                 py: 1,
                                 textTransform: "none",
@@ -670,7 +666,32 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                             }}
                             onClick={handleSubmit}
                         >
-                            Submit
+                            Save
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            onClick={() => setAddMember(false)}
+
+
+                            style={{
+
+                                borderColor: "#9ca3af !important",
+                                background: "#dbdce0ff",       // Light Gray
+                                color: "#4b5563",            // Dark Gray Text
+                                border: "1px solid #d1d5db", // Gray Border
+                                boxShadow: "none",
+                                textTransform: "none",
+                            }}
+                            sx={{
+                                "&:hover": {
+                                    background: "#e5e7eb",     // Slightly Darker Gray
+                                    borderColor: "#9ca3af !important",
+                                    boxShadow: "none",
+                                },
+                            }}
+                        >
+                            Cancel
                         </Button>
                     </div>
                 </div>

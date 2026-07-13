@@ -3223,7 +3223,7 @@ const InventoryList = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <div className="flex gap-4 mr-4 pb-4">
+          <div className="flex gap-0 mr-4 pb-4">
             <Button
               autoFocus
               variant="contained"
@@ -3237,10 +3237,26 @@ const InventoryList = () => {
               Save
             </Button>
             <Button
-              autoFocus
               variant="contained"
               onClick={resetbulkDialog}
-              color="error"
+              sx={{
+                ml: 1,
+                backgroundColor: "#dbdce0",
+                color: "#4b5563",
+                border: "1px solid #d1d5db",
+                boxShadow: "none",
+                textTransform: "none",
+                px: 2.5,
+                py: 1,
+                minWidth: "64px",
+                height: "40px",
+
+                "&:hover": {
+                  backgroundColor: "#c9cacd",
+                  border: "1px solid #9ca3af",
+                  boxShadow: "none",
+                },
+              }}
             >
               Cancel
             </Button>
@@ -3314,7 +3330,7 @@ const InventoryList = () => {
           </DialogContentText>
         </DialogContent>
 
-        <DialogActions sx={{ justifyContent: "center", paddingBottom: 3 }}>
+        <DialogActions sx={{ justifyContent: "center", paddingBottom: 3, gap: 2, }}>
           <Button
             variant="contained"
             autoFocus
@@ -3330,17 +3346,25 @@ const InventoryList = () => {
           </Button>
 
           <Button
-            variant="outlined"
             onClick={() => setBulkOrder(false)}
-            sx={{
-              backgroundColor: "#F31C1C",
-              color: "white",
-              minWidth: 100,
+            style={{
+              margin: "10px 0 10px 0",
+              borderColor: "#9ca3af !important",
+              background: "#dbdce0ff",       // Light Gray
+              color: "#4b5563",            // Dark Gray Text
+              border: "1px solid #d1d5db", // Gray Border
+              boxShadow: "none",
               textTransform: "none",
-              borderColor: "#F31C1C",
+            }}
+            sx={{
+              "&:hover": {
+                background: "#e5e7eb",     // Slightly Darker Gray
+                borderColor: "#9ca3af !important",
+                boxShadow: "none",
+              },
             }}
           >
-            No
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>

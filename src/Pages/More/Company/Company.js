@@ -386,10 +386,15 @@ const Company = () => {
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody style={{ background: "#3f621217" }}>
+                <tbody>
                   {isLoading || isSearching ? (
                     <tr>
-                      <td colSpan={companyColumns.length + 2} style={{ textAlign: "center", padding: "24px" }}>
+                      <td colSpan={companyColumns.length + 2}
+                        style={{
+                          position: "relative",
+                          height: "400px",
+                          textAlign: "center",
+                        }}>
                         <Loader />
                       </td>
                     </tr>

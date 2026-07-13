@@ -732,9 +732,16 @@ const DistributerList = () => {
                       </tr>
                     </thead>
                     {isSearchLoading ? (
-                      <div className="loader-container ">
-                        <Loader />
-                      </div>
+                      <tbody>
+                        <tr>
+                          <td
+                            colSpan={columns.length + 2}
+                            style={{ position: "relative", height: "400px" }}
+                          >
+                            <Loader />
+                          </td>
+                        </tr>
+                      </tbody>
                     ) : (
                       <tbody style={{ background: "#3f621217" }}>
                         {tableData.length === 0 ? (
@@ -792,7 +799,13 @@ const DistributerList = () => {
                               <td className="rounded-r-[10px] px-4 py-2 text-center">
                                 <div className="px-2 flex gap-1 justify-center">
                                   <VisibilityIcon
-                                    style={{ color: "var(--color1)" }}
+                                    sx={{
+                                      color: "#2563eb", // Blue
+                                      cursor: "pointer",
+                                      "&:hover": {
+                                        color: "#1d4ed8", // Dark Blue on hover
+                                      },
+                                    }}
                                     onClick={() => {
                                       history.push(`/DistributerView/${row.id}`);
                                     }}

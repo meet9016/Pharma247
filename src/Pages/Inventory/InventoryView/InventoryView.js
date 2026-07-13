@@ -1032,8 +1032,8 @@ const InventoryView = () => {
                   <div className="flex flex-col">
                     <span
                       className={`text-base font-semibold mb-1 ${itemAllData.status === "Not Available"
-                          ? "text-red-500"
-                          : "text-emerald-500"
+                        ? "text-red-500"
+                        : "text-emerald-500"
                         }`}
                     >
                       {itemAllData?.status}
@@ -1242,18 +1242,22 @@ const InventoryView = () => {
                                 <React.Fragment key={index}>
                                   {hideZeroQuantity && item.qty == 0}
                                   <tr>
-                                    {batchColumns?.map((column, colIndex) => (
-                                      <td
-                                        key={column.id}
-                                        style={
-                                          colIndex === 0
-                                            ? { borderRadius: "10px 0 0 10px" }
-                                            : undefined
-                                        }
-                                      >
-                                        {item[column.id]}
-                                      </td>
-                                    ))}
+                                    {batchColumns?.map((column, colIndex) => {
+                                      let value = item[column.id];
+                                      if (!value && value !== 0) value = "-";
+                                      return (
+                                        <td
+                                          key={column.id}
+                                          style={
+                                            colIndex === 0
+                                              ? { borderRadius: "10px 0 0 10px" }
+                                              : undefined
+                                          }
+                                        >
+                                          {value}
+                                        </td>
+                                      );
+                                    })}
                                     <td
                                       style={{
                                         borderRadius: "0 10px 10px 0",
@@ -1274,7 +1278,7 @@ const InventoryView = () => {
                             ) : (
                               <tr>
                                 <td colSpan={batchColumns.length + 1} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
-                                  No Record Found
+                                  No Data Found
                                 </td>
                               </tr>
                             )}
@@ -1451,34 +1455,38 @@ const InventoryView = () => {
                             {purchaseListData && purchaseListData.length > 0 ? (
                               purchaseListData.map((item, index) => (
                                 <tr key={index}>
-                                  {purchaseColumns.map((column, colIndex) => (
-                                    <td
-                                      key={column.id}
-                                      style={
-                                        colIndex === 0 // Check if this is the first column
-                                          ? { borderRadius: "10px 0 0 10px" }
-                                          : colIndex ===
-                                            purchaseColumns.length - 1 // Last column for right-side radius
-                                            ? { borderRadius: "0 10px 10px 0" }
-                                            : {}
-                                      }
-                                    >
-                                      {column.id === "bill_no" ? (
-                                        <span
-                                          style={{
-                                            cursor: "pointer",
-                                            color: "blue",
-                                            textDecoration: "underline",
-                                          }}
-                                          onClick={() => viewBill(item)}
-                                        >
-                                          {item[column.id]}
-                                        </span>
-                                      ) : (
-                                        item[column.id]
-                                      )}
-                                    </td>
-                                  ))}
+                                  {purchaseColumns.map((column, colIndex) => {
+                                    let value = item[column.id];
+                                    if (!value && value !== 0) value = "-";
+                                    return (
+                                      <td
+                                        key={column.id}
+                                        style={
+                                          colIndex === 0 // Check if this is the first column
+                                            ? { borderRadius: "10px 0 0 10px" }
+                                            : colIndex ===
+                                              purchaseColumns.length - 1 // Last column for right-side radius
+                                              ? { borderRadius: "0 10px 10px 0" }
+                                              : {}
+                                        }
+                                      >
+                                        {column.id === "bill_no" ? (
+                                          <span
+                                            style={{
+                                              cursor: "pointer",
+                                              color: "blue",
+                                              textDecoration: "underline",
+                                            }}
+                                            onClick={() => viewBill(item)}
+                                          >
+                                            {value}
+                                          </span>
+                                        ) : (
+                                          value
+                                        )}
+                                      </td>
+                                    );
+                                  })}
                                 </tr>
                               ))
                             ) : (
@@ -1650,38 +1658,42 @@ const InventoryView = () => {
                               purchaseReturnListData.map((item, index) => (
                                 <tr key={index}>
                                   {purchaseReturnColumns.map(
-                                    (column, colIndex) => (
-                                      <td
-                                        key={column.id}
-                                        style={
-                                          colIndex === 0
-                                            ? {
-                                              borderRadius: "10px 0 0 10px",
-                                            }
-                                            : colIndex ===
-                                              purchaseReturnColumns.length - 1
+                                    (column, colIndex) => {
+                                      let value = item[column.id];
+                                      if (!value && value !== 0) value = "-";
+                                      return (
+                                        <td
+                                          key={column.id}
+                                          style={
+                                            colIndex === 0
                                               ? {
-                                                borderRadius: "0 10px 10px 0",
+                                                borderRadius: "10px 0 0 10px",
                                               }
-                                              : {}
-                                        }
-                                      >
-                                        {column.id === "bill_no" ? (
-                                          <span
-                                            style={{
-                                              cursor: "pointer",
-                                              color: "blue",
-                                              textDecoration: "underline",
-                                            }}
-                                            onClick={() => viewBill(item)}
-                                          >
-                                            {item[column.id]}
-                                          </span>
-                                        ) : (
-                                          item[column.id]
-                                        )}
-                                      </td>
-                                    )
+                                              : colIndex ===
+                                                purchaseReturnColumns.length - 1
+                                                ? {
+                                                  borderRadius: "0 10px 10px 0",
+                                                }
+                                                : {}
+                                          }
+                                        >
+                                          {column.id === "bill_no" ? (
+                                            <span
+                                              style={{
+                                                cursor: "pointer",
+                                                color: "blue",
+                                                textDecoration: "underline",
+                                              }}
+                                              onClick={() => viewBill(item)}
+                                            >
+                                              {value}
+                                            </span>
+                                          ) : (
+                                            value
+                                          )}
+                                        </td>
+                                      );
+                                    }
                                   )}
                                 </tr>
                               ))
@@ -1833,35 +1845,39 @@ const InventoryView = () => {
                             {saleListData && saleListData.length > 0 ? (
                               saleListData.map((item, index) => (
                                 <tr key={index}>
-                                  {saleColumns.map((column, colIndex) => (
-                                    <td
-                                      key={column.id}
-                                      style={
-                                        colIndex === 0
-                                          ? {
-                                            borderRadius: "10px 0 0 10px",
-                                          }
-                                          : colIndex === saleColumns.length - 1
-                                            ? { borderRadius: "0 10px 10px 0" }
-                                            : {}
-                                      }
-                                    >
-                                      {column.id === "bill_no" ? (
-                                        <span
-                                          style={{
-                                            cursor: "pointer",
-                                            color: "blue",
-                                            textDecoration: "underline",
-                                          }}
-                                          onClick={() => viewBill(item)}
-                                        >
-                                          {item[column.id]}
-                                        </span>
-                                      ) : (
-                                        item[column.id]
-                                      )}
-                                    </td>
-                                  ))}
+                                  {saleColumns.map((column, colIndex) => {
+                                    let value = item[column.id];
+                                    if (!value && value !== 0) value = "-";
+                                    return (
+                                      <td
+                                        key={column.id}
+                                        style={
+                                          colIndex === 0
+                                            ? {
+                                              borderRadius: "10px 0 0 10px",
+                                            }
+                                            : colIndex === saleColumns.length - 1
+                                              ? { borderRadius: "0 10px 10px 0" }
+                                              : {}
+                                        }
+                                      >
+                                        {column.id === "bill_no" ? (
+                                          <span
+                                            style={{
+                                              cursor: "pointer",
+                                              color: "blue",
+                                              textDecoration: "underline",
+                                            }}
+                                            onClick={() => viewBill(item)}
+                                          >
+                                            {value}
+                                          </span>
+                                        ) : (
+                                          value
+                                        )}
+                                      </td>
+                                    );
+                                  })}
                                 </tr>
                               ))
                             ) : (
@@ -2028,34 +2044,38 @@ const InventoryView = () => {
                             {saleReturnListData && saleReturnListData.length > 0 ? (
                               saleReturnListData.map((item, index) => (
                                 <tr key={index}>
-                                  {saleReturnColumns.map((column, colIndex) => (
-                                    <td
-                                      key={column.id}
-                                      style={
-                                        colIndex === 0
-                                          ? { borderRadius: "10px 0 0 10px" }
-                                          : colIndex ===
-                                            saleReturnColumns.length - 1
-                                            ? { borderRadius: "0 10px 10px 0" }
-                                            : {}
-                                      }
-                                    >
-                                      {column.id === "bill_no" ? (
-                                        <span
-                                          style={{
-                                            cursor: "pointer",
-                                            color: "blue",
-                                            textDecoration: "underline",
-                                          }}
-                                          onClick={() => viewBill(item)}
-                                        >
-                                          {item[column.id]}
-                                        </span>
-                                      ) : (
-                                        item[column.id]
-                                      )}
-                                    </td>
-                                  ))}
+                                  {saleReturnColumns.map((column, colIndex) => {
+                                    let value = item[column.id];
+                                    if (!value && value !== 0) value = "-";
+                                    return (
+                                      <td
+                                        key={column.id}
+                                        style={
+                                          colIndex === 0
+                                            ? { borderRadius: "10px 0 0 10px" }
+                                            : colIndex ===
+                                              saleReturnColumns.length - 1
+                                              ? { borderRadius: "0 10px 10px 0" }
+                                              : {}
+                                        }
+                                      >
+                                        {column.id === "bill_no" ? (
+                                          <span
+                                            style={{
+                                              cursor: "pointer",
+                                              color: "blue",
+                                              textDecoration: "underline",
+                                            }}
+                                            onClick={() => viewBill(item)}
+                                          >
+                                            {value}
+                                          </span>
+                                        ) : (
+                                          value
+                                        )}
+                                      </td>
+                                    );
+                                  })}
                                 </tr>
                               ))
                             ) : (
@@ -2124,57 +2144,61 @@ const InventoryView = () => {
                             {ledgerListData && ledgerListData.length > 0 ? (
                               ledgerListData.map((item, index) => (
                                 <tr key={index}>
-                                  {ledger.map((column, colIndex) => (
-                                    <td
-                                      key={column.id}
-                                      style={
-                                        colIndex === 0
-                                          ? { borderRadius: "10px 0 0 10px" }
-                                          : colIndex === ledger.length - 1
-                                            ? { borderRadius: "0 10px 10px 0" }
-                                            : {}
-                                      }
-                                    >
-                                      {console.log("column", column)}
+                                  {ledger.map((column, colIndex) => {
+                                    let value = item[column.id];
+                                    if (!value && value !== 0) value = "-";
+                                    return (
+                                      <td
+                                        key={column.id}
+                                        style={
+                                          colIndex === 0
+                                            ? { borderRadius: "10px 0 0 10px" }
+                                            : colIndex === ledger.length - 1
+                                              ? { borderRadius: "0 10px 10px 0" }
+                                              : {}
+                                        }
+                                      >
+                                        {console.log("column", column)}
 
-                                      {/* {column.id === "bill_no" ? (
-                                        <span
-                                          style={{
-                                            cursor: "pointer",
-                                            color: "blue",
-                                            textDecoration: "underline",
-                                          }}
-                                          onClick={() => openBill(item)}
-                                        >
-                                          {item[column.id]}
-                                        </span>
-                                      ) : (
-                                        item[column.id]
-                                      )} */}
-                                      {column.id === "bill_no" ? (
-                                        <span
-                                          style={{
-                                            cursor: "pointer",
-                                            color: "blue",
-                                            textDecoration: "underline",
-                                          }}
-                                          onClick={() => openBill(item)}
-                                        >
-                                          {item[column.id]}
-                                        </span>
-                                      ) : column.id === "credit" ? (
-                                        <span style={{ color: "#16a34a", fontWeight: 600 }}>
-                                          {item[column.id]}
-                                        </span>
-                                      ) : column.id === "debit" ? (
-                                        <span style={{ color: "#dc2626", fontWeight: 600 }}>
-                                          {item[column.id]}
-                                        </span>
-                                      ) : (
-                                        item[column.id]
-                                      )}
-                                    </td>
-                                  ))}
+                                        {/* {column.id === "bill_no" ? (
+                                          <span
+                                            style={{
+                                              cursor: "pointer",
+                                              color: "blue",
+                                              textDecoration: "underline",
+                                            }}
+                                            onClick={() => openBill(item)}
+                                          >
+                                            {value}
+                                          </span>
+                                        ) : (
+                                          value
+                                        )} */}
+                                        {column.id === "bill_no" ? (
+                                          <span
+                                            style={{
+                                              cursor: "pointer",
+                                              color: "blue",
+                                              textDecoration: "underline",
+                                            }}
+                                            onClick={() => openBill(item)}
+                                          >
+                                            {value}
+                                          </span>
+                                        ) : column.id === "credit" ? (
+                                          <span style={{ color: "#16a34a", fontWeight: 600 }}>
+                                            {value}
+                                          </span>
+                                        ) : column.id === "debit" ? (
+                                          <span style={{ color: "#dc2626", fontWeight: 600 }}>
+                                            {value}
+                                          </span>
+                                        ) : (
+                                          value
+                                        )}
+                                      </td>
+                                    );
+                                  })}
                                 </tr>
                               ))
                             ) : (

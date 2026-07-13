@@ -361,8 +361,8 @@ const Dashboard = () => {
 
 
   return (
-    <div>
-      <div>
+    <div style={{ height: "100vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
         <Header key={reRender} />
 
         {isLoading ? (
@@ -372,7 +372,10 @@ const Dashboard = () => {
         ) : (
           <div
             className="p-2 paddin12-8"
-            style={{ background: "rgb(231 230 230 / 36%)", height: "100%" }}
+            style={{
+              background: "rgb(231 230 230 / 36%)", flex: 1, overflowY: "auto", minHeight: 0, scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
           >
             <div className="dsh_card_chart grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-3 px-4 py-3 rounded-lg">
               <div
@@ -457,7 +460,7 @@ const Dashboard = () => {
             </div>
             <div className="dsh_card_chart grid grid-cols-1 lg:grid-cols-2 gap-6 mb-3 px-4 py-3 rounded-lg">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-3 h-full rounded-lg">
-              
+
                 <div
                   className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
                   style={{ width: "100%" }}
@@ -477,7 +480,7 @@ const Dashboard = () => {
                     />
                   </div>
                 </div>
-              
+
                 <div
                   className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
                   style={{ width: "100%" }}

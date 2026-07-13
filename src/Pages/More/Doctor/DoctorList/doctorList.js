@@ -261,7 +261,7 @@ const DoctorList = () => {
 
     // 4. Email ID validation (Optional)
     if (emailId && emailId.trim()) {
-      if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(emailId)) {
+      if (!/^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com)$/i.test(emailId)) {
         newErrors.emailId = "Enter a valid email address";
       }
     }
@@ -792,14 +792,15 @@ const DoctorList = () => {
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody style={{ backgroundColor: "#3f621217" }}>
+                  <tbody >
                     {(isLoading || isSearchLoading) ? (
                       <tr>
                         <td
                           colSpan={columns.length + 2}
                           style={{
+                            position: "relative",
+                            height: "400px",
                             textAlign: "center",
-                            padding: "40px",
                           }}
                         >
                           <div className="flex justify-center items-center w-full">
@@ -899,7 +900,13 @@ const DoctorList = () => {
                                 }}
                               >
                                 <VisibilityIcon
-                                  style={{ color: "var(--color1)" }}
+                                  sx={{
+                                    color: "#2563eb", // Blue
+                                    cursor: "pointer",
+                                    "&:hover": {
+                                      color: "#1d4ed8", // Dark Blue on hover
+                                    },
+                                  }}
                                   onClick={() => {
                                     history.push(`/doctor/${row.id}`);
                                   }}
@@ -1152,12 +1159,10 @@ const DoctorList = () => {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <div className="flex flex-col gap-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-                  {/* Doctor Name - full width */}
-
-
-                  <div className="flex flex-col col-span-6 ">
+                  {/* Doctor Name */}
+                  <div className="flex flex-col w-full">
                     <div className="mb-1">
                       <span className="label primary mb-4">Doctor Name</span>
                       <span className="text-red-600 ml-1">*</span>
@@ -1211,7 +1216,8 @@ const DoctorList = () => {
                   </div>
 
 
-                  <div className="flex flex-col col-span-6">
+                  {/* Default Doctor */}
+                  <div className="flex flex-col w-full">
                     <span className="label primary">Set Default Doctor ?</span>
                     <Autocomplete
                       value={
@@ -1239,8 +1245,8 @@ const DoctorList = () => {
                     />
                   </div>
 
-                  {/* Clinic Name - full width */}
-                  <div className="flex flex-col col-span-6 w-full">
+                  {/* Clinic Name */}
+                  <div className="flex flex-col w-full">
                     <div className="mb-1">
                       <span className="label primary">Clinic Name</span>
                       <span className="text-red-600 ml-1">*</span>
@@ -1282,7 +1288,7 @@ const DoctorList = () => {
                   </div>
 
                   {/* Email ID */}
-                  <div className="flex flex-col col-span-6">
+                  <div className="flex flex-col w-full">
                     <span className="label primary">Email ID</span>
                     <TextField
                       autoComplete="off"
@@ -1312,7 +1318,7 @@ const DoctorList = () => {
 
 
                   {/* Mobile No */}
-                  <div className="flex flex-col col-span-6">
+                  <div className="flex flex-col w-full">
                     <div className="mb-1">
                       <span className="label primary">Mobile No</span>
                       <span className="text-red-600 ml-1">*</span>
@@ -1340,7 +1346,7 @@ const DoctorList = () => {
                   </div>
 
                   {/* Licence No */}
-                  <div className="flex flex-col col-span-6">
+                  <div className="flex flex-col w-full">
                     <span className="label primary">Licence No.</span>
                     <OutlinedInput
                       type="text"
@@ -1371,8 +1377,8 @@ const DoctorList = () => {
                     )}
                   </div>
 
-                  {/* Address - full width */}
-                  <div className="flex flex-col col-span-12 w-full">
+                  {/* Address */}
+                  <div className="flex flex-col w-full">
                     <span className="label primary">Address</span>
                     <TextField
                       autoComplete="off"
@@ -1403,7 +1409,7 @@ const DoctorList = () => {
             </DialogContentText>
           </DialogContent>
 
-          <DialogActions style={{ padding: "20px 24px" }}>
+          {/* <DialogActions style={{ padding: "20px 24px" }}>
             <Button
               autoFocus
               variant="contained"
@@ -1420,10 +1426,79 @@ const DoctorList = () => {
               variant="contained"
               color="error"
               onClick={resetAddDialog}
+              style={{
+                margin: "10px 0 10px 0",
+                borderColor: "#9ca3af !important",
+                background: "#dbdce0ff",       // Light Gray
+                color: "#4b5563",            // Dark Gray Text
+                border: "1px solid #d1d5db", // Gray Border
+                boxShadow: "none",
+                textTransform: "none",
+              }}
+              sx={{
+                "&:hover": {
+                  background: "#e5e7eb",     // Slightly Darker Gray
+                  borderColor: "#9ca3af !important",
+                  boxShadow: "none",
+                },
+              }}
             >
               Cancel
             </Button>
+          </DialogActions> */}
+
+
+          <DialogActions
+            style={{
+              padding: "20px 24px",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              autoFocus
+              variant="contained"
+              style={{
+                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                color: "white",
+                textTransform: "none",
+              }}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                },
+              }}
+              onClick={AddDoctor}
+            >
+              {buttonLabel}
+            </Button>
+
+            <Button
+
+              onClick={resetAddDialog}
+              sx={{
+                ml: 1,
+                backgroundColor: "#dbdce0",
+                color: "#4b5563",
+                border: "1px solid #d1d5db",
+                boxShadow: "none",
+                textTransform: "none",
+
+                // py-2 (8px)
+                minWidth: "64px", // min-w-16
+                height: "38px",   // h-10
+
+                "&:hover": {
+                  backgroundColor: "#c9cacd !important",
+                  boxShadow: "none",
+                },
+              }}
+            >
+              Cancel
+            </Button>
+
           </DialogActions>
+
         </Dialog>
       </div>
     </>

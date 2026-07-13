@@ -1531,6 +1531,10 @@ const EditSaleBill = () => {
                 sx={{
                   textTransform: "none",
                   background: "var(--color1)",
+                  "&:hover": {
+                    background: "var(--color1)",
+                    boxShadow: "none",
+                  },
                 }}
                 className="payment_btn_divv"
                 onClick={() => handleSubmit("1")}
