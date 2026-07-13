@@ -1159,12 +1159,10 @@ const DoctorList = () => {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <div className="flex flex-col gap-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-12 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-                  {/* Doctor Name - full width */}
-
-
-                  <div className="flex flex-col col-span-6 ">
+                  {/* Doctor Name */}
+                  <div className="flex flex-col w-full">
                     <div className="mb-1">
                       <span className="label primary mb-4">Doctor Name</span>
                       <span className="text-red-600 ml-1">*</span>
@@ -1218,7 +1216,8 @@ const DoctorList = () => {
                   </div>
 
 
-                  <div className="flex flex-col col-span-6">
+                  {/* Default Doctor */}
+                  <div className="flex flex-col w-full">
                     <span className="label primary">Set Default Doctor ?</span>
                     <Autocomplete
                       value={
@@ -1246,8 +1245,8 @@ const DoctorList = () => {
                     />
                   </div>
 
-                  {/* Clinic Name - full width */}
-                  <div className="flex flex-col col-span-6 w-full">
+                  {/* Clinic Name */}
+                  <div className="flex flex-col w-full">
                     <div className="mb-1">
                       <span className="label primary">Clinic Name</span>
                       <span className="text-red-600 ml-1">*</span>
@@ -1289,7 +1288,7 @@ const DoctorList = () => {
                   </div>
 
                   {/* Email ID */}
-                  <div className="flex flex-col col-span-6">
+                  <div className="flex flex-col w-full">
                     <span className="label primary">Email ID</span>
                     <TextField
                       autoComplete="off"
@@ -1319,7 +1318,7 @@ const DoctorList = () => {
 
 
                   {/* Mobile No */}
-                  <div className="flex flex-col col-span-6">
+                  <div className="flex flex-col w-full">
                     <div className="mb-1">
                       <span className="label primary">Mobile No</span>
                       <span className="text-red-600 ml-1">*</span>
@@ -1347,7 +1346,7 @@ const DoctorList = () => {
                   </div>
 
                   {/* Licence No */}
-                  <div className="flex flex-col col-span-6">
+                  <div className="flex flex-col w-full">
                     <span className="label primary">Licence No.</span>
                     <OutlinedInput
                       type="text"
@@ -1378,8 +1377,8 @@ const DoctorList = () => {
                     )}
                   </div>
 
-                  {/* Address - full width */}
-                  <div className="flex flex-col col-span-12 w-full">
+                  {/* Address */}
+                  <div className="flex flex-col w-full">
                     <span className="label primary">Address</span>
                     <TextField
                       autoComplete="off"
@@ -1485,10 +1484,9 @@ const DoctorList = () => {
                 boxShadow: "none",
                 textTransform: "none",
 
-                px: 2.5,          // px-5 (20px)
-                py: 1,            // py-2 (8px)
+                // py-2 (8px)
                 minWidth: "64px", // min-w-16
-                height: "40px",   // h-10
+                height: "38px",   // h-10
 
                 "&:hover": {
                   backgroundColor: "#c9cacd !important",

@@ -1182,7 +1182,15 @@ const CustomerList = () => {
         <Dialog
           open={openAddPopUp}
           className="custom-dialog"
-
+          maxWidth="lg"
+          fullWidth
+          PaperProps={{
+            sx: {
+              width: "800px",
+              maxWidth: "95vw",
+              borderRadius: "10px",
+            },
+          }}
         >
           <DialogTitle
             id="alert-dialog-title" className="primary"
@@ -1211,8 +1219,9 @@ const CustomerList = () => {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <div className="flex flex-col gap-4">
+                {/* Row 1 */}
                 <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
                     <div className="mb-2">
                       <span className="label primary mb-4">
                         Customer Name
@@ -1304,7 +1313,7 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
                     <div className="mb-2">
                       <span className="label primary mb-4">
                         Mobile No
@@ -1336,11 +1345,10 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                    <span className="label primary">Email ID</span>
+                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                    <div className="mb-2">
+                      <span className="label primary mb-4">Email ID</span>
+                    </div>
                     <TextField
                       autoComplete="off"
                       id="outlined-multiline-static"
@@ -1366,8 +1374,14 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                    <span className="label primary">Amount</span>
+                </div>
+
+                {/* Row 2 */}
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                    <div className="mb-2">
+                      <span className="label primary mb-4">Amount</span>
+                    </div>
                     <TextField
                       autoComplete="off"
                       id="outlined-multiline-static"
@@ -1394,11 +1408,10 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                    <span className="label primary">Area</span>
+                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                    <div className="mb-2">
+                      <span className="label primary mb-4">Area</span>
+                    </div>
                     <TextField
                       autoComplete="off"
                       id="outlined-multiline-static"
@@ -1427,8 +1440,10 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                    <span className="label primary">City</span>
+                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                    <div className="mb-2">
+                      <span className="label primary mb-4">City</span>
+                    </div>
                     <TextField
                       autoComplete="off"
                       id="outlined-multiline-static"
@@ -1459,9 +1474,12 @@ const CustomerList = () => {
                   </div>
                 </div>
 
+                {/* Row 3 */}
                 <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                    <span className="label primary">Address</span>
+                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                    <div className="mb-2">
+                      <span className="label primary mb-4">Address</span>
+                    </div>
                     <TextField
                       autoComplete="off"
                       id="outlined-multiline-static"
@@ -1490,8 +1508,10 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                    <span className="label primary">State</span>
+                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                    <div className="mb-2">
+                      <span className="label primary mb-4">State</span>
+                    </div>
                     <TextField
                       autoComplete="off"
                       id="outlined-multiline-static"
