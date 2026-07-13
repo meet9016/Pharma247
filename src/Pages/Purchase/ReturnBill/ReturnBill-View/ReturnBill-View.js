@@ -10,6 +10,7 @@ import Loader from "../../../../componets/loader/Loader";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import usePermissions, {
   hasPermission,
 } from "../../../../componets/permission";
@@ -278,8 +279,8 @@ const ReturnView = () => {
                     onClick={() => pdfGenerator(tableData.id)}
                   >
                     {isPdfLoading ? (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff", textColor: "#fff" }}>
+                        <CircularProgress size={16} style={{ color: "#fff" }} />
                         Downloading...
                       </span>
                     ) : (

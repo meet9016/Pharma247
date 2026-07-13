@@ -217,25 +217,40 @@ const AddPurchaseBill = () => {
       const key = e.key;
 
       // Check if any input field inside inputRefs is focused
-      const isInputFocused = inputRefs.current.some(
-        (input) => input && document.activeElement === input
-      );
+      const activeElement = document.activeElement;
+      const isDropdownFocused =
+        activeElement &&
+        (activeElement.tagName === "SELECT" ||
+          activeElement.getAttribute("role") === "option" ||
+          activeElement.getAttribute("role") === "listbox" ||
+          activeElement.getAttribute("role") === "menuitem" ||
+          activeElement.getAttribute("role") === "combobox");
 
-      if (isInputFocused) return; // Prevent key navigation when an input is focused
+      if (isDropdownFocused) return; // Prevent key navigation when a dropdown is focused
 
       if (key === "ArrowDown") {
         // Move selection down
-        setSelectedIndex((prev) =>
-          prev < ItemPurchaseList.item.length - 1 ? prev + 1 : prev
-        );
+        const nextIndex = selectedIndex < ItemPurchaseList.item.length - 1 ? selectedIndex + 1 : selectedIndex;
+        setSelectedIndex(nextIndex);
+        if (nextIndex !== selectedIndex) {
+          const selectedRow = ItemPurchaseList.item[nextIndex];
+          setSelectedEditItemId(selectedRow?.id);
+          if (selectedRow) handleEditClick(selectedRow);
+        }
         setAutoCompleteOpen(false)
       } else if (key === "ArrowUp") {
         // Move selection up
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+        const prevIndex = selectedIndex > 0 ? selectedIndex - 1 : selectedIndex;
+        setSelectedIndex(prevIndex);
+        if (prevIndex !== selectedIndex) {
+          const selectedRow = ItemPurchaseList.item[prevIndex];
+          setSelectedEditItemId(selectedRow?.id);
+          if (selectedRow) handleEditClick(selectedRow);
+        }
         setAutoCompleteOpen(false)
 
       } else if (key === "Enter" && selectedIndex !== -1) {
-        if (!isInputFocused) {
+        if (!isDropdownFocused) {
           const selectedRow = ItemPurchaseList.item[selectedIndex];
           if (!selectedRow) return;
 
@@ -2562,7 +2577,7 @@ const AddPurchaseBill = () => {
                 <thead>
                   <tr className="input-row">
                     <th>
-                      <div className="flex justify-center items-center gap-2">
+                      <div className="flex justify-start items-center gap-2">
                         Search Item Name <span className="text-red-600 ">*</span>
                         <FaPlusCircle
                           className="primary cursor-pointer"
@@ -2591,8 +2606,9 @@ const AddPurchaseBill = () => {
                   {/*<======================================================== Input row (add/edit)   =======================================================> */}
                   <tr className="input-row">
 
-                    <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
-                      {isEditMode ? (
+                    <td style={{ fontSize: 15, height: "47px", minWidth: 350, width: "350px", maxWidth: "350px" }}>
+                      <div style={{ width: "100%", height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
+                        {isEditMode ? (
                         <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
                           <DeleteIcon
                             className="delete-icon mr-2"
@@ -2608,6 +2624,7 @@ const AddPurchaseBill = () => {
                         </div>
                       ) : (
                         <Autocomplete
+                          fullWidth
                           key={autocompleteKey}
                           value={selectedOption}
                           size="small"
@@ -2645,7 +2662,7 @@ const AddPurchaseBill = () => {
                               onFocus={() => setSelectedIndex(-1)}
                               fullWidth
                               sx={{
-                                minWidth: 400,
+                                minWidth: "100%",
                                 width: "100%",
                                 '& .MuiInputBase-input': {
                                   // textAlign: 'center',
@@ -2754,6 +2771,7 @@ const AddPurchaseBill = () => {
                           )}
                         />
                       )}
+                      </div>
                     </td>
 
                     <td>
@@ -3166,6 +3184,9 @@ const AddPurchaseBill = () => {
                           const value = e.target.value;
                           setGst(value ? Number(value) : "");
                           setError((prev) => ({ ...prev, gst: "" }));
+                          setTimeout(() => {
+                            inputRefs.current[12]?.focus();
+                          }, 100);
                         }}
                         onKeyDown={(e) => {
                           const isTab = e.key === "Tab";
@@ -3177,8 +3198,6 @@ const AddPurchaseBill = () => {
                           if (isEnter || isTab) {
                             e.preventDefault();
                             inputRefs.current[12]?.focus();
-                          } else {
-                            handleKeyDown(e, 11);
                           }
                         }}
                       >

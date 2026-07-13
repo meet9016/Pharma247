@@ -175,20 +175,36 @@ const EditPurchaseBill = () => {
       const key = e.key;
 
       // Prevent keyboard control if any input is focused
-      const isInputFocused = inputRefs.current.some(
-        (input) => input && document.activeElement === input
-      );
-      if (isInputFocused) return;
+      const activeElement = document.activeElement;
+      const isDropdownFocused =
+        activeElement &&
+        (activeElement.tagName === "SELECT" ||
+          activeElement.getAttribute("role") === "option" ||
+          activeElement.getAttribute("role") === "listbox" ||
+          activeElement.getAttribute("role") === "menuitem" ||
+          activeElement.getAttribute("role") === "combobox");
+
+      if (isDropdownFocused) return;
 
       if (key === "ArrowDown") {
         e.preventDefault();
-        setSelectedIndex((prev) =>
-          prev < activeList.length - 1 ? prev + 1 : prev
-        );
+        const nextIndex = selectedIndex < activeList.length - 1 ? selectedIndex + 1 : selectedIndex;
+        setSelectedIndex(nextIndex);
+        if (nextIndex !== selectedIndex) {
+          const selectedRow = activeList[nextIndex];
+          setSelectedEditItemId(selectedRow?.id);
+          if (selectedRow) handleEditClick(selectedRow);
+        }
         setAutoCompleteOpen(false); // Close Autocomplete dropdown
       } else if (key === "ArrowUp") {
         e.preventDefault();
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+        const prevIndex = selectedIndex > 0 ? selectedIndex - 1 : selectedIndex;
+        setSelectedIndex(prevIndex);
+        if (prevIndex !== selectedIndex) {
+          const selectedRow = activeList[prevIndex];
+          setSelectedEditItemId(selectedRow?.id);
+          if (selectedRow) handleEditClick(selectedRow);
+        }
         setAutoCompleteOpen(false); // Close Autocomplete dropdown
       } else if (key === "Enter" && selectedIndex !== -1) {
         e.preventDefault();
@@ -1188,6 +1204,8 @@ const EditPurchaseBill = () => {
           itemPurchaseList();
           purchaseBillGetByID();
           setIsDelete(false);
+           toast.dismiss();
+          toast.success("Item deleted successfully");
           removeItem()
         });
     } catch (error) {
@@ -1199,6 +1217,7 @@ const EditPurchaseBill = () => {
         history.push("/");
       }
       console.error("API error:", error);
+      toast.error("Item not deleted successfully");
     }
   };
   /*<===================================================================== submit purchase bill   ================================================================> */
@@ -1785,7 +1804,7 @@ const EditPurchaseBill = () => {
                 <thead>
                   <tr className="input-row">
                     <th>
-                      <div className="flex justify-center items-center gap-2">
+                      <div className="flex justify-start items-center gap-2">
                         Search Item Name <span className="text-red-600 ">*</span>
                         <FaPlusCircle
                           className="primary cursor-pointer"
@@ -1813,8 +1832,9 @@ const EditPurchaseBill = () => {
                   {/*<======================================================== Input row (add/edit)   =======================================================> */}
                   <tr className="input-row">
 
-                    <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
-                      {isEditMode ? (
+                    <td style={{ fontSize: 15, height: "47px", minWidth: 350, width: "350px", maxWidth: "350px" }}>
+                      <div style={{ width: "100%", height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
+                        {isEditMode ? (
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'start', alignContent: 'center', }}>
                           <DeleteIcon
                             className="delete-icon mr-2"
@@ -1832,6 +1852,7 @@ const EditPurchaseBill = () => {
                         </div>
                       ) : (
                         <Autocomplete
+                          fullWidth
                           value={searchItem?.iteam_name}
                           size="small"
                           key={autocompleteKey}
@@ -1863,7 +1884,7 @@ const EditPurchaseBill = () => {
                               autoFocus
                               fullWidth
                               sx={{
-                                minWidth: 400,
+                                minWidth: "100%",
                                 width: "100%",
                                 '& .MuiInputBase-input': {
                                   // textAlign: 'center',
@@ -1895,6 +1916,7 @@ const EditPurchaseBill = () => {
                           )}
                         />
                       )}
+                      </div>
                     </td>
 
                     <td>
@@ -2294,7 +2316,6 @@ const EditPurchaseBill = () => {
                           }
                         }}
                       >
-                        <MenuItem value=""></MenuItem>
                         <MenuItem value="0">0</MenuItem>
                         <MenuItem value="5">5</MenuItem>
                         <MenuItem value="18">18</MenuItem>

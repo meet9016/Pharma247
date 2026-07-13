@@ -88,6 +88,8 @@ const AddReturnbill = () => {
   const [distributorList, setDistributorList] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [distributor, setDistributor] = useState(null);
+  const [distributorInput, setDistributorInput] = useState("");
+  const selectedDistributorRef = useRef(null);
   const [remark, setRemark] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [free, setFree] = useState(0);
@@ -201,26 +203,38 @@ const AddReturnbill = () => {
     const handleKeyPress = (e) => {
       if (!tableData?.item_list?.length) return;
 
-      // Check if search TextField is focused
-      const searchInput = inputRefs.current[5];
-      const isSearchFocused = document.activeElement === searchInput;
+      const activeElement = document.activeElement;
+      const isDropdownFocused =
+        activeElement &&
+        (activeElement.tagName === "SELECT" ||
+          activeElement.getAttribute("role") === "option" ||
+          activeElement.getAttribute("role") === "listbox" ||
+          activeElement.getAttribute("role") === "menuitem" ||
+          activeElement.getAttribute("role") === "combobox");
 
-      // Only handle arrow keys when search input is focused or no input is focused
-      if (isSearchFocused || document.activeElement.tagName !== "INPUT") {
+      // Prevent table navigation when a dropdown is focused
+      if (isDropdownFocused) return;
         if (e.key === "ArrowDown") {
           e.preventDefault();
-          setSelectedIndex((prev) =>
-            Math.min(prev + 1, tableData.item_list.length - 1)
-          );
+          const nextIndex = Math.min(selectedIndex + 1, tableData.item_list.length - 1);
+          setSelectedIndex(nextIndex);
+          if (nextIndex !== selectedIndex) {
+            const selectedRow = tableData.item_list[nextIndex];
+            if (selectedRow) handleEditClick(selectedRow);
+          }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
-          setSelectedIndex((prev) => Math.max(prev - 1, 0));
+          const prevIndex = Math.max(selectedIndex - 1, 0);
+          setSelectedIndex(prevIndex);
+          if (prevIndex !== selectedIndex) {
+            const selectedRow = tableData.item_list[prevIndex];
+            if (selectedRow) handleEditClick(selectedRow);
+          }
         } else if (e.key === "Enter" && selectedIndex !== -1) {
           const selectedRow = tableData.item_list[selectedIndex];
           if (!selectedRow) return;
           handleEditClick(selectedRow);
         }
-      }
     };
 
     document.addEventListener("keydown", handleKeyPress);
@@ -1098,34 +1112,99 @@ const AddReturnbill = () => {
                 <div>
                   <span className="title mb-2 flex items-center gap-2">Distributor<span className="text-red-600">*</span></span>
                   <Autocomplete
-                    value={distributor ?? ""}
+                    value={distributor}
+                    inputValue={distributorInput}
                     sx={{
                       width: "100%",
                       minWidth: "350px",
                       minHeight: "40px",
                       "@media (max-width:600px)": { minWidth: "250px" },
                     }}
+                    freeSolo
                     size="small"
                     options={distributorList}
+                    filterOptions={(options, state) => {
+                      const search = state.inputValue.trim().toLowerCase();
+                      if (!search) return options;
+                      return options.filter((opt) =>
+                        (opt.name || "").toLowerCase().includes(search)
+                      );
+                    }}
                     onChange={(e, newValue) => {
-                      setDistributor(newValue);
+                      let finalValue = null;
+                      if (typeof newValue === "string") {
+                        finalValue = { id: null, name: newValue.toUpperCase() };
+                      } else if (newValue && typeof newValue === "object") {
+                        finalValue = {
+                          id: newValue.id ?? null,
+                          name: newValue.name?.toUpperCase() || "",
+                        };
+                      }
+                      selectedDistributorRef.current = finalValue;
+                      setDistributor(finalValue);
+                      setDistributorInput(finalValue?.name ?? "");
+                      setBillNo("");
                       setErrors((prev) => ({ ...prev, distributor: "" }));
                     }}
-                    getOptionLabel={(option) => (typeof option === "string" ? option : option?.name ?? "")}
+                    onInputChange={(event, newInputValue, reason) => {
+                      if (reason === "input") {
+                        setDistributorInput(newInputValue.toUpperCase());
+                        selectedDistributorRef.current = null;
+                        setBillNo("");
+                        setErrors((prev) => ({ ...prev, distributor: "" }));
+                      } else if (reason === "clear") {
+                        setDistributorInput("");
+                        setDistributor(null);
+                        selectedDistributorRef.current = null;
+                      }
+                    }}
+                    getOptionLabel={(option) =>
+                      typeof option === "string" ? option : option?.name ?? ""
+                    }
+                    isOptionEqualToValue={(option, value) => option?.id === value?.id}
+                    renderOption={(props, option, { index }) => {
+                      const { key, ...restProps } = props;
+                      return (
+                        <li key={option.id || `${option.name}-${index}`} {...restProps}>
+                          {option.name}
+                        </li>
+                      );
+                    }}
                     renderInput={(params) => (
                       <TextField
                         autoFocus
                         autoComplete="off"
-                        placeholder="Select Distributor"
                         variant="outlined"
                         error={!!errors.distributor}
                         helperText={errors.distributor}
+                        placeholder="Select Distributor"
                         FormHelperTextProps={{
-                          sx: { color: "#ff0000ff !important", ml: 0 },
+                          sx: {
+                            color: "#ff0000ff !important",
+                            ml: 0,
+                          },
                         }}
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
-                        onKeyDown={(e) => handleKeyDown(e, 0)}
+                        inputProps={{
+                          ...params.inputProps,
+                          style: { textTransform: "" },
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === "Tab") {
+                            const prevent = !selectedDistributorRef.current?.id;
+
+                            setTimeout(() => {
+                              if (selectedDistributorRef.current?.id) {
+                                handleKeyDown(e, 0);
+                              }
+                            }, 100);
+
+                            if (prevent) {
+                              e.preventDefault();
+                            }
+                          }
+                        }}
                       />
                     )}
                   />
@@ -1308,8 +1387,8 @@ const AddReturnbill = () => {
                 <thead>
                   <tr className="input-row">
                     <th>
-                      <div className="flex justify-center items-center gap-2">
-                        Search Item Namefff <span className="text-red-600 ">*</span>
+                      <div className="flex justify-start items-center gap-2">
+                        Search Item Name <span className="text-red-600 ">*</span>
                         <FaPlusCircle
                           className="primary cursor-pointer"
                           onClick={() => history.push('/itemMaster')}
@@ -1333,8 +1412,9 @@ const AddReturnbill = () => {
 
                 <tbody>
                   <tr className="input-row">
-                    <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
-                      {isEditMode ? (
+                    <td style={{ fontSize: 15, height: "47px", minWidth: 350, width: "350px", maxWidth: "350px" }}>
+                      <div style={{ width: "100%", height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
+                        {isEditMode ? (
                         <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
                           <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
                           {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
@@ -1346,7 +1426,7 @@ const AddReturnbill = () => {
                           size="small"
                           fullWidth
                           sx={{
-                            minWidth: 400,
+                            minWidth: "100%",
                             width: "100%",
                             textTransform: 'uppercase',
 
@@ -1375,6 +1455,7 @@ const AddReturnbill = () => {
                           }}
                         />
                       )}
+                      </div>
                     </td>
 
                     <td>

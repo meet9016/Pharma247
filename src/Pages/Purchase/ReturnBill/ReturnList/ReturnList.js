@@ -21,7 +21,8 @@ import {
   DialogContentText,
   DialogTitle,
   Select,
-  MenuItem
+  MenuItem,
+  CircularProgress
 } from "@mui/material";
 import DatePicker from "react-datepicker";
 import { format, subDays } from "date-fns";
@@ -478,8 +479,8 @@ const ReturnList = () => {
                       }}
                     >
                       {isPdfLoading ? (
-                        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                          <CircularProgress size={16} style={{ color: "white" }} />
                           Generating...
                         </span>
                       ) : (

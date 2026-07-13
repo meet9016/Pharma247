@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
+import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import { format, subDays } from "date-fns";
 import React, { useEffect, useState } from "react";
@@ -502,8 +503,8 @@ const Purchasebill = () => {
                   }}
                 >
                   {isPdfLoading ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span className=" text-white inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 ,color:"#fff",textColor:"#fff"}}>
+                      <CircularProgress size={16} style={{ color: "white" }} />
                       Generating...
                     </span>
                   ) : (

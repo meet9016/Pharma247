@@ -23,6 +23,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
@@ -221,12 +222,13 @@ const PurchaseView = () => {
     <>
       <Header />
 
-      <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }}>
+      <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 65px)', padding: "0px 20px 0px", display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
         {/*<===================================================================== Header bottom  =====================================================================> */}
 
-        <div>
-          <div className="py-3 sal-rtn-fff sale_view_btns" style={{ display: "flex", gap: "4px" }}>
+        <div style={{ flexShrink: 0 }}>
+          <div>
+            <div className="py-3 sal-rtn-fff sale_view_btns" style={{ display: "flex", gap: "4px" }}>
             <div className="flex flex-row gap-2 " style={{ alignItems: "center" }}>
               <span
                 style={{
@@ -308,8 +310,8 @@ const PurchaseView = () => {
                   onClick={() => pdfGenerator(id)}
                 >
                   {isPdfLoading ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span className=" text-white inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 ,color:"#fff"}}>
+                      <CircularProgress size={16} style={{ color: "white" }} />
                       Downloading...
                     </span>
                   ) : (
@@ -394,7 +396,6 @@ const PurchaseView = () => {
                   "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(63,98,18,0.15)",
                 overflow: "hidden",
                 position: "relative",
-
               }}
             >
               {/* Left accent */}
@@ -521,10 +522,11 @@ const PurchaseView = () => {
               </div>
             </div>
           </div>
+        </div>
 
-          {/*<===============================================================  table data  ===============================================================> */}
+        {/*<===============================================================  table data  ===============================================================> */}
 
-          <div className="overflow-x-auto mt-5">
+          <div className="table-container mt-5" style={{ flex: 1, minHeight: 0, marginBottom: "20px", overflow: "auto" }}>
             <table className="customtable  w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
               <thead>
                 <tr>

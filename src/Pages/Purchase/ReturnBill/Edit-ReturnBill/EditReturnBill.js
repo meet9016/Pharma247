@@ -281,21 +281,40 @@ const EditReturnBill = () => {
         const handleKeyPress = (e) => {
             if (!tableData?.item_list?.length) return;
 
+            const activeElement = document.activeElement;
+            const isDropdownFocused =
+                activeElement &&
+                (activeElement.tagName === "SELECT" ||
+                    activeElement.getAttribute("role") === "option" ||
+                    activeElement.getAttribute("role") === "listbox" ||
+                    activeElement.getAttribute("role") === "menuitem" ||
+                    activeElement.getAttribute("role") === "combobox");
+
+            if (isDropdownFocused) return;
+
             if (e.key === "ArrowDown") {
                 e.preventDefault();
                 if (document.activeElement === inputRefs.current[0]) {
                     inputRefs.current[0].blur();
                 }
-                setSelectedIndex((prev) =>
-                    Math.min(prev + 1, tableData.item_list.length - 1)
-                );
+                const nextIndex = Math.min(selectedIndex + 1, tableData.item_list.length - 1);
+                setSelectedIndex(nextIndex);
+                if (nextIndex !== selectedIndex) {
+                    const selectedRow = tableData.item_list[nextIndex];
+                    if (selectedRow) handleEditClick(selectedRow);
+                }
             }
             else if (e.key === "ArrowUp") {
                 e.preventDefault();
                 if (document.activeElement === inputRefs.current[0]) {
                     inputRefs.current[0].blur();
                 }
-                setSelectedIndex((prev) => Math.max(prev - 1, 0));
+                const prevIndex = Math.max(selectedIndex - 1, 0);
+                setSelectedIndex(prevIndex);
+                if (prevIndex !== selectedIndex) {
+                    const selectedRow = tableData.item_list[prevIndex];
+                    if (selectedRow) handleEditClick(selectedRow);
+                }
             }
             else if (e.key === "Enter" && selectedIndex !== -1) {
                 const selectedRow = tableData.item_list[selectedIndex];
