@@ -660,14 +660,15 @@ const AdjustStock = () => {
                       ))}
                     </tr>
                   </thead>
-                  <tbody style={{ background: "#3f621217" }}>
+                  <tbody>
                     {(isLoading || isSearchLoading) ? (
                       <tr>
                         <td
                           colSpan={stockList.length + 1}
                           style={{
+                            position: "relative",
+                            height: "400px",
                             textAlign: "center",
-                            padding: "40px",
                           }}
                         >
                           <div className="flex justify-center items-center w-full">

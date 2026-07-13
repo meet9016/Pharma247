@@ -2152,13 +2152,21 @@ const BankAccount = () => {
             <Button
               onClick={resetAdjustDialog}
               variant="outlined"
+
+              style={{
+                borderColor: "#9ca3af !important",
+                background: "#dbdce0ff",       // Light Gray
+                color: "#4b5563",            // Dark Gray Text
+                border: "1px solid #d1d5db", // Gray Border
+                boxShadow: "none",
+                textTransform: "none",
+              }}
               sx={{
-                color: "#666",
-                borderColor: "#ccc",
-                '&:hover': {
-                  borderColor: "#999",
-                  backgroundColor: "#f5f5f5 !important"
-                }
+                "&:hover": {
+                  background: "#e5e7eb",     // Slightly Darker Gray
+                  borderColor: "#9ca3af !important",
+                  boxShadow: "none",
+                },
               }}
             >
               Cancel

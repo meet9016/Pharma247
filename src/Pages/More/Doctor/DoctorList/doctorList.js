@@ -792,14 +792,15 @@ const DoctorList = () => {
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody style={{ backgroundColor: "#3f621217" }}>
+                  <tbody >
                     {(isLoading || isSearchLoading) ? (
                       <tr>
                         <td
                           colSpan={columns.length + 2}
                           style={{
+                            position: "relative",
+                            height: "400px",
                             textAlign: "center",
-                            padding: "40px",
                           }}
                         >
                           <div className="flex justify-center items-center w-full">
@@ -899,7 +900,13 @@ const DoctorList = () => {
                                 }}
                               >
                                 <VisibilityIcon
-                                  style={{ color: "var(--color1)" }}
+                                  sx={{
+                                    color: "#2563eb", // Blue
+                                    cursor: "pointer",
+                                    "&:hover": {
+                                      color: "#1d4ed8", // Dark Blue on hover
+                                    },
+                                  }}
                                   onClick={() => {
                                     history.push(`/doctor/${row.id}`);
                                   }}
@@ -1403,7 +1410,7 @@ const DoctorList = () => {
             </DialogContentText>
           </DialogContent>
 
-          <DialogActions style={{ padding: "20px 24px" }}>
+          {/* <DialogActions style={{ padding: "20px 24px" }}>
             <Button
               autoFocus
               variant="contained"
@@ -1420,10 +1427,75 @@ const DoctorList = () => {
               variant="contained"
               color="error"
               onClick={resetAddDialog}
+              style={{
+                margin: "10px 0 10px 0",
+                borderColor: "#9ca3af !important",
+                background: "#dbdce0ff",       // Light Gray
+                color: "#4b5563",            // Dark Gray Text
+                border: "1px solid #d1d5db", // Gray Border
+                boxShadow: "none",
+                textTransform: "none",
+              }}
+              sx={{
+                "&:hover": {
+                  background: "#e5e7eb",     // Slightly Darker Gray
+                  borderColor: "#9ca3af !important",
+                  boxShadow: "none",
+                },
+              }}
+            >
+              Cancel
+            </Button>
+          </DialogActions> */}
+
+
+          <DialogActions
+            style={{
+              padding: "20px 24px",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              autoFocus
+              variant="contained"
+              style={{
+                backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                color: "white",
+                textTransform: "none",
+              }}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                },
+              }}
+              onClick={AddDoctor}
+            >
+              {buttonLabel}
+            </Button>
+
+            <Button
+              variant="contained"
+              onClick={resetAddDialog}
+              style={{
+                marginLeft: "8px",
+                backgroundColor: "#dbdce0",
+                color: "#4b5563",
+                border: "1px solid #d1d5db",
+                boxShadow: "none",
+                textTransform: "none",
+              }}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#c9cacd !important",
+                  boxShadow: "none",
+                },
+              }}
             >
               Cancel
             </Button>
           </DialogActions>
+
         </Dialog>
       </div>
     </>

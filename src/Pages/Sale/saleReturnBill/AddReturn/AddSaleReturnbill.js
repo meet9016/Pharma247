@@ -126,7 +126,7 @@ const Salereturn = () => {
 
 
 
-    /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
+    /*<============================================================ disable autocomplete to focus when tableref is focused ===================================================> */
 
 
 
@@ -1018,7 +1018,7 @@ const Salereturn = () => {
                                 <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                             ))}
                         </Select>
-                        <Button ref={returnSubmitBtnRef} variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => handleSubmit()}> Submit </Button>
+                        <Button ref={returnSubmitBtnRef} variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => handleSubmit()}> Save </Button>
 
                     </div>
                 </div>
@@ -1296,7 +1296,8 @@ const Salereturn = () => {
                             <tr className="input-row">
                                 <td className="p-0">
                                     {isEditMode ? (
-                                        <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'flex-end',
+                                        <div style={{
+                                            fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'flex-end',
                                             border: isEditMode && !searchItem?.trim() ? '1.5px solid red' : '1.5px solid transparent',
                                             borderRadius: 4, padding: '4px 6px'
                                         }}>

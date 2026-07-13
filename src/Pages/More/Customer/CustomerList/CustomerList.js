@@ -855,19 +855,14 @@ const CustomerList = () => {
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody style={{ backgroundColor: "#3f621217" }}>
+                <tbody>
                   {isLoading ? (
                     <tr>
                       <td
                         colSpan={columns.length + 2}
-                        style={{
-                          textAlign: "center",
-                          padding: "40px",
-                        }}
+                        style={{ position: "relative", height: "400px" }}
                       >
-                        <div className="flex justify-center items-center w-full">
-                          <Loader />
-                        </div>
+                        <Loader />
                       </td>
                     </tr>
                   ) : tableData.length === 0 ? (
@@ -948,7 +943,13 @@ const CustomerList = () => {
                               }}
                             >
                               <VisibilityIcon
-                                style={{ color: "var(--color1)" }}
+                                sx={{
+                                  color: "#2563eb", // Blue
+                                  cursor: "pointer",
+                                  "&:hover": {
+                                    color: "#1d4ed8", // Dark Blue on hover
+                                  },
+                                }}
                                 onClick={() => {
                                   history.push(`/customerView/${row.id}`);
                                 }}

@@ -435,15 +435,12 @@ const SehatMembersList = () => {
                                             <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody style={{ background: "#3f621217" }}>
+                                    <tbody>
                                         {(isLoading || isSearchLoading) ? (
                                             <tr>
                                                 <td
                                                     colSpan={columns.length + 1}
-                                                    style={{
-                                                        textAlign: "center",
-                                                        padding: "40px",
-                                                    }}
+                                                    style={{ position: "relative", height: "400px" }}
                                                 >
                                                     <div className="flex justify-center items-center w-full">
                                                         <Loader />
@@ -501,7 +498,13 @@ const SehatMembersList = () => {
                                                             style={{ height: "100%" }}
                                                         >
                                                             <VisibilityIcon
-                                                                style={{ color: "var(--color1)", cursor: "pointer" }}
+                                                                sx={{
+                                                                    color: "#2563eb", // Blue
+                                                                    cursor: "pointer",
+                                                                    "&:hover": {
+                                                                        color: "#1d4ed8", // Dark Blue on hover
+                                                                    },
+                                                                }}
                                                                 onClick={() => { getMember(row?.id) }}
                                                             />
                                                             <BorderColorIcon

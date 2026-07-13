@@ -634,30 +634,12 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                     ))}
 
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
-                        <Button
-                            variant="outlined"
-                            onClick={() => setAddMember(false)}
-                            sx={{
-                                borderColor: "#cbd5e1",
-                                color: "#475569",
-                                borderRadius: "8px",
-                                px: 4,
-                                py: 1,
-                                textTransform: "none",
-                                fontWeight: 500,
-                                "&:hover": {
-                                    borderColor: "#94a3b8",
-                                    backgroundColor: "#f8fafc !important"
-                                }
-                            }}
-                        >
-                            Cancel
-                        </Button>
+
                         <Button
                             variant="contained"
                             sx={{
                                 backgroundColor: "#3f6212",
-                                borderRadius: "8px",
+
                                 px: 4,
                                 py: 1,
                                 textTransform: "none",
@@ -670,7 +652,32 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                             }}
                             onClick={handleSubmit}
                         >
-                            Submit
+                            Save
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            onClick={() => setAddMember(false)}
+
+
+                            style={{
+
+                                borderColor: "#9ca3af !important",
+                                background: "#dbdce0ff",       // Light Gray
+                                color: "#4b5563",            // Dark Gray Text
+                                border: "1px solid #d1d5db", // Gray Border
+                                boxShadow: "none",
+                                textTransform: "none",
+                            }}
+                            sx={{
+                                "&:hover": {
+                                    background: "#e5e7eb",     // Slightly Darker Gray
+                                    borderColor: "#9ca3af !important",
+                                    boxShadow: "none",
+                                },
+                            }}
+                        >
+                            Cancel
                         </Button>
                     </div>
                 </div>

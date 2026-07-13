@@ -2047,9 +2047,26 @@ const Itemmaster = () => {
                   variant="contained"
                   style={{ margin: "10px", marginLeft: "0px", background: "var(--color1)" }}
                   onClick={handleSubmit}
-                >Submit</Button>
+                >Save</Button>
 
-                <Button variant="contained" style={{ margin: "10px 0 10px 0", background: "var(--color6)" }} onClick={resetData}>
+                <Button variant="contained"
+                  style={{
+                    margin: "10px 0 10px 0",
+                    borderColor: "#9ca3af !important",
+                    background: "#dbdce0ff",       // Light Gray
+                    color: "#4b5563",            // Dark Gray Text
+                    border: "1px solid #d1d5db", // Gray Border
+                    boxShadow: "none",
+                    textTransform: "none",
+                  }}
+                  sx={{
+                    "&:hover": {
+                      background: "#e5e7eb",     // Slightly Darker Gray
+                      borderColor: "#9ca3af !important",
+                      boxShadow: "none",
+                    },
+                  }}
+                  onClick={resetData}>
                   Cancel
                 </Button>
               </div>

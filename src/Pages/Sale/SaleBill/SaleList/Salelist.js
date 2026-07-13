@@ -538,7 +538,13 @@ const Salelist = () => {
                             <td style={{ borderRadius: "0 10px 10px 0" }}>
                               <div className="flex gap-4">
                                 <VisibilityIcon
-                                  className="cursor-pointer primary hover:secondary"
+                                  sx={{
+                                    color: "#2563eb", // Blue
+                                    cursor: "pointer",
+                                    "&:hover": {
+                                      color: "#1d4ed8", // Dark Blue on hover
+                                    },
+                                  }}
                                   onClick={() => {
                                     history.push(`/saleView/${row.id}`);
                                   }}
