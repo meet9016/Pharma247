@@ -11,7 +11,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 import { toast } from "react-toastify";
-
+import { IconButton } from "@mui/material";
 const Search = ({ searchPage, setSearchPage }) => {
   const history = useHistory();
   const token = localStorage.getItem("token");
@@ -229,31 +229,56 @@ const Search = ({ searchPage, setSearchPage }) => {
       <div
         id="modal"
         value={searchPage}
-        className={`fixed top-[calc(var(--header-height,25px))] left-0 right-0 bottom-0 p-4 flex flex-wrap justify-center items-center w-full h-[calc(100%-var(--header-height,15px))] z-[100] before:fixed before:top-[calc(var(--header-height,31px))] before:left-0 before:w-full before:h-[calc(100%-var(--header-height,5px))] before:bg-[rgba(0,0,0,0.5)] overflow-hidden font-[sans-serif]
-            ${searchPage ? "block" : "hidden"}`}
+        className={`fixed top-[calc(var(--header-height,25px))] left-0 right-0 bottom-0 p-4 flex flex-wrap justify-center items-center w-full h-[calc(100%-var(--header-height,15px))] z-[100] before:fixed before:top-[calc(var(--header-height,31px))] before:left-0 before:w-full before:h-[calc(100%-var(--header-height,5px))] before:bg-[rgba(0,0,0,0.6)] before:backdrop-blur-sm overflow-hidden font-[sans-serif] transition-all duration-300
+            ${searchPage ? "block opacity-100" : "hidden opacity-0"}`}
       >
         <div />
-        <div className="bg-white shadow-lg rounded-md p-4 relative" style={{ width: "51%" }}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 absolute top-4 right-4 fill-current primary cursor-pointer"
-            viewBox="0 0 24 24"
-            onClick={() => setSearchPage(false)}
-          >
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-          </svg>
+        <div 
+          className="bg-white shadow-2xl rounded-xl p-6 relative w-full max-w-4xl max-h-[85vh] flex flex-col transform transition-all duration-300 scale-100" 
+          style={{ animation: 'fadeIn 0.2s ease-out' }}
+        >
+          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
+            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+              <SearchIcon sx={{ color: 'var(--COLOR_UI_PHARMACY)' }} />
+              Global Search
+            </h2>
+            <IconButton
+              onClick={() => setSearchPage(false)}
+              size="small"
+              sx={{
+                color: 'gray',
+                '&:hover': {
+                  backgroundColor: '#fee2e2',
+                  color: '#ef4444',
+                },
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5 fill-current"
+                viewBox="0 0 24 24"
+              >
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
+              </svg>
+            </IconButton>
+          </div>
 
-          <div className="my-4 flex gap-4 justify-evenly items-center" style={{ position: 'sticky', top: '0', alignItems: 'end' }}>
-            <Box className=" " sx={{ width: "40%" }}>
-              <FormControl fullWidth>
-                <InputLabel id="Select">Select</InputLabel>
+          <div className="flex gap-4 items-center mb-6 w-full">
+            <Box sx={{ minWidth: "160px" }}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="Select-label" sx={{ color: 'gray' }}>Category</InputLabel>
                 <Select
-                  style={{ height: "48px" }}
-                  labelId="select"
+                  labelId="Select-label"
                   id="select"
                   value={searchType}
-                  label="Select"
+                  label="Category"
                   onChange={(event) => handleSearchTypeChange(event.target.value)}
+                  sx={{
+                    borderRadius: '8px',
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'var(--COLOR_UI_PHARMACY)',
+                    },
+                  }}
                 >
                   {Object.entries(searchConfigs).map(([value, config]) => (
                     <MenuItem key={value} value={value}>
@@ -270,14 +295,28 @@ const Search = ({ searchPage, setSearchPage }) => {
               disabled={!searchType}
               autoFocus
               value={searchQuery.toUpperCase()}
-              sx={{ width: "100%", marginTop: "0px" }}
+              sx={{
+                width: "100%",
+                marginTop: "0px",
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                  backgroundColor: '#f9fafb',
+                  '&.Mui-focused': {
+                    backgroundColor: '#ffffff',
+                    boxShadow: '0 0 0 2px rgba(98, 138, 47, 0.2)',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--COLOR_UI_PHARMACY)',
+                  },
+                },
+              }}
               onChange={handleSearchQueryChange}
-              variant="standard"
+              variant="outlined"
               placeholder={`Search ${getCurrentConfig()?.label || 'items'}...`}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    {isLoading ? <CircularProgress size={20} /> : <SearchIcon />}
+                    {isLoading ? <CircularProgress size={20} sx={{ color: 'var(--COLOR_UI_PHARMACY)' }} /> : <SearchIcon sx={{ color: 'gray' }} />}
                   </InputAdornment>
                 ),
                 type: "search",
@@ -285,59 +324,67 @@ const Search = ({ searchPage, setSearchPage }) => {
             />
           </div>
 
-          <div className="">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse custom-table" style={{
-                whiteSpace: "nowrap",
-                borderCollapse: "separate",
-                borderSpacing: "0 6px",
-              }}>
-                <thead>
-                  <tr style={{ whiteSpace: 'nowrap' }}>
-                    <th>Sr No.</th>
+          <div className="flex-1 overflow-hidden flex flex-col border border-gray-200 rounded-lg shadow-sm">
+            <div className="overflow-x-auto overflow-y-auto" style={{ maxHeight: '45vh' }}>
+              <table className="w-full border-collapse" style={{ whiteSpace: "nowrap" }}>
+                <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">Sr No.</th>
                     {currentColumns.map((column) => (
-                      <th key={column.id} style={{ minWidth: 50 }}>
+                      <th key={column.id} className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200" style={{ minWidth: 50 }}>
                         {column.label}
                       </th>
                     ))}
-                    <th>Action</th>
+                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">Action</th>
                   </tr>
                 </thead>
-                <tbody style={{ background: "#3f621217", overflow: 'auto' }}>
+                <tbody className="bg-white divide-y divide-gray-100">
                   {tableData && tableData.length > 0 ? (
                     tableData
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row, index) => (
-                        <tr className="primary" key={`${searchType}-${row.id || index}-${page * rowsPerPage + index}`}>
-                          <td
-                            style={{ borderRadius: "10px 0 0 10px", cursor: "pointer" }}
-                            onClick={() => handleNavigation(row)}
-                          >
+                        <tr 
+                          key={`${searchType}-${row.id || index}-${page * rowsPerPage + index}`}
+                          className="hover:bg-[#f0f5e9] transition-colors duration-150 group cursor-pointer"
+                          onClick={() => handleNavigation(row)}
+                        >
+                          <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
                             {page * rowsPerPage + index + 1}
                           </td>
                           {currentColumns.map((column) => (
-                            <td
-                              onClick={() => handleNavigation(row)}
-                              className="cursor-pointer"
-                              key={column.id}
-                            >
+                            <td key={column.id} className="px-4 py-3 text-sm text-gray-700 font-medium">
                               {row[column.id]
                                 ? row[column.id].toString().slice(0, 50) + (row[column.id].toString().length > 50 ? "…" : "")
                                 : row[column.id] === 0 ? "0" : "-"}
                             </td>
                           ))}
-                          <td style={{ borderRadius: "0 10px 10px 0" }}>
-                            <ReplyAllIcon
-                              className="primary transform -scale-x-100 cursor-pointer"
-                              onClick={() => handleNavigation(row)}
-                            />
+                          <td className="px-4 py-3 text-center">
+                            <IconButton 
+                              size="small" 
+                              className="text-gray-400 group-hover:text-[var(--COLOR_UI_PHARMACY)] transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleNavigation(row);
+                              }}
+                            >
+                              <ReplyAllIcon fontSize="small" className="transform -scale-x-100" />
+                            </IconButton>
                           </td>
                         </tr>
                       ))
                   ) : (
                     <tr>
-                      <td colSpan={currentColumns.length + 2} className="text-center primary" style={{ borderRadius: '10px 10px 10px 10px' }}>
-                        {isLoading ? "Searching..." : searchQuery && searchType ? "No data found" : "Please select a search type and enter search query"}
+                      <td colSpan={currentColumns.length + 2} className="px-4 py-12 text-center text-gray-500">
+                        <div className="flex flex-col items-center justify-center">
+                          {isLoading ? (
+                            <CircularProgress size={32} sx={{ color: 'var(--COLOR_UI_PHARMACY)', mb: 2 }} />
+                          ) : (
+                            <SearchIcon sx={{ fontSize: 48, color: '#e5e7eb', mb: 1 }} />
+                          )}
+                          <p className="text-base font-medium text-gray-600">
+                            {isLoading ? "Searching..." : searchQuery && searchType ? "No results found" : "Enter a query to start searching"}
+                          </p>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -345,15 +392,26 @@ const Search = ({ searchPage, setSearchPage }) => {
               </table>
             </div>
             {tableData.length > 0 && (
-              <TablePagination
-                rowsPerPageOptions={[5, 10]}
-                component="div"
-                count={tableData.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
+              <div className="border-t border-gray-200 bg-gray-50 px-4 py-1 rounded-b-lg flex justify-end">
+                <TablePagination
+                  rowsPerPageOptions={[10, 20, 50, 100]}
+                  component="div"
+                  count={tableData.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  sx={{
+                    '& .MuiTablePagination-select': {
+                      fontFamily: 'inherit',
+                      fontWeight: 500,
+                    },
+                    '& .MuiTablePagination-displayedRows': {
+                      fontFamily: 'inherit',
+                    }
+                  }}
+                />
+              </div>
             )}
           </div>
         </div>
