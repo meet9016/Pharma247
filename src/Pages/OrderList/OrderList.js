@@ -1295,13 +1295,13 @@ const OrderList = () => {
                   style={{
                     textTransform: "none",
                     backgroundColor: "var(--color1)",
-                    borderRadius: "8px",
+                    borderRadius: "4px",
                     fontWeight: 600,
                     padding: "8px 20px",
                   }}
                   onClick={PlaceOrder}
                 >
-                  Save Status
+                  Save
                 </Button>
                 <Button
                   variant="contained"
