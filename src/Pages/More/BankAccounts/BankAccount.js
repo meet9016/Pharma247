@@ -336,11 +336,6 @@ const BankAccount = () => {
         .then((response) => {
           const list = response.data.data || [];
           setBankData(list);
-          if (list.length > 0 && (selectedAccountId === null || selectedAccountId === undefined)) {
-            setSelectedAccountId(list[0].id);
-            setDetails(list[0]);
-            BankDetailgetByID(list[0].id);
-          }
           if (response.data.status === 401) {
             history.push("/");
             localStorage.clear();
@@ -701,7 +696,7 @@ const BankAccount = () => {
               </List>
             )} */}
 
-            {bankData.length > 0 ? (
+            {bankData.filter(a => a.bank_account_name === "Saving" || a.bank_account_name === "Current").length > 0 ? (
               <>
                 {/* Savings Accounts */}
                 {bankData.filter(account => account.bank_account_name === "Saving").length > 0 && (
@@ -822,15 +817,13 @@ const BankAccount = () => {
                 )}
               </>
             ) : (
-              <div className="flex flex-col items-center w-full h-[400px]">
+              <div className="flex flex-col items-center justify-center w-full" style={{ paddingTop: "310px" }}>
                 <img
                   src={image1}
                   alt="No Data"
-                  className="w-48 h-auto object-contain  select-none pointer-events-none"
-                  style={{ marginTop: "120%" }}
+                  className="w-36 h-auto object-contain select-none pointer-events-none"
                 />
-
-                <p className="mt-4 text-black text-lg font-medium">
+                <p className="mt-3 text-gray-500 text-sm font-medium">
                   No Bank Details
                 </p>
               </div>

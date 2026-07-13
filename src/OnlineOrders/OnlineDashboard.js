@@ -60,7 +60,7 @@ const OnlineDashboard = () => {
           setTotalPages(pages);
         });
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -117,6 +117,54 @@ const OnlineDashboard = () => {
     };
     return classMap[statusId] || "bg-gray-100 text-gray-700 hover:bg-gray-200";
   };
+
+  const getEmptyStateContent = (status) => {
+    switch (status) {
+      case "1":
+        return {
+          icon: <svg className="mx-auto h-20 w-20 text-blue-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>,
+          title: "No Assigned Orders",
+          desc: "Orders assigned to your pharmacy will appear here."
+        };
+      case "4":
+        return {
+          icon: <svg className="mx-auto h-20 w-20 text-yellow-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+          title: "No Confirmed Orders",
+          desc: "Confirmed orders will be displayed here."
+        };
+      case "5":
+        return {
+          icon: <svg className="mx-auto h-20 w-20 text-orange-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>,
+          title: "No Orders Ready for Pickup",
+          desc: "Orders marked as ready for pickup will show up here."
+        };
+      case "6":
+        return {
+          icon: <svg className="mx-auto h-20 w-20 text-emerald-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" /></svg>,
+          title: "No Completed Orders",
+          desc: "Your successfully delivered orders will be listed here."
+        };
+      case "2":
+        return {
+          icon: <svg className="mx-auto h-20 w-20 text-red-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+          title: "No Cancelled Orders",
+          desc: "Orders cancelled by the customer will appear here."
+        };
+      case "3":
+        return {
+          icon: <svg className="mx-auto h-20 w-20 text-red-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>,
+          title: "No Rejected Orders",
+          desc: "Orders cancelled by you will appear here."
+        };
+      default:
+        return {
+          icon: <svg className="mx-auto h-20 w-20 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>,
+          title: "No Orders Found",
+          desc: "Try adjusting your filters to see more results."
+        };
+    }
+  };
+
 
 
   {/*<========================================================================= ui ===================================================================> */ }
@@ -225,19 +273,19 @@ const OnlineDashboard = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="overflow-x-auto overflow-y-auto overflow-x-auto flex-grow" style={{ height: "calc(100% - 80px)" }}>
-                      <table className="w-full">
-                        <thead className="bg-gray-50 border-b border-gray-200 sticky top-0">
+                    <div className="overflow-x-auto overflow-y-auto flex-grow" style={{ height: "calc(100% - 80px)" }}>
+                      <table className="w-full border-collapse">
+                        <thead className="bg-[#f8fafc] border-b border-gray-200 sticky top-0 z-10 shadow-sm">
                           <tr>
-                            <th className="text-left px-6 py-2 font-semibold text-gray-800 text-sm">Order ID</th>
-                            <th className="text-left px-6 py-2 font-semibold text-gray-800 text-sm">Patient Info</th>
-                            <th className="text-left px-6 py-2 font-semibold text-gray-800 text-sm">Date</th>
-                            <th className="text-left px-6 py-2 font-semibold text-gray-800 text-sm">Delivery</th>
-                            <th className="text-left px-6 py-2 font-semibold text-gray-800 text-sm">Status</th>
-                            <th className="text-right px-6 py-2 font-semibold text-gray-800 text-sm">Amount</th>
+                            <th className="text-left px-6 py-4 font-semibold text-gray-700 text-sm tracking-wider uppercase">Order ID</th>
+                            <th className="text-left px-6 py-4 font-semibold text-gray-700 text-sm tracking-wider uppercase">Patient Info</th>
+                            <th className="text-left px-6 py-4 font-semibold text-gray-700 text-sm tracking-wider uppercase">Date</th>
+                            <th className="text-left px-6 py-4 font-semibold text-gray-700 text-sm tracking-wider uppercase">Delivery</th>
+                            <th className="text-left px-6 py-4 font-semibold text-gray-700 text-sm tracking-wider uppercase">Status</th>
+                            <th className="text-right px-6 py-4 font-semibold text-gray-700 text-sm tracking-wider uppercase">Amount</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200">
+                        <tbody className="divide-y divide-gray-100 bg-white">
                           {billData?.map((order, index) => (
                             <tr
                               key={index}
@@ -274,13 +322,15 @@ const OnlineDashboard = () => {
                           ))}
                           {billData?.length === 0 && (
                             <tr>
-                              <td colSpan="6" className="px-6 py-12 text-center">
-                                <div className="text-gray-500">
-                                  <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                  </svg>
-                                  <p className="text-lg font-medium">No orders found</p>
-                                  <p className="text-sm">Try adjusting your filters</p>
+                              <td colSpan="6" className="px-6 py-16 text-center bg-gray-50/50">
+                                <div className="flex flex-col items-center justify-center text-gray-500 max-w-sm mx-auto">
+                                  {getEmptyStateContent(selectedStatus).icon}
+                                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                                    {getEmptyStateContent(selectedStatus).title}
+                                  </h3>
+                                  <p className="text-sm text-gray-500">
+                                    {getEmptyStateContent(selectedStatus).desc}
+                                  </p>
                                 </div>
                               </td>
                             </tr>

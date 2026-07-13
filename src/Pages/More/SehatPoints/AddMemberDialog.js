@@ -199,15 +199,25 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
 
     // Handlers
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const emailRegex =
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/;
 
     const handleChange = (field, value) => {
         let error = "";
+        // if (field === "email") {
+        //     if (!value) {
+        //         error = "Email is required";
+        //     } else if (!emailRegex.test(value)) {
+        //         error = "Enter a valid email address";
+        //     }
+        // }
         if (field === "email") {
-            if (!value) {
+            const email = value.trim();
+
+            if (!email) {
                 error = "Email is required";
-            } else if (!emailRegex.test(value)) {
-                error = "Enter a valid email address";
+            } else if (!emailRegex.test(email)) {
+                error = "Please enter a valid email address";
             }
         }
 
@@ -254,9 +264,13 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
             newErrors.email = "Email is required";
             isValid = false;
         } else {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formData.email)) {
-                newErrors.email = "Enter a valid email address";
+
+            // if (!emailRegex.test(formData.email)) {
+            //     newErrors.email = "Enter a valid email address";
+            //     isValid = false;
+            // }
+            if (!emailRegex.test(formData.email.trim())) {
+                newErrors.email = "Please enter a valid email address";
                 isValid = false;
             }
         }
