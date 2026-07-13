@@ -1306,11 +1306,18 @@ const OrderList = () => {
                 <Button
                   variant="contained"
                   style={{
+                    marginLeft: "8px",
+                    backgroundColor: "#dbdce0",
+                    color: "#4b5563",
+                    border: "1px solid #d1d5db",
+                    boxShadow: "none",
                     textTransform: "none",
-                    backgroundColor: "#F31C1C",
-                    borderRadius: "8px",
-                    fontWeight: 600,
-                    padding: "8px 20px",
+                  }}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "#c9cacd !important",
+                      boxShadow: "none",
+                    },
                   }}
                   onClick={resetAddDialog}
                 >

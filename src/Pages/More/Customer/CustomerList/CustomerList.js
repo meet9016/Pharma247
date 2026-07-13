@@ -274,7 +274,7 @@ const CustomerList = () => {
 
     // 3. Email ID validation (Optional)
     if (emailId && emailId.trim()) {
-      if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(emailId)) {
+      if (!/^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com)$/i.test(emailId)) {
         newErrors.emailId = "Enter a valid email address";
       }
     }
@@ -1539,7 +1539,20 @@ const CustomerList = () => {
             </Button>
             <Button
               autoFocus
-              variant="contained"
+              style={{
+                marginLeft: "8px",
+                backgroundColor: "#dbdce0",
+                color: "#4b5563",
+                border: "1px solid #d1d5db",
+                boxShadow: "none",
+                textTransform: "none",
+              }}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#c9cacd !important",
+                  boxShadow: "none",
+                },
+              }}
               onClick={resetAddDialog}
               color="error"
             >

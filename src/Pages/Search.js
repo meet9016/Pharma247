@@ -166,7 +166,7 @@ const Search = ({ searchPage, setSearchPage }) => {
       toast.dismiss();
       toast.error(errorMessage);
       setTableData([]);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -323,7 +323,7 @@ const Search = ({ searchPage, setSearchPage }) => {
                             >
                               {row[column.id]
                                 ? row[column.id].toString().slice(0, 50) + (row[column.id].toString().length > 50 ? "…" : "")
-                                :row[column.id]===0? "0" : "-"}
+                                : row[column.id] === 0 ? "0" : "-"}
                             </td>
                           ))}
                           <td style={{ borderRadius: "0 10px 10px 0" }}>

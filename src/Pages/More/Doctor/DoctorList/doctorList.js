@@ -261,7 +261,7 @@ const DoctorList = () => {
 
     // 4. Email ID validation (Optional)
     if (emailId && emailId.trim()) {
-      if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(emailId)) {
+      if (!/^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com)$/i.test(emailId)) {
         newErrors.emailId = "Enter a valid email address";
       }
     }
@@ -1475,17 +1475,21 @@ const DoctorList = () => {
             </Button>
 
             <Button
-              variant="contained"
+
               onClick={resetAddDialog}
-              style={{
-                marginLeft: "8px",
+              sx={{
+                ml: 1,
                 backgroundColor: "#dbdce0",
                 color: "#4b5563",
                 border: "1px solid #d1d5db",
                 boxShadow: "none",
                 textTransform: "none",
-              }}
-              sx={{
+
+                px: 2.5,          // px-5 (20px)
+                py: 1,            // py-2 (8px)
+                minWidth: "64px", // min-w-16
+                height: "40px",   // h-10
+
                 "&:hover": {
                   backgroundColor: "#c9cacd !important",
                   boxShadow: "none",
@@ -1494,6 +1498,7 @@ const DoctorList = () => {
             >
               Cancel
             </Button>
+
           </DialogActions>
 
         </Dialog>
