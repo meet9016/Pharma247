@@ -1259,7 +1259,7 @@ const BankAccount = () => {
         </Box>
 
 
-        <Dialog className="custom-dialog" open={openAddPopUp} onClose={handleCloseDialog}>
+        <Dialog className="custom-dialog" open={openAddPopUp} onClose={handleCloseDialog} maxWidth="md" fullWidth>
           <DialogTitle id="alert-dialog-title" className="primary">
             Add Bank Account
           </DialogTitle>
@@ -1442,8 +1442,6 @@ const BankAccount = () => {
                       <span className="error">{errors.accountType}</span>
                     )}
                   </div>
-                </div>
-                <div className="flex flex-col md:flex-row gap-5">
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
                       <span className="label primary mb-4">
@@ -1468,7 +1466,6 @@ const BankAccount = () => {
                             toast.dismiss();
                             toast.error("Opening Balance is Required");
                           }
-                          // Shift + Tab is allowed by default; do not prevent it
                         }
                       }}
                       onChange={(e) => {
@@ -1479,7 +1476,9 @@ const BankAccount = () => {
                       fullWidth={fullScreen}
                     />
                   </div>
-                  <div style={{ width: "100%" }}>
+                </div>
+                <div className="flex flex-col md:flex-row gap-5">
+                  <div style={{ width: "32.2%" }}>
                     <div className="mb-2">
                       <span className="label primary">As of Date</span>
                     </div>
@@ -1609,8 +1608,7 @@ const BankAccount = () => {
                       </span>
                     )}
                   </div>
-                </div>
-                <div className="flex flex-col md:flex-row gap-5 my-4">
+
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
                       <span className="label primary mb-4">IFSC Code</span>
@@ -1667,6 +1665,9 @@ const BankAccount = () => {
                       <span className="error">{errors.ifscCode}</span>
                     )}
                   </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-5">
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
                       <span className="label primary">Branch Name</span>
@@ -1724,8 +1725,6 @@ const BankAccount = () => {
                       )}
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-col md:flex-row gap-5">
                   <div style={{ width: "100%" }}>
                     <div className="mb-2">
                       <span className="label primary mb-4">
