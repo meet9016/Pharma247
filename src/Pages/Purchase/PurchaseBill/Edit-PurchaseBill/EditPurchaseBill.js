@@ -176,15 +176,17 @@ const EditPurchaseBill = () => {
 
       // Prevent keyboard control if any input is focused
       const activeElement = document.activeElement;
-      const isDropdownFocused =
+      const isInputOrDropdownFocused =
         activeElement &&
-        (activeElement.tagName === "SELECT" ||
+        (activeElement.tagName === "INPUT" ||
+          activeElement.tagName === "TEXTAREA" ||
+          activeElement.tagName === "SELECT" ||
           activeElement.getAttribute("role") === "option" ||
           activeElement.getAttribute("role") === "listbox" ||
           activeElement.getAttribute("role") === "menuitem" ||
           activeElement.getAttribute("role") === "combobox");
 
-      if (isDropdownFocused) return;
+      if (isInputOrDropdownFocused) return;
 
       if (key === "ArrowDown") {
         e.preventDefault();
@@ -2020,14 +2022,13 @@ const EditPurchaseBill = () => {
                           const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
                           if (isShiftTab) return;
                           if (isTab || isEnter) {
+                            e.preventDefault();
                             if (!expiryDate) {
-                              e.preventDefault();
                               toast.dismiss();
                               toast.error("Expiry is required");
                               return;
                             }
                             if (!expiryDateRegex.test(expiryDate)) {
-                              e.preventDefault();
                               toast.dismiss();
                               toast.error("Expiry must be in MM/YY format");
                               return;
@@ -2038,11 +2039,9 @@ const EditPurchaseBill = () => {
                             const sixMonthsLater = new Date();
                             sixMonthsLater.setMonth(now.getMonth() + 6);
                             if (expiry < now) {
-                              e.preventDefault();
                               toast.dismiss();
                               toast.error("Product has expired");
                             } else if (expiry < sixMonthsLater) {
-                              e.preventDefault();
                               toast.warning("Product will expire within 6 months");
                               handleKeyDown(e, 5);
                             } else {
@@ -2390,8 +2389,24 @@ const EditPurchaseBill = () => {
                         }}
                       />
                     </td>
-                    <td className="total" >
-                      <span className="font-bold">{ItemTotalAmount.toFixed(2)}</span>
+<td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        disabled
+                        size="small"
+                        placeholder="0.00"
+                        value={ItemTotalAmount === 0 ? "" : Number(ItemTotalAmount).toFixed(2)}
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
+                      />
                     </td>
                   </tr>
 

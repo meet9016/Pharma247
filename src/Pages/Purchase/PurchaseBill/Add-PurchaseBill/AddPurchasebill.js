@@ -218,15 +218,17 @@ const AddPurchaseBill = () => {
 
       // Check if any input field inside inputRefs is focused
       const activeElement = document.activeElement;
-      const isDropdownFocused =
+      const isInputOrDropdownFocused =
         activeElement &&
-        (activeElement.tagName === "SELECT" ||
+        (activeElement.tagName === "INPUT" ||
+          activeElement.tagName === "TEXTAREA" ||
+          activeElement.tagName === "SELECT" ||
           activeElement.getAttribute("role") === "option" ||
           activeElement.getAttribute("role") === "listbox" ||
           activeElement.getAttribute("role") === "menuitem" ||
           activeElement.getAttribute("role") === "combobox");
 
-      if (isDropdownFocused) return; // Prevent key navigation when a dropdown is focused
+      if (isInputOrDropdownFocused) return; // Prevent key navigation when an input is focused
 
       if (key === "ArrowDown") {
         // Move selection down
@@ -250,7 +252,7 @@ const AddPurchaseBill = () => {
         setAutoCompleteOpen(false)
 
       } else if (key === "Enter" && selectedIndex !== -1) {
-        if (!isDropdownFocused) {
+        if (!isInputOrDropdownFocused) {
           const selectedRow = ItemPurchaseList.item[selectedIndex];
           if (!selectedRow) return;
 
@@ -465,24 +467,29 @@ const AddPurchaseBill = () => {
   useEffect(() => {
     /*<========================================================================== Calculate discount ===============================================================================> */
 
-    const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
+    const validPtr = Number(ptr) || 0;
+    const validDisc = Number(disc) || 0;
+    const validQty = Number(qty) || 0;
+    const validGst = Number(gst) || 0;
+
+    const totalSchAmt = parseFloat((((validPtr * validDisc) / 100) * validQty).toFixed(2));
     setSchAmt(totalSchAmt);
 
     /*<========================================================================= Calculate totalBase ==============================================================================> */
 
-    const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
+    const totalBase = parseFloat((validPtr * validQty - totalSchAmt).toFixed(2));
     setItemTotalAmount(0);
     setBase(totalBase);
 
     /*<=========================================================================== Calculate totalAmount ============================================================================> */
 
     const totalAmount = parseFloat(
-      (totalBase + (totalBase * gst) / 100).toFixed(2)
+      (totalBase + (totalBase * validGst) / 100).toFixed(2)
     );
     if (totalAmount) {
       setItemTotalAmount(totalAmount);
     } else {
-      setItemTotalAmount(0);
+      setItemTotalAmount(totalAmount === 0 ? "0.00" : 0);
     }
 
     /*<===================================================================================== Net Rate calculation ==================================================================> */
@@ -2883,14 +2890,13 @@ const AddPurchaseBill = () => {
                           if (isShiftTab) return;
 
                           if (isTab || isEnter) {
+                            e.preventDefault();
                             if (!expiryDate) {
-                              e.preventDefault();
                               setError((prev) => ({ ...prev, expiryDate: true }));
                               return;
                             }
 
                             if (!expiryDateRegex.test(expiryDate)) {
-                              e.preventDefault();
                               setError((prev) => ({ ...prev, expiryDate: true }));
                               return;
                             }
@@ -2902,10 +2908,8 @@ const AddPurchaseBill = () => {
                             sixMonthsLater.setMonth(now.getMonth() + 6);
 
                             if (expiry < now) {
-                              e.preventDefault();
                               setError((prev) => ({ ...prev, expiryDate: true }));
                             } else if (expiry < sixMonthsLater) {
-
                               toast.warning("Product will expire within 6 months");
                               handleKeyDown(e, 5);
                             } else {
@@ -3203,7 +3207,6 @@ const AddPurchaseBill = () => {
                           }
                         }}
                       >
-                        <MenuItem value=""></MenuItem>
                         <MenuItem value="0">0</MenuItem>
                         <MenuItem value="5">5</MenuItem>
                         <MenuItem value="18">18</MenuItem>
@@ -3283,10 +3286,24 @@ const AddPurchaseBill = () => {
                       />
                     </td>
 
-                    <td className="total">
-                      <span className="font-bold">
-                        {ItemTotalAmount.toFixed(2)}
-                      </span>
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        disabled
+                        size="small"
+                        placeholder="0.00"
+                        value={ItemTotalAmount ? Number(ItemTotalAmount).toFixed(2) : "0.00"}
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
+                      />
                     </td>
                   </tr>
 

@@ -400,13 +400,18 @@ const EditReturnBill = () => {
     };
 
     useEffect(() => {
-        const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
-        const totalBase = parseFloat(((ptr * qty) - totalSchAmt).toFixed(2));
-        const totalAmount = parseFloat((totalBase + (totalBase * gst / 100)).toFixed(2));
+        const validPtr = Number(ptr) || 0;
+        const validDisc = Number(disc) || 0;
+        const validQty = Number(qty) || 0;
+        const validGst = Number(gst) || 0;
+
+        const totalSchAmt = parseFloat((((validPtr * validDisc) / 100) * validQty).toFixed(2));
+        const totalBase = parseFloat(((validPtr * validQty) - totalSchAmt).toFixed(2));
+        const totalAmount = parseFloat((totalBase + (totalBase * validGst / 100)).toFixed(2));
         if (totalAmount) {
             setItemTotalAmount(totalAmount);
         } else {
-            setItemTotalAmount(0)
+            setItemTotalAmount(totalAmount === 0 ? "0.00" : 0)
         }
         if (isDeleteAll == false) {
             // restoreData();
@@ -1703,12 +1708,25 @@ const EditReturnBill = () => {
                                             }}
                                         />
                                     </td>
-                                    <td className="total">
-                                        <span className="font-bold">
-                                            {ItemTotalAmount}
-                                        </span>
-
-                                    </td>
+                                    <td>
+                                                         <TextField
+                                                           variant="outlined"
+                                                           autoComplete="off"
+                                                           id="outlined-number"
+                                                           type="number"
+                                                           disabled
+                                                           size="small"
+                                                           placeholder="0.00"
+                                                           value={ItemTotalAmount ? Number(ItemTotalAmount).toFixed(2) : "0.00"}
+                                                           sx={{
+                                                             minWidth: "65px",
+                                                             width: "100%",
+                                                             '& .MuiInputBase-input': {
+                                                               textAlign: 'center',
+                                                             },
+                                                           }}
+                                                         />
+                                                       </td>
                                 </tr>
 
                                 {isLoading ? (

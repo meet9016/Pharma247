@@ -18,6 +18,7 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import TipsModal from "../../../../componets/Tips/TipsModal";
 import SearchIcon from "@mui/icons-material/Search";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 
@@ -101,6 +102,7 @@ const Salereturn = () => {
     const [nextPath, setNextPath] = useState("");
     const [errors, setErrors] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [gstOpen, setGstOpen] = useState(false);
@@ -1815,6 +1817,12 @@ const Salereturn = () => {
                 </div>
             </div>
 
+            {showModal && (
+                <TipsModal
+                    id="add-purchase"
+                    onClose={() => setShowModal(false)}
+                />
+            )}
         </>
     )
 }
