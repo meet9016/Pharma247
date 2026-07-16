@@ -187,6 +187,7 @@ const AddPurchaseBill = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
   const inputRefs = useRef([]);
+  const isInitialEditLoad = useRef(false);
   const submitButtonRef = useRef(null);
   const addButtonref = useRef(null);
   /*<=================================================== disable autocomplete to focus when tableref is focused  ==========================================> */
@@ -473,6 +474,10 @@ const AddPurchaseBill = () => {
   /*<================================================================== calculation ==========================================================> */
 
   useEffect(() => {
+    if (isInitialEditLoad.current) {
+      return;
+    }
+
     /*<========================================================================== Calculate discount ===============================================================================> */
 
     const validPtr = Number(ptr) || 0;
@@ -1829,12 +1834,17 @@ const AddPurchaseBill = () => {
       setLoc(selectedEditItem.location.toUpperCase());
       setMargin(selectedEditItem.margin);
       setNetRate(selectedEditItem.net_rate);
+      setItemTotalAmount(selectedEditItem.amount || selectedEditItem.total_amount || 0);
     }
   }, [selectedEditItem]);
 
   /*<=========================================================================== Handle edit =======================================================================> */
 
   const handleEditClick = (item) => {
+    isInitialEditLoad.current = true;
+    setTimeout(() => {
+      isInitialEditLoad.current = false;
+    }, 150);
     setSelectedEditItem(item);
 
     setIsEditMode(true);

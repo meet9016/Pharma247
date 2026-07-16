@@ -57,6 +57,7 @@ const AddReturnbill = () => {
   const history = useHistory();
   const unblockRef = useRef(null);
   const [unsavedItems, setUnsavedItems] = useState(true);
+  const isInitialEditLoad = useRef(false);
   const [nextPath, setNextPath] = useState("");
   const [isOpenBox, setIsOpenBox] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState(null);
@@ -484,6 +485,9 @@ const AddReturnbill = () => {
   /*<============================================================================ calculation  ===================================================================> */
 
   useEffect(() => {
+    if (isInitialEditLoad.current) {
+      return;
+    }
     const validPtr = Number(ptr) || 0;
     const validDisc = Number(disc) || 0;
     const validQty = Number(qty) || 0;
@@ -838,6 +842,10 @@ const AddReturnbill = () => {
   };
 
   const handleEditClick = (item, value) => {
+    isInitialEditLoad.current = true;
+    setTimeout(() => {
+      isInitialEditLoad.current = false;
+    }, 150);
     setIsEditMode(true);
     setSelectedEditItem(item);
     setSelectedEditItemId(item.id);

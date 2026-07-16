@@ -135,6 +135,7 @@ const EditPurchaseBill = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
   const inputRefs = useRef([]);
+  const isInitialEditLoad = useRef(false);
   const shouldSubmitAfterEditRef = useRef(false);
   const [errors, setErrors] = useState({});
 
@@ -574,6 +575,10 @@ const EditPurchaseBill = () => {
   }, [otherAmt, baseNetAmount]);
 
   useEffect(() => {
+    if (isInitialEditLoad.current) {
+      return;
+    }
+
     // Convert values to numbers, defaulting to 0 if undefined/null/empty
     const numericQty = parseFloat(qty) || 0;
     const numericPtr = parseFloat(ptr) || 0;
@@ -1351,6 +1356,10 @@ const EditPurchaseBill = () => {
   /*<================================================================= update  state on edit  ============================================================> */
 
   const handleEditClick = (item) => {
+    isInitialEditLoad.current = true;
+    setTimeout(() => {
+      isInitialEditLoad.current = false;
+    }, 150);
     setAutocompleteKey((prevKey) => prevKey + 1);
     setSelectedEditItem(item);
     setIsEditMode(true);
@@ -1379,6 +1388,7 @@ const EditPurchaseBill = () => {
       setLoc(item.location || "");
       setMargin(item.margin || "");
       setNetRate(item.net_rate || "");
+      setItemTotalAmount(item.amount || item.total_amount || 0);
     }
   };
 

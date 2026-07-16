@@ -189,6 +189,7 @@ const EditReturnBill = () => {
     const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
     const inputRefs = useRef([]);
+    const isInitialEditLoad = useRef(false);
 
 
     const handleKeyDown = (e, currentIndex) => {
@@ -408,6 +409,9 @@ const EditReturnBill = () => {
     };
 
     useEffect(() => {
+        if (isInitialEditLoad.current) {
+            return;
+        }
         const validPtr = Number(ptr) || 0;
         const validDisc = Number(disc) || 0;
         const validQty = Number(qty) || 0;
@@ -776,6 +780,10 @@ const EditReturnBill = () => {
     /*<================================================================ handle edit click item  ======================================================================> */
 
     const handleEditClick = (item) => {
+        isInitialEditLoad.current = true;
+        setTimeout(() => {
+            isInitialEditLoad.current = false;
+        }, 150);
 
         const existingItem = uniqueId.find((obj) => obj.id === item.id);
 
