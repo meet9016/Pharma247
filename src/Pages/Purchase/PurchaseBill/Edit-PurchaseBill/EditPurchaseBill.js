@@ -174,19 +174,19 @@ const EditPurchaseBill = () => {
 
       const key = e.key;
 
-      // Prevent keyboard control if any input is focused
+      // Prevent keyboard control if any dropdown is focused
       const activeElement = document.activeElement;
-      const isInputOrDropdownFocused =
+      const isDropdownFocused =
         activeElement &&
-        (activeElement.tagName === "INPUT" ||
-          activeElement.tagName === "TEXTAREA" ||
-          activeElement.tagName === "SELECT" ||
+        (activeElement.tagName === "SELECT" ||
           activeElement.getAttribute("role") === "option" ||
           activeElement.getAttribute("role") === "listbox" ||
           activeElement.getAttribute("role") === "menuitem" ||
           activeElement.getAttribute("role") === "combobox");
 
-      if (isInputOrDropdownFocused) return;
+      if (isDropdownFocused) return;
+      
+      const isInputFocused = activeElement && (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA");
 
       if (key === "ArrowDown") {
         e.preventDefault();
@@ -196,6 +196,10 @@ const EditPurchaseBill = () => {
           const selectedRow = activeList[nextIndex];
           setSelectedEditItemId(selectedRow?.id);
           if (selectedRow) handleEditClick(selectedRow);
+          
+          setTimeout(() => {
+            document.getElementById(`purchase-edit-row-${nextIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 50);
         }
         setAutoCompleteOpen(false); // Close Autocomplete dropdown
       } else if (key === "ArrowUp") {
@@ -206,9 +210,14 @@ const EditPurchaseBill = () => {
           const selectedRow = activeList[prevIndex];
           setSelectedEditItemId(selectedRow?.id);
           if (selectedRow) handleEditClick(selectedRow);
+          
+          setTimeout(() => {
+            document.getElementById(`purchase-edit-row-${prevIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 50);
         }
         setAutoCompleteOpen(false); // Close Autocomplete dropdown
       } else if (key === "Enter" && selectedIndex !== -1) {
+        if (isInputFocused) return;
         e.preventDefault();
         setAutoCompleteOpen(false); // Close Autocomplete dropdown
         const selectedRow = activeList[selectedIndex];
@@ -2300,6 +2309,9 @@ const EditPurchaseBill = () => {
                           setGst(value ? Number(value) : "");
                           setError((prev) => ({ ...prev, gst: "" }));
                           setUnsavedItems(true);
+                          setTimeout(() => {
+                            inputRefs.current[12]?.focus();
+                          }, 100);
                         }}
                         onKeyDown={(e) => {
                           const isTab = e.key === "Tab";
@@ -2310,6 +2322,7 @@ const EditPurchaseBill = () => {
 
                           if (isEnter || isTab) {
                             e.preventDefault();
+                            e.stopPropagation();
                             inputRefs.current[12]?.focus();
                           } else {
                             handleKeyDown(e, 11);
@@ -2424,6 +2437,7 @@ const EditPurchaseBill = () => {
                     <>
                       <tr
                         key={item.id}
+                        id={`purchase-edit-row-${index}`}
                         onClick={() => {
                           setSelectedIndex(index);
                           handleEditClick(item);

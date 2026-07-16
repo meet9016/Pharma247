@@ -218,17 +218,17 @@ const AddPurchaseBill = () => {
 
       // Check if any input field inside inputRefs is focused
       const activeElement = document.activeElement;
-      const isInputOrDropdownFocused =
+      const isDropdownFocused =
         activeElement &&
-        (activeElement.tagName === "INPUT" ||
-          activeElement.tagName === "TEXTAREA" ||
-          activeElement.tagName === "SELECT" ||
+        (activeElement.tagName === "SELECT" ||
           activeElement.getAttribute("role") === "option" ||
           activeElement.getAttribute("role") === "listbox" ||
           activeElement.getAttribute("role") === "menuitem" ||
           activeElement.getAttribute("role") === "combobox");
 
-      if (isInputOrDropdownFocused) return; // Prevent key navigation when an input is focused
+      if (isDropdownFocused) return; // Prevent key navigation when an input is focused
+      
+      const isInputFocused = activeElement && (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA");
 
       if (key === "ArrowDown") {
         // Move selection down
@@ -238,6 +238,10 @@ const AddPurchaseBill = () => {
           const selectedRow = ItemPurchaseList.item[nextIndex];
           setSelectedEditItemId(selectedRow?.id);
           if (selectedRow) handleEditClick(selectedRow);
+          
+          setTimeout(() => {
+            document.getElementById(`purchase-add-row-${nextIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 50);
         }
         setAutoCompleteOpen(false)
       } else if (key === "ArrowUp") {
@@ -248,11 +252,15 @@ const AddPurchaseBill = () => {
           const selectedRow = ItemPurchaseList.item[prevIndex];
           setSelectedEditItemId(selectedRow?.id);
           if (selectedRow) handleEditClick(selectedRow);
+          
+          setTimeout(() => {
+            document.getElementById(`purchase-add-row-${prevIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 50);
         }
         setAutoCompleteOpen(false)
 
       } else if (key === "Enter" && selectedIndex !== -1) {
-        if (!isInputOrDropdownFocused) {
+        if (!isInputFocused) {
           const selectedRow = ItemPurchaseList.item[selectedIndex];
           if (!selectedRow) return;
 
@@ -3203,6 +3211,7 @@ const AddPurchaseBill = () => {
 
                           if (isEnter || isTab) {
                             e.preventDefault();
+                            e.stopPropagation();
                             inputRefs.current[12]?.focus();
                           }
                         }}
@@ -3324,6 +3333,7 @@ const AddPurchaseBill = () => {
                   ) : (ItemPurchaseList?.item?.map((item, index) => (
                     <tr
                       key={item.id}
+                      id={`purchase-add-row-${index}`}
                       onClick={() => {
                         setSelectedIndex(index);
                         handleEditClick(item);

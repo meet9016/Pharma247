@@ -221,6 +221,10 @@ const AddReturnbill = () => {
           if (nextIndex !== selectedIndex) {
             const selectedRow = tableData.item_list[nextIndex];
             if (selectedRow) handleEditClick(selectedRow);
+            
+            setTimeout(() => {
+              document.getElementById(`return-add-row-${nextIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
           }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
@@ -229,6 +233,10 @@ const AddReturnbill = () => {
           if (prevIndex !== selectedIndex) {
             const selectedRow = tableData.item_list[prevIndex];
             if (selectedRow) handleEditClick(selectedRow);
+            
+            setTimeout(() => {
+              document.getElementById(`return-add-row-${prevIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
           }
         } else if (e.key === "Enter" && selectedIndex !== -1) {
           const selectedRow = tableData.item_list[selectedIndex];
@@ -1802,6 +1810,7 @@ const AddReturnbill = () => {
                   ) : (tableData?.item_list?.map((item, index) => (
                     <tr
                       key={item.id}
+                      id={`return-add-row-${index}`}
                       onClick={() => {
                         setSelectedIndex(index);
                         handleEditClick(item);
