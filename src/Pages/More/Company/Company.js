@@ -199,13 +199,13 @@ const Company = () => {
     let data = new FormData();
     data.append("company_name", companyName);
     try {
-      await axios.post("company-store", data, {
+      const response = await axios.post("company-store", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
       resetAddDialog();
       companyList(currentPage);
       toast.dismiss();
-      toast.success("Company added!");
+      toast.success(response.data.message);
     } catch (error) {
       toast.dismiss();
       toast.error(error?.response?.data?.message || "Error");
@@ -223,13 +223,13 @@ const Company = () => {
     data.append("id", companyID);
     data.append("company_name", companyName);
     try {
-      await axios.post("company-update", data, {
+      const response = await axios.post("company-update", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
       resetAddDialog();
       companyList(currentPage);
       toast.dismiss();
-      toast.success("Company updated!");
+      toast.success(response.data.message);
     } catch (error) {
       toast.dismiss();
       toast.error(error?.response?.data?.message || "Error");
@@ -266,13 +266,13 @@ const Company = () => {
     let data = new FormData();
     data.append("id", id);
     try {
-      await axios.post("company-delete", data, {
+      const response = await axios.post("company-delete", data, {
         headers: { "Content-Type": "application/json" },
       });
       setIsDelete(false);
       companyList(currentPage);
       toast.dismiss();
-      toast.success("Company deleted!");
+      toast.success(response.data.message);
     } catch (error) {
       toast.dismiss();
       toast.error("Error deleting company");

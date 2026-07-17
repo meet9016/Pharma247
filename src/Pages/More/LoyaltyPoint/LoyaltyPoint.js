@@ -601,14 +601,20 @@ const LoyaltyPoint = () => {
         <Dialog
           open={openAddPopUp}
           className="order_list_ml custom-dialog"
-        // sx={{
-        //     "& .MuiDialog-container": {
-        //         "& .MuiPaper-root": {
-        //             width: "50%",
-        //             maxWidth: "500px",  // Set your width here
-        //         },
-        //     },
-        // }}
+          // sx={{
+          //     "& .MuiDialog-container": {
+          //         "& .MuiPaper-root": {
+          //             width: "50%",
+          //             maxWidth: "500px",  // Set your width here
+          //         },
+          //     },
+          // }}
+          PaperProps={{
+            sx: {
+              width: "800px",
+              maxWidth: "800px",
+            },
+          }}
         >
           <DialogTitle id="alert-dialog-title" className="secondary">
             {header}
@@ -629,6 +635,7 @@ const LoyaltyPoint = () => {
             <DialogContentText id="alert-dialog-description">
               <div
                 className="flex"
+
                 style={{ flexDirection: "column", gap: "19px" }}
               >
                 <div className="flex gap-10">
@@ -639,10 +646,7 @@ const LoyaltyPoint = () => {
                       width: "100%",
                     }}
                   >
-                    <div
-                      style={{ display: "flex", gap: "2%" }}
-                      className="both_fld_loylty"
-                    >
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <FormControl
                         variant="outlined data-mdb-input-init"
                         sx={{ width: "100% " }}
@@ -757,8 +761,7 @@ const LoyaltyPoint = () => {
                           <span className="error">{errors.maximumAmount}</span>
                         )}
                       </FormControl>
-                    </div>
-                    <div className="mt-5">
+
                       <FormControl
                         variant="outlined data-mdb-input-init"
                         sx={{ width: "100%" }}
@@ -821,6 +824,69 @@ const LoyaltyPoint = () => {
                         )}
                       </FormControl>
                     </div>
+                    {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4"> */}
+                    <FormControl
+                      variant="outlined data-mdb-input-init"
+                      sx={{ width: "100%" }}
+                    >
+                      <div className="mb-2">
+                        <span className="label primary">Percentage<span className="text-red-600 ml-1">*</span></span>
+                      </div>
+                      <TextField
+                        autoComplete="off"
+                        type="number"
+                        inputRef={inputRef3}
+                        error={!!errors.percentage}
+                        onKeyDown={(e) => {
+                          handleKeyDown(e);
+
+                          if (e.key === "Enter") {
+                            validData();
+                          }
+                        }}
+                        value={percentage}
+                        onChange={(e) => {
+                          e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          );
+                          setPercentage(e.target.value);
+                          setErrors((prev) => ({
+                            ...prev,
+                            percentage: "",
+                          }));
+                        }}
+                        placeholder="Percentage %"
+                        id="percentage-input"
+                        size="small"
+                        sx={{
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "var(--COLOR_UI_PHARMACY)",
+                          },
+
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": {
+                              borderColor: errors.percentage ? "red" : "",
+                            },
+                            "&:hover fieldset": {
+                              borderColor: errors.percentage ? "red" : "",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: errors.percentage ? "red" : "",
+                            },
+                          },
+                        }}
+                        sx={{
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "var(--COLOR_UI_PHARMACY)",
+                          },
+                        }}
+                      />
+                      {errors.percentage && (
+                        <span className="error">{errors.percentage}</span>
+                      )}
+                    </FormControl>
+                    {/* </div> */}
                   </div>
                 </div>
               </div>

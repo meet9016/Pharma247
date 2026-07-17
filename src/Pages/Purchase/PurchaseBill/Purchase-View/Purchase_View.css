@@ -336,6 +336,10 @@
   font-weight: 600;
 }
 
+.custom-table tbody td {
+  background: #f5f8f3;
+}
+
 .custom-table th {
   color: var(--color1);
   font-size: 14px;
