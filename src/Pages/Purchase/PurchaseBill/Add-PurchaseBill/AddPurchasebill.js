@@ -2911,11 +2911,15 @@ const AddPurchaseBill = () => {
                             e.preventDefault();
                             if (!expiryDate) {
                               setError((prev) => ({ ...prev, expiryDate: true }));
+                              toast.dismiss();
+                              toast.error("Expiry is required");
                               return;
                             }
 
                             if (!expiryDateRegex.test(expiryDate)) {
                               setError((prev) => ({ ...prev, expiryDate: true }));
+                              toast.dismiss();
+                              toast.error("Expiry must be in MM/YY format");
                               return;
                             }
 
@@ -2924,11 +2928,17 @@ const AddPurchaseBill = () => {
                             const now = new Date();
                             const sixMonthsLater = new Date();
                             sixMonthsLater.setMonth(now.getMonth() + 6);
+                            
+                            const monthsRemaining = (expiry.getFullYear() - now.getFullYear()) * 12 + (expiry.getMonth() - now.getMonth());
 
                             if (expiry < now) {
                               setError((prev) => ({ ...prev, expiryDate: true }));
+                              toast.dismiss();
+                              toast.error("Product has expired");
                             } else if (expiry < sixMonthsLater) {
-                              toast.warning("Product will expire within 6 months");
+                              toast.dismiss();
+                              const displayMonths = monthsRemaining <= 0 ? 1 : monthsRemaining;
+                              toast.warning(`Product will expire within ${displayMonths} ${displayMonths === 1 ? 'month' : 'months'}`);
                               handleKeyDown(e, 5);
                             } else {
                               handleKeyDown(e, 5);
