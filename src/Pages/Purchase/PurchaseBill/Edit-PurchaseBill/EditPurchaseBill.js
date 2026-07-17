@@ -527,6 +527,7 @@ const EditPurchaseBill = () => {
         setFinalTotalAmount(purchaseData?.total_amount || "");
         handleCalNetAmount(purchaseData?.net_amount || "");
         setRoundOffAmount(purchaseData?.round_off || "");
+        setOtherAmt(purchaseData?.other_amount || "");
         // setCnTotalAmount(purchaseData?.cn_amount ? purchaseData.cn_amount : null)
       }
       setIsLoading(false);
@@ -2650,6 +2651,12 @@ const EditPurchaseBill = () => {
                             onChange={(e) => {
                               const val = e.target.value;
                               if (/^-?\d*\.?\d*$/.test(val)) { setOtherAmt(val); }
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                updatePurchase();
+                              }
                             }}
                             size="small"
                             style={{ width: "80px", background: "none", outline: "none" }}

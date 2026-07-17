@@ -205,7 +205,7 @@ const Company = () => {
       resetAddDialog();
       companyList(currentPage);
       toast.dismiss();
-      toast.success(response.data.message);
+      toast.success(response.data.message || "Company added!");
     } catch (error) {
       toast.dismiss();
       toast.error(error?.response?.data?.message || "Error");
@@ -229,7 +229,7 @@ const Company = () => {
       resetAddDialog();
       companyList(currentPage);
       toast.dismiss();
-      toast.success(response.data.message);
+      toast.success(response.data.message || "Company updated!");
     } catch (error) {
       toast.dismiss();
       toast.error(error?.response?.data?.message || "Error");
@@ -272,7 +272,7 @@ const Company = () => {
       setIsDelete(false);
       companyList(currentPage);
       toast.dismiss();
-      toast.success(response.data.message);
+      toast.success(response.data.message || "Company deleted!");
     } catch (error) {
       toast.dismiss();
       toast.error("Error deleting company");

@@ -36,6 +36,7 @@ import { toast } from "react-toastify";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SyncAltIcon from "@mui/icons-material/SyncAlt";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 
@@ -735,6 +736,11 @@ const PurchaseView = () => {
                       label: "CN Amount",
                       icon: <RemoveCircleOutlineIcon style={{ fontSize: 18, color: "#e53e3e" }} />,
                       value: <span style={{ fontWeight: 600, color: "#e53e3e" }}>-{(parseFloat(data?.cn_amount) || 0).toFixed(2)}</span>,
+                    },
+                    {
+                      label: "Other Amount",
+                      icon: <AddCircleOutlineIcon style={{ fontSize: 18, color: "#0ea5e9" }} />,
+                      value: <span style={{ fontWeight: 600, color: "#0ea5e9" }}>{isNaN(Number(data?.other_amount)) ? data?.other_amount || "N/A" : Number(data?.other_amount).toFixed(2)}</span>,
                     },
                     {
                       label: "Round Off",

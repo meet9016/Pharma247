@@ -146,7 +146,7 @@ const Reconciliation = () => {
         localStorage.setItem('reconciliation', "true")
         history.push("/adminDashboard")
         toast.dismiss();
-        toast.success("Data submitted successfully");
+        toast.success(response?.data?.message || "Data submitted successfully");
       }
 
       setIsLoading(false);
@@ -154,7 +154,7 @@ const Reconciliation = () => {
       setIsLoading(false);
 
       toast.dismiss();
-      toast.success("Data submitted successfully");
+      toast.error(error?.response?.data?.message || "Error submitting data");
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");

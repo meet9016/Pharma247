@@ -197,13 +197,13 @@ const DrugGroup = () => {
     let data = new FormData();
     data.append("name", drugGroupName);
     try {
-      await axios.post("drug-group-store", data, {
+      const response = await axios.post("drug-group-store", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
       resetAddDialog();
       DrugGroupList(currentPage);
       toast.dismiss();
-      toast.success("Drug Group added!");
+      toast.success(response.data.message || "Drug Group added!");
     } catch (error) {
       toast.dismiss();
       toast.error(error?.response?.data?.message || "Error");
@@ -222,13 +222,13 @@ const DrugGroup = () => {
     data.append("id", drugGroupID);
     data.append("name", drugGroupName);
     try {
-      await axios.post("drug-group-update", data, {
+      const response = await axios.post("drug-group-update", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
       resetAddDialog();
       DrugGroupList(currentPage);
       toast.dismiss();
-      toast.success("Drug Group updated!");
+      toast.success(response.data.message || "Drug Group updated!");
     } catch (error) {
       toast.dismiss();
       toast.error(error?.response?.data?.message || "Error");
@@ -264,13 +264,13 @@ const DrugGroup = () => {
     let data = new FormData();
     data.append("id", id);
     try {
-      await axios.post("drug-group-delete", data, {
+      const response = await axios.post("drug-group-delete", data, {
         headers: { "Content-Type": "application/json" },
       });
       setIsDelete(false);
       DrugGroupList(currentPage);
       toast.dismiss();
-      toast.success("Drug Group deleted!");
+      toast.success(response.data.message || "Drug Group deleted!");
     } catch (error) {
       toast.dismiss();
       toast.error("Error deleting Drug Group");
