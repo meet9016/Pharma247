@@ -704,6 +704,7 @@ const EditReturnBill = () => {
             setEndDate(parseMonthYearFromApi(responseData?.end_date));
             setFinalAmount(responseData?.final_amount);
             setTotalAmount(responseData?.total_amount);
+            setOtherAmount(responseData?.other_amount || 0);
             setNetAmount(parseFloat(responseData?.total_amount) + parseFloat(responseData?.other_amount || 0));
             setTotalGST(responseData?.total_gst);
             setTotalQty(responseData?.total_qty);
@@ -1925,11 +1926,17 @@ const EditReturnBill = () => {
                                             label: "Other Amount",
                                             icon: <AddCircleOutlineIcon style={{ fontSize: 18, color: "#0ea5e9" }} />,
                                             value: (
-                                                <Input
-                                                    type="number"
-                                                    value={otherAmount}
-                                                    onChange={handleOtherAmount}
-                                                    size="small"
+                                                    <Input
+                                                        type="number"
+                                                        value={otherAmount}
+                                                        onChange={handleOtherAmount}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === "Enter") {
+                                                                e.preventDefault();
+                                                                updatePurchaseRecord();
+                                                            }
+                                                        }}
+                                                        size="small"
                                                     style={{ width: "80px", background: "none", outline: "none" }}
                                                     sx={{ "& .MuiInputBase-root": { height: "32px" }, "& .MuiInputBase-input": { textAlign: "end", fontWeight: 600 }, "& .MuiInput-underline:before": { borderBottomColor: "var(--COLOR_UI_PHARMACY)" } }}
                                                 />

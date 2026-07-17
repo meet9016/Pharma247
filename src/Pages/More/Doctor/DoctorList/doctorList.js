@@ -379,7 +379,7 @@ const DoctorList = () => {
     } catch (error) {
       setIsLoading(false);
       toast.dismiss();
-      toast.success(error.message);
+      toast.error(error.message);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");

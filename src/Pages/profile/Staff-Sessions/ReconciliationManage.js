@@ -76,7 +76,7 @@ const ReconciliationManage = () => {
 
       if (response.data.status === 200) {
         toast.dismiss();
-        toast.success("Updated successfully");
+        toast.success(response.data.message || "Updated successfully");
         getData(); // Refresh data after update
       }
     } catch (error) {
@@ -105,7 +105,7 @@ const ReconciliationManage = () => {
         },
       });
       toast.dismiss();
-      toast.success("reconciliation restarted")
+      toast.success(response.data.message || "reconciliation restarted")
       if (response.data.status === 401) {
         history.push('/');
         localStorage.clear();

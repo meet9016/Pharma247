@@ -1011,7 +1011,7 @@ const EditSaleBill = () => {
   const handleDeleteItem = async (saleItemId) => {
     if (!saleItemId) return;
     try {
-      await axios.post(
+      const response = await axios.post(
         "sales-item-delete?",
         { id: saleItemId },
         {
@@ -1019,7 +1019,7 @@ const EditSaleBill = () => {
         }
       );
       toast.dismiss();
-      toast.success("Item deleted successfully!");
+      toast.success(response.data.message || "Item deleted successfully!");
       setUnsavedItems(true);
       localStorage.setItem("unsavedItems", "true");
       saleBillGetBySaleID();

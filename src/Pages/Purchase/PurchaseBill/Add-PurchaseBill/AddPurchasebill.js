@@ -1437,7 +1437,7 @@ const AddPurchaseBill = () => {
         setAddDistributorName("");
         setAddDistributorNo("");
         toast.dismiss();
-        toast.success("Distributor Added successfully");
+        toast.success(response.data.message || "Distributor Added successfully");
         setOpenAddDistributorPopUp(false);
         setTimeout(() => {
           if (inputRefs.current[0]) {
@@ -1528,7 +1528,7 @@ const AddPurchaseBill = () => {
         setAddUnit("");
         inputRefs.current[2]?.focus();
         toast.dismiss();
-        toast.success("Item added successfully");
+        toast.success(response.data.message || "Item added successfully");
       } else {
         toast.dismiss();
         toast.error(response?.data?.message || "Something went wrong");

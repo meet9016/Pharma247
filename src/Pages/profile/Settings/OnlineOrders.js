@@ -11,7 +11,7 @@ import {
 import { BsLightbulbFill } from "react-icons/bs";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-
+import { useHistory } from "react-router-dom";
 const ONLINE_ORDER_SETTING_KEYS = [
   "accept_online_orders",
   "delivery_online_orders",
@@ -32,6 +32,7 @@ const ONLINE_ORDER_SETTING_KEYS = [
 const normalizeSwitchValue = (value) => (String(value) === "1" ? 1 : 0);
 
 const OnlineOrders = () => {
+  const history = useHistory();
   const token = localStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -102,7 +103,7 @@ const OnlineOrders = () => {
 
       if (response.data.status === 200) {
         toast.dismiss();
-        toast.success("Updated successfully");
+        toast.success(response.data.message || "Updated successfully");
         getSettingData();
       }
     } catch (error) {
