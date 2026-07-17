@@ -55,6 +55,8 @@ import Loader from "../../../../componets/loader/Loader";
 
 const AddPurchaseBill = () => {
   const timeoutRef = useRef(null);
+  const billDateRef = useRef(null);
+  const dueDateRef = useRef(null);
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
   const [totalNetRate, setTotalNetRate] = useState(0);
   const [totalBase, setTotalBase] = useState(0);
@@ -67,6 +69,7 @@ const AddPurchaseBill = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [distributor, setDistributor] = useState(null);
+  const [distributorInput, setDistributorInput] = useState("");
   const [billNo, setbillNo] = useState("");
   const [dueDate, setDueDate] = useState(addDays(new Date(), 15));
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -184,6 +187,7 @@ const AddPurchaseBill = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
   const inputRefs = useRef([]);
+  const isInitialEditLoad = useRef(false);
   const submitButtonRef = useRef(null);
   const addButtonref = useRef(null);
   /*<=================================================== disable autocomplete to focus when tableref is focused  ==========================================> */
@@ -214,21 +218,46 @@ const AddPurchaseBill = () => {
       const key = e.key;
 
       // Check if any input field inside inputRefs is focused
-      const isInputFocused = inputRefs.current.some(
-        (input) => input && document.activeElement === input
-      );
+      const activeElement = document.activeElement;
+      const isDropdownFocused =
+        activeElement &&
+        (activeElement.tagName === "SELECT" ||
+          activeElement.getAttribute("role") === "option" ||
+          activeElement.getAttribute("role") === "listbox" ||
+          activeElement.getAttribute("role") === "menuitem" ||
+          activeElement.getAttribute("role") === "combobox");
 
-      if (isInputFocused) return; // Prevent key navigation when an input is focused
+      if (isDropdownFocused) return; // Prevent key navigation when an input is focused
+      
+      const isInputFocused = activeElement && (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA");
 
       if (key === "ArrowDown") {
         // Move selection down
-        setSelectedIndex((prev) =>
-          prev < ItemPurchaseList.item.length - 1 ? prev + 1 : prev
-        );
+        const nextIndex = selectedIndex < ItemPurchaseList.item.length - 1 ? selectedIndex + 1 : selectedIndex;
+        setSelectedIndex(nextIndex);
+        if (nextIndex !== selectedIndex) {
+          const selectedRow = ItemPurchaseList.item[nextIndex];
+          setSelectedEditItemId(selectedRow?.id);
+          if (selectedRow) handleEditClick(selectedRow);
+          
+          setTimeout(() => {
+            document.getElementById(`purchase-add-row-${nextIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 50);
+        }
         setAutoCompleteOpen(false)
       } else if (key === "ArrowUp") {
         // Move selection up
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+        const prevIndex = selectedIndex > 0 ? selectedIndex - 1 : selectedIndex;
+        setSelectedIndex(prevIndex);
+        if (prevIndex !== selectedIndex) {
+          const selectedRow = ItemPurchaseList.item[prevIndex];
+          setSelectedEditItemId(selectedRow?.id);
+          if (selectedRow) handleEditClick(selectedRow);
+          
+          setTimeout(() => {
+            document.getElementById(`purchase-add-row-${prevIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 50);
+        }
         setAutoCompleteOpen(false)
 
       } else if (key === "Enter" && selectedIndex !== -1) {
@@ -426,32 +455,7 @@ const AddPurchaseBill = () => {
 
   }, []);
 
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      if (addDistributorName) {
-        listDistributor({ search_name: addDistributorName });
-      }
-    }, 300);
-    return () => clearTimeout(delay);
-  }, [addDistributorName]);
 
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      if (addDistributorNo) {
-        listDistributor({ search_gst: addDistributorNo });
-      }
-    }, 300);
-    return () => clearTimeout(delay);
-  }, [addDistributorNo]);
-
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      if (addDistributorMobile) {
-        listDistributor({ search_phone_number: addDistributorMobile });
-      }
-    }, 300);
-    return () => clearTimeout(delay);
-  }, [addDistributorMobile]);
 
   /*<============================================================= Clear old purchase item data =====================================================> */
 
@@ -470,26 +474,35 @@ const AddPurchaseBill = () => {
   /*<================================================================== calculation ==========================================================> */
 
   useEffect(() => {
+    if (isInitialEditLoad.current) {
+      return;
+    }
+
     /*<========================================================================== Calculate discount ===============================================================================> */
 
-    const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
+    const validPtr = Number(ptr) || 0;
+    const validDisc = Number(disc) || 0;
+    const validQty = Number(qty) || 0;
+    const validGst = Number(gst) || 0;
+
+    const totalSchAmt = parseFloat((((validPtr * validDisc) / 100) * validQty).toFixed(2));
     setSchAmt(totalSchAmt);
 
     /*<========================================================================= Calculate totalBase ==============================================================================> */
 
-    const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
+    const totalBase = parseFloat((validPtr * validQty - totalSchAmt).toFixed(2));
     setItemTotalAmount(0);
     setBase(totalBase);
 
     /*<=========================================================================== Calculate totalAmount ============================================================================> */
 
     const totalAmount = parseFloat(
-      (totalBase + (totalBase * gst) / 100).toFixed(2)
+      (totalBase + (totalBase * validGst) / 100).toFixed(2)
     );
     if (totalAmount) {
       setItemTotalAmount(totalAmount);
     } else {
-      setItemTotalAmount(0);
+      setItemTotalAmount(totalAmount === 0 ? "0.00" : 0);
     }
 
     /*<===================================================================================== Net Rate calculation ==================================================================> */
@@ -1027,6 +1040,7 @@ const AddPurchaseBill = () => {
           const list = response.data.data?.distributor || response.data.data || [];
           localStorage.setItem("distributor", JSON.stringify(list));
           setDistributorList(list);
+          console.log("Distributor list fetched successfully:", list);
         })
         .catch((error) => {
           if (error?.response?.status === 401) {
@@ -1645,6 +1659,8 @@ const AddPurchaseBill = () => {
         .then((response) => {
           itemPurchaseList();
           setIsDelete(false);
+          toast.dismiss();
+          toast.success(response?.data?.message || "Item deleted successfully");
         });
     } catch (error) {
       console.error("API error:", error);
@@ -1656,6 +1672,8 @@ const AddPurchaseBill = () => {
         localStorage.clear();
         history.push("/");
       }
+      toast.dismiss();
+      toast.error(error?.response?.data?.message || "Item not deleted successfully");
     }
   };
 
@@ -1816,12 +1834,17 @@ const AddPurchaseBill = () => {
       setLoc(selectedEditItem.location.toUpperCase());
       setMargin(selectedEditItem.margin);
       setNetRate(selectedEditItem.net_rate);
+      setItemTotalAmount(selectedEditItem.amount || selectedEditItem.total_amount || 0);
     }
   }, [selectedEditItem]);
 
   /*<=========================================================================== Handle edit =======================================================================> */
 
   const handleEditClick = (item) => {
+    isInitialEditLoad.current = true;
+    setTimeout(() => {
+      isInitialEditLoad.current = false;
+    }, 150);
     setSelectedEditItem(item);
 
     setIsEditMode(true);
@@ -2341,20 +2364,26 @@ const AddPurchaseBill = () => {
                   /></span>
 
                   <Autocomplete
-                    value={distributor ?? ""}
+                    value={distributor}
+                    inputValue={distributorInput}
                     sx={{
                       width: "100%",
                       minWidth: "350px",
                       minHeight: "40px",
-
                       "@media (max-width:600px)": { minWidth: "250px" },
                     }}
                     freeSolo
                     size="small"
                     options={distributorList}
+                    filterOptions={(options, state) => {
+                      const search = state.inputValue.trim().toLowerCase();
+                      if (!search) return options;
+                      return options.filter((opt) =>
+                        (opt.name || "").toLowerCase().includes(search)
+                      );
+                    }}
                     onChange={(e, newValue) => {
                       let finalValue = null;
-
                       if (typeof newValue === "string") {
                         finalValue = { id: null, name: newValue.toUpperCase() };
                       } else if (newValue && typeof newValue === "object") {
@@ -2363,26 +2392,40 @@ const AddPurchaseBill = () => {
                           name: newValue.name?.toUpperCase() || "",
                         };
                       }
-
                       selectedDistributorRef.current = finalValue;
                       setDistributor(finalValue);
+                      setDistributorInput(finalValue?.name ?? "");
                       setbillNo("");
                       setError((prev) => ({ ...prev, distributor: "" }));
                     }}
                     onInputChange={(event, newInputValue, reason) => {
                       if (reason === "input") {
-                        // User typing: keep ID only if still matches list
-                        setDistributor((prev) => ({
-                          id: null,
-                          name: newInputValue.toUpperCase(),
-                        }));
+                        // IMPORTANT: Only update distributorInput here.
+                        // Do NOT call setDistributor(null) — that resets MUI's
+                        // internal state and breaks real-time filtering.
+                        setDistributorInput(newInputValue.toUpperCase());
+                        selectedDistributorRef.current = null;
                         setbillNo("");
                         setError((prev) => ({ ...prev, distributor: "" }));
+                      } else if (reason === "clear") {
+                        setDistributorInput("");
+                        setDistributor(null);
+                        selectedDistributorRef.current = null;
                       }
+                      // "reset" reason fires when option selected - handled by onChange
                     }}
                     getOptionLabel={(option) =>
                       typeof option === "string" ? option : option?.name ?? ""
                     }
+                    isOptionEqualToValue={(option, value) => option?.id === value?.id}
+                    renderOption={(props, option, { index }) => {
+                      const { key, ...restProps } = props;
+                      return (
+                        <li key={option.id || `${option.name}-${index}`} {...restProps}>
+                          {option.name}
+                        </li>
+                      );
+                    }}
                     renderInput={(params) => (
                       <TextField
                         autoFocus={focusedField === "distributor"}
@@ -2453,7 +2496,10 @@ const AddPurchaseBill = () => {
                     inputRef={(el) => (inputRefs.current[1] = el)}
                     onKeyDown={(e) => {
                       if (billNo) {
-                        handleKeyDown(e, 1);
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          billDateRef.current?.setFocus();
+                        }
                       } else {
                         const isTab = e.key === 'Tab' && !e.shiftKey;
                         const isEnter = e.key === 'Enter';
@@ -2479,8 +2525,16 @@ const AddPurchaseBill = () => {
                       onChange={(newDate) => setSelectedDate(newDate)}
                       dateFormat="dd/MM/yyyy"
                       filterDate={(date) => !isDateDisabled(date)}
-                      inputRef={(el) => (inputRefs.current[2] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 2)}
+                      ref={billDateRef}
+                      onKeyDown={(e) => {
+                        if (e.key === 'ArrowDown') {
+                          billDateRef.current?.setOpen(true);
+                        } else if (e.key === 'Enter') {
+                          e.preventDefault();
+                          billDateRef.current?.setOpen(false);
+                          setTimeout(() => dueDateRef.current?.setFocus(), 10);
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -2495,6 +2549,16 @@ const AddPurchaseBill = () => {
                       onChange={(newDate) => setDueDate(newDate)}
                       dateFormat="dd/MM/yyyy"
                       minDate={new Date()}
+                      ref={dueDateRef}
+                      onKeyDown={(e) => {
+                        if (e.key === 'ArrowDown') {
+                          dueDateRef.current?.setOpen(true);
+                        } else if (e.key === 'Enter') {
+                          e.preventDefault();
+                          dueDateRef.current?.setOpen(false);
+                          setTimeout(() => inputRefs.current[102]?.focus(), 10);
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -2510,8 +2574,13 @@ const AddPurchaseBill = () => {
                     variant="outlined"
                     value={barcode}
                     placeholder="scan barcode"
-                    // inputRef={inputRef10}
-                    // onKeyDown={handleKeyDown}
+                    inputRef={(el) => (inputRefs.current[102] = el)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        inputRefs.current[2]?.focus();
+                      }
+                    }}
 
                     sx={{
                       width: "100%",
@@ -2535,7 +2604,7 @@ const AddPurchaseBill = () => {
                 <thead>
                   <tr className="input-row">
                     <th>
-                      <div className="flex justify-center items-center gap-2">
+                      <div className="flex justify-start items-center gap-2">
                         Search Item Name <span className="text-red-600 ">*</span>
                         <FaPlusCircle
                           className="primary cursor-pointer"
@@ -2564,8 +2633,9 @@ const AddPurchaseBill = () => {
                   {/*<======================================================== Input row (add/edit)   =======================================================> */}
                   <tr className="input-row">
 
-                    <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
-                      {isEditMode ? (
+                    <td style={{ fontSize: 15, height: "47px", minWidth: 350, width: "350px", maxWidth: "350px" }}>
+                      <div style={{ width: "100%", height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
+                        {isEditMode ? (
                         <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
                           <DeleteIcon
                             className="delete-icon mr-2"
@@ -2581,6 +2651,7 @@ const AddPurchaseBill = () => {
                         </div>
                       ) : (
                         <Autocomplete
+                          fullWidth
                           key={autocompleteKey}
                           value={selectedOption}
                           size="small"
@@ -2618,7 +2689,7 @@ const AddPurchaseBill = () => {
                               onFocus={() => setSelectedIndex(-1)}
                               fullWidth
                               sx={{
-                                minWidth: 400,
+                                minWidth: "100%",
                                 width: "100%",
                                 '& .MuiInputBase-input': {
                                   // textAlign: 'center',
@@ -2727,6 +2798,7 @@ const AddPurchaseBill = () => {
                           )}
                         />
                       )}
+                      </div>
                     </td>
 
                     <td>
@@ -2836,14 +2908,13 @@ const AddPurchaseBill = () => {
                           if (isShiftTab) return;
 
                           if (isTab || isEnter) {
+                            e.preventDefault();
                             if (!expiryDate) {
-                              e.preventDefault();
                               setError((prev) => ({ ...prev, expiryDate: true }));
                               return;
                             }
 
                             if (!expiryDateRegex.test(expiryDate)) {
-                              e.preventDefault();
                               setError((prev) => ({ ...prev, expiryDate: true }));
                               return;
                             }
@@ -2855,10 +2926,8 @@ const AddPurchaseBill = () => {
                             sixMonthsLater.setMonth(now.getMonth() + 6);
 
                             if (expiry < now) {
-                              e.preventDefault();
                               setError((prev) => ({ ...prev, expiryDate: true }));
                             } else if (expiry < sixMonthsLater) {
-
                               toast.warning("Product will expire within 6 months");
                               handleKeyDown(e, 5);
                             } else {
@@ -3122,7 +3191,7 @@ const AddPurchaseBill = () => {
                     <td>
                       <TextField
                         select
-                        SelectProps={{ native: true }}
+                        // SelectProps={{ native: true }}
                         variant="outlined"
                         size="small"
                         value={gst}
@@ -3139,6 +3208,9 @@ const AddPurchaseBill = () => {
                           const value = e.target.value;
                           setGst(value ? Number(value) : "");
                           setError((prev) => ({ ...prev, gst: "" }));
+                          setTimeout(() => {
+                            inputRefs.current[12]?.focus();
+                          }, 100);
                         }}
                         onKeyDown={(e) => {
                           const isTab = e.key === "Tab";
@@ -3149,16 +3221,14 @@ const AddPurchaseBill = () => {
 
                           if (isEnter || isTab) {
                             e.preventDefault();
+                            e.stopPropagation();
                             inputRefs.current[12]?.focus();
-                          } else {
-                            handleKeyDown(e, 11);
                           }
                         }}
                       >
-                        <option value=""></option>
-                        <option value="0">0</option>
-                        <option value="5">5</option>
-                        <option value="18">18</option>
+                        <MenuItem value="0">0</MenuItem>
+                        <MenuItem value="5">5</MenuItem>
+                        <MenuItem value="18">18</MenuItem>
                       </TextField>
                     </td>
 
@@ -3235,10 +3305,24 @@ const AddPurchaseBill = () => {
                       />
                     </td>
 
-                    <td className="total">
-                      <span className="font-bold">
-                        {ItemTotalAmount.toFixed(2)}
-                      </span>
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        disabled
+                        size="small"
+                        placeholder="0.00"
+                        value={ItemTotalAmount ? Number(ItemTotalAmount).toFixed(2) : "0.00"}
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
+                      />
                     </td>
                   </tr>
 
@@ -3259,6 +3343,7 @@ const AddPurchaseBill = () => {
                   ) : (ItemPurchaseList?.item?.map((item, index) => (
                     <tr
                       key={item.id}
+                      id={`purchase-add-row-${index}`}
                       onClick={() => {
                         setSelectedIndex(index);
                         handleEditClick(item);
@@ -3379,9 +3464,7 @@ const AddPurchaseBill = () => {
                 >
                   <label className="font-bold">Total Qty : </label>
                   <span style={{ fontWeight: 600 }}>
-                    {" "}
-                    {totalQty ? totalQty : 0} +&nbsp;
-                    <span className="">{totalFree ? totalFree : 0} Free</span>
+                    {totalQty ? totalQty : 0} + {totalFree ? totalFree : 0} Free
                   </span>
                 </div>
                 <div
@@ -3432,7 +3515,7 @@ const AddPurchaseBill = () => {
                       alignItems: "center",
                     }}
                   >
-                    {netAmount.toFixed(2)}
+                    &#8377;{Number(netAmount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     <FaCaretUp />
                   </span>
                 </div>
@@ -3687,7 +3770,7 @@ const AddPurchaseBill = () => {
                                 color: "black",
                               }}
                             >
-                              Rs.{(parseFloat(cnAmount) || 0).toFixed(2)}
+                              &#8377;{Number(netAmount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </span>
                           </td>
                         </tr>

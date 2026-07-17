@@ -44,6 +44,12 @@ import { FaCaretUp } from "react-icons/fa6";
 import SaveIcon from "@mui/icons-material/Save";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import IconButton from "@mui/material/IconButton";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import SyncAltIcon from "@mui/icons-material/SyncAlt";
+import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import TipsModal from "../../../../componets/Tips/TipsModal";
 
 const AddReturnbill = () => {
@@ -51,6 +57,7 @@ const AddReturnbill = () => {
   const history = useHistory();
   const unblockRef = useRef(null);
   const [unsavedItems, setUnsavedItems] = useState(true);
+  const isInitialEditLoad = useRef(false);
   const [nextPath, setNextPath] = useState("");
   const [isOpenBox, setIsOpenBox] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState(null);
@@ -82,6 +89,8 @@ const AddReturnbill = () => {
   const [distributorList, setDistributorList] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [distributor, setDistributor] = useState(null);
+  const [distributorInput, setDistributorInput] = useState("");
+  const selectedDistributorRef = useRef(null);
   const [remark, setRemark] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [free, setFree] = useState(0);
@@ -138,6 +147,9 @@ const AddReturnbill = () => {
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
   const inputRefs = useRef([]);
+  const billDateRef = useRef(null);
+  const startDateRef = useRef(null);
+  const endDateRef = useRef(null);
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Enter") {
@@ -192,26 +204,46 @@ const AddReturnbill = () => {
     const handleKeyPress = (e) => {
       if (!tableData?.item_list?.length) return;
 
-      // Check if search TextField is focused
-      const searchInput = inputRefs.current[5];
-      const isSearchFocused = document.activeElement === searchInput;
+      const activeElement = document.activeElement;
+      const isDropdownFocused =
+        activeElement &&
+        (activeElement.tagName === "SELECT" ||
+          activeElement.getAttribute("role") === "option" ||
+          activeElement.getAttribute("role") === "listbox" ||
+          activeElement.getAttribute("role") === "menuitem" ||
+          activeElement.getAttribute("role") === "combobox");
 
-      // Only handle arrow keys when search input is focused or no input is focused
-      if (isSearchFocused || document.activeElement.tagName !== "INPUT") {
+      // Prevent table navigation when a dropdown is focused
+      if (isDropdownFocused) return;
         if (e.key === "ArrowDown") {
           e.preventDefault();
-          setSelectedIndex((prev) =>
-            Math.min(prev + 1, tableData.item_list.length - 1)
-          );
+          const nextIndex = Math.min(selectedIndex + 1, tableData.item_list.length - 1);
+          setSelectedIndex(nextIndex);
+          if (nextIndex !== selectedIndex) {
+            const selectedRow = tableData.item_list[nextIndex];
+            if (selectedRow) handleEditClick(selectedRow);
+            
+            setTimeout(() => {
+              document.getElementById(`return-add-row-${nextIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+          }
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
-          setSelectedIndex((prev) => Math.max(prev - 1, 0));
+          const prevIndex = Math.max(selectedIndex - 1, 0);
+          setSelectedIndex(prevIndex);
+          if (prevIndex !== selectedIndex) {
+            const selectedRow = tableData.item_list[prevIndex];
+            if (selectedRow) handleEditClick(selectedRow);
+            
+            setTimeout(() => {
+              document.getElementById(`return-add-row-${prevIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+          }
         } else if (e.key === "Enter" && selectedIndex !== -1) {
           const selectedRow = tableData.item_list[selectedIndex];
           if (!selectedRow) return;
           handleEditClick(selectedRow);
         }
-      }
     };
 
     document.addEventListener("keydown", handleKeyPress);
@@ -453,15 +485,23 @@ const AddReturnbill = () => {
   /*<============================================================================ calculation  ===================================================================> */
 
   useEffect(() => {
-    const totalSchAmt = parseFloat((((ptr * disc) / 100) * qty).toFixed(2));
-    const totalBase = parseFloat((ptr * qty - totalSchAmt).toFixed(2));
+    if (isInitialEditLoad.current) {
+      return;
+    }
+    const validPtr = Number(ptr) || 0;
+    const validDisc = Number(disc) || 0;
+    const validQty = Number(qty) || 0;
+    const validGst = Number(gst) || 0;
+
+    const totalSchAmt = parseFloat((((validPtr * validDisc) / 100) * validQty).toFixed(2));
+    const totalBase = parseFloat((validPtr * validQty - totalSchAmt).toFixed(2));
     const totalAmount = parseFloat(
-      (totalBase + (totalBase * gst) / 100).toFixed(2)
+      (totalBase + (totalBase * validGst) / 100).toFixed(2)
     );
     if (totalAmount) {
       setItemTotalAmount(totalAmount.toFixed(2));
     } else {
-      setItemTotalAmount(0);
+      setItemTotalAmount(totalAmount === 0 ? "0.00" : 0);
     }
     if (isDeleteAll == false) {
       // restoreData();
@@ -520,6 +560,8 @@ const AddReturnbill = () => {
           setUnsavedItems(true);
           purcheseReturnFilter();
           setIsDelete(false);
+          toast.dismiss();
+          toast.success(response?.data?.message || "Item deleted successfully");
         });
     } catch (error) {
       console.error("API error:", error);
@@ -530,6 +572,8 @@ const AddReturnbill = () => {
         localStorage.clear();
         history.push("/");
       }
+      toast.dismiss();
+      toast.error(error?.response?.data?.message || "Item not deleted successfully");
     }
   };
 
@@ -798,6 +842,10 @@ const AddReturnbill = () => {
   };
 
   const handleEditClick = (item, value) => {
+    isInitialEditLoad.current = true;
+    setTimeout(() => {
+      isInitialEditLoad.current = false;
+    }, 150);
     setIsEditMode(true);
     setSelectedEditItem(item);
     setSelectedEditItemId(item.id);
@@ -1087,34 +1135,99 @@ const AddReturnbill = () => {
                 <div>
                   <span className="title mb-2 flex items-center gap-2">Distributor<span className="text-red-600">*</span></span>
                   <Autocomplete
-                    value={distributor ?? ""}
+                    value={distributor}
+                    inputValue={distributorInput}
                     sx={{
                       width: "100%",
                       minWidth: "350px",
                       minHeight: "40px",
                       "@media (max-width:600px)": { minWidth: "250px" },
                     }}
+                    freeSolo
                     size="small"
                     options={distributorList}
+                    filterOptions={(options, state) => {
+                      const search = state.inputValue.trim().toLowerCase();
+                      if (!search) return options;
+                      return options.filter((opt) =>
+                        (opt.name || "").toLowerCase().includes(search)
+                      );
+                    }}
                     onChange={(e, newValue) => {
-                      setDistributor(newValue);
+                      let finalValue = null;
+                      if (typeof newValue === "string") {
+                        finalValue = { id: null, name: newValue.toUpperCase() };
+                      } else if (newValue && typeof newValue === "object") {
+                        finalValue = {
+                          id: newValue.id ?? null,
+                          name: newValue.name?.toUpperCase() || "",
+                        };
+                      }
+                      selectedDistributorRef.current = finalValue;
+                      setDistributor(finalValue);
+                      setDistributorInput(finalValue?.name ?? "");
+                      setBillNo("");
                       setErrors((prev) => ({ ...prev, distributor: "" }));
                     }}
-                    getOptionLabel={(option) => (typeof option === "string" ? option : option?.name ?? "")}
+                    onInputChange={(event, newInputValue, reason) => {
+                      if (reason === "input") {
+                        setDistributorInput(newInputValue.toUpperCase());
+                        selectedDistributorRef.current = null;
+                        setBillNo("");
+                        setErrors((prev) => ({ ...prev, distributor: "" }));
+                      } else if (reason === "clear") {
+                        setDistributorInput("");
+                        setDistributor(null);
+                        selectedDistributorRef.current = null;
+                      }
+                    }}
+                    getOptionLabel={(option) =>
+                      typeof option === "string" ? option : option?.name ?? ""
+                    }
+                    isOptionEqualToValue={(option, value) => option?.id === value?.id}
+                    renderOption={(props, option, { index }) => {
+                      const { key, ...restProps } = props;
+                      return (
+                        <li key={option.id || `${option.name}-${index}`} {...restProps}>
+                          {option.name}
+                        </li>
+                      );
+                    }}
                     renderInput={(params) => (
                       <TextField
                         autoFocus
                         autoComplete="off"
-                        placeholder="Select Distributor"
                         variant="outlined"
                         error={!!errors.distributor}
                         helperText={errors.distributor}
+                        placeholder="Select Distributor"
                         FormHelperTextProps={{
-                          sx: { color: "#ff0000ff !important", ml: 0 },
+                          sx: {
+                            color: "#ff0000ff !important",
+                            ml: 0,
+                          },
                         }}
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
-                        onKeyDown={(e) => handleKeyDown(e, 0)}
+                        inputProps={{
+                          ...params.inputProps,
+                          style: { textTransform: "" },
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === "Tab") {
+                            const prevent = !selectedDistributorRef.current?.id;
+
+                            setTimeout(() => {
+                              if (selectedDistributorRef.current?.id) {
+                                handleKeyDown(e, 0);
+                              }
+                            }, 100);
+
+                            if (prevent) {
+                              e.preventDefault();
+                            }
+                          }
+                        }}
                       />
                     )}
                   />
@@ -1135,8 +1248,14 @@ const AddReturnbill = () => {
                       "@media (max-width:600px)": { minWidth: "200px" },
                     }}
                     value={billNo}
-                    disabled
+                    InputProps={{ readOnly: true }}
                     inputRef={(el) => (inputRefs.current[1] = el)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        setTimeout(() => billDateRef.current?.setFocus(), 10);
+                      }
+                    }}
                   />
                 </div>
 
@@ -1151,9 +1270,23 @@ const AddReturnbill = () => {
                       onChange={(newDate) => setSelectedDate(newDate)}
                       dateFormat="dd/MM/yyyy"
                       filterDate={(date) => !isDateDisabled(date)}
-                      ref={(el) => (inputRefs.current[2] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 2)}
-
+                      ref={(el) => {
+                        inputRefs.current[2] = el;
+                        billDateRef.current = el;
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'ArrowDown') {
+                          billDateRef.current?.setOpen(true);
+                        } else if (e.key === 'Enter') {
+                          e.preventDefault();
+                          billDateRef.current?.setOpen(false);
+                          setTimeout(() => {
+                            if (inputRefs.current[3]) {
+                                inputRefs.current[3].focus();
+                            }
+                          }, 10);
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -1169,10 +1302,23 @@ const AddReturnbill = () => {
                       }}
                       dateFormat="MM/yyyy"
                       showMonthYearPicker
-                      ref={(el) => (inputRefs.current[3] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 3)}
+                      ref={startDateRef}
+                      onKeyDown={(e) => {
+                        if (e.key === 'ArrowDown') {
+                          startDateRef.current?.setOpen(true);
+                        } else if (e.key === 'Enter') {
+                          e.preventDefault();
+                          startDateRef.current?.setOpen(false);
+                          setTimeout(() => {
+                            if (inputRefs.current[4]) {
+                                inputRefs.current[4].focus();
+                            }
+                          }, 10);
+                        }
+                      }}
                       customInput={
                         <TextField
+                          inputRef={(el) => (inputRefs.current[3] = el)}
                           size="small"
                           error={!!errors.startDate}
                           helperText={errors.startDate}
@@ -1201,10 +1347,23 @@ const AddReturnbill = () => {
                       }}
                       dateFormat="MM/yyyy"
                       showMonthYearPicker
-                      ref={(el) => (inputRefs.current[4] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, 4)}
+                      ref={endDateRef}
+                      onKeyDown={(e) => {
+                        if (e.key === 'ArrowDown') {
+                          endDateRef.current?.setOpen(true);
+                        } else if (e.key === 'Enter') {
+                          e.preventDefault();
+                          endDateRef.current?.setOpen(false);
+                          setTimeout(() => {
+                            if (inputRefs.current[5]) {
+                                inputRefs.current[5].focus();
+                            }
+                          }, 10);
+                        }
+                      }}
                       customInput={
                         <TextField
+                          inputRef={(el) => (inputRefs.current[4] = el)}
                           size="small"
                           error={!!errors.endDate}
                           helperText={errors.endDate}
@@ -1251,7 +1410,7 @@ const AddReturnbill = () => {
                 <thead>
                   <tr className="input-row">
                     <th>
-                      <div className="flex justify-center items-center gap-2">
+                      <div className="flex justify-start items-center gap-2">
                         Search Item Name <span className="text-red-600 ">*</span>
                         <FaPlusCircle
                           className="primary cursor-pointer"
@@ -1276,8 +1435,9 @@ const AddReturnbill = () => {
 
                 <tbody>
                   <tr className="input-row">
-                    <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
-                      {isEditMode ? (
+                    <td style={{ fontSize: 15, height: "47px", minWidth: 350, width: "350px", maxWidth: "350px" }}>
+                      <div style={{ width: "100%", height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
+                        {isEditMode ? (
                         <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
                           <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
                           {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
@@ -1289,7 +1449,7 @@ const AddReturnbill = () => {
                           size="small"
                           fullWidth
                           sx={{
-                            minWidth: 400,
+                            minWidth: "100%",
                             width: "100%",
                             textTransform: 'uppercase',
 
@@ -1318,6 +1478,7 @@ const AddReturnbill = () => {
                           }}
                         />
                       )}
+                      </div>
                     </td>
 
                     <td>
@@ -1572,7 +1733,7 @@ const AddReturnbill = () => {
                           },
                         }}
                         select
-                        SelectProps={{ native: true }}
+                        // SelectProps={{ native: true }}
                         variant="outlined"
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
@@ -1587,9 +1748,9 @@ const AddReturnbill = () => {
                         size="small"
                         error={!!errors.gst}
                       >
-                        <option value="0">0</option>
-                        <option value="5">5</option>
-                        <option value="18">18</option>
+                        <MenuItem value="0">0</MenuItem>
+                        <MenuItem value="5">5</MenuItem>
+                        <MenuItem value="18">18</MenuItem>
                       </TextField>
                     </td>
 
@@ -1623,11 +1784,24 @@ const AddReturnbill = () => {
                       />
                     </td>
 
-                    <td className="total">
-                      <span className="font-bold">
-                        {ItemTotalAmount}
-                      </span>
-
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        disabled
+                        size="small"
+                        placeholder="0.00"
+                        value={ItemTotalAmount ? Number(ItemTotalAmount).toFixed(2) : "0.00"}
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
+                      />
                     </td>
                   </tr>
 
@@ -1644,6 +1818,7 @@ const AddReturnbill = () => {
                   ) : (tableData?.item_list?.map((item, index) => (
                     <tr
                       key={item.id}
+                      id={`return-add-row-${index}`}
                       onClick={() => {
                         setSelectedIndex(index);
                         handleEditClick(item);
@@ -1779,148 +1954,143 @@ const AddReturnbill = () => {
 
                 <Modal
                   show={isModalOpen}
-                  onClose={() => {
-                    setIsModalOpen(!isModalOpen);
-                  }}
-                  size="lg"
+                  onClose={() => setIsModalOpen(false)}
+                  size="md"
                   position="bottom-center"
                   className="modal_amount"
-                // style={{ width: "50%" }}
                 >
-                  <div
-                    style={{
-                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                      color: "white",
-                      padding: "20px",
-                      fontSize: "larger",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <h2 style={{ textTransform: "uppercase" }}>
-                      invoice total
-                    </h2>
-                    <IoMdClose
-                      onClick={() => {
-                        setIsModalOpen(!isModalOpen);
-                      }}
-                      cursor={"pointer"}
-                      size={30}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      background: "white",
-                      padding: "20px",
-                      width: "100%",
-                      maxWidth: "600px",
-                      margin: "0 auto",
-                      lineHeight: "2.5rem",
-                    }}
-                  >
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <label className="font-bold">Total Amount : </label>
-                      <span style={{ fontWeight: 600 }}>
-                        {totalAmount ? totalAmount : 0}
-                      </span>
-                    </div>
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <label className="font-bold">Other Amount : </label>
-                      <div className="border-green">
-                        <Input
-                          type="number"
-                          value={otherAmount}
-                          onChange={handleOtherAmount}
-                          size="small"
-                          style={{
-                            width: "70px",
-                            background: "none",
-                            justifyItems: "end",
-                            outline: "none",
-                          }}
-                          sx={{
-                            "& .MuiInputBase-root": {
-                              height: "35px",
-                            },
-                            "& .MuiInputBase-input": { textAlign: "end" },
-                          }}
-                        />
+                  {/* ── Header ── */}
+                  <div style={{
+                    background: "linear-gradient(135deg, var(--COLOR_UI_PHARMACY) 0%, var(--color2, #2d6a2d) 100%)",
+                    color: "white",
+                    padding: "18px 24px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderRadius: "8px 8px 0 0",
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{
+                        width: 36, height: 36, borderRadius: "50%",
+                        background: "rgba(255,255,255,0.2)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}><ReceiptLongIcon style={{ fontSize: 20 }} /></div>
+                      <div>
+                        <div style={{ fontSize: 11, opacity: 0.8, letterSpacing: 1.5, textTransform: "uppercase" }}>Purchase Return</div>
+                        <div style={{ fontSize: 17, fontWeight: 700, letterSpacing: 0.5 }}>Invoice Summary</div>
                       </div>
                     </div>
-
                     <div
-                      className=""
+                      onClick={() => setIsModalOpen(false)}
                       style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        paddingBottom: "5px",
+                        cursor: "pointer", width: 32, height: 32, borderRadius: "50%",
+                        background: "rgba(255,255,255,0.15)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        transition: "background 0.2s",
                       }}
                     >
-                      <label className="font-bold">Total Net Rate : </label>
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          color: "#F31C1C",
-                        }}
-                      >
-                        {totalNetRate}
-                      </span>
+                      <IoMdClose size={20} />
                     </div>
+                  </div>
 
-                    <div
-                      className="font-bold"
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        paddingBottom: "5px",
-                        borderTop:
-                          "1px solid var(--toastify-spinner-color-empty-area)",
-                        paddingTop: "5px",
-                      }}
-                    >
-                      <label className="font-bold">Round Off : </label>
-                      <span>
-                        {roundOff === "0.00"
-                          ? roundOff
-                          : roundOff < 0.49
-                            ? `- ${roundOff}`
-                            : `${parseFloat(1 - roundOff).toFixed(2)}`}
-                      </span>
-                    </div>
+                  {/* ── Body ── */}
+                  <div style={{
+                    background: "#f8fafc",
+                    padding: "20px 24px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 0,
+                  }}>
 
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        cursor: "pointer",
-                        justifyContent: "space-between",
-                        borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
-                        paddingTop: "5px",
-                      }}
-                    >
-                      <label className="font-bold">Net Amount: </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          fontSize: "22px",
-                          color: "var(--COLOR_UI_PHARMACY)",
-                        }}
-                      >
-                        {!netAmount ? 0 : netAmount}
-                      </span>
+                    {[
+                      {
+                        label: "Total Amount",
+                        icon: <Inventory2Icon style={{ fontSize: 18, color: "var(--COLOR_UI_PHARMACY)" }} />,
+                        value: <span style={{ fontWeight: 600, color: "#1e293b" }}>{totalAmount ? totalAmount : 0}</span>,
+                      },
+                      {
+                        label: "Other Amount",
+                        icon: <AddCircleOutlineIcon style={{ fontSize: 18, color: "#0ea5e9" }} />,
+                        value: (
+                          <Input
+                            type="number"
+                            value={otherAmount}
+                            onChange={handleOtherAmount}
+                            size="small"
+                            style={{ width: "80px", background: "none", outline: "none" }}
+                            sx={{
+                              "& .MuiInputBase-root": { height: "32px" },
+                              "& .MuiInputBase-input": { textAlign: "end", fontWeight: 600 },
+                              "& .MuiInput-underline:before": { borderBottomColor: "var(--COLOR_UI_PHARMACY)" },
+                            }}
+                          />
+                        ),
+                      },
+                      {
+                        label: "Total Net Rate",
+                        icon: <TrendingDownIcon style={{ fontSize: 18, color: "#e53e3e" }} />,
+                        value: <span style={{ fontWeight: 600, color: "#e53e3e" }}>{totalNetRate}</span>,
+                      },
+                      {
+                        label: "Round Off",
+                        icon: <SyncAltIcon style={{ fontSize: 18, color: "#64748b" }} />,
+                        value: (
+                          <span style={{ fontWeight: 600, color: "#64748b" }}>
+                            {roundOff === "0.00"
+                              ? roundOff
+                              : roundOff < 0.49
+                                ? `- ${roundOff}`
+                                : `${parseFloat(1 - roundOff).toFixed(2)}`}
+                          </span>
+                        ),
+                        divider: true,
+                      },
+                    ].map((row, i) => (
+                      <div key={i}>
+                        {row.divider && (
+                          <div style={{ borderTop: "1px dashed #cbd5e1", margin: "4px 0" }} />
+                        )}
+                        <div style={{
+                          display: "flex", justifyContent: "space-between", alignItems: "center",
+                          padding: "10px 14px",
+                          background: i % 2 === 0 ? "#ffffff" : "#f1f5f9",
+                          borderRadius: 8,
+                          marginBottom: 6,
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                        }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#475569", fontWeight: 600, fontSize: 14 }}>
+                            {row.icon}
+                            {row.label}
+                          </div>
+                          {row.value}
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Net Amount highlighted block */}
+                    <div style={{
+                      marginTop: 10,
+                      background: "linear-gradient(135deg, var(--COLOR_UI_PHARMACY) 0%, var(--color2, #2d6a2d) 100%)",
+                      borderRadius: 12,
+                      padding: "16px 20px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
+                    }}>
+                      <div style={{ color: "rgba(255,255,255,0.85)", fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
+                        <CurrencyRupeeIcon style={{ fontSize: 18 }} /> Net Amount Payable
+                      </div>
+                      <div style={{
+                        color: "white",
+                        fontWeight: 800,
+                        fontSize: 24,
+                        letterSpacing: 0.5,
+                        display: "flex", alignItems: "baseline", gap: 2,
+                      }}>
+                        <span style={{ fontSize: 16, fontWeight: 600, opacity: 0.9 }}>₹</span>
+                        {!netAmount ? "0.00" : Number(netAmount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
                     </div>
                   </div>
                 </Modal>

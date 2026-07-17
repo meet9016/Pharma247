@@ -67,8 +67,7 @@
 
 /* Table container for scrollable tables */
 .table-container {
-    max-height: 550px;
-    height: 550px;
+    height: calc(100vh - 320px);
     overflow-y: auto;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
@@ -97,8 +96,7 @@
 /* Responsive table styles */
 @media (max-width: 768px) {
     .table-container {
-        max-height: 400px;
-        height: 400px;
+        height: calc(100vh - 400px);
         overflow-x: auto;
         overflow-y: auto;
     }
@@ -122,8 +120,7 @@
 
 @media (max-width: 480px) {
     .table-container {
-        max-height: 300px;
-        height: 300px;
+        height: calc(100vh - 350px);
     }
 
     .item-table {
@@ -346,13 +343,23 @@
 }
 
 /* Ensure table headers stay fixed and properly styled */
-.item-table thead th {
+.item-table thead th,
+.customtable thead th {
     background-color: white;
     border-bottom: 2px solid #e0e0e0;
     font-weight: 600;
     color: var(--color1);
-    position: static;
+    position: sticky;
     top: 0;
+    z-index: 10;
+}
+
+.item-table tbody .input-row th,
+.item-table tbody .input-row td {
+    position: sticky;
+    top: 24px; /* Adjust based on header height to stick right below it */
+    z-index: 9;
+    background-color: white;
 }
 
 /* Ensure table body has proper spacing */
@@ -436,6 +443,10 @@
 
 .react-datepicker__input-container input {
     background-color: transparent !important;
+}
+
+.react-datepicker-popper {
+    z-index: 9999 !important;
 }
 
 /* NEW CSS END */

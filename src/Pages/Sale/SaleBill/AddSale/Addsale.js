@@ -50,7 +50,7 @@ import { FaCrown } from "react-icons/fa";
 import TipsModal from "../../../../componets/Tips/TipsModal";
 import Loader from "../../../../componets/loader/Loader";
 
-const addSale = () => {
+const AddSale = () => {
   const token = localStorage.getItem("token");
   const searchInputRef = useRef(null);
   const itemNameInputRef = useRef(null);
@@ -1081,7 +1081,7 @@ const addSale = () => {
         history.push("/");
       }
     } catch (error) {
-      console.error("API error:", err);
+      console.error("API error:", error);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
@@ -4777,4 +4777,4 @@ const addSale = () => {
     </>
   );
 };
-export default addSale;
+export default AddSale;

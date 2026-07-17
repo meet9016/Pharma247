@@ -10,6 +10,7 @@ import Loader from "../../../../componets/loader/Loader";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import usePermissions, {
   hasPermission,
 } from "../../../../componets/permission";
@@ -17,6 +18,12 @@ import { FaArrowDown, FaArrowUp, FaCaretUp, FaFilePdf } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { Modal } from "flowbite-react";
 import { toast } from "react-toastify";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import SyncAltIcon from "@mui/icons-material/SyncAlt";
+import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 
 const ReturnView = () => {
   const history = useHistory();
@@ -31,6 +38,7 @@ const ReturnView = () => {
   const [IsDelete, setIsDelete] = useState(false);
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [isPdfLoading, setIsPdfLoading] = useState(false);
   const [returnData, setReturnData] = useState([]);
   const [roundOff, setRoundOff] = useState(0);
 
@@ -152,7 +160,7 @@ const ReturnView = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsLoading(true);
+    setIsPdfLoading(true);
     try {
       await axios
         .post("purches-return-pdf", data, {
@@ -166,10 +174,11 @@ const ReturnView = () => {
           toast.dismiss();
           toast.success(response.data.meassage);
 
-          setIsLoading(false);
+          setIsPdfLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
+      setIsPdfLoading(false);
       console.error("API error:", error);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
@@ -265,11 +274,21 @@ const ReturnView = () => {
                   <Button
                     variant="contained"
                     className="sale_add_btn sale_dnls gap-2"
-                    style={{ backgroundColor: "var(--color1)" }}
+                    style={{ backgroundColor: "var(--color1)", minWidth: 120 }}
+                    disabled={isPdfLoading}
                     onClick={() => pdfGenerator(tableData.id)}
                   >
-                    <FaFilePdf className="w-5 h-5 hover:text-secondary cursor-pointer" />
-                    Download
+                    {isPdfLoading ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff", textColor: "#fff" }}>
+                        <CircularProgress size={16} style={{ color: "#fff" }} />
+                        Downloading...
+                      </span>
+                    ) : (
+                      <>
+                        <FaFilePdf className="w-5 h-5 hover:text-secondary cursor-pointer" />
+                        Download
+                      </>
+                    )}
                   </Button>
                   <Button
                     className="sale_add_btn sale_dnls"
@@ -693,7 +712,7 @@ const ReturnView = () => {
                         alignItems: "center",
                       }}
                     >
-                      {tableData?.due_amount ? tableData?.due_amount : 0}
+                      {tableData?.due_amount ? `₹${parseFloat(tableData.due_amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "₹0.00"}
                       <FaCaretUp />
                     </span>
                   </div>
@@ -701,127 +720,71 @@ const ReturnView = () => {
                   <Modal
                     show={isModalOpen}
                     onClose={toggleModal}
-                    size="lg"
+                    size="md"
                     position="bottom-center"
                     className="modal_amount"
-                  // style={{ width: "50%" }}
                   >
-                    <div
-                      style={{
-                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                        color: "white",
-                        padding: "20px",
-                        fontSize: "larger",
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <h2 style={{ textTransform: "uppercase" }}>
-                        invoice total
-                      </h2>
-                      <IoMdClose
-                        onClick={toggleModal}
-                        cursor={"pointer"}
-                        size={30}
-                      />
+                    {/* Header */}
+                    <div style={{ background: "linear-gradient(135deg, var(--COLOR_UI_PHARMACY) 0%, var(--color2, #2d6a2d) 100%)", color: "white", padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", borderRadius: "8px 8px 0 0" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <ReceiptLongIcon style={{ fontSize: 20 }} />
+                        </div>
+                        <div>
+                          <div style={{ fontSize: 11, opacity: 0.8, letterSpacing: 1.5, textTransform: "uppercase" }}>Purchase Return</div>
+                          <div style={{ fontSize: 17, fontWeight: 700, letterSpacing: 0.5 }}>Invoice Summary</div>
+                        </div>
+                      </div>
+                      <div onClick={toggleModal} style={{ cursor: "pointer", width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <IoMdClose size={20} />
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        background: "white",
-                        padding: "20px",
-                        width: "100%",
-                        maxWidth: "600px",
-                        margin: "0 auto",
-                        lineHeight: "2.5rem",
-                      }}
-                    >
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <label className="font-bold">Total Amount : </label>
-                        <span style={{ fontWeight: 600 }}>
-                          {tableData?.total_amount
-                            ? tableData?.total_amount
-                            : 0}
-                        </span>
-                      </div>
 
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          paddingBottom: "5px",
-                        }}
-                      >
-                        <label className="font-bold">Other Amount : </label>
-                        <span style={{ fontWeight: 600, color: "red" }}>
-                          {" "}
-                          {isNaN(Number(tableData?.other_amount))
-                            ? tableData?.other_amount || "N/A"
-                            : Number(tableData?.other_amount).toFixed(2)}
-                        </span>
-                      </div>
+                    {/* Body */}
+                    <div style={{ background: "#f8fafc", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 0 }}>
+                      {[
+                        {
+                          label: "Total Amount",
+                          icon: <Inventory2Icon style={{ fontSize: 18, color: "var(--COLOR_UI_PHARMACY)" }} />,
+                          value: <span style={{ fontWeight: 600, color: "#1e293b" }}>{tableData?.total_amount ? tableData?.total_amount : 0}</span>,
+                        },
+                        {
+                          label: "Other Amount",
+                          icon: <AddCircleOutlineIcon style={{ fontSize: 18, color: "#0ea5e9" }} />,
+                          value: <span style={{ fontWeight: 600, color: "#0ea5e9" }}>{isNaN(Number(tableData?.other_amount)) ? tableData?.other_amount || "N/A" : Number(tableData?.other_amount).toFixed(2)}</span>,
+                        },
+                        {
+                          label: "Total Net Rate",
+                          icon: <TrendingDownIcon style={{ fontSize: 18, color: "#e53e3e" }} />,
+                          value: <span style={{ fontWeight: 600, color: "#e53e3e" }}>{tableData?.total_net_rate ? tableData?.total_net_rate : 0}</span>,
+                        },
+                        {
+                          label: "Round Off",
+                          icon: <SyncAltIcon style={{ fontSize: 18, color: "#64748b" }} />,
+                          value: <span style={{ fontWeight: 600, color: "#64748b" }}>{roundOff === "0.00" ? roundOff : roundOff < 0 ? `-${Math.abs(roundOff)}` : `+${Math.abs(roundOff)}`}</span>,
+                          divider: true,
+                        },
+                      ].map((row, i) => (
+                        <div key={i}>
+                          {row.divider && <div style={{ borderTop: "1px dashed #cbd5e1", margin: "4px 0" }} />}
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: i % 2 === 0 ? "#ffffff" : "#f1f5f9", borderRadius: 8, marginBottom: 6, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#475569", fontWeight: 600, fontSize: 14 }}>
+                              {row.icon}{row.label}
+                            </div>
+                            {row.value}
+                          </div>
+                        </div>
+                      ))}
 
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          paddingBottom: "5px",
-                        }}
-                      >
-                        <label className="font-bold">Round Off : </label>
-                        <span style={{ fontWeight: 600 }}>
-                          {" "}
-                          {roundOff === "0.00"
-                            ? roundOff
-                            : roundOff < 0
-                              ? `-${Math.abs(roundOff)}`
-                              : `+${Math.abs(roundOff)}`}
-                        </span>
-                      </div>
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          paddingBottom: "5px",
-                        }}
-                      >
-                        <label className="font-bold">Total Net Rate : </label>
-                        <span style={{ fontWeight: 600 }}>
-                          {tableData?.total_net_rate
-                            ? tableData?.total_net_rate
-                            : 0}{" "}
-                        </span>
-                      </div>
-
-                      <div
-                        className=""
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          cursor: "pointer",
-                          justifyContent: "space-between",
-                          borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
-                          paddingTop: "5px",
-                        }}
-                      >
-                        <label className="font-bold">Net Amount: </label>
-                        <span
-                          style={{
-                            fontWeight: 800,
-                            fontSize: "22px",
-                            color: "var(--COLOR_UI_PHARMACY)",
-                          }}
-                        >
-                          {tableData?.due_amount ? tableData?.due_amount : 0}
-                        </span>
+                      {/* Net Amount */}
+                      <div style={{ marginTop: 10, background: "linear-gradient(135deg, var(--COLOR_UI_PHARMACY) 0%, var(--color2, #2d6a2d) 100%)", borderRadius: 12, padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 4px 15px rgba(0,0,0,0.15)" }}>
+                        <div style={{ color: "rgba(255,255,255,0.85)", fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
+                          <CurrencyRupeeIcon style={{ fontSize: 18 }} /> Net Amount Payable
+                        </div>
+                        <div style={{ color: "white", fontWeight: 800, fontSize: 24, letterSpacing: 0.5, display: "flex", alignItems: "baseline", gap: 2 }}>
+                          <span style={{ fontSize: 16, fontWeight: 600, opacity: 0.9 }}>₹</span>
+                          {tableData?.due_amount ? Number(tableData.due_amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00"}
+                        </div>
                       </div>
                     </div>
                   </Modal>

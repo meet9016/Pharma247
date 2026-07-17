@@ -23,6 +23,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   IoArrowBackCircleOutline,
   IoArrowForwardCircleOutline,
@@ -32,6 +33,11 @@ import { FaArrowDown, FaArrowUp, FaCaretUp, FaFilePdf } from "react-icons/fa6";
 import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import SyncAltIcon from "@mui/icons-material/SyncAlt";
+import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 
 const PurchaseView = () => {
   const { id } = useParams();
@@ -40,6 +46,7 @@ const PurchaseView = () => {
   const [data, setData] = useState([]);
   const token = localStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(false);
+  const [isPdfLoading, setIsPdfLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [header, setHeader] = useState("");
@@ -131,7 +138,7 @@ const PurchaseView = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsLoading(true);
+    setIsPdfLoading(true);
     try {
       await axios
         .post("purches-pdf-downloads", data, {
@@ -145,7 +152,7 @@ const PurchaseView = () => {
           toast.dismiss();
           toast.success(response.data.meassage);
 
-          setIsLoading(false);
+          setIsPdfLoading(false);
           handlePdf(PDFURL);
           if (response.data.status === 401) {
             history.push("/");
@@ -160,6 +167,7 @@ const PurchaseView = () => {
         localStorage.clear();
         history.push("/");
       }
+      setIsPdfLoading(false);
       console.error("API error:", error);
     }
   };
@@ -214,12 +222,13 @@ const PurchaseView = () => {
     <>
       <Header />
 
-      <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 120px)', padding: "0px 20px 0px", alignItems: "center", overflow: "auto" }}>
+      <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 65px)', padding: "0px 20px 0px", display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
         {/*<===================================================================== Header bottom  =====================================================================> */}
 
-        <div>
-          <div className="py-3 sal-rtn-fff sale_view_btns" style={{ display: "flex", gap: "4px" }}>
+        <div style={{ flexShrink: 0 }}>
+          <div>
+            <div className="py-3 sal-rtn-fff sale_view_btns" style={{ display: "flex", gap: "4px" }}>
             <div className="flex flex-row gap-2 " style={{ alignItems: "center" }}>
               <span
                 style={{
@@ -296,13 +305,21 @@ const PurchaseView = () => {
                 <Button
                   variant="contained"
                   className="sale_add_btn sale_dnls gap-2"
-                  style={{ backgroundColor: "var(--color1)" }}
+                  style={{ backgroundColor: "var(--color1)", minWidth: 120 }}
+                  disabled={isPdfLoading}
                   onClick={() => pdfGenerator(id)}
                 >
-                  <FaFilePdf
-                    className="w-5 h-5 hover:text-secondary cursor-pointer"
-                  />
-                  Download
+                  {isPdfLoading ? (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 ,color:"#fff"}}>
+                      <CircularProgress size={16} style={{ color: "white" }} />
+                      Downloading...
+                    </span>
+                  ) : (
+                    <>
+                      <FaFilePdf className="w-5 h-5 hover:text-secondary cursor-pointer" />
+                      Download
+                    </>
+                  )}
                 </Button>
 
                 {data?.item_list?.length !== 0 && (<Button
@@ -379,7 +396,6 @@ const PurchaseView = () => {
                   "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(63,98,18,0.15)",
                 overflow: "hidden",
                 position: "relative",
-
               }}
             >
               {/* Left accent */}
@@ -506,10 +522,11 @@ const PurchaseView = () => {
               </div>
             </div>
           </div>
+        </div>
 
-          {/*<===============================================================  table data  ===============================================================> */}
+        {/*<===============================================================  table data  ===============================================================> */}
 
-          <div className="overflow-x-auto mt-5">
+          <div className="table-container mt-5" style={{ flex: 1, minHeight: 0, marginBottom: "20px", overflow: "auto" }}>
             <table className="customtable  w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
               <thead>
                 <tr>
@@ -600,11 +617,8 @@ const PurchaseView = () => {
             </div>
             <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
               <label className="font-bold">Total Qty : </label>
-              <span style={{ fontWeight: 600 }}> {data?.total_qty ? data?.total_qty : 0} {"+"}&nbsp;
-
-                <span className="">
-                  {data?.total_free_qty ? data?.total_free_qty : 0} Free
-                </span>
+              <span style={{ fontWeight: 600 }}>
+                {data?.total_qty ? data?.total_qty : 0} + {data?.total_free_qty ? data?.total_free_qty : 0} Free
               </span>
             </div>
             <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
@@ -674,7 +688,8 @@ const PurchaseView = () => {
             <div style={{ display: 'flex', alignItems: 'center', padding: '0 20px' }}>
               <div className="gap-2 " onClick={() => setIsModalOpen(!isModalOpen)} style={{ display: "flex", alignItems: "center", cursor: "pointer", whiteSpace: 'nowrap' }}>
                 <label className="font-bold">Net Amount : </label>
-                <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{data?.net_amount ? data?.net_amount : 0}
+                <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>
+                  &#8377;{Number(data?.net_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   <FaCaretUp />
                 </span>
 
@@ -682,50 +697,72 @@ const PurchaseView = () => {
 
               <Modal
                 show={isModalOpen}
-                onClose={() => setIsModalOpen(!isModalOpen)}
-                size="lg"
+                onClose={() => setIsModalOpen(false)}
+                size="md"
                 position="bottom-center"
                 className="modal_amount"
               >
-                <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
-                  <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
-                  <IoMdClose onClick={() => setIsModalOpen(!isModalOpen)} cursor={"pointer"} size={30} />
-
+                {/* Header */}
+                <div style={{
+                  background: "linear-gradient(135deg, var(--COLOR_UI_PHARMACY) 0%, var(--color2, #2d6a2d) 100%)",
+                  color: "white", padding: "18px 24px",
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  borderRadius: "8px 8px 0 0",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <ReceiptLongIcon style={{ fontSize: 20 }} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, opacity: 0.8, letterSpacing: 1.5, textTransform: "uppercase" }}>Purchase Bill</div>
+                      <div style={{ fontSize: 17, fontWeight: 700, letterSpacing: 0.5 }}>Invoice Summary</div>
+                    </div>
+                  </div>
+                  <div onClick={() => setIsModalOpen(false)} style={{ cursor: "pointer", width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <IoMdClose size={20} />
+                  </div>
                 </div>
-                <div
-                  style={{
-                    background: "white",
-                    padding: "20px",
-                    width: "100%",
-                    maxWidth: "600px",
-                    margin: "0 auto",
-                    lineHeight: "2.5rem"
-                  }}
-                >
 
-                  <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
-                    <label className="font-bold">Total Amount : </label>
-                    <span style={{ fontWeight: 600 }}> {data?.total_amount ? data?.total_amount : 0}</span>
-                  </div>
+                {/* Body */}
+                <div style={{ background: "#f8fafc", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 0 }}>
+                  {[
+                    {
+                      label: "Total Amount",
+                      icon: <Inventory2Icon style={{ fontSize: 18, color: "var(--COLOR_UI_PHARMACY)" }} />,
+                      value: <span style={{ fontWeight: 600, color: "#1e293b" }}>{data?.total_amount ? data?.total_amount : 0}</span>,
+                    },
+                    {
+                      label: "CN Amount",
+                      icon: <RemoveCircleOutlineIcon style={{ fontSize: 18, color: "#e53e3e" }} />,
+                      value: <span style={{ fontWeight: 600, color: "#e53e3e" }}>-{(parseFloat(data?.cn_amount) || 0).toFixed(2)}</span>,
+                    },
+                    {
+                      label: "Round Off",
+                      icon: <SyncAltIcon style={{ fontSize: 18, color: "#64748b" }} />,
+                      value: <span style={{ fontWeight: 600, color: "#64748b" }}>{roundOffAmount === "0.00" ? roundOffAmount : roundOffAmount < 0 ? `-${Math.abs(roundOffAmount)}` : `+${Math.abs(roundOffAmount)}`}</span>,
+                      divider: true,
+                    },
+                  ].map((row, i) => (
+                    <div key={i}>
+                      {row.divider && <div style={{ borderTop: "1px dashed #cbd5e1", margin: "4px 0" }} />}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: i % 2 === 0 ? "#ffffff" : "#f1f5f9", borderRadius: 8, marginBottom: 6, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#475569", fontWeight: 600, fontSize: 14 }}>
+                          {row.icon}{row.label}
+                        </div>
+                        {row.value}
+                      </div>
+                    </div>
+                  ))}
 
-                  <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
-                    <label className="font-bold">CN Amount : </label>
-                    <span style={{ fontWeight: 600, color: "red" }}> {-(parseFloat(data?.cn_amount) || 0).toFixed(2)}</span>
-                  </div>
-
-                  <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
-                    <label className="font-bold">Round Off : </label>
-                    <span style={{ fontWeight: 600 }}> {roundOffAmount === "0.00"
-                      ? roundOffAmount
-                      : roundOffAmount < 0
-                        ? `-${Math.abs(roundOffAmount)}`
-                        : `+${Math.abs(roundOffAmount)}`}</span>
-                  </div>
-
-                  <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
-
-                    <label className="font-bold">Net Amount: </label>
-                    <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>{data?.net_amount ? data?.net_amount : 0}</span>
+                  {/* Net Amount */}
+                  <div style={{ marginTop: 10, background: "linear-gradient(135deg, var(--COLOR_UI_PHARMACY) 0%, var(--color2, #2d6a2d) 100%)", borderRadius: 12, padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 4px 15px rgba(0,0,0,0.15)" }}>
+                    <div style={{ color: "rgba(255,255,255,0.85)", fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
+                      <CurrencyRupeeIcon style={{ fontSize: 18 }} /> Net Amount Payable
+                    </div>
+                    <div style={{ color: "white", fontWeight: 800, fontSize: 24, letterSpacing: 0.5, display: "flex", alignItems: "baseline", gap: 2 }}>
+                      <span style={{ fontSize: 16, fontWeight: 600, opacity: 0.9 }}>₹</span>
+                      {Number(data?.net_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
                   </div>
                 </div>
               </Modal>
