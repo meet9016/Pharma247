@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   Button,
   FormControl,
@@ -29,6 +30,7 @@ const ItemWiseMargin = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [reportType, setReportType] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const token = localStorage.getItem("token");
   const [errors, setErrors] = useState({});
   const [itemMarginData, setItemMarginData] = useState([]);
@@ -62,7 +64,7 @@ const ItemWiseMargin = () => {
   const handlefilterData = async () => {
     if (validateForm()) {
       let data = new FormData();
-      setIsLoading(true);
+      setIsDownloadLoading(true);
       const params = {
         start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
         end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -253,7 +255,15 @@ const ItemWiseMargin = () => {
                     display: "flex",
                   }}
                   onClick={exportToCSV}
-                >
+                 disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <img
                       src="/csv-file.png"
@@ -262,7 +272,10 @@ const ItemWiseMargin = () => {
                     />
                   </div>
                   Download
-                </Button>
+                
+            </>
+          )}
+</Button>
               </div>
             </div>
             <div

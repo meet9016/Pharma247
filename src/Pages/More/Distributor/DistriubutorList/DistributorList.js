@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 import {
   Alert,
@@ -62,6 +63,7 @@ const DistributerList = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
   const [openEdit, setOpenEdit] = useState(false);
@@ -475,7 +477,7 @@ const DistributerList = () => {
 
   const exportToExcel = async () => {
     let data = new FormData();
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     data.append("page", currentPage);
     data.append("iss_value", "download");
     const params = {
@@ -661,7 +663,15 @@ const DistributerList = () => {
                           display: "flex",
                         }}
                         onClick={exportToExcel}
-                      >
+                       disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <img
                             src="/csv-file.png"
@@ -670,7 +680,10 @@ const DistributerList = () => {
                           />
                         </div>
                         Download
-                      </Button>
+                      
+            </>
+          )}
+</Button>
                     )}
                   </div>
                 </div>
@@ -752,7 +765,7 @@ const DistributerList = () => {
                               style={{ borderRadius: "10px 10px 10px 10px" }}
                             >
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                           </tr>
@@ -1537,10 +1550,21 @@ const DistributerList = () => {
                         backgroundColor: "#f8fafc !important"
                       }
                     }}
-                  >
+                   disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                     <CloudDownloadIcon sx={{ fontSize: 18 }} />
                     Download Sample File
-                  </Button>
+                  
+            </>
+          )}
+</Button>
                 </div>
               </div>
             </DialogContent>

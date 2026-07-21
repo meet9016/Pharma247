@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import React, { useEffect, useRef, useState } from "react";
 import Header from "../../Header";
 import { saveAs } from "file-saver";
@@ -65,6 +66,7 @@ const InventoryList = () => {
   const [activeMissingFilter, setActiveMissingFilter] = useState("");
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
@@ -1104,7 +1106,7 @@ const InventoryList = () => {
 
   const handleFilterData = async () => {
     let data = new FormData();
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     try {
       await axios
         .post("item-batch-imports", data, {
@@ -1113,7 +1115,7 @@ const InventoryList = () => {
           },
         })
         .then((response) => {
-          setIsLoading(false);
+          setIsDownloadLoading(false);
           setItemBatchData(response.data.data);
           exportToCSV(response.data.data);
         });
@@ -1965,7 +1967,15 @@ const InventoryList = () => {
                   display: "flex",
                 }}
                 onClick={handleFilterData}
-              >
+               disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <img
                     src="/csv-file.png"
@@ -1974,7 +1984,10 @@ const InventoryList = () => {
                   />
                 </div>
                 Download
-              </Button>
+              
+            </>
+          )}
+</Button>
 
               <Button
                 aria-controls="simple-menu"
@@ -2304,12 +2317,12 @@ const InventoryList = () => {
             </TableContainer>
           ) : (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-              <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+              { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
             </div>
             //  <div>
             //   <div className="vector-image">
             //     <div className="inventory-gif">
-            //       <img src="../inventory_screen.png" alt="screen"></img>
+            //       { !isLoading && <img src="../inventory_screen.png" alt="screen"> </img> }
             //     </div>
             //     <span className="text-gray-500 font-medium mt-5">
             //       Apply filters and explore your inventory
@@ -3090,7 +3103,7 @@ const InventoryList = () => {
                         }}
                       >
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                     </tr>

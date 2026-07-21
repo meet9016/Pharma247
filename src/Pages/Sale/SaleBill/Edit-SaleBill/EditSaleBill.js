@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import React, { useState, useRef, useEffect } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -43,6 +44,7 @@ const EditSaleBill = () => {
   const { id, randomNumber } = useParams();
   const [address, setAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const history = useHistory();
   const paymentOptions = [
     { id: 1, label: "Cash" },
@@ -1242,7 +1244,7 @@ const EditSaleBill = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     try {
       await axios
         .post("sales-pdf-downloads", data, {
@@ -1267,7 +1269,7 @@ const EditSaleBill = () => {
         history.push("/");
       }
     } finally {
-      setIsLoading(false);
+      setIsDownloadLoading(false);
     }
   };
   const handlePdf = (url) => {
@@ -1975,7 +1977,7 @@ const EditSaleBill = () => {
                                         }}
                                       >
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                                     </tr>

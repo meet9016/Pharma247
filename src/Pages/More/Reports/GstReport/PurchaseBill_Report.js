@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   Button,
   FormControl,
@@ -29,6 +30,7 @@ const PurchaseBillReport = () => {
   const [reportType, setReportType] = useState(null);
   const [purchaseType, setPurchaseType] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const token = localStorage.getItem("token");
   const [errors, setErrors] = useState({});
   const csvIcon = process.env.PUBLIC_URL + "/csv.png";
@@ -93,7 +95,7 @@ const PurchaseBillReport = () => {
   const handlefilterData = async () => {
     if (validateForm()) {
       let data = new FormData();
-      setIsLoading(true);
+      setIsDownloadLoading(true);
       const params = {
         month_year: lastMonth ? format(lastMonth, "MM-yyyy") : "",
         type: reportType,
@@ -230,7 +232,15 @@ const PurchaseBillReport = () => {
                     display: "flex",
                   }}
                   onClick={exportToCSV}
-                >
+                 disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <img
                       src="/csv-file.png"
@@ -239,7 +249,10 @@ const PurchaseBillReport = () => {
                     />
                   </div>
                   Download
-                </Button>
+                
+            </>
+          )}
+</Button>
               </div>
             </div>
             <div

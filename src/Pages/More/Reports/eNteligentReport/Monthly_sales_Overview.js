@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import { Button } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
@@ -17,6 +18,7 @@ const Monthly_sales_Overview = () => {
   const history = useHistory();
   const [monthDate, setMonthDate] = useState(subMonths(new Date(), 1));
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const token = localStorage.getItem("token");
   const [errors, setErrors] = useState({});
   const [monthlySaleData, setMonthlySaleData] = useState([]);
@@ -44,7 +46,7 @@ const Monthly_sales_Overview = () => {
 
   const handlefilterData = async () => {
     let data = new FormData();
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     const params = {
       month_year: monthDate ? format(monthDate, "MM-yyyy") : "",
     };
@@ -203,7 +205,15 @@ const Monthly_sales_Overview = () => {
                     display: "flex",
                   }}
                   onClick={exportToCSV}
-                >
+                 disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <img
                       src="/csv-file.png"
@@ -212,7 +222,10 @@ const Monthly_sales_Overview = () => {
                     />
                   </div>
                   Download
-                </Button>
+                
+            </>
+          )}
+</Button>
               </div>
             </div>
             <div

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 import Header from "../../Header";
 import Box from "@mui/material/Box";
@@ -69,6 +70,7 @@ const BankAccount = () => {
     { id: "qty", label: "Amount" },
   ];
   const [openAddPopUpDownload, setOpenAddPopUpDownload] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const token = localStorage.getItem("token");
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -510,9 +512,11 @@ const BankAccount = () => {
     setDetails(selectedDetails);
   };
 
-  const handlePdf = () => {
+  const handlePdf = async () => {
+    setIsDownloadLoading(true);
     setOpenAddPopUpDownload(true);
-    pdfGenerator();
+    await pdfGenerator();
+    setIsDownloadLoading(false);
   };
   const isDateDisabled = (date) => {
     const today = new Date();
@@ -864,22 +868,28 @@ const BankAccount = () => {
                 <Button
                   variant="contained"
                   className="gap-7 downld_btn_csh"
+                  onClick={handlePdf}
+                  disabled={isDownloadLoading}
                   style={{
                     background: "var(--color1)",
                     color: "white",
-                    // paddingLeft: "35px",
                     textTransform: "none",
                     display: "flex",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <img
-                      src="/csv-file.png"
-                      className="report-icon absolute mr-10"
-                      alt="csv "
-                    />
-                  </div>
-                  Download
+                  {isDownloadLoading ? (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                      <CircularProgress size={16} style={{ color: "white" }} />
+                      Downloading...
+                    </span>
+                  ) : (
+                    <>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img src="/csv-file.png" className="report-icon absolute mr-10" alt="csv " />
+                      </div>
+                      Download
+                    </>
+                  )}
                 </Button>
               </div>
 
@@ -1244,7 +1254,7 @@ const BankAccount = () => {
                                 color: "gray",
                               }}>
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                             </tr>

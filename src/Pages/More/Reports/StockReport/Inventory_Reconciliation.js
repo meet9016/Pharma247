@@ -653,7 +653,7 @@ const Inventory_Reconciliation = () => {
                   <div>
                     <div className="vector-image">
                       <div style={{ maxWidth: "200px", marginBottom: "20px" }}>
-                        <img src="../empty_image.png" alt="empty"></img>
+                        { !isLoading && <img src="../empty_image.png" alt="empty"> </img> }
                       </div>
                       <span className="text-gray-500 font-semibold">
                         Oops !

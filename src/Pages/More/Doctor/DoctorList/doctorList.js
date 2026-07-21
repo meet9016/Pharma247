@@ -1,4 +1,5 @@
 import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import Loader from "../../../../componets/loader/Loader";
 import React, { useEffect, useState, useRef } from "react";
@@ -44,6 +45,7 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 
 const DoctorList = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [openUpload, setOpenUpload] = useState(false);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [doctor, setDoctor] = useState(null);
@@ -189,7 +191,7 @@ const DoctorList = () => {
 
   const exportToCSV = async () => {
     let data = new FormData();
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     data.append("page", currentPage);
     data.append("iss_value", "download");
     const params = {
@@ -214,10 +216,10 @@ const DoctorList = () => {
           }
 
           setTableData(response.data.data);
-          setIsLoading(false);
+          setIsDownloadLoading(false);
         });
     } catch (error) {
-      setIsLoading(false);
+      setIsDownloadLoading(false);
       console.error("API error:", error);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
@@ -327,7 +329,7 @@ const DoctorList = () => {
           toast.success(response.data.message);
         });
     } catch (error) {
-      setIsLoading(false);
+      setIsDownloadLoading(false);
       if (error.response.data.status == 400) {
         toast.dismiss();
         toast.error(error.response.data.message);
@@ -377,7 +379,7 @@ const DoctorList = () => {
           toast.success(response.data.message);
         });
     } catch (error) {
-      setIsLoading(false);
+      setIsDownloadLoading(false);
       toast.dismiss();
       toast.error(error.message);
       if (error?.response?.status === 401) {
@@ -468,12 +470,14 @@ const DoctorList = () => {
     }
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
+    setIsDownloadLoading(true);
     const link = document.createElement("a");
     link.href = "/Doctor_Sample_Data.csv";
     link.download = "Doctor_Sample_Data.csv";
     document.body.appendChild(link);
     link.click();
+    setIsDownloadLoading(false);
     document.body.removeChild(link);
   };
 
@@ -590,7 +594,7 @@ const DoctorList = () => {
       }
     } finally {
       setIsSearchLoading(false);
-      setIsLoading(false);
+      setIsDownloadLoading(false);
     }
   };
 
@@ -715,15 +719,25 @@ const DoctorList = () => {
                         display: "flex",
                       }}
                       onClick={exportToCSV}
+                      disabled={isDownloadLoading}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <img
-                          src="/csv-file.png"
-                          className="report-icon absolute mr-10"
-                          alt="csv "
-                        />
-                      </div>
-                      Download
+                      {isDownloadLoading ? (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                          <CircularProgress size={16} style={{ color: "white" }} />
+                          Generating...
+                        </span>
+                      ) : (
+                        <>
+                          <div style={{ display: "flex", alignItems: "center" }}>
+                            <img
+                              src="/csv-file.png"
+                              className="report-icon absolute mr-10"
+                              alt="csv "
+                            />
+                          </div>
+                          Download
+                        </>
+                      )}
                     </Button>
                   )}
                 </div>
@@ -819,7 +833,7 @@ const DoctorList = () => {
                           }}
                         >
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                       </tr>

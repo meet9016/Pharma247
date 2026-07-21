@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import {
   Button,
@@ -31,6 +32,7 @@ const BillItemWiseMargin = () => {
   const [searchItem, setSearchItem] = useState("");
   const token = localStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [billMarginData, setBillMarginData] = useState([]);
   const csvIcon = process.env.PUBLIC_URL + "/csv.png";
@@ -67,7 +69,7 @@ const BillItemWiseMargin = () => {
   const handlefilterData = async () => {
     if (validateForm()) {
       let data = new FormData();
-      setIsLoading(true);
+      setIsDownloadLoading(true);
       const params = {
         start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
         end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -271,7 +273,15 @@ const BillItemWiseMargin = () => {
                       display: "flex",
                     }}
                     onClick={exportToCSV}
-                  >
+                   disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <img
                         src="/csv-file.png"
@@ -280,7 +290,10 @@ const BillItemWiseMargin = () => {
                       />
                     </div>
                     Download
-                  </Button>
+                  
+            </>
+          )}
+</Button>
                 </div>
               </div>
               <div
