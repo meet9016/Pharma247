@@ -596,8 +596,10 @@ const PurchaseView = () => {
                           color: "#666",
                         }}
                       >
-                        No Data Found
-                      </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                     </tr>
                   )}
                 </tbody>
@@ -810,7 +812,11 @@ const PurchaseView = () => {
                     <tbody>
                       {data?.cn_bill_list?.length === 0 ? (
                         <tr>
-                          <td>No data found</td>
+                          <td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                         </tr>
                       ) : (
                         data?.cn_bill_list?.map((row, index) => (

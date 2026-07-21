@@ -478,8 +478,10 @@ const CashManage = () => {
                                 color: "gray",
                               }}
                             >
-                              No data found
-                            </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                           </tr>
                         )}
                       </tbody> */}
@@ -548,8 +550,10 @@ const CashManage = () => {
                                 color: "gray",
                               }}
                             >
-                              No data found
-                            </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                           </tr>
                         )}
                       </tbody>

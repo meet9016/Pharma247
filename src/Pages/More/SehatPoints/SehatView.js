@@ -352,12 +352,11 @@ const SehatView = () => {
 
                                 <Button
                                     variant="contained"
-                                    className="order_list_btn"
-                                    style={{ background: "var(--color1)" }}
-                                    size="small"
+                                    style={{ background: "var(--color1)", display: "flex" }}
+                                    className="gap-2"
                                     onClick={() => { setOpenAddPopUp(true) }}
                                 >
-                                    <AddIcon />
+                                    <AddIcon className="" />
                                     Add Company
                                 </Button>
 

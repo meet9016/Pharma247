@@ -683,8 +683,10 @@ const AdjustStock = () => {
                           className="text-center text-gray-500"
                           style={{ borderRadius: "10px 10px 10px 10px" }}
                         >
-                          No data found
-                        </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                       </tr>
                     ) : (
                       filteredList.map((row, index) => (

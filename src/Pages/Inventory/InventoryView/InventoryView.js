@@ -1278,8 +1278,10 @@ const InventoryView = () => {
                             ) : (
                               <tr>
                                 <td colSpan={batchColumns.length + 1} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
-                                  No Data Found
-                                </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                               </tr>
                             )}
                           </tbody>
@@ -1492,8 +1494,10 @@ const InventoryView = () => {
                             ) : (
                               <tr>
                                 <td colSpan={purchaseColumns.length} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
-                                  No Record Found
-                                </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                               </tr>
                             )}
                           </tbody>
@@ -1700,8 +1704,10 @@ const InventoryView = () => {
                             ) : (
                               <tr>
                                 <td colSpan={purchaseReturnColumns.length} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
-                                  No Record Found
-                                </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                               </tr>
                             )}
                           </tbody>
@@ -1883,8 +1889,10 @@ const InventoryView = () => {
                             ) : (
                               <tr>
                                 <td colSpan={saleColumns.length} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
-                                  No Record Found
-                                </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                               </tr>
                             )}
                           </tbody>
@@ -2081,8 +2089,10 @@ const InventoryView = () => {
                             ) : (
                               <tr>
                                 <td colSpan={saleReturnColumns.length} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
-                                  No Record Found
-                                </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                               </tr>
                             )}
                           </tbody>
@@ -2204,8 +2214,10 @@ const InventoryView = () => {
                             ) : (
                               <tr>
                                 <td colSpan={ledger.length} style={{ textAlign: "center", padding: "20px", color: "gray" }}>
-                                  No Record Found
-                                </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                               </tr>
                             )}
                           </tbody>

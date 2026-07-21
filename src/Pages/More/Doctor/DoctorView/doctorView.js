@@ -401,8 +401,10 @@ const DoctorView = () => {
                                                 ) : (
                                                     <tr>
                                                         <td colSpan={saleColumns.length} style={{ textAlign: "center", padding: "10px", background: "#E0E3DC" }}>
-                                                            No Data Found
-                                                        </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                                                     </tr>
                                                 )}
                                             </tbody>
@@ -481,8 +483,10 @@ const DoctorView = () => {
                                                                 background: "#E0E3DC"
                                                             }}
                                                         >
-                                                            No Data Found
-                                                        </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                                                     </tr>
                                                 )}
                                             </tbody>

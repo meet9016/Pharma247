@@ -372,7 +372,7 @@ const InventoryList = () => {
   /*<=============================================================================== handle bulk order ======================================================================> */
   const handleBulkQR = () => {
     batchID();
-
+    handleClose();
   };
 
   const batchID = async () => {
@@ -721,36 +721,72 @@ const InventoryList = () => {
     setPTREnd("");
     setPTRStart("");
 
-    // // Prepare API call
-    // let data = new FormData();
-    // const params = {};
+    let data = new FormData();
+    data.append("search", "");
+    data.append("item", "");
+    data.append("category", "");
+    data.append("package", "");
+    data.append("stock", "");
+    data.append("manufacturer", "");
+    data.append("drug_group", "");
+    data.append("gst", "");
+    data.append("location", "");
+    data.append("hsn_code", "");
+    data.append("margin_end", "");
+    data.append("margin_start", "");
+    data.append("mrp_end", "");
+    data.append("mrp_start", "");
+    data.append("ptr_start", "");
+    data.append("ptr_end", "");
+    data.append("expired", "");
 
-    // setIsLoading(true);
-    // try {
-    //   const res = await axios.post("item-search?", data, {
-    //     params: params,
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   });
-    //   setData(res.data.data.data);
-    //   if (res.data.data.data.length == 0) {
-    //     // toast.dismiss();
-    //     toast.error("No Record Found");
-    //   }
-    // } catch (error) {
-    //   console.error("API error:", error);
-    //   if (error?.response?.status === 401) {
-    //     localStorage.removeItem("token");
-    //     localStorage.removeItem("userId");
-    //     localStorage.removeItem("role");
-    //     localStorage.clear();
-    //     history.push("/");
-    //   }
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    const params = {
+      page: 1,
+      limit: rowsPerPage,
+      search: "",
+      item: "",
+      category: "",
+      package: "",
+      stock: "",
+      manufacturer: "",
+      drug_group: "",
+      gst: "",
+      location: "",
+      hsn_code: "",
+      margin_end: "",
+      margin_start: "",
+      mrp_start: "",
+      mrp_end: "",
+      ptr_start: "",
+      ptr_end: "",
+      expired: "",
+    };
+
+    setIsLoading(true);
+    try {
+      const res = await axios.post("item-search?", data, {
+        params: params,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setData(res.data.data.data);
+      if (res.data.data.data.length == 0) {
+        toast.error("No Record Found");
+      }
+    } catch (error) {
+      console.error("API error:", error);
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   /*<================================================================================= sort table data  ========================================================================> */
@@ -2267,16 +2303,19 @@ const InventoryList = () => {
               />
             </TableContainer>
           ) : (
-            <div>
-              {/* <div className="vector-image">
-                <div className="inventory-gif">
-                  <img src="../inventory_screen.png" alt="screen"></img>
-                </div>
-                <span className="text-gray-500 font-medium mt-5">
-                  Apply filters and explore your inventory
-                </span>
-              </div> */}
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+              <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
             </div>
+            //  <div>
+            //   <div className="vector-image">
+            //     <div className="inventory-gif">
+            //       <img src="../inventory_screen.png" alt="screen"></img>
+            //     </div>
+            //     <span className="text-gray-500 font-medium mt-5">
+            //       Apply filters and explore your inventory
+            //     </span>
+            //   </div>
+            // </div>
           )}
         </Box>
 
@@ -3011,7 +3050,7 @@ const InventoryList = () => {
 
       <Dialog open={openQR} className="custom-dialog max-991">
         <DialogTitle id="alert-dialog-title" className="secondary">
-          Batch List
+          Bulk QR 
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -3032,7 +3071,7 @@ const InventoryList = () => {
                 <thead>
                   <tr>
                     <th>Sr NO.</th>
-                    <th>Item ID</th>
+                    {/* <th>Item ID</th> */}
                     <th>Item Name</th>
                     <th>Batch Name</th>
                     <th>Qty</th>
@@ -3050,14 +3089,16 @@ const InventoryList = () => {
                           fontSize: "16px",
                         }}
                       >
-                        No data found
-                      </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                     </tr>
                   ) : (
                     QRBatch.map((row, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{row.item_id ? row.item_id : "-"}</td>
+                        {/* <td>{row.item_id ? row.item_id : "-"}</td> */}
                         <td>{row.item_name ? row.item_name : "-"}</td>
                         <td>{row.batch_name ? row.batch_name : "-"}</td>
                         <td>
@@ -3321,7 +3362,7 @@ const InventoryList = () => {
           }}
         >
           <WarningAmberRoundedIcon sx={{ fontSize: "2.5rem" }} />
-          Warning
+          Bulk Order
         </DialogTitle>
 
         <DialogContent>
