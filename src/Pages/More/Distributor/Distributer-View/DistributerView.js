@@ -373,12 +373,11 @@ const DistributerView = () => {
 
                 {/* <Button
                   variant="contained"
-                  className="order_list_btn"
-                  style={{ background: "var(--color1)" }}
-                  size="small"
+                  style={{ background: "var(--color1)", display: "flex" }}
+                  className="gap-2"
                   onClick={() => { setOpenAddPopUp(true) }}
                 >
-                  <AddIcon />
+                  <AddIcon className="" />
                   Add Company
                 </Button> */}
 
@@ -741,8 +740,10 @@ const DistributerView = () => {
                             fontWeight: "600",
                           }}
                         >
-                          No Data Found
-                        </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                       </tr>
                     )}
                   </tbody>

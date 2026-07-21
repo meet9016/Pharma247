@@ -84,7 +84,7 @@ const EditPurchaseBill = () => {
   const [margin, setMargin] = useState("");
   const [disc, setDisc] = useState("");
   const [base, setBase] = useState("");
-  const [gst, setGst] = useState();
+  const [gst, setGst] = useState("0");
   const [batch, setBatch] = useState("");
   const [gstList, setGstList] = useState([]);
   const [historyList, setHistoryList] = useState([]);
@@ -252,6 +252,10 @@ const EditPurchaseBill = () => {
       event.preventDefault();
 
       if (event.key.toLowerCase() === "s") {
+        if (openAddPopUp) {
+            handleCnAmount();
+            return;
+        }
         if (isSubmitting) return;
         handleSubmit();
 
@@ -268,7 +272,7 @@ const EditPurchaseBill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, ItemPurchaseList, purchase, isSubmitting, isEditMode]);
+  }, [distributor, billNo, ItemPurchaseList, purchase, isSubmitting, isEditMode, otherAmt, roundOffAmount, cnAmount, openAddPopUp, handleCnAmount]);
 
   useEffect(() => {
     if (shouldSubmitAfterEditRef.current && !isEditMode && purchase) {
@@ -649,7 +653,7 @@ const EditPurchaseBill = () => {
       setQty(selectedEditItem.qty || 0);
       setFree(selectedEditItem.fr_qty);
       setPTR(selectedEditItem.ptr);
-      setDisc(selectedEditItem.disocunt);
+      setDisc(selectedEditItem.discount || selectedEditItem.disocunt || "");
       setSchAmt(selectedEditItem.scheme_account);
       setBase(selectedEditItem.base_price);
       setGst(selectedEditItem.gst_name);
@@ -915,7 +919,7 @@ const EditPurchaseBill = () => {
     data.append("qty", !qty ? 0 : qty);
     data.append("free_qty", !free ? 0 : free);
     data.append("ptr", !ptr ? 0 : ptr);
-    data.append("disocunt", !disc ? 0 : disc);
+    data.append("discount", !disc ? 0 : disc);
     data.append("scheme_account", !schAmt ? 0 : schAmt);
     data.append("id", selectedEditItemId ? selectedEditItemId : 0);
     data.append("base_price", !base ? 0 : base);
@@ -2494,7 +2498,7 @@ const EditPurchaseBill = () => {
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty ? item.qty : "-"}</td>
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-"}</td>
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-"}</td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-"}</td>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{(item.discount !== undefined && item.discount !== null && item.discount !== "") ? item.discount : (item.disocunt !== undefined && item.disocunt !== null && item.disocunt !== "") ? item.disocunt : "-"}</td>
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.base_price ? item.base_price : "-"}</td>
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name ? item.gst_name : "-"}</td>
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-"}</td>
@@ -2765,7 +2769,11 @@ const EditPurchaseBill = () => {
                     <tbody>
                       {purchaseReturnPending.length === 0 ? (
                         <tr>
-                          <td>No data found</td>
+                          <td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                         </tr>
                       ) : (
                         purchaseReturnPending.map((row, index) => (

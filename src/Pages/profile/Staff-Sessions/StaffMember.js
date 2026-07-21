@@ -13,10 +13,11 @@ import { Visibility, VisibilityOff } from "@mui/icons-material"
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { toast, ToastContainer } from "react-toastify"
 import usePermissions, { hasPermission } from "../../../componets/permission"
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 const StaffMember = () => {
 
-
+    const history = useHistory();
     const token = localStorage.getItem("token");
     const [openAddPopUp, setOpenAddPopUp] = useState(false);
     const [header, setHeader] = useState('');
@@ -505,8 +506,10 @@ const StaffMember = () => {
                                                     fontWeight: "600",
                                                 }}
                                             >
-                                                No Data Found
-                                            </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                                         </tr>
                                     )}
                                 </tbody>

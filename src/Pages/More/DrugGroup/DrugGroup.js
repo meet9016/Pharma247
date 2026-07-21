@@ -329,15 +329,11 @@ const DrugGroup = () => {
               <div className="headerList">
                 <Button
                   variant="contained"
-                  className="order_list_btn"
-                  style={{ background: "var(--color1)" }}
-                  size="small"
+                  style={{ background: "var(--color1)", display: "flex" }}
+                  className="gap-2"
                   onClick={handelAddOpen}
-                  sx={{
-                    padding: "8px 12px",
-                  }}
                 >
-                  <AddIcon />
+                  <AddIcon className="" />
                   Add Drug Group
                 </Button>
               </div>
@@ -421,8 +417,10 @@ const DrugGroup = () => {
                           borderRadius: "10px 10px 10px 10px",
                         }}
                       >
-                        No data found
-                      </td>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                     </tr>
                   ) : (
                     drugGroupData.map((item, index) => (

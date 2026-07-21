@@ -91,7 +91,7 @@ const AddPurchaseBill = () => {
   const [margin, setMargin] = useState("");
   const [disc, setDisc] = useState("");
   const [base, setBase] = useState("");
-  const [gst, setGst] = useState("");
+  const [gst, setGst] = useState("0");
   const [batch, setBatch] = useState("");
   const [HSN, setHSN] = useState("");
   const [otherAmt, setOtherAmt] = useState("");
@@ -287,46 +287,6 @@ const AddPurchaseBill = () => {
   }, [selectedIndex, ItemPurchaseList]);
 
   /*<=================================================================== handle shortcut  ==========================================================> */
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      const isAltCombo = event.altKey || event.getModifierState("AltGraph");
-
-      if (!isAltCombo || event.repeat) return;
-
-      const key = event.key.toLowerCase();
-
-      event.preventDefault();
-
-      switch (key) {
-        case "s":
-          if (isSubmitting) return;
-          setBillSaveDraft("1");
-          handleSubmit("1");
-          break;
-        case "g":
-          handleSubmit();
-          break;
-        case "m":
-          removeItem();
-          setSelectedEditItemId(null);
-          setSelectedIndex(-1);
-
-          setSearchItem("");
-          setValue("");
-          setTimeout(() => {
-            inputRefs.current[2]?.focus();
-          }, 10);
-          break;
-
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [distributor, billNo, ItemPurchaseList, isSubmitting]);
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -2175,6 +2135,62 @@ const AddPurchaseBill = () => {
     }
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      const isAltCombo = event.altKey || event.getModifierState("AltGraph");
+
+      if (!isAltCombo || event.repeat) return;
+
+      const key = event.key.toLowerCase();
+
+      event.preventDefault();
+
+      switch (key) {
+        case "s":
+          if (openAddItemPopUp) {
+            handleAddNewItem();
+            return;
+          }
+          if (openAddDistributorPopUp) {
+            handleAddNewDistributor();
+            return;
+          }
+          if (openFile) {
+            handleFileUpload();
+            return;
+          }
+          if (openAddPopUp) {
+            handleCnAmount();
+            return;
+          }
+          if (isSubmitting) return;
+          setBillSaveDraft("1");
+          handleSubmit("1");
+          break;
+        case "g":
+          handleSubmit();
+          break;
+        case "m":
+          removeItem();
+          setSelectedEditItemId(null);
+          setSelectedIndex(-1);
+
+          setSearchItem("");
+          setValue("");
+          setTimeout(() => {
+            inputRefs.current[2]?.focus();
+          }, 10);
+          break;
+
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [distributor, billNo, ItemPurchaseList, isSubmitting, otherAmt, roundOffAmount, cnAmount, openAddItemPopUp, handleAddNewItem, openAddDistributorPopUp, handleAddNewDistributor, openFile, handleFileUpload, openAddPopUp, handleCnAmount]);
+
   return (
     <>
       <Header />
@@ -3726,7 +3742,11 @@ const AddPurchaseBill = () => {
                       <tbody>
                         {purchaseReturnPending.length === 0 ? (
                           <tr>
-                            <td colSpan={5}>No data found</td>
+                            <td colSpan={5}>
+<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+</div>
+</td>
                           </tr>
                         ) : (
                           purchaseReturnPending.map((row, index) => (
