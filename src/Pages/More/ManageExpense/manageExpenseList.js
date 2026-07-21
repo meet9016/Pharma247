@@ -1,4 +1,5 @@
 import { BsLightbulbFill } from "react-icons/bs";
+import CircularProgress from "@mui/material/CircularProgress";
 import useSubmitShortcut from "../../../hooks/useSubmitShortcut";
 import Header from "../../Header";
 import React, { useEffect, useState } from "react";
@@ -43,6 +44,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 const ManageExpense = () => {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [startDate, setStartDate] = useState(subDays(new Date(), 15));
   const [endDate, setEndDate] = useState(new Date());
   const [expenseDate, setExpenseDate] = useState(new Date());
@@ -168,9 +170,11 @@ const ManageExpense = () => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
-  const handlePdf = () => {
+  const handlePdf = async () => {
+    setIsDownloadLoading(true);
     setOpenAddPopUpDownload(true);
-    pdfGenerator();
+    await pdfGenerator();
+    setIsDownloadLoading(false);
   };
   const handleCloseDialog = () => {
     setOpenAddPopUp(false);
@@ -548,15 +552,25 @@ const ManageExpense = () => {
                         display: "flex",
                       }}
                       onClick={handlePdf}
+                      disabled={isDownloadLoading}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <img
-                          src="/csv-file.png"
-                          className="report-icon absolute mr-10"
-                          alt="csv "
-                        />
-                      </div>
-                      Download
+                      {isDownloadLoading ? (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                          <CircularProgress size={16} style={{ color: "white" }} />
+                          Generating...
+                        </span>
+                      ) : (
+                        <>
+                          <div style={{ display: "flex", alignItems: "center" }}>
+                            <img
+                              src="/csv-file.png"
+                              className="report-icon absolute mr-10"
+                              alt="csv "
+                            />
+                          </div>
+                          Download
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -676,7 +690,7 @@ const ManageExpense = () => {
                             style={{ borderRadius: "10px 10px 10px 10px" }}
                           >
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                         </tr>

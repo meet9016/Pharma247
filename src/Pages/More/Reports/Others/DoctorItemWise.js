@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import { useEffect, useState } from "react";
 import { BsLightbulbFill } from "react-icons/bs";
@@ -29,6 +30,7 @@ const DoctorItemWise = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [reportType, setReportType] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [doctorSearch, setDoctorSearch] = useState();
   const [itemSearch, setItemSearch] = useState();
   const csvIcon = process.env.PUBLIC_URL + "/csv.png";
@@ -69,7 +71,7 @@ const DoctorItemWise = () => {
   const handlefilterData = async (currentPage) => {
     if (validateForm()) {
       let data = new FormData();
-      setIsLoading(true);
+      setIsDownloadLoading(true);
       const params = {
         start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
         end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -289,7 +291,15 @@ const DoctorItemWise = () => {
                   }}
                   className="gap-7 report_btn_purch"
                   onClick={exportToCSV}
-                >
+                 disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <img
                       src="/csv-file.png"
@@ -298,7 +308,10 @@ const DoctorItemWise = () => {
                     />
                   </div>
                   Download
-                </Button>{" "}
+                
+            </>
+          )}
+</Button>{" "}
               </div>
             </div>
             <div
@@ -579,7 +592,7 @@ const DoctorItemWise = () => {
                 <div>
                   <div className="vector-image">
                     <div style={{ maxWidth: "200px", marginBottom: "20px" }}>
-                      <img src="../empty_image.png" alt="empty"></img>
+                      { !isLoading && <img src="../empty_image.png" alt="empty"> </img> }
                     </div>
                     <span className="text-gray-500 font-semibold">Oops !</span>
                     <p className="text-gray-500 font-semibold">

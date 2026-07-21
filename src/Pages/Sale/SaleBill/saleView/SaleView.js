@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -30,6 +31,7 @@ import { toast } from "react-toastify";
 const SaleView = () => {
   const permissions = usePermissions();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [saleData, setSaleData] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(null);
@@ -98,7 +100,7 @@ const SaleView = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     try {
       await axios
         .post("sales-pdf-downloads", data, {
@@ -112,7 +114,7 @@ const SaleView = () => {
           toast.dismiss();
           toast.success(response.data.meassage);
 
-          setIsLoading(false);
+          setIsDownloadLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -296,10 +298,21 @@ const SaleView = () => {
                         className="sale_add_btn sale_dnls gap-2"
                         style={{ backgroundColor: "var(--color1)" }}
                         onClick={() => pdfGenerator(tableData.id)}
-                      >
+                       disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                         <FaFilePdf className="w-5 h-5 hover:text-secondary cursor-pointer" />
                         Download
-                      </Button>
+                      
+            </>
+          )}
+</Button>
                       {tableData?.sales_item?.length !== 0 && (<Button
                         variant="contained"
                         className="sale_add_btn sale_dnls gap-2"

@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -24,6 +25,7 @@ const SaleReturnView = () => {
   const [tableData, setTableData] = useState([]);
   const [saleReturnData, setSaleReturnData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const history = useHistory();
   const { id } = useParams();
   const token = localStorage.getItem("token");
@@ -78,7 +80,7 @@ const SaleReturnView = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     try {
       await axios
         .post("sale-return-pdf-downloads", data, {
@@ -92,7 +94,7 @@ const SaleReturnView = () => {
           toast.dismiss();
           toast.success(response.data.meassage);
 
-          setIsLoading(false);
+          setIsDownloadLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -263,10 +265,21 @@ const SaleReturnView = () => {
                           className="sale_add_btn sale_dnls gap-2"
                           style={{ backgroundColor: "var(--color1)" }}
                           onClick={() => pdfGenerator(tableData.id)}
-                        >
+                         disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                           <FaFilePdf className="w-5 h-5 hover:text-secondary cursor-pointer" />
                           Download
-                        </Button>
+                        
+            </>
+          )}
+</Button>
 
                         <Button
                           variant="contained"

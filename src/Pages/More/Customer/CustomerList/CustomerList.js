@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Loader from "../../../../componets/loader/Loader";
 import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 import Header from "../../../Header";
@@ -43,6 +44,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 const CustomerList = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [openUpload, setOpenUpload] = useState(false);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [paymentMode, setPaymentMode] = useState([]);
@@ -141,7 +143,7 @@ const CustomerList = () => {
   ];
   const exportToExcel = async () => {
     let data = new FormData();
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     data.append("page", currentPage);
     data.append("iss_value", "download");
     const params = {
@@ -748,7 +750,15 @@ const CustomerList = () => {
                   display: "flex",
                 }}
                 onClick={exportToExcel}
-              >
+               disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <img
                     src="/csv-file.png"
@@ -757,7 +767,10 @@ const CustomerList = () => {
                   />
                 </div>
                 Download
-              </Button>
+              
+            </>
+          )}
+</Button>
             )}
           </div>
         </div>
@@ -876,7 +889,7 @@ const CustomerList = () => {
                         }}
                       >
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                     </tr>
@@ -1157,10 +1170,21 @@ const CustomerList = () => {
                       color: "white",
                     }}
                     className="downloadFile"
-                  >
+                   disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                     <CloudDownloadIcon className="mr-2" />
                     Download Sample File
-                  </Button>
+                  
+            </>
+          )}
+</Button>
                 </div>
               </div>
             </DialogContentText>

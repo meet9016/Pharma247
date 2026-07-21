@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import { BsLightbulbFill } from "react-icons/bs";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -34,6 +35,7 @@ const Purchase_Return_Report = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [reportType, setReportType] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [distributorName, setDistributorName] = useState("");
   const [drugGroup, setDrugGroup] = useState("");
   const [nextButtonDisabled, setNextButtonDisabled] = useState(false);
@@ -123,7 +125,7 @@ const Purchase_Return_Report = () => {
 
   const handlefilterData = async (currentPage) => {
     let data = new FormData();
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     const params = {
       start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
       end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -241,7 +243,15 @@ const Purchase_Return_Report = () => {
                   }}
                   className="gap-7 report_btn_purch"
                   onClick={exportToCSV}
-                >
+                 disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <img
                       src="/csv-file.png"
@@ -250,7 +260,10 @@ const Purchase_Return_Report = () => {
                     />
                   </div>
                   Download
-                </Button>
+                
+            </>
+          )}
+</Button>
               </div>
             </div>
             <div

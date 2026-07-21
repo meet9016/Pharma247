@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import { BsLightbulbFill } from "react-icons/bs";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -43,6 +44,7 @@ const SalesBill = () => {
   ];
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
@@ -102,7 +104,7 @@ const SalesBill = () => {
       if (paymentMode !== "all") {
         let x = paymentMode;
       }
-      setIsLoading(true);
+      setIsDownloadLoading(true);
       const params = {
         month_year: lastMonth ? format(lastMonth, "MM-yyyy") : "",
         type: reportType,
@@ -268,7 +270,15 @@ const SalesBill = () => {
                   display: "flex",
                 }}
                 onClick={exportToCSV}
-              >
+               disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <img
                     src="/csv-file.png"
@@ -277,7 +287,10 @@ const SalesBill = () => {
                   />
                 </div>
                 Download
-              </Button>
+              
+            </>
+          )}
+</Button>
             </div>
           </div>
           <div

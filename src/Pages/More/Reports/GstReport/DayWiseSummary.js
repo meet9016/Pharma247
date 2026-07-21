@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import { BsLightbulbFill } from "react-icons/bs";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -30,6 +31,7 @@ const DayWiseSummary = () => {
   const [reportType, setReportType] = useState();
   const [dayWiseSummaryData, setDayWiseSummaryData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const token = localStorage.getItem("token");
   const csvIcon = process.env.PUBLIC_URL + "/csv.png";
   const [errors, setErrors] = useState({});
@@ -56,7 +58,7 @@ const DayWiseSummary = () => {
   const handlefilterData = async () => {
     if (validateForm()) {
       let data = new FormData();
-      setIsLoading(true);
+      setIsDownloadLoading(true);
       const params = {
         month_year: monthDate ? format(monthDate, "MM-yyyy") : "",
         type: reportType,
@@ -235,7 +237,15 @@ const DayWiseSummary = () => {
                     display: "flex",
                   }}
                   onClick={exportToCSV}
-                >
+                 disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                   {" "}
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <img
@@ -245,7 +255,10 @@ const DayWiseSummary = () => {
                     />
                   </div>
                   Download
-                </Button>
+                
+            </>
+          )}
+</Button>
               </div>
             </div>
             <div

@@ -78,6 +78,7 @@ const AddSale = () => {
   const [item, setItem] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [saleItemId, setSaleItemId] = useState(null);
   const [itemId, setItemId] = useState(null);
   const history = useHistory();
@@ -2263,7 +2264,7 @@ const AddSale = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     try {
       await axios
         .post("sales-pdf-downloads", data, {
@@ -2288,7 +2289,7 @@ const AddSale = () => {
         history.push("/");
       }
     } finally {
-      setIsLoading(false);
+      setIsDownloadLoading(false);
     }
   };
 
@@ -2965,7 +2966,7 @@ const AddSale = () => {
                               }}
                             >
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                           </tr>

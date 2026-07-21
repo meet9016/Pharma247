@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import Header from "../../../Header";
 import { useCallback, useEffect, useState } from "react";
@@ -44,6 +45,7 @@ const Salelist = () => {
   const permissions = usePermissions();
   const token = localStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const history = useHistory();
   const [tableData, setTableData] = useState([]);
   const rowsPerPage = 10;
@@ -154,7 +156,7 @@ const Salelist = () => {
     );
     data.append("end_date", PdfendDate ? format(PdfendDate, "yyyy-MM-dd") : "");
 
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     try {
       await axios
         .post("multiple-sale-pdf-downloads", data, {
@@ -168,7 +170,7 @@ const Salelist = () => {
           toast.success(response.data.meassage);
 
           setOpenAddPopUp(false);
-          setIsLoading(false);
+          setIsDownloadLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -186,7 +188,7 @@ const Salelist = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     try {
       await axios
         .post("sales-pdf-downloads", data, {
@@ -200,7 +202,7 @@ const Salelist = () => {
           toast.dismiss();
           toast.success(response.data.meassage);
           setPDFURL(PDFURL);
-          setIsLoading(false);
+          setIsDownloadLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -372,11 +374,19 @@ const Salelist = () => {
                     variant="contained"
                     className="sale_add_pdf"
                     style={{ background: "var(--color1)", color: "white" }}
+                    disabled={isDownloadLoading}
                     onClick={() => {
                       setOpenAddPopUp(true);
                     }}
                   >
-                    Generate PDF
+                    {isDownloadLoading ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                        <CircularProgress size={16} style={{ color: "white" }} />
+                        Generating...
+                      </span>
+                    ) : (
+                      "Generate PDF"
+                    )}
                   </Button>
                 </div>
               </div>
@@ -729,9 +739,20 @@ const Salelist = () => {
                 onClick={() => {
                   AllPDFGenerate();
                 }}
-              >
+               disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                 generate
-              </Button>
+              
+            </>
+          )}
+</Button>
               <Button
                 autoFocus
                 variant="contained"

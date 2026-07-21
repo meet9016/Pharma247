@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import { BsLightbulbFill } from "react-icons/bs";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -26,6 +27,7 @@ const CompanyItemWise = () => {
   const csvIcon = process.env.PUBLIC_URL + "/csv.png";
   const [companyData, setCompanyData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
 
   const GstSaleRegisterColumns = [
     { id: "iteam_name", label: "Item Name", minWidth: 150 },
@@ -53,7 +55,7 @@ const CompanyItemWise = () => {
   const handleFilterData = async () => {
     if (validateForm()) {
       let data = new FormData();
-      setIsLoading(true);
+      setIsDownloadLoading(true);
       const params = {
         start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
         end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -237,7 +239,15 @@ const CompanyItemWise = () => {
                       display: "flex",
                     }}
                     onClick={exportToCSV}
-                  >
+                   disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <img
                         src="/csv-file.png"
@@ -246,7 +256,10 @@ const CompanyItemWise = () => {
                       />
                     </div>
                     Download
-                  </Button>
+                  
+            </>
+          )}
+</Button>
                 </div>
               </div>
               <div

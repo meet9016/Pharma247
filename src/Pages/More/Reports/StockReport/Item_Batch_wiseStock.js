@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import { BsLightbulbFill } from "react-icons/bs";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -34,6 +35,7 @@ const Item_Batch_wiseStock = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [reportType, setReportType] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [drugGroup, setDrugGroup] = useState("");
   const [location, setLocation] = useState("");
@@ -61,7 +63,7 @@ const Item_Batch_wiseStock = () => {
   const handlefilterData = async (currentPage) => {
     // if (validateForm()) {
     let data = new FormData();
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     const params = {
       start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
       end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -272,7 +274,15 @@ const Item_Batch_wiseStock = () => {
                       }}
                       className="gap-7 report_btn_purch"
                       onClick={exportToCSV}
-                    >
+                     disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                       <div style={{ display: "flex", alignItems: "center" }}>
                         <img
                           src="/csv-file.png"
@@ -281,7 +291,10 @@ const Item_Batch_wiseStock = () => {
                         />
                       </div>
                       Download
-                    </Button>
+                    
+            </>
+          )}
+</Button>
                   </div>
                 </div>
                 <div

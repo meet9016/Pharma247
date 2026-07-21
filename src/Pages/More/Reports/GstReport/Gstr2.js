@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header"
 import { Button, FormControl, InputAdornment, InputLabel, MenuItem, MenuList, Select, TextField } from "@mui/material"
 import { BsLightbulbFill } from "react-icons/bs"
@@ -15,6 +16,7 @@ const Gstr2 = () => {
     const history = useHistory()
     const [monthDate, setMonthDate] = useState(new Date());
     const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
     const token = localStorage.getItem("token")
     const rowsPerPage = 10;
     const [nonMovingItemData, setNonMovingItemData] = useState([])
@@ -49,7 +51,7 @@ const Gstr2 = () => {
             });
 
             if (response.status === 200) {
-                setIsLoading(false);
+                setIsDownloadLoading(false);
 
                 const text = await response.data.text();
                 const parsedData = JSON.parse(text);
@@ -231,7 +233,15 @@ const Gstr2 = () => {
                                             textTransform: "none",
                                             display: "flex",
                                         }}
-                                        onClick={downloadCSV}>
+                                        onClick={downloadCSV} disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <img src="/csv-file.png"
                                                 className="report-icon absolute mr-10"
@@ -240,7 +250,10 @@ const Gstr2 = () => {
                                         </div>
 
                                         Download
-                                    </Button>
+                                    
+            </>
+          )}
+</Button>
 
                                     <div >
                                     </div>

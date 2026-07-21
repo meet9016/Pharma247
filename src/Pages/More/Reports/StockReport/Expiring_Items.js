@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import { BsLightbulbFill } from "react-icons/bs";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -38,6 +39,7 @@ const Expiring_Items = () => {
   const [endDate, setEndDate] = useState(endOfMonth(new Date()));
   const [reportType, setReportType] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
 
   const [drugGroup, setDrugGroup] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -85,7 +87,7 @@ const Expiring_Items = () => {
 
   const exportToCSV = async () => {
     try {
-      setIsLoading(true);
+      setIsDownloadLoading(true);
 
       const formData = new FormData();
       formData.append("start_month", format(startDate, "MM/yy"));
@@ -113,7 +115,7 @@ const Expiring_Items = () => {
       console.error(error);
       toast.error("Something went wrong");
     } finally {
-      setIsLoading(false);
+      setIsDownloadLoading(false);
     }
   };
 
@@ -141,7 +143,7 @@ const Expiring_Items = () => {
   };
   const handlefilterData = async (currentPage) => {
     let data = new FormData();
-    setIsLoading(true);
+    setIsDownloadLoading(true);
 
 
     data.append("start_month", startDate ? format(startDate, "MM/yy") : "");
@@ -266,7 +268,15 @@ const Expiring_Items = () => {
                   }}
                   className="gap-7 report_btn_purch"
                   onClick={exportToCSV}
-                >
+                 disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <img
                       src="/csv-file.png"
@@ -275,7 +285,10 @@ const Expiring_Items = () => {
                     />
                   </div>
                   Download
-                </Button>
+                
+            </>
+          )}
+</Button>
               </div>
             </div>
             <div

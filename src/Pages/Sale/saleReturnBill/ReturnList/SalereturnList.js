@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
@@ -47,6 +48,7 @@ const searchKeys = {
 const SalereturnList = () => {
   const token = localStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const history = useHistory();
   const [tableData, setTableData] = useState([]);
   const permissions = usePermissions();
@@ -245,7 +247,7 @@ const SalereturnList = () => {
     );
     data.append("end_date", PdfendDate ? format(PdfendDate, "yyyy-MM-dd") : "");
 
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     try {
       await axios
         .post("sale-return-multiple-pdf-downloads", data, {
@@ -258,12 +260,12 @@ const SalereturnList = () => {
           toast.dismiss();
           toast.success(response.data.meassage);
           setOpenAddPopUp(false);
-          setIsLoading(false);
+          setIsDownloadLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
       console.error("API error:", error);
-      setIsLoading(false);
+      setIsDownloadLoading(false);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
@@ -277,7 +279,7 @@ const SalereturnList = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     try {
       await axios
         .post("sale-return-pdf-downloads", data, {
@@ -290,12 +292,12 @@ const SalereturnList = () => {
           const PDFURL = response.data.data.pdf_url;
           toast.dismiss();
           toast.success(response.data.meassage);
-          setIsLoading(false);
+          setIsDownloadLoading(false);
           handlePdf(PDFURL);
         });
     } catch (error) {
       console.error("API error:", error);
-      setIsLoading(false);
+      setIsDownloadLoading(false);
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
@@ -389,11 +391,19 @@ const SalereturnList = () => {
                     variant="contained"
                     className="sale_add_pdf"
                     style={{ background: "var(--color1)", color: "white" }}
+                    disabled={isDownloadLoading}
                     onClick={() => {
                       setOpenAddPopUp(true);
                     }}
                   >
-                    Generate PDF
+                    {isDownloadLoading ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                        <CircularProgress size={16} style={{ color: "white" }} />
+                        Generating...
+                      </span>
+                    ) : (
+                      "Generate PDF"
+                    )}
                   </Button>
                 </div>
               </div>
@@ -788,9 +798,20 @@ const SalereturnList = () => {
                 onClick={() => {
                   AllPDFGenerate();
                 }}
-              >
+               disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                 generate
-              </Button>
+              
+            </>
+          )}
+</Button>
               <Button
                 autoFocus
                 variant="contained"

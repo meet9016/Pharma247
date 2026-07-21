@@ -1,4 +1,5 @@
 import Header from "../../Header";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   Button,
   TextField,
@@ -47,6 +48,7 @@ const CashManage = () => {
   ];
   const initialSearchTerms = cashManageDetailscolumns.map(() => "");
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const [openAddPopUpDownload, setOpenAddPopUpDownload] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -155,9 +157,11 @@ const CashManage = () => {
   //         return String(value).toLowerCase().includes(term.toLowerCase());
   //     });
   // });
-  const handlePdf = () => {
+  const handlePdf = async () => {
+    setIsDownloadLoading(true);
     setOpenAddPopUpDownload(true);
-    pdfGenerator();
+    await pdfGenerator();
+    setIsDownloadLoading(false);
   };
 
   const pdfGenerator = async () => {
@@ -253,16 +257,26 @@ const CashManage = () => {
                           display: "flex",
                         }}
                         onClick={handlePdf}
-                      >
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img
-                            src="/csv-file.png"
-                            className="report-icon absolute mr-10"
-                            alt="csv "
-                          />
-                        </div>
-                        Download
-                      </Button>
+                      disabled={isDownloadLoading}
+                    >
+                      {isDownloadLoading ? (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                          <CircularProgress size={16} style={{ color: "white" }} />
+                          Generating...
+                        </span>
+                      ) : (
+                        <>
+                          <div style={{ display: "flex", alignItems: "center" }}>
+                            <img
+                              src="/csv-file.png"
+                              className="report-icon absolute mr-10"
+                              alt="csv "
+                            />
+                          </div>
+                          Download
+                        </>
+                      )}
+                    </Button>
                     </div>
                   </div>
                   <div
@@ -479,7 +493,7 @@ const CashManage = () => {
                               }}
                             >
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                           </tr>
@@ -551,7 +565,7 @@ const CashManage = () => {
                               }}
                             >
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
+  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                           </tr>

@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import {
   Button,
@@ -24,6 +25,7 @@ const Gstr1 = () => {
   const history = useHistory();
   const [monthDate, setMonthDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const token = localStorage.getItem("token");
   const rowsPerPage = 10;
   const [nonMovingItemData, setNonMovingItemData] = useState([]);
@@ -58,7 +60,7 @@ const Gstr1 = () => {
       });
 
       if (response.status === 200) {
-        setIsLoading(false);
+        setIsDownloadLoading(false);
 
         // Convert Blob to JSON
         const text = await response.data.text();
@@ -283,7 +285,15 @@ const Gstr1 = () => {
                       display: "flex",
                     }}
                     onClick={downloadCSV}
-                  >
+                   disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <img
                         src="/csv-file.png"
@@ -292,7 +302,10 @@ const Gstr1 = () => {
                       />
                     </div>
                     Download
-                  </Button>
+                  
+            </>
+          )}
+</Button>
                   <div></div>
                 </div>
               </div>

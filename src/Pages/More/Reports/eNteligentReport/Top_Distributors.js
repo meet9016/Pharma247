@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import {
   Autocomplete,
@@ -26,6 +27,7 @@ const Top_Distributor = () => {
   const [startDate, setStartDate] = useState(subDays(new Date(), 2));
   const [endDate, setEndDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
   const token = localStorage.getItem("token");
   const [errors, setErrors] = useState({});
   const [topSellingBy, setTopSellingBy] = useState("");
@@ -46,7 +48,7 @@ const Top_Distributor = () => {
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
   const handlefilterData = async () => {
     let data = new FormData();
-    setIsLoading(true);
+    setIsDownloadLoading(true);
     const params = {
       start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
       end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -187,7 +189,15 @@ const Top_Distributor = () => {
                     display: "flex",
                   }}
                   onClick={exportToCSV}
-                >
+                 disabled={isDownloadLoading}>
+{isDownloadLoading ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+              <CircularProgress size={16} style={{ color: "white" }} />
+              Downloading...
+            </span>
+          ) : (
+            <>
+              
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <img
                       src="/csv-file.png"
@@ -196,7 +206,10 @@ const Top_Distributor = () => {
                     />
                   </div>
                   Download
-                </Button>
+                
+            </>
+          )}
+</Button>
               </div>
             </div>
             <div
