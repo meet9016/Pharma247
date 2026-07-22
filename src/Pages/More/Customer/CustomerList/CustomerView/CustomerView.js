@@ -653,17 +653,8 @@ const CustomerView = () => {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                       />
                     ) : (
-                      <div
-                        style={{
-                          textAlign: "center",
-                          padding: "10px 0",
-                          fontSize: "14px",
-                          fontWeight: 600,
-                          color: "#666",
-                          background: "#E0E3DC"
-                        }}
-                      >
-                        No Data Found
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%', background: '#E0E3DC' }}>
+                        <img src="/customer.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
                       </div>
                     )}
                   </div>
@@ -754,17 +745,8 @@ const CustomerView = () => {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                       />
                     ) : (
-                      <div
-                        style={{
-                          textAlign: "center",
-                          padding: "10px 0",
-                          fontSize: "14px",
-                          fontWeight: 600,
-                          color: "#666",
-                          background: "#E0E3DC"
-                        }}
-                      >
-                        No Data Found
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%', background: '#E0E3DC' }}>
+                        <img src="/customer.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
                       </div>
                     )}
                   </div>

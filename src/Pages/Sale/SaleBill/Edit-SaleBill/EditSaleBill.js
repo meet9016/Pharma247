@@ -348,7 +348,7 @@ const EditSaleBill = () => {
           setMRP("");
           setQty("");
           setBase("");
-          setGst("");
+          setGst("0");
           setBatch("");
           setLoc("");
           setOrder("");
@@ -769,7 +769,7 @@ const EditSaleBill = () => {
       setExpiryDate("");
       setMRP("");
       setBase("");
-      setGst("");
+      setGst("0");
       setQty("");
       setLoc("");
       setUnit("");
@@ -1158,7 +1158,7 @@ const EditSaleBill = () => {
       setMRP("");
       setQty("");
       setBase("");
-      setGst("");
+      setGst("0");
       setBatch("");
       setLoc("");
       setOrder("");
@@ -1187,7 +1187,7 @@ const EditSaleBill = () => {
     setExpiryDate("");
     setMRP("");
     setBase("");
-    setGst("");
+    setGst("0");
     setQty("");
     setOrder("");
     setLoc("");
@@ -1911,12 +1911,12 @@ const EditSaleBill = () => {
                               >
                                 <thead>
                                   <tr className="customtable">
-                                    <th>Item Name</th>
-                                    <th>Batch Number</th>
-                                    <th>Unit</th>
-                                    <th>Expiry Date</th>
-                                    <th>QTY</th>
-                                    <th>Loc</th>
+                                    <th style={{textAlign:"left"}}>Item Name</th>
+                                    <th style={{textAlign:"left"}}>Batch Number</th>
+                                    <th style={{textAlign:"left"}}>Unit</th>
+                                    <th style={{textAlign:"left"}}>Expiry Date</th>
+                                    <th style={{textAlign:"left"}}>QTY</th>
+                                    <th style={{textAlign:"left"}}>Loc</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -1945,24 +1945,24 @@ const EditSaleBill = () => {
                                             handleMouseEnter
                                           }
                                         >
-                                          <td className=" text-base font-semibold">
-                                            {item.iteam_name}
-                                          </td>
-                                          <td className=" text-base font-semibold">
-                                            {item.batch_number}
-                                          </td>
-                                          <td className=" text-base font-semibold">
-                                            {item.unit}
-                                          </td>
-                                          <td className=" text-base font-semibold">
-                                            {item.expiry_date}
-                                          </td>
-                                          <td className=" text-base font-semibold">
-                                            {item.qty}
-                                          </td>
-                                          <td className=" text-base font-semibold">
-                                            {item.location}
-                                          </td>
+                                          <td className="text-base font-semibold text-left">
+                                  {item.iteam_name}
+                                </td>
+                                          <td className="text-base font-semibold text-left">
+                                  {item.batch_number}
+                                </td>
+                                          <td className="text-base font-semibold text-left">
+                                  {item.unit}
+                                </td>
+                                          <td className="text-base font-semibold text-left">
+                                  {item.expiry_date}
+                                </td>
+                                          <td className="text-base font-semibold text-left">
+                                  {item.qty}
+                                </td>
+                                          <td className="text-base font-semibold text-left">
+                                  {item.location}
+                                </td>
                                         </tr>
                                       ))}
                                     </>
@@ -2108,9 +2108,8 @@ const EditSaleBill = () => {
                   </td>
                   <td>
                     <TextField
+                      select
                       id="outlined-number"
-                      type="number"
-                      disabled
                       placeholder="Gst"
                       size="small"
                       sx={{
@@ -2120,11 +2119,15 @@ const EditSaleBill = () => {
                           textAlign: 'center',
                         },
                       }}
-                      value={gst}
+                      value={gst || ""}
                       onChange={(e) => {
                         setGst(e.target.value);
                       }}
-                    />
+                    >
+                      <MenuItem value="0">0</MenuItem>
+                      <MenuItem value="5">5</MenuItem>
+                      <MenuItem value="18">18</MenuItem>
+                    </TextField>
                   </td>
                   <td>
                     <TextField
@@ -2220,9 +2223,21 @@ const EditSaleBill = () => {
                   </td>
 
                   <td className="total">
-                    <span className="font-bold">
-                      {itemAmount}
-                    </span>
+                    <TextField
+                      id="outlined-number"
+                      disabled
+                      placeholder="0.00"
+                      size="small"
+                      value={itemAmount === 0 || itemAmount === null ? "" : itemAmount}
+                      sx={{
+                        minWidth: "65px",
+                        width: "100%",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                          fontWeight: 'bold',
+                        },
+                      }}
+                    />
                   </td>
 
                 </tr>

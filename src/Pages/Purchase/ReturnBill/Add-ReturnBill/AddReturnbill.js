@@ -68,7 +68,7 @@ const AddReturnbill = () => {
   const [mrp, setMRP] = useState();
   const [ptr, setPTR] = useState();
   const [billNo, setBillNo] = useState();
-  const [gst, setGst] = useState();
+  const [gst, setGst] = useState(0);
   const [selectedEditItemId, setSelectedEditItemId] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(1);
@@ -866,8 +866,10 @@ const AddReturnbill = () => {
 
     if (value <= availableStockForEdit && value >= 0) {
       setQty(value);
+      setErrors((prev) => ({ ...prev, qty: "" }));
     } else if (value > availableStockForEdit) {
       setQty(availableStockForEdit);
+      setErrors((prev) => ({ ...prev, qty: "" }));
       toast.dismiss();
       toast.error(
         `Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`
@@ -1164,16 +1166,16 @@ const AddReturnbill = () => {
                         };
                       }
                       selectedDistributorRef.current = finalValue;
-                      setDistributor(finalValue);
-                      setDistributorInput(finalValue?.name ?? "");
-                      setBillNo("");
-                      setErrors((prev) => ({ ...prev, distributor: "" }));
+                      if (finalValue) {
+                        setDistributor(finalValue);
+                        setDistributorInput(finalValue?.name ?? "");
+                        setErrors((prev) => ({ ...prev, distributor: "" }));
+                      }
                     }}
                     onInputChange={(event, newInputValue, reason) => {
                       if (reason === "input") {
                         setDistributorInput(newInputValue.toUpperCase());
                         selectedDistributorRef.current = null;
-                        setBillNo("");
                         setErrors((prev) => ({ ...prev, distributor: "" }));
                       } else if (reason === "clear") {
                         setDistributorInput("");
@@ -1622,14 +1624,11 @@ const AddReturnbill = () => {
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           handleQtyChange(value ? Number(value) : "");
+                          setErrors((prev) => ({ ...prev, qty: "" }));
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
-                            if (qty && qty !== 0) {
-                              handleKeyDown(e, 7);
-                            } else {
-                              handleKeyDown(e, 7); // Usually qty is not compulsory, but if it is, maybe set error. I will let it pass.
-                            }
+                            handleKeyDown(e, 7);
                           }
                         }}
                       />
@@ -1748,9 +1747,11 @@ const AddReturnbill = () => {
                         size="small"
                         error={!!errors.gst}
                       >
-                        <MenuItem value="0">0</MenuItem>
-                        <MenuItem value="5">5</MenuItem>
-                        <MenuItem value="18">18</MenuItem>
+                        <MenuItem value={0}>0</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                        <MenuItem value={12}>12</MenuItem>
+                        <MenuItem value={18}>18</MenuItem>
+                        <MenuItem value={28}>28</MenuItem>
                       </TextField>
                     </td>
 

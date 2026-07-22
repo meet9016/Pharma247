@@ -595,6 +595,7 @@ const DoctorList = () => {
     } finally {
       setIsSearchLoading(false);
       setIsDownloadLoading(false);
+      setIsLoading(false);
     }
   };
 
