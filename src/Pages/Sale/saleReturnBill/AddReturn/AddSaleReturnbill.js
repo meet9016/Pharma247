@@ -56,6 +56,8 @@ const Salereturn = () => {
     const [gst, setGst] = useState('');
     const [batch, setBatch] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isCustomerLoading, setIsCustomerLoading] = useState(false);
+    const [isDoctorLoading, setIsDoctorLoading] = useState(false);
     const [customerDetails, setCustomerDetails] = useState([])
     const [doctorData, setDoctorData] = useState([])
     const [ItemSaleList, setItemSaleList] = useState({ sales_item: [] });
@@ -182,7 +184,7 @@ const Salereturn = () => {
                 const params = {
                     search: searchDoctor.trim()
                 };
-                setIsLoading(true);
+                setIsDoctorLoading(true);
                 try {
                     const response = await axios.post(
                         "doctor-list?",
@@ -195,9 +197,9 @@ const Salereturn = () => {
                         }
                     );
                     setDoctorData(response.data.data);
-                    setIsLoading(false);
+                    setIsDoctorLoading(false);
                 } catch (error) {
-                    setIsLoading(false);
+                    setIsDoctorLoading(false);
                     console.error("API error:", error);
                     if (error?.response?.status === 401) {
                         localStorage.removeItem("token");
@@ -353,7 +355,7 @@ const Salereturn = () => {
 
     const ListOfDoctor = async () => {
 
-        setIsLoading(true);
+        setIsDoctorLoading(true);
         try {
             await axios.post("doctor-list", {
                 headers: {
@@ -362,10 +364,10 @@ const Salereturn = () => {
             }
             ).then((response) => {
                 setDoctorData(response.data.data)
-                setIsLoading(false);
+                setIsDoctorLoading(false);
             })
         } catch (error) {
-            setIsLoading(false);
+            setIsDoctorLoading(false);
             console.error("API error:", error);
             if (error?.response?.status === 401) {
                 localStorage.removeItem("token");
@@ -399,7 +401,7 @@ const Salereturn = () => {
                 const params = {
                     search: searchQuery.trim()
                 };
-                setIsLoading(true);
+                setIsCustomerLoading(true);
                 try {
                     const response = await axios.post(
                         "list-customer?",
@@ -413,13 +415,13 @@ const Salereturn = () => {
                         }
                     );
                     setCustomerDetails(response.data.data);
-                    setIsLoading(false);
+                    setIsCustomerLoading(false);
                     if (response.data.status === 401) {
                         history.push('/');
                         localStorage.clear();
                     }
                 } catch (error) {
-                    setIsLoading(false);
+                    setIsCustomerLoading(false);
                     console.error("API error:", error);
                     if (error?.response?.status === 401) {
                         localStorage.removeItem("token");
@@ -1016,7 +1018,7 @@ const Salereturn = () => {
                         >
                             <MenuItem value="cash">Cash</MenuItem>
                             <MenuItem value="credit">Credit</MenuItem>
-                            {bankData?.map(option => (
+                            {bankData?.filter(b => b.bank_name.toLowerCase().trim() !== "cash" && b.bank_name.toLowerCase().trim() !== "credit").map(option => (
                                 <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                             ))}
                         </Select>
@@ -1076,7 +1078,7 @@ const Salereturn = () => {
                                 options={customerDetails}
                                 getOptionLabel={(option) => option.name ? `${option.name} [${option.phone_number}]` : option.phone_number || ''}
                                 isOptionEqualToValue={(option, value) => option.phone_number === value.phone_number}
-                                loading={isLoading}
+                                loading={isCustomerLoading}
                                 sx={{
                                     width: "100%",
                                     minWidth: "350px",
@@ -1122,7 +1124,7 @@ const Salereturn = () => {
                                             ...params.InputProps,
                                             endAdornment: (
                                                 <>
-                                                    {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                    {isCustomerLoading ? <CircularProgress color="inherit" size={20} /> : null}
                                                     {params.InputProps.endAdornment}
                                                 </>
                                             ),
@@ -1164,7 +1166,7 @@ const Salereturn = () => {
                                 options={doctorData}
                                 getOptionLabel={(option) => option.name ? `${option.name} [${option.clinic}]` : option.clinic || ''}
                                 isOptionEqualToValue={(option, value) => option.clinic === value.clinic}
-                                loading={isLoading}
+                                loading={isDoctorLoading}
                                 sx={{
                                     width: "100%",
                                     minWidth: "350px",
@@ -1192,7 +1194,7 @@ const Salereturn = () => {
                                             ...params.InputProps,
                                             endAdornment: (
                                                 <>
-                                                    {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                    {isDoctorLoading ? <CircularProgress color="inherit" size={20} /> : null}
                                                     {params.InputProps.endAdornment}
                                                 </>
                                             ),

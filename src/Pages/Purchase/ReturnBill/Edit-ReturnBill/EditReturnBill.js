@@ -573,8 +573,12 @@ const EditReturnBill = () => {
 
             })
         } catch (error) {
-            console.error("API error:", error);
-            if (error?.response?.status === 401) {
+      console.error("API error:", error);
+      if (error?.response?.status === 400) {
+        toast.dismiss();
+        toast.error(error.response.data.message);
+      }
+      if (error?.response?.status === 401) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("userId");
                 localStorage.removeItem("role");

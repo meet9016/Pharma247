@@ -120,7 +120,7 @@ const AddSale = () => {
   const [order, setOrder] = useState("");
   const [roundOff, setRoundOff] = useState(0);
   const [itemEditID, setItemEditID] = useState(0);
-  const [gst, setGst] = useState("");
+  const [gst, setGst] = useState("0");
   const [batch, setBatch] = useState("");
   const [unit, setUnit] = useState("");
   const [finalDiscount, setFinalDiscount] = useState(0);
@@ -322,7 +322,7 @@ const AddSale = () => {
           setExpiryDate("");
           setMRP("");
           setBase("");
-          setGst("");
+          setGst("0");
           setQty("");
           setLoc("");
           setUnit("");
@@ -839,7 +839,7 @@ const AddSale = () => {
       setExpiryDate("");
       setMRP("");
       setBase("");
-      setGst("");
+      setGst("0");
       setQty("");
       setLoc("");
       setUnit("");
@@ -875,7 +875,7 @@ const AddSale = () => {
     setMaxQty(event.qty);
     setBase(event.base);
     setGst(event.gst_name);
-    setLoc(event.loc);
+    setLoc(event.location);
     setTempQty(event.tempQty);
     if (inputRef5.current) {
       inputRef5.current.focus();
@@ -1546,7 +1546,7 @@ const AddSale = () => {
           setMRP("");
           setQty("");
           setBase("");
-          setGst("");
+          setGst("0");
           setBatch("");
           setBarcode("");
           setLoc("");
@@ -2028,7 +2028,7 @@ const AddSale = () => {
         setMRP("");
         setQty("");
         setBase("");
-        setGst("");
+        setGst("0");
         setBatch("");
         setBarcode("");
         setLoc("");
@@ -2071,7 +2071,7 @@ const AddSale = () => {
     setExpiryDate("");
     setMRP("");
     setBase("");
-    setGst("");
+    setGst("0");
     setQty("");
     setOrder("");
     setLoc("");
@@ -2387,7 +2387,7 @@ const AddSale = () => {
             >
               <MenuItem value="cash">Cash</MenuItem>
               <MenuItem value="credit">Credit</MenuItem>
-              {bankData?.map((option) => (
+              {bankData?.filter(b => b.bank_name.toLowerCase().trim() !== "cash" && b.bank_name.toLowerCase().trim() !== "credit").map((option) => (
                 <MenuItem key={option.id} value={option.id}>
                   {option.bank_name}
                 </MenuItem>
@@ -2892,13 +2892,13 @@ const AddSale = () => {
                         )}
 
                         <tr className="customtable">
-                          <th>Item Name</th>
-                          <th>Batch Number</th>
-                          <th>Unit</th>
-                          <th>Expiry Date</th>
-                          <th>MRP</th>
-                          <th>QTY</th>
-                          <th>Loc</th>
+                          <th style={{ textAlign: "left" }}>Item Name</th>
+                          <th style={{ textAlign: "left" }}>Batch Number</th>
+                          <th style={{ textAlign: "left" }}>Unit</th>
+                          <th style={{ textAlign: "left" }}>Expiry Date</th>
+                          <th style={{ textAlign: "left" }}>MRP</th>
+                          <th style={{ textAlign: "left" }}>QTY</th>
+                          <th style={{ textAlign: "left" }}>Loc</th>
                         </tr>
                       </thead>
 
@@ -2931,25 +2931,25 @@ const AddSale = () => {
                                 }}
 
                               >
-                                <td className="text-base font-semibold">
+                                <td className="text-base font-semibold text-left">
                                   {item.iteam_name}
                                 </td>
-                                <td className="text-base font-semibold">
+                                <td className="text-base font-semibold text-left">
                                   {item.batch_number}
                                 </td>
-                                <td className="text-base font-semibold">
+                                <td className="text-base font-semibold text-left">
                                   {item.unit}
                                 </td>
-                                <td className="text-base font-semibold">
+                                <td className="text-base font-semibold text-left">
                                   {item.expiry_date}
                                 </td>
-                                <td className="text-base font-semibold">
+                                <td className="text-base font-semibold text-left">
                                   {item.mrp}
                                 </td>
-                                <td className="text-base font-semibold">
+                                <td className="text-base font-semibold text-left">
                                   {item.qty}
                                 </td>
-                                <td className="text-base font-semibold">
+                                <td className="text-base font-semibold text-left">
                                   {item.location}
                                 </td>
                               </tr>
@@ -2966,7 +2966,7 @@ const AddSale = () => {
                               }}
                             >
 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
+  { !isLoading && <img src="/sales.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
 </div>
 </td>
                           </tr>
@@ -3288,9 +3288,6 @@ const AddSale = () => {
                     size="small"
                     inputRef={inputRef6}
                     onKeyDown={(e) => handleKeyDown(e, 5)}
-                    SelectProps={{
-                      native: true,
-                    }}
                     sx={{
                       minWidth: "60px",
                       width: "100%",
@@ -3304,10 +3301,9 @@ const AddSale = () => {
                       setItemErrors((prev) => ({ ...prev, gst: false }));
                     }}
                   >
-                    <option value="" disabled></option>
-                    <option value="0">0</option>
-                    <option value="5">5</option>
-                    <option value="18">18</option>
+                    <MenuItem value="0">0</MenuItem>
+                    <MenuItem value="5">5</MenuItem>
+                    <MenuItem value="18">18</MenuItem>
                   </TextField>
                 </td>
                 <td >
@@ -3406,9 +3402,21 @@ const AddSale = () => {
                   />
                 </td>
                 <td className="total">
-                  <span className="font-bold">
-                    {itemAmount}
-                  </span>
+                  <TextField
+                    id="outlined-number"
+                    disabled
+                    placeholder="0.00"
+                    size="small"
+                    value={itemAmount === 0 || itemAmount === null ? "" : itemAmount}
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                      },
+                    }}
+                  />
                 </td>
               </tr>
 
@@ -4265,7 +4273,7 @@ const AddSale = () => {
                       <thead>
                         <tr>
                           <th></th>
-                          <th>Item Name</th>
+                          <th style={{textAlign:"left"}}>Item Name</th>
                           <th>Quantity</th>
                           <th className="">
                             <span style={{ display: "flex", alignItems: "center", gap: "4px", justifyContent: "center" }}>

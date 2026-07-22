@@ -242,6 +242,49 @@ const EditPurchaseBill = () => {
     };
   }, [selectedIndex, purchase?.item_list]);
 
+  const handleCnAmount = () => {
+    const newErrors = {};
+    if (finalTotalAmount <= cnAmount) {
+      newErrors.finalTotalAmount =
+        "You cannot adjust CN more than the total invoice amount";
+      toast.dismiss();
+      toast.error("You cannot adjust CN more than the total invoice amount");
+      setError(newErrors);
+      setError(newErrors);
+      setSelectedRows([]);
+      setCnTotalAmount({});
+      setCnAmount(0);
+      return;
+    }
+    setFinalCnAmount(cnAmount);
+    setUnsavedItems(true);
+    // setNetAmount(finalTotalAmount - cnAmount)
+
+    const decimalTotalAmount = finalTotalAmount - Math.floor(finalTotalAmount);
+    const decimalCNAmount = cnAmount - Math.floor(cnAmount);
+
+    setRoundOffAmount(decimalTotalAmount - decimalCNAmount);
+
+    const adjustedTotalAmount = finalTotalAmount - cnAmount;
+
+    let netAmountCal, roundOffAmountCal;
+
+    const decimalPart = adjustedTotalAmount - Math.floor(adjustedTotalAmount);
+
+    if (decimalPart >= 0.5) {
+      netAmountCal = Math.ceil(adjustedTotalAmount); // Round up
+    } else {
+      netAmountCal = Math.floor(adjustedTotalAmount); // Round down
+    }
+
+    roundOffAmountCal = netAmountCal - adjustedTotalAmount;
+
+    // Update the states with the calculated values
+    setNetAmount(netAmountCal);
+    setRoundOffAmount(roundOffAmountCal);
+    setOpenAddPopUp(false);
+  };
+
   /*<================================================================================== handle shortcut  =========================================================================> */
 
   useEffect(() => {
@@ -1598,49 +1641,7 @@ const EditPurchaseBill = () => {
     setRoundOffAmount(roundOffAmountCal);
   };
 
-  const handleCnAmount = () => {
-    const newErrors = {};
-    if (finalTotalAmount <= cnAmount) {
-      newErrors.finalTotalAmount =
-        "You cannot adjust CN more than the total invoice amount";
-      toast.dismiss();
-      toast.error("You cannot adjust CN more than the total invoice amount");
-      setError(newErrors);
-      setError(newErrors);
-      setSelectedRows([]);
-      setCnTotalAmount({});
-      setCnAmount(0);
-      return;
-    }
-    setFinalCnAmount(cnAmount);
-    setUnsavedItems(true);
-    // setNetAmount(finalTotalAmount - cnAmount)
 
-    const decimalTotalAmount = finalTotalAmount - Math.floor(finalTotalAmount);
-    const decimalCNAmount = cnAmount - Math.floor(cnAmount);
-
-    setRoundOffAmount(decimalTotalAmount - decimalCNAmount);
-
-    const adjustedTotalAmount = finalTotalAmount - cnAmount;
-
-    let netAmountCal, roundOffAmountCal;
-
-    const decimalPart = adjustedTotalAmount - Math.floor(adjustedTotalAmount);
-
-    if (decimalPart >= 0.5) {
-      netAmountCal = Math.ceil(adjustedTotalAmount); // Round up
-    } else {
-      netAmountCal = Math.floor(adjustedTotalAmount); // Round down
-    }
-
-    roundOffAmountCal = netAmountCal - adjustedTotalAmount;
-
-    // Update the states with the calculated values
-    setNetAmount(netAmountCal);
-    setRoundOffAmount(roundOffAmountCal);
-    setOpenAddPopUp(false);
-    ;
-  };
 
 
   /*<================================================================================ ui   ===========================================================================> */
