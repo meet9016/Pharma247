@@ -154,6 +154,7 @@ const AddReturnbill = () => {
   const handleKeyDown = (e, index) => {
     if (e.key === "Enter") {
       e.preventDefault();
+      e.stopPropagation();
       const nextElement = inputRefs.current[index + 1];
 
       if (!nextElement) {
@@ -440,47 +441,15 @@ const AddReturnbill = () => {
   }, []);
 
   const handleLeavePage = async () => {
-    let data = new FormData();
-    data.append("start_date", localStorage.getItem("StartFilterDate"));
-    data.append("end_date", localStorage.getItem("EndFilterDate"));
-    data.append("distributor_id", localStorage.getItem("DistributorId"));
-    data.append("type", "0");
+    setUnsavedItems(false);
+    setIsOpenBox(false);
+    localStorage.removeItem("unsavedItems");
 
-    try {
-      const response = await axios.post("purches-return-iteam-histroy", data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.status === 200) {
-        setUnsavedItems(false);
-        setIsOpenBox(false);
-
-        setTimeout(() => {
-          if (nextPath) {
-            history.push(nextPath);
-          }
-        }, 0);
+    setTimeout(() => {
+      if (nextPath) {
+        history.push(nextPath);
       }
-      setIsOpenBox(false);
-      setUnsavedItems(false);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        setUnsavedItems(false);
-
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-
-        setIsOpenBox(false);
-        localStorage.setItem("unsavedItems", unsavedItems.toString());
-        setTimeout(() => {
-          history.push(nextPath);
-        }, 0);
-      } else {
-        console.error("Error deleting items:", error);
-      }
-    }
+    }, 50);
   };
   /*<============================================================================ calculation  ===================================================================> */
 
@@ -1508,7 +1477,7 @@ const AddReturnbill = () => {
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             if (unit && unit !== 0) {
-                              handleKeyDown(e, 6);
+                              handleKeyDown(e, 12);
                             } else {
                               e.preventDefault();
                               setErrors((prev) => ({ ...prev, unit: true }));
@@ -1522,9 +1491,9 @@ const AddReturnbill = () => {
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
-                        size="small"
-                        disabled
-                        placeholder="Batch"
+                          size="small"
+                          InputProps={{ readOnly: true, sx: { color: 'text.disabled', cursor: 'not-allowed', backgroundColor: 'action.hover' } }}
+                          placeholder="Batch"
                         error={!!errors.batch}
                         value={batch}
                         sx={{
@@ -1534,6 +1503,7 @@ const AddReturnbill = () => {
                             textAlign: 'center',
                           },
                         }}
+                        inputRef={(el) => (inputRefs.current[13] = el)}
                         onChange={(e) => {
                           setBatch(e.target.value);
                         }}
@@ -1549,8 +1519,9 @@ const AddReturnbill = () => {
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
-                        disabled
+                        InputProps={{ readOnly: true, sx: { color: 'text.disabled', cursor: 'not-allowed', backgroundColor: 'action.hover' } }}
                         size="small"
+                        inputRef={(el) => (inputRefs.current[14] = el)}
                         sx={{
                           minWidth: "65px",
                           width: "100%",
@@ -1581,11 +1552,11 @@ const AddReturnbill = () => {
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
-                          },
-                        }}
-                        size="small"
-                        disabled
-                        error={!!errors.mrp}
+                            },
+                          }}
+                          size="small"
+                          InputProps={{ readOnly: true, sx: { color: 'text.disabled', cursor: 'not-allowed', backgroundColor: 'action.hover' } }}
+                          error={!!errors.mrp}
                         value={mrp}
                         onChange={(e) => {
                           const value = e.target.value;
@@ -1599,7 +1570,7 @@ const AddReturnbill = () => {
                             e.preventDefault();
                           }
                           if (e.key === "Enter") {
-                            handleKeyDown(e, 15);
+                            handleKeyDown(e, 6);
                           }
                         }}
                       />
@@ -1749,9 +1720,7 @@ const AddReturnbill = () => {
                       >
                         <MenuItem value={0}>0</MenuItem>
                         <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={12}>12</MenuItem>
                         <MenuItem value={18}>18</MenuItem>
-                        <MenuItem value={28}>28</MenuItem>
                       </TextField>
                     </td>
 
@@ -2007,7 +1976,7 @@ const AddReturnbill = () => {
                       {
                         label: "Total Amount",
                         icon: <Inventory2Icon style={{ fontSize: 18, color: "var(--COLOR_UI_PHARMACY)" }} />,
-                        value: <span style={{ fontWeight: 600, color: "#1e293b" }}>{totalAmount ? totalAmount : 0}</span>,
+                        value: <span style={{ fontWeight: 600, color: "#1e293b" }}>{finalAmount ? finalAmount : 0}</span>,
                       },
                       {
                         label: "Other Amount",
