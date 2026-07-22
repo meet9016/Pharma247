@@ -1018,7 +1018,7 @@ const Salereturn = () => {
                         >
                             <MenuItem value="cash">Cash</MenuItem>
                             <MenuItem value="credit">Credit</MenuItem>
-                            {bankData?.map(option => (
+                            {bankData?.filter(b => b.bank_name.toLowerCase().trim() !== "cash" && b.bank_name.toLowerCase().trim() !== "credit").map(option => (
                                 <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                             ))}
                         </Select>
@@ -1166,7 +1166,7 @@ const Salereturn = () => {
                                 options={doctorData}
                                 getOptionLabel={(option) => option.name ? `${option.name} [${option.clinic}]` : option.clinic || ''}
                                 isOptionEqualToValue={(option, value) => option.clinic === value.clinic}
-                                loading={isLoading}
+                                loading={isDoctorLoading}
                                 sx={{
                                     width: "100%",
                                     minWidth: "350px",
