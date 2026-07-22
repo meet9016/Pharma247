@@ -1124,7 +1124,7 @@ const Salereturn = () => {
                                             ...params.InputProps,
                                             endAdornment: (
                                                 <>
-                                                    {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                    {isCustomerLoading ? <CircularProgress color="inherit" size={20} /> : null}
                                                     {params.InputProps.endAdornment}
                                                 </>
                                             ),
@@ -1194,7 +1194,7 @@ const Salereturn = () => {
                                             ...params.InputProps,
                                             endAdornment: (
                                                 <>
-                                                    {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                    {isDoctorLoading ? <CircularProgress color="inherit" size={20} /> : null}
                                                     {params.InputProps.endAdornment}
                                                 </>
                                             ),
