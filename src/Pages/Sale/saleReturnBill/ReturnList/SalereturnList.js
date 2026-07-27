@@ -49,6 +49,7 @@ const SalereturnList = () => {
   const token = localStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(false);
   const [isDownloadLoading, setIsDownloadLoading] = useState(false);
+  const [loadingRowId, setLoadingRowId] = useState(null);
   const history = useHistory();
   const [tableData, setTableData] = useState([]);
   const permissions = usePermissions();
@@ -279,7 +280,7 @@ const SalereturnList = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsDownloadLoading(true);
+    setLoadingRowId(id);
     try {
       await axios
         .post("sale-return-pdf-downloads", data, {
@@ -292,7 +293,7 @@ const SalereturnList = () => {
           const PDFURL = response.data.data.pdf_url;
           toast.dismiss();
           toast.success(response.data.meassage);
-          setIsDownloadLoading(false);
+          setLoadingRowId(null);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -535,10 +536,7 @@ const SalereturnList = () => {
                                       history.push(`/SaleReturnView/${row.id}`);
                                     }}
                                   />
-                                  <FaFilePdf
-                                    className="w-5 h-5 primary"
-                                    onClick={() => pdfGenerator(row.id)}
-                                  />
+                                  {loadingRowId === row.id ? <CircularProgress size={16} /> : <FaFilePdf className=" primary hover:secondary" onClick={() => pdfGenerator(row.id)} />}
                                 </div>
                               </td>
                             </tr>
@@ -834,3 +832,5 @@ const SalereturnList = () => {
   );
 };
 export default SalereturnList;
+
+

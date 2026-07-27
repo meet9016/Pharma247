@@ -65,6 +65,7 @@ const Purchasebill = () => {
   const [IsDelete, setIsDelete] = useState(false);
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [isPdfLoading, setIsPdfLoading] = useState(false);
+  const [loadingRowId, setLoadingRowId] = useState(null);
   const [PdfstartDate, setPdfStartDate] = useState(subDays(new Date(), 15));
   const [PdfendDate, setPdfEndDate] = useState(new Date());
 
@@ -328,7 +329,7 @@ const Purchasebill = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsPdfLoading(true);
+    setLoadingRowId(id);
     try {
       await axios
         .post("purches-pdf-downloads", data, {
@@ -342,7 +343,7 @@ const Purchasebill = () => {
           toast.dismiss();
           toast.success(response.data.meassage);
 
-          setIsPdfLoading(false);
+          setLoadingRowId(null);
           handlePdf(PDFURL);
           if (response.data.status === 401) {
             history.push("/");
@@ -668,10 +669,7 @@ const Purchasebill = () => {
                                 history.push(`/purchaseView/${row.id}`)
                               }
                             />
-                            <FaFilePdf
-                              className=" primary hover:secondary"
-                              onClick={() => pdfGenerator(row.id)}
-                            />
+                            {loadingRowId === row.id ? <CircularProgress size={16} /> : <FaFilePdf className=" primary hover:secondary" onClick={() => pdfGenerator(row.id)} />}
                             {hasPermission(
                               permissions,
                               "purchase bill delete"

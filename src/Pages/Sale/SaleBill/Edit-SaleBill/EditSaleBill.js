@@ -154,13 +154,15 @@ const EditSaleBill = () => {
   const inputRef2 = useRef(null);
   const inputRef3 = useRef(null);
   const inputRef4 = useRef(null);
+  const inputRef5 = useRef(null);
 
-
+  const [date1, setDate1] = useState(new Date());
 
 
   const itemRowInputOrder = [
     inputRef1, // Item
     inputRef2, // Base
+    inputRef5, // Gst
     inputRef3, // Qty
     inputRef4, // Order
   ];
@@ -171,7 +173,8 @@ const EditSaleBill = () => {
   const focusByIndex = (i) => itemRowInputOrder[i]?.current?.focus();
   const focusItem = () => focusByIndex(0);
   const focusBase = () => focusByIndex(1);
-  const focusQty = () => focusByIndex(2);
+  const focusGst = () => focusByIndex(2);
+  const focusQty = () => focusByIndex(3);
 
 
   // Focus the main table and move selection (clamped). Also focuses the target row immediately.
@@ -2031,7 +2034,6 @@ const EditSaleBill = () => {
                   </td>
                   <td>
                     <TextField
-                      id="outlined-number"
                       disabled
                       size="small"
                       sx={{
@@ -2100,25 +2102,14 @@ const EditSaleBill = () => {
                             return;
                           }
                           e.preventDefault();
-                          focusQty();  // ← forward to Qty
+                          focusGst(); // forward to Gst
                         }
                       }}
 
                     />
                   </td>
                   <td>
-                    <TextField
-                      select
-                      id="outlined-number"
-                      placeholder="Gst"
-                      size="small"
-                      sx={{
-                        minWidth: "40px",
-                        width: "100%",
-                        '& .MuiInputBase-input': {
-                          textAlign: 'center',
-                        },
-                      }}
+                    <TextField select id="outlined-number" placeholder="Gst" size="medium" inputRef={inputRef5} onKeyDown={(e) => { if (e.key === "Tab" && e.shiftKey) { e.preventDefault(); focusBase(); return; } if (e.key === "Enter" || e.key === "Tab") { e.preventDefault(); focusQty(); } }} sx={{ minWidth: "60px", width: "100%", "& .MuiSelect-select": { textAlign: "left" } }}
                       value={gst || ""}
                       onChange={(e) => {
                         setGst(e.target.value);
@@ -2128,11 +2119,11 @@ const EditSaleBill = () => {
                       <MenuItem value="5">5</MenuItem>
                       <MenuItem value="18">18</MenuItem>
                     </TextField>
-                  </td>
-                  <td>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-number"
+                    </td>
+                    <td>
+                      <TextField
+                        autoComplete="off"
+                        id="outlined-number"
                       type="number"
                       placeholder="Qty"
                       sx={{
@@ -2235,7 +2226,9 @@ const EditSaleBill = () => {
                         '& .MuiInputBase-input': {
                           textAlign: 'center',
                           fontWeight: 'bold',
-                        },
+                          color: 'white',
+                          WebkitTextFillColor: 'white !important',
+                          },
                       }}
                     />
                   </td>
@@ -2822,3 +2815,17 @@ const EditSaleBill = () => {
   );
 };
 export default EditSaleBill;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -59,6 +59,7 @@ const ReturnList = () => {
   const [searchTerms, setSearchTerms] = useState(initialSearchTerms);
   const [isLoading, setIsLoading] = useState(false);
   const [isPdfLoading, setIsPdfLoading] = useState(false);
+  const [loadingRowId, setLoadingRowId] = useState(null);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -209,9 +210,9 @@ const ReturnList = () => {
   };
 
   const pdfGenerator = async (id) => {
-    let data = new FormData();
-    data.append("id", id);
-    setIsPdfLoading(true);
+let data = new FormData();
+data.append("id", id);
+setLoadingRowId(id);
     try {
       await axios
         .post("purches-return-pdf", data, {
@@ -224,7 +225,7 @@ const ReturnList = () => {
           const PDFURL = response.data.data.pdf_url;
           toast.dismiss();
           toast.success(response.data.meassage);
-          setIsPdfLoading(false);
+          setLoadingRowId(null);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -676,10 +677,7 @@ const ReturnList = () => {
                                         history.push(`/PurchaseReturnView${row.id}`);
                                       }}
                                     />
-                                    <FaFilePdf
-                                      className="primary hover:secondary"
-                                      onClick={() => pdfGenerator(row.id)}
-                                    />
+                                    {loadingRowId === row.id ? <CircularProgress size={16} /> : <FaFilePdf className=" primary hover:secondary" onClick={() => pdfGenerator(row.id)} />}
                                     {hasPermission(
                                       permissions,
                                       "purchase return bill delete"
@@ -1068,3 +1066,4 @@ const ReturnList = () => {
   );
 };
 export default ReturnList;
+

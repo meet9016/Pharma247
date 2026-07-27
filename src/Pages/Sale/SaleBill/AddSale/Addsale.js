@@ -3281,20 +3281,16 @@ const AddSale = () => {
                 </td>
                 <td>
                   <TextField
-                    select
+                   select
                     id="outlined-number"
-                    placeholder="Gst"
-                    error={!!itemErrors.gst}
-                    size="small"
-                    inputRef={inputRef6}
-                    onKeyDown={(e) => handleKeyDown(e, 5)}
-                    sx={{
-                      minWidth: "60px",
-                      width: "100%",
-                      '& .MuiInputBase-input': {
-                        textAlign: 'center',
-                      },
-                    }}
+                     placeholder="Gst"
+                      error={!!itemErrors.gst}
+                       size="small"
+                        inputRef={inputRef6}
+                         onKeyDown={(e) => handleKeyDown(e, 5)}
+                          sx={{ minWidth: "60px",
+                             width: "100%", 
+                             "& .MuiSelect-select": { textAlign: "left" } }}
                     value={gst || ""}
                     onChange={(e) => {
                       setGst(e.target.value);
@@ -3304,7 +3300,7 @@ const AddSale = () => {
                     <MenuItem value="0">0</MenuItem>
                     <MenuItem value="5">5</MenuItem>
                     <MenuItem value="18">18</MenuItem>
-                  </TextField>
+                    </TextField>
                 </td>
                 <td >
                   <TextField
@@ -4789,3 +4785,9 @@ const AddSale = () => {
   );
 };
 export default AddSale;
+
+
+
+
+
+

@@ -1513,7 +1513,6 @@ const Salereturn = () => {
                                     >
                                         <MenuItem value={0}>0</MenuItem>
                                         <MenuItem value={5}>5</MenuItem>
-                                        <MenuItem value={12}>12</MenuItem>
                                         <MenuItem value={18}>18</MenuItem>
                                     </Select>
                                 </td>
