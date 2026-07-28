@@ -46,6 +46,7 @@ const Salelist = () => {
   const token = localStorage.getItem("token");
   const [isLoading, setIsLoading] = useState(false);
   const [isDownloadLoading, setIsDownloadLoading] = useState(false);
+  const [loadingRowId, setLoadingRowId] = useState(null);
   const history = useHistory();
   const [tableData, setTableData] = useState([]);
   const rowsPerPage = 10;
@@ -188,7 +189,7 @@ const Salelist = () => {
   const pdfGenerator = async (id) => {
     let data = new FormData();
     data.append("id", id);
-    setIsDownloadLoading(true);
+    setLoadingRowId(id);
     try {
       await axios
         .post("sales-pdf-downloads", data, {
@@ -202,7 +203,7 @@ const Salelist = () => {
           toast.dismiss();
           toast.success(response.data.meassage);
           setPDFURL(PDFURL);
-          setIsDownloadLoading(false);
+          setLoadingRowId(null);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -561,10 +562,7 @@ const Salelist = () => {
                                     history.push(`/saleView/${row.id}`);
                                   }}
                                 />
-                                <FaFilePdf
-                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
-                                  onClick={() => pdfGenerator(row.id)}
-                                />
+                                {loadingRowId === row.id ? <CircularProgress size={16} /> : <FaFilePdf className=" primary hover:secondary" onClick={() => pdfGenerator(row.id)} />}
                                 {hasPermission(permissions, "sale whatsapp bill status check") && (
                                   <IoLogoWhatsapp
                                     className="w-5 h-5 primary hover:text-secondary cursor-pointer"
@@ -772,3 +770,5 @@ const Salelist = () => {
   );
 };
 export default Salelist;
+
+
