@@ -750,27 +750,27 @@ const CustomerList = () => {
                   display: "flex",
                 }}
                 onClick={exportToExcel}
-               disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src="/csv-file.png"
-                    className="report-icon absolute"
-                    alt="csv "
-                  />
-                </div>
-                Download
-              
-            </>
-          )}
-</Button>
+                disabled={isDownloadLoading}>
+                {isDownloadLoading ? (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                    <CircularProgress size={16} style={{ color: "white" }} />
+                    Downloading...
+                  </span>
+                ) : (
+                  <>
+
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <img
+                        src="/csv-file.png"
+                        className="report-icon absolute"
+                        alt="csv "
+                      />
+                    </div>
+                    Download
+
+                  </>
+                )}
+              </Button>
             )}
           </div>
         </div>
@@ -888,10 +888,10 @@ const CustomerList = () => {
                           borderRadius: "10px 10px 10px 10px",
                         }}
                       >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/customer.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+                          {!isLoading && <img src="/customer.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />}
+                        </div>
+                      </td>
                     </tr>
                   ) : (
                     tableData.map((row, index) => {
@@ -1170,21 +1170,21 @@ const CustomerList = () => {
                       color: "white",
                     }}
                     className="downloadFile"
-                   disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                    <CloudDownloadIcon className="mr-2" />
-                    Download Sample File
-                  
-            </>
-          )}
-</Button>
+                    disabled={isDownloadLoading}>
+                    {isDownloadLoading ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                        <CircularProgress size={16} style={{ color: "white" }} />
+                        Downloading...
+                      </span>
+                    ) : (
+                      <>
+
+                        <CloudDownloadIcon className="mr-2" />
+                        Download Sample File
+
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
             </DialogContentText>
@@ -1246,8 +1246,8 @@ const CustomerList = () => {
             <DialogContentText id="alert-dialog-description">
               <div className="flex flex-col gap-4">
                 {/* Row 1 */}
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex flex-col">
                     <div className="mb-2">
                       <span className="label primary mb-4">
                         Customer Name
@@ -1339,7 +1339,7 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                  <div className="flex flex-col">
                     <div className="mb-2">
                       <span className="label primary mb-4">
                         Mobile No
@@ -1371,7 +1371,7 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                  <div className="flex flex-col">
                     <div className="mb-2">
                       <span className="label primary mb-4">Email ID</span>
                     </div>
@@ -1403,8 +1403,8 @@ const CustomerList = () => {
                 </div>
 
                 {/* Row 2 */}
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex flex-col">
                     <div className="mb-2">
                       <span className="label primary mb-4">Amount</span>
                     </div>
@@ -1434,7 +1434,7 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                  <div className="flex flex-col">
                     <div className="mb-2">
                       <span className="label primary mb-4">Area</span>
                     </div>
@@ -1466,7 +1466,7 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                  <div className="flex flex-col">
                     <div className="mb-2">
                       <span className="label primary mb-4">City</span>
                     </div>
@@ -1501,8 +1501,8 @@ const CustomerList = () => {
                 </div>
 
                 {/* Row 3 */}
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex flex-col">
                     <div className="mb-2">
                       <span className="label primary mb-4">Address</span>
                     </div>
@@ -1534,7 +1534,7 @@ const CustomerList = () => {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                  <div className="flex flex-col">
                     <div className="mb-2">
                       <span className="label primary mb-4">State</span>
                     </div>
