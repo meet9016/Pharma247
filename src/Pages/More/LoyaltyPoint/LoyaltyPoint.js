@@ -826,7 +826,8 @@ const LoyaltyPoint = () => {
                       </FormControl>
                     </div>
                     {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4"> */}
-                    <FormControl
+
+                    {/* <FormControl
                       variant="outlined data-mdb-input-init"
                       sx={{ width: "100%" }}
                     >
@@ -886,7 +887,8 @@ const LoyaltyPoint = () => {
                       {errors.percentage && (
                         <span className="error">{errors.percentage}</span>
                       )}
-                    </FormControl>
+                    </FormControl> */}
+
                     {/* </div> */}
                   </div>
                 </div>

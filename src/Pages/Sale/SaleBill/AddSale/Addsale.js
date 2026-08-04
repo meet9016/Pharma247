@@ -1170,10 +1170,10 @@ const AddSale = () => {
   }
 
   const PaymentMethodList = async () => {
-
+    let data = new FormData();
     try {
       await axios
-        .get("payment-method-list", {
+        .post("bank-list", data, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -2384,8 +2384,8 @@ const AddSale = () => {
               sx={{ minWidth: "150px" }}
             >
               {paymentMethodData?.map((option) => (
-                <MenuItem key={option.id} value={option.value}>
-                  {option.name}
+                <MenuItem key={option.id} value={option.id}>
+                  {option.bank_name}
                 </MenuItem>
               ))}
             </Select>

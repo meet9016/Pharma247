@@ -325,9 +325,10 @@ const Salereturn = () => {
     };
 
     const PaymentMethodList = async () => {
+        let data = new FormData();
         try {
             console.log("Token :", token);
-            await axios.get('payment-method-list', {
+            await axios.post('bank-list', data, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -1017,7 +1018,7 @@ const Salereturn = () => {
                             }}
                         >
                             {paymentMethodData?.map(option => (
-                                <MenuItem key={option.id} value={option.value}>{option.name}</MenuItem>
+                                <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
                             ))}
                         </Select>
                         <Button ref={returnSubmitBtnRef} variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => handleSubmit()}> Save </Button>

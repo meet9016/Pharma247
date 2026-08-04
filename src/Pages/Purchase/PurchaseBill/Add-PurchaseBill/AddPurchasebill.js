@@ -492,9 +492,10 @@ const AddPurchaseBill = () => {
   /*<================================================================= get payment method list ==============================================================> */
 
   const PaymentMethodList = async () => {
+    let data = new FormData();
     try {
       await axios
-        .get("payment-method-list", {
+        .post("bank-list", data, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -2234,7 +2235,7 @@ const AddPurchaseBill = () => {
                 />
               </div>
               <div className="flex items-center gap-2">
-                  <Select
+                <Select
                   labelId="dropdown-label"
                   id="dropdown"
                   value={paymentType}
@@ -2245,10 +2246,10 @@ const AddPurchaseBill = () => {
                   {paymentMethodData?.map((option) => (
                     <MenuItem
                       key={option.id}
-                      value={option.value}
+                      value={option.id}
                       className="hover:bg-[var(--color2)]"
                     >
-                      {option.name}
+                      {option.bank_name}
                     </MenuItem>
                   ))}
                 </Select>
