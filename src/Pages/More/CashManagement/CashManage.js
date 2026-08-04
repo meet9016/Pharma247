@@ -25,6 +25,7 @@ import { MenuItem } from "@material-tailwind/react";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import axios from "axios";
 import Loader from "../../../componets/loader/Loader";
+import NoData from "../../../componets/NoData/NoData";
 import DatePicker from "react-datepicker";
 import { format, subDays } from "date-fns";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -209,58 +210,58 @@ const CashManage = () => {
       <div>
         <Header />
 
-          <div
-            style={{
-              minHeight: 'calc(100vh - 64px)',
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-            }}
-          >
-            <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
-              <div className="paddin12-8">
-                <div className="px-4 py-3">
+        <div
+          style={{
+            minHeight: 'calc(100vh - 64px)',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+            <div className="paddin12-8">
+              <div className="px-4 py-3">
 
+                <div
+                  className="mb-4 csh_mng_main_hdr"
+                  style={{ display: "flex", gap: "4px" }}
+                >
                   <div
-                    className="mb-4 csh_mng_main_hdr"
-                    style={{ display: "flex", gap: "4px" }}
+                    style={{
+                      display: "flex",
+                      gap: "7px",
+                      alignItems: "center",
+                    }}
                   >
-                    <div
+                    <span
+                      className="primary"
                       style={{
                         display: "flex",
-                        gap: "7px",
-                        alignItems: "center",
+                        fontWeight: 700,
+                        fontSize: "20px",
+                        whiteSpace: "nowrap",
                       }}
                     >
-                      <span
-                        className="primary"
-                        style={{
-                          display: "flex",
-                          fontWeight: 700,
-                          fontSize: "20px",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        Cash Management
-                      </span>
-                      <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
-                    </div>
-                    <div className="headerList">
-                      <Button
-                        className="gap-7 downld_btn_csh"
-                        variant="contained"
-                        style={{
-                          background: "var(--color1)",
-                          color: "white",
-                          // paddingLeft: "35px",
-                          textTransform: "none",
-                          display: "flex",
-                        }}
-                        onClick={handlePdf}
+                      Cash Management
+                    </span>
+                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " />
+                  </div>
+                  <div className="headerList">
+                    <Button
+                      className="gap-7 downld_btn_csh"
+                      variant="contained"
+                      style={{
+                        background: "var(--color1)",
+                        color: "white",
+                        // paddingLeft: "35px",
+                        textTransform: "none",
+                        display: "flex",
+                      }}
+                      onClick={handlePdf}
                       disabled={isDownloadLoading}
                     >
                       {isDownloadLoading ? (
-                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
                           <CircularProgress size={16} style={{ color: "white" }} />
                           Generating...
                         </span>
@@ -277,54 +278,54 @@ const CashManage = () => {
                         </>
                       )}
                     </Button>
+                  </div>
+                </div>
+                <div
+                  className="row border-b border-dashed"
+                  style={{ borderColor: "var(--color2)" }}
+                ></div>
+                <div className="firstrow flex flex-col md:flex-row justify-between gap-4 md:gap-0 mt-4">
+                  <div className="flex flex-col md:flex-row gap-5 oreder_list_fld">
+                    <div className="detail flex flex-col">
+                      <span className="text-gray-500">Start Date</span>
+                      <DatePicker
+                        className="custom-datepicker dst_fld_odr"
+                        selected={startdate}
+                        onChange={(newDate) => setStartDate(newDate)}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                    <div className="detail flex flex-col">
+                      <span className="text-gray-500">End Date</span>
+                      <DatePicker
+                        className="mt-4 md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker dst_fld_odr"
+                        selected={enddate}
+                        onChange={(newDate) => setEndDate(newDate)}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                    <div className="flex flex-col  space-x-1">
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={CaseManageMentList}
+                        className="mt-4 md:mt-0 min-h-[41px] h-[41px]  text-white flex items-center justify-center"
+                        // style={{ background: "var(--COLOR_UI_PHARMACY)" }}
+                        style={{
+                          minHeight: "40px",
+                          alignItems: "center",
+                          marginTop: "23px",
+                          background: "var(--color1)",
+                          width: "100%",
+                        }}
+                      >
+                        <FilterAltIcon className="text-white text-lg" />
+                        Filter
+                      </Button>
                     </div>
                   </div>
-                  <div
-                    className="row border-b border-dashed"
-                    style={{ borderColor: "var(--color2)" }}
-                  ></div>
-                  <div className="firstrow flex flex-col md:flex-row justify-between gap-4 md:gap-0 mt-4">
-                    <div className="flex flex-col md:flex-row gap-5 oreder_list_fld">
-                      <div className="detail flex flex-col">
-                        <span className="text-gray-500">Start Date</span>
-                        <DatePicker
-                          className="custom-datepicker dst_fld_odr"
-                          selected={startdate}
-                          onChange={(newDate) => setStartDate(newDate)}
-                          dateFormat="dd/MM/yyyy"
-                        />
-                      </div>
-                      <div className="detail flex flex-col">
-                        <span className="text-gray-500">End Date</span>
-                        <DatePicker
-                          className="mt-4 md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker dst_fld_odr"
-                          selected={enddate}
-                          onChange={(newDate) => setEndDate(newDate)}
-                          dateFormat="dd/MM/yyyy"
-                        />
-                      </div>
-                      <div className="flex flex-col  space-x-1">
-                        <Button
-                          variant="contained"
-                          size="small"
-                          onClick={CaseManageMentList}
-                          className="mt-4 md:mt-0 min-h-[41px] h-[41px]  text-white flex items-center justify-center"
-                          // style={{ background: "var(--COLOR_UI_PHARMACY)" }}
-                          style={{
-                            minHeight: "40px",
-                            alignItems: "center",
-                            marginTop: "23px",
-                            background: "var(--color1)",
-                            width: "100%",
-                          }}
-                        >
-                          <FilterAltIcon className="text-white text-lg" />
-                          Filter
-                        </Button>
-                      </div>
-                    </div>
 
-                    {/* <div className="flex flex-col md:flex-row gap-6 bg-green-100 p-3 rounded-lg  md:mt-0 cash_mng_hed_ttl">
+                  {/* <div className="flex flex-col md:flex-row gap-6 bg-green-100 p-3 rounded-lg  md:mt-0 cash_mng_hed_ttl">
                     <div className="csh_tl_txt csh_tl_txt_1st">
                       <div className="relative">
                         <h2 className="primary font-medium text-md ml-6 ttl_txt_hd">
@@ -364,85 +365,85 @@ const CashManage = () => {
                       </div>
                     </div>
                   </div> */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
 
-                      {/* Total In */}
-                      <div className="bg-white rounded-xl border border-gray-500 shadow-sm p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100">
-                            <FaArrowDown className="text-green-600 text-lg" />
-                          </div>
-                          <div>
-                            <p className="text-gray-500 text-sm font-medium">Total In</p>
-                            <h2 className="text-green-600 font-bold text-2xl">
-                              ₹{Number(cashManageDetails.credit || 0).toFixed(2)}
-                            </h2>
-                          </div>
+                    {/* Total In */}
+                    <div className="bg-white rounded-xl border border-gray-500 shadow-sm p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100">
+                          <FaArrowDown className="text-green-600 text-lg" />
+                        </div>
+                        <div>
+                          <p className="text-gray-500 text-sm font-medium">Total In</p>
+                          <h2 className="text-green-600 font-bold text-2xl">
+                            ₹{Number(cashManageDetails.credit || 0).toFixed(2)}
+                          </h2>
                         </div>
                       </div>
-
-                      {/* Total Out */}
-                      <div className="bg-white rounded-xl border border-red-500 shadow-sm p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-red-100">
-                            <FaArrowUp className="text-red-600 text-lg" />
-                          </div>
-                          <div>
-                            <p className="text-gray-500 text-sm font-medium">Total Out</p>
-                            <h2 className="text-red-600 font-bold text-2xl">
-                              ₹{Number(cashManageDetails.debit || 0).toFixed(2)}
-                            </h2>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Net Amount */}
-                      <div className="bg-white rounded-xl border border-[#3f6212] shadow-sm p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#3f6212]/10">
-                            <span className="font-bold text-[#3f6212]">₹</span>
-                          </div>
-                          <div>
-                            <p className="text-gray-500 text-sm font-medium">Net Amount</p>
-                            <h2 className="text-[#3f6212] font-bold text-2xl">
-                              ₹{Number(cashManageDetails.total || 0).toFixed(2)}
-                            </h2>
-                          </div>
-                        </div>
-                      </div>
-
                     </div>
+
+                    {/* Total Out */}
+                    <div className="bg-white rounded-xl border border-red-500 shadow-sm p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-red-100">
+                          <FaArrowUp className="text-red-600 text-lg" />
+                        </div>
+                        <div>
+                          <p className="text-gray-500 text-sm font-medium">Total Out</p>
+                          <h2 className="text-red-600 font-bold text-2xl">
+                            ₹{Number(cashManageDetails.debit || 0).toFixed(2)}
+                          </h2>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Net Amount */}
+                    <div className="bg-white rounded-xl border border-[#3f6212] shadow-sm p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#3f6212]/10">
+                          <span className="font-bold text-[#3f6212]">₹</span>
+                        </div>
+                        <div>
+                          <p className="text-gray-500 text-sm font-medium">Net Amount</p>
+                          <h2 className="text-[#3f6212] font-bold text-2xl">
+                            ₹{Number(cashManageDetails.total || 0).toFixed(2)}
+                          </h2>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
+              </div>
 
-                <div className=" firstrow px-4 ">
+              <div className=" firstrow px-4 ">
 
-                  <div className="overflow-x-auto">
-                    <table
-                      className="w-full border-collapse custom-table"
-                      style={{
-                        whiteSpace: "nowrap",
-                        borderCollapse: "separate",
-                        borderSpacing: "0 6px",
-                      }}
-                    >
-                      <thead>
-                        <tr>
-                          {cashManageDetailscolumns.map((column) => (
-                            <th
-                              key={column.id}
-                              onClick={() => sortByColumn(column.id)}
-                              className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                              style={{ minWidth: column.minWidth }}
-                            >
-                              <div className="headerStyle">
-                                <span style={{ minWidth: 150 }}>{column.label}</span>
-                              </div>
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      {/* <tbody style={{ backgroundColor: "#3f621217" }}>
+                <div className="overflow-x-auto">
+                  <table
+                    className="w-full border-collapse custom-table"
+                    style={{
+                      whiteSpace: "nowrap",
+                      borderCollapse: "separate",
+                      borderSpacing: "0 6px",
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        {cashManageDetailscolumns.map((column) => (
+                          <th
+                            key={column.id}
+                            onClick={() => sortByColumn(column.id)}
+                            className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            style={{ minWidth: column.minWidth }}
+                          >
+                            <div className="headerStyle">
+                              <span style={{ minWidth: 150 }}>{column.label}</span>
+                            </div>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    {/* <tbody style={{ backgroundColor: "#3f621217" }}>
                         {cashManageDetails?.cash_list && cashManageDetails.cash_list.length > 0 ? (
                           cashManageDetails.cash_list.map((row) => {
                             return (
@@ -500,161 +501,160 @@ const CashManage = () => {
                         )}
                       </tbody> */}
 
-                      <tbody style={{ backgroundColor: "#3f621217" }}>
-                        {isLoading ? (
-                          <tr>
-                            <td
-                              colSpan={cashManageDetailscolumns.length}
-                              style={{
-                                textAlign: "center",
-                                padding: "40px",
-                              }}
-                            >
-                              <div className="flex justify-center items-center">
-                                <Loader />
-                              </div>
-                            </td>
+                    <tbody style={{ backgroundColor: (!cashManageDetails?.cash_list || cashManageDetails.cash_list.length === 0) ? "#ffffff" : "#3f621217" }}>
+                      {isLoading ? (
+                        <tr>
+                          <td
+                            colSpan={cashManageDetailscolumns.length}
+                            style={{
+                              textAlign: "center",
+                              padding: "40px",
+                            }}
+                          >
+                            <div className="flex justify-center items-center">
+                              <Loader />
+                            </div>
+                          </td>
+                        </tr>
+                      ) : cashManageDetails?.cash_list && cashManageDetails.cash_list.length > 0 ? (
+                        cashManageDetails.cash_list.map((row) => (
+                          <tr
+                            key={row.code}
+                            className="hover:bg-gray-100 cursor-pointer"
+                            tabIndex={-1}
+                          >
+                            {cashManageDetailscolumns.map((column, colIndex) => {
+                              let value = row[column.id];
+
+
+                              if (!value && value !== 0) {
+                                value = "-";
+                              }
+
+                              return (
+                                <td
+                                  key={column.id}
+                                  align={column.align}
+                                  className={`px-4 py-2 whitespace-nowrap ${column.id === "debit"
+                                    ? "debit-cell"
+                                    : column.id === "credit"
+                                      ? "credit-cell"
+                                      : ""
+                                    }`}
+                                  style={
+                                    colIndex === 0
+                                      ? { borderRadius: "10px 0 0 10px" }
+                                      : colIndex === cashManageDetailscolumns.length - 1
+                                        ? { borderRadius: "0 10px 10px 0" }
+                                        : {}
+                                  }
+                                >
+                                  {column.format && typeof value === "number" ? column.format(value) : value}
+                                </td>
+                              );
+                            })}
                           </tr>
-                        ) : cashManageDetails?.cash_list && cashManageDetails.cash_list.length > 0 ? (
-                          cashManageDetails.cash_list.map((row) => (
-                            <tr
-                              key={row.code}
-                              className="hover:bg-gray-100 cursor-pointer"
-                              tabIndex={-1}
-                            >
-                              {cashManageDetailscolumns.map((column, colIndex) => {
-                                let value = row[column.id];
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={cashManageDetailscolumns.length}
+                            style={{
+                              textAlign: "center",
+                              padding: "20px",
+                              color: "gray",
+                              backgroundColor: "#ffffff"
+                            }}
+                          >
+                            <NoData minHeight={"15vh"} />
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
 
-
-                                if (!value && value !== 0) {
-                                  value = "-";
-                                }
-
-                                return (
-                                  <td
-                                    key={column.id}
-                                    align={column.align}
-                                    className={`px-4 py-2 whitespace-nowrap ${column.id === "debit"
-                                      ? "debit-cell"
-                                      : column.id === "credit"
-                                        ? "credit-cell"
-                                        : ""
-                                      }`}
-                                    style={
-                                      colIndex === 0
-                                        ? { borderRadius: "10px 0 0 10px" }
-                                        : colIndex === cashManageDetailscolumns.length - 1
-                                          ? { borderRadius: "0 10px 10px 0" }
-                                          : {}
-                                    }
-                                  >
-                                    {column.format && typeof value === "number" ? column.format(value) : value}
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={cashManageDetailscolumns.length}
-                              style={{
-                                textAlign: "center",
-                                padding: "20px",
-                                color: "gray",
-                              }}
-                            >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
-                          </tr>
-                        )}
-                      </tbody>
-
-                    </table>
-                  </div>
+                  </table>
                 </div>
               </div>
             </div>
-
-
-            {/*<====================================================================== pagination  =====================================================================> */}
-
-            <div className="flex justify-center mt-4" style={{
-              left: 0,
-              right: 0,
-              bottom: 50,
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '1rem',
-              background: '#fff'
-            }}>
-              <button
-                onClick={() => setPage(page - 1)}
-                className={`mx-1 px-3 py-1 rounded ${page === 0 ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
-                disabled={page === 0}
-              >
-                Previous
-              </button>
-              {page > 1 && (
-                <button onClick={() => setPage(page - 2)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page - 1}</button>
-              )}
-              {page > 0 && (
-                <button onClick={() => setPage(page - 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page}</button>
-              )}
-              <button onClick={() => setPage(page)} className="mx-1 px-3 py-1 rounded secondary-bg text-white">{page + 1}</button>
-              {page + 1 < Math.ceil((cashManageDetails?.count || 0) / rowsPerPage) && (
-                <button onClick={() => setPage(page + 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page + 2}</button>
-              )}
-              <button
-                onClick={() => setPage(page + 1)}
-                className={`mx-1 px-3 py-1 rounded ${(page + 1) >= Math.ceil((cashManageDetails?.count || 0) / rowsPerPage) ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
-                disabled={(page + 1) >= Math.ceil((cashManageDetails?.count || 0) / rowsPerPage)}
-              >
-                Next
-              </button>
-            </div>
-
-            <Dialog
-              open={openAddPopUpDownload}
-              sx={{
-                "& .MuiDialog-container": {
-                  "& .MuiPaper-root": {
-                    width: "600px",
-                    maxWidth: "1500px",
-                    backgroundColor: "none",
-                    boxShadow: "none",
-                    marginBottom: "0",
-                  },
-                },
-              }}
-            >
-              <Alert
-                action={
-                  <IconButton
-                    aria-label="close"
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                      setOpenAddPopUpDownload(false);
-                    }}
-                  >
-                    <CloseIcon fontSize="inherit" />
-                  </IconButton>
-                }
-                sx={{ mb: 2 }}
-              >
-                <h4 className="font-bold text-lg">
-                  {" "}
-                  Please check your email.{" "}
-                </h4>
-                <span className="text-base">
-                  You will receive a maill from us within the next few minutes.
-                </span>
-              </Alert>
-            </Dialog>
           </div>
+
+
+          {/*<====================================================================== pagination  =====================================================================> */}
+
+          <div className="flex justify-center mt-4" style={{
+            left: 0,
+            right: 0,
+            bottom: 50,
+            display: 'flex',
+            justifyContent: 'center',
+            padding: '1rem',
+            background: '#fff'
+          }}>
+            <button
+              onClick={() => setPage(page - 1)}
+              className={`mx-1 px-3 py-1 rounded ${page === 0 ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
+              disabled={page === 0}
+            >
+              Previous
+            </button>
+            {page > 1 && (
+              <button onClick={() => setPage(page - 2)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page - 1}</button>
+            )}
+            {page > 0 && (
+              <button onClick={() => setPage(page - 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page}</button>
+            )}
+            <button onClick={() => setPage(page)} className="mx-1 px-3 py-1 rounded secondary-bg text-white">{page + 1}</button>
+            {page + 1 < Math.ceil((cashManageDetails?.count || 0) / rowsPerPage) && (
+              <button onClick={() => setPage(page + 1)} className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700">{page + 2}</button>
+            )}
+            <button
+              onClick={() => setPage(page + 1)}
+              className={`mx-1 px-3 py-1 rounded ${(page + 1) >= Math.ceil((cashManageDetails?.count || 0) / rowsPerPage) ? "bg-gray-200 text-gray-700" : "secondary-bg text-white"}`}
+              disabled={(page + 1) >= Math.ceil((cashManageDetails?.count || 0) / rowsPerPage)}
+            >
+              Next
+            </button>
+          </div>
+
+          <Dialog
+            open={openAddPopUpDownload}
+            sx={{
+              "& .MuiDialog-container": {
+                "& .MuiPaper-root": {
+                  width: "600px",
+                  maxWidth: "1500px",
+                  backgroundColor: "none",
+                  boxShadow: "none",
+                  marginBottom: "0",
+                },
+              },
+            }}
+          >
+            <Alert
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setOpenAddPopUpDownload(false);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+              sx={{ mb: 2 }}
+            >
+              <h4 className="font-bold text-lg">
+                {" "}
+                Please check your email.{" "}
+              </h4>
+              <span className="text-base">
+                You will receive a maill from us within the next few minutes.
+              </span>
+            </Alert>
+          </Dialog>
+        </div>
       </div>
     </>
   );

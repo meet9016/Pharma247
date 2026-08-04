@@ -16,6 +16,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import TextField from "@mui/material/TextField";
 import DatePicker from "react-datepicker";
+import NoData from "../../../../componets/NoData/NoData";
 import { BsLightbulbFill } from "react-icons/bs";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -398,7 +399,7 @@ const SalereturnList = () => {
                     }}
                   >
                     {isDownloadLoading ? (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
                         <CircularProgress size={16} style={{ color: "white" }} />
                         Generating...
                       </span>
@@ -468,11 +469,9 @@ const SalereturnList = () => {
                           </tr>
                         ) : tableData.length === 0 ? (
                           <tr>
-                            <td colSpan={columns.length + 2} style={{ textAlign: "center", color: "gray" }}>
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
-</div>
-</td>
+                            <td colSpan={columns.length + 2} style={{ textAlign: "center", color: "gray", backgroundColor: "#ffffff", borderRadius: "10px 10px 10px 10px" }}>
+                              <NoData minHeight={"65vh"} />
+                            </td>
                           </tr>
                         ) : (
                           tableData.map((row, index) => (
@@ -796,20 +795,20 @@ const SalereturnList = () => {
                 onClick={() => {
                   AllPDFGenerate();
                 }}
-               disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                generate
-              
-            </>
-          )}
-</Button>
+                disabled={isDownloadLoading}>
+                {isDownloadLoading ? (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                    <CircularProgress size={16} style={{ color: "white" }} />
+                    Downloading...
+                  </span>
+                ) : (
+                  <>
+
+                    generate
+
+                  </>
+                )}
+              </Button>
               <Button
                 autoFocus
                 variant="contained"

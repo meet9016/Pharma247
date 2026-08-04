@@ -8,6 +8,7 @@ import SwapVertIcon from "@mui/icons-material/SwapVert";
 import axios from "axios";
 import Loader from "../../../../componets/loader/Loader";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import NoData from "../../../../componets/NoData/NoData";
 import DeleteIcon from "@mui/icons-material/Delete";
 import usePermissions, {
   hasPermission,
@@ -210,9 +211,9 @@ const ReturnList = () => {
   };
 
   const pdfGenerator = async (id) => {
-let data = new FormData();
-data.append("id", id);
-setLoadingRowId(id);
+    let data = new FormData();
+    data.append("id", id);
+    setLoadingRowId(id);
     try {
       await axios
         .post("purches-return-pdf", data, {
@@ -449,7 +450,7 @@ setLoadingRowId(id);
                           history.push("/purchase");
                         }}
                       >
-                        Purchase Return
+                        Purchase Return 
                       </span>
                       <div>
                         <ArrowForwardIosIcon
@@ -575,12 +576,11 @@ setLoadingRowId(id);
                                 textAlign: "center",
                                 color: "gray",
                                 borderRadius: "10px 10px 10px 10px",
+                                backgroundColor: "#ffffff"
                               }}
                             >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                              <NoData minHeight={"65vh"} />
+                            </td>
                           </tr>
                         ) : (
                           tableData.map((row, index) => {
@@ -846,7 +846,7 @@ setLoadingRowId(id);
             >
               Next
             </button>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '16px' }}>
               <span className="primary font-semibold" style={{ fontSize: '14px' }}>Rows per page:</span>
               <Select
                 value={rowsPerPage}

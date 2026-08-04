@@ -186,7 +186,7 @@ const EditPurchaseBill = () => {
           activeElement.getAttribute("role") === "combobox");
 
       if (isDropdownFocused) return;
-      
+
       const isInputFocused = activeElement && (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA");
 
       if (key === "ArrowDown") {
@@ -197,7 +197,7 @@ const EditPurchaseBill = () => {
           const selectedRow = activeList[nextIndex];
           setSelectedEditItemId(selectedRow?.id);
           if (selectedRow) handleEditClick(selectedRow);
-          
+
           setTimeout(() => {
             document.getElementById(`purchase-edit-row-${nextIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }, 50);
@@ -211,7 +211,7 @@ const EditPurchaseBill = () => {
           const selectedRow = activeList[prevIndex];
           setSelectedEditItemId(selectedRow?.id);
           if (selectedRow) handleEditClick(selectedRow);
-          
+
           setTimeout(() => {
             document.getElementById(`purchase-edit-row-${prevIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }, 50);
@@ -296,8 +296,8 @@ const EditPurchaseBill = () => {
 
       if (event.key.toLowerCase() === "s") {
         if (openAddPopUp) {
-            handleCnAmount();
-            return;
+          handleCnAmount();
+          return;
         }
         if (isSubmitting) return;
         handleSubmit();
@@ -1268,7 +1268,7 @@ const EditPurchaseBill = () => {
           itemPurchaseList();
           purchaseBillGetByID();
           setIsDelete(false);
-           toast.dismiss();
+          toast.dismiss();
           toast.success(response?.data?.message || "Item deleted successfully");
           removeItem()
         });
@@ -1863,87 +1863,87 @@ const EditPurchaseBill = () => {
                     <td style={{ fontSize: 15, height: "47px", minWidth: 350, width: "350px", maxWidth: "350px" }}>
                       <div style={{ width: "100%", height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
                         {isEditMode ? (
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'start', alignContent: 'center', }}>
-                          <DeleteIcon
-                            className="delete-icon mr-2"
-                            onClick={() => {
-                              setIsEditMode(false);
-                              setTimeout(() => {
-                                removeItem();
-                                inputRefs.current[2]?.focus();
-                              }, 0);
-                            }}
-                          />
-                          <span >{searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}</span>
-
-
-                        </div>
-                      ) : (
-                        <Autocomplete
-                          fullWidth
-                          value={searchItem?.iteam_name}
-                          size="small"
-                          key={autocompleteKey}
-                          onChange={handleOptionChange}
-                          open={autoCompleteOpen}
-                          onOpen={() => setAutoCompleteOpen(true)}
-                          onClose={() => setAutoCompleteOpen(false)}
-                          onInputChange={handleInputChange}
-                          disabled={isAutocompleteDisabled}
-                          getOptionLabel={(option) => `${option.iteam_name} `}
-                          options={itemList}
-                          ListboxProps={{
-                            onScroll: handleScroll,
-                          }}
-                          renderOption={(props, option) => (
-                            <ListItem {...props}>
-                              <ListItemText
-                                primary={`${option.iteam_name}`}
-                                secondary={` ${option.company_name}`}
-                              />
-                            </ListItem>
-                          )}
-                          renderInput={(params) => (
-                            <TextField
-                              variant="outlined"
-                              autoComplete="off"
-                              placeholder="ITEM NAME"
-                              {...params}
-                              autoFocus
-                              fullWidth
-                              sx={{
-                                minWidth: "100%",
-                                width: "100%",
-                                '& .MuiInputBase-input': {
-                                  // textAlign: 'center',
-                                  // textTransform: 'uppercase',
-                                },
-                              }}
-
-                              inputRef={(el) => (inputRefs.current[2] = el)}
-                              onKeyDown={(e) => {
-                                const { key } = e;
-                                const isNavKey = ["Enter", "Tab", "ArrowDown", "ArrowUp"].includes(key);
-                                if (!searchItem) {
-                                  if (isNavKey) {
-                                    e.preventDefault();
-                                    if (key === "ArrowDown" || key === "ArrowUp") {
-                                      if (!searchItem) {
-                                        tableRef.current.focus();
-                                        setTimeout(() => document.activeElement.blur(), 0);
-                                      }
-                                    }
-                                  }
-                                } else {
-                                  if (key === "Enter" || key === "Tab") {
-                                    handleKeyDown(e, 2);
-                                  }
-                                }
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'start', alignContent: 'center', }}>
+                            <DeleteIcon
+                              className="delete-icon mr-2"
+                              onClick={() => {
+                                setIsEditMode(false);
+                                setTimeout(() => {
+                                  removeItem();
+                                  inputRefs.current[2]?.focus();
+                                }, 0);
                               }}
                             />
-                          )}
-                        />
-                      )}
+                            <span >{searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}</span>
+
+
+                          </div>
+                        ) : (
+                          <Autocomplete
+                            fullWidth
+                            value={searchItem?.iteam_name}
+                            size="small"
+                            key={autocompleteKey}
+                            onChange={handleOptionChange}
+                            open={autoCompleteOpen}
+                            onOpen={() => setAutoCompleteOpen(true)}
+                            onClose={() => setAutoCompleteOpen(false)}
+                            onInputChange={handleInputChange}
+                            disabled={isAutocompleteDisabled}
+                            getOptionLabel={(option) => `${option.iteam_name} `}
+                            options={itemList}
+                            ListboxProps={{
+                              onScroll: handleScroll,
+                            }}
+                            renderOption={(props, option) => (
+                              <ListItem {...props}>
+                                <ListItemText
+                                  primary={`${option.iteam_name}`}
+                                  secondary={` ${option.company_name}`}
+                                />
+                              </ListItem>
+                            )}
+                            renderInput={(params) => (
+                              <TextField
+                                variant="outlined"
+                                autoComplete="off"
+                                placeholder="ITEM NAME"
+                                {...params}
+                                autoFocus
+                                fullWidth
+                                sx={{
+                                  minWidth: "100%",
+                                  width: "100%",
+                                  '& .MuiInputBase-input': {
+                                    // textAlign: 'center',
+                                    // textTransform: 'uppercase',
+                                  },
+                                }}
+
+                                inputRef={(el) => (inputRefs.current[2] = el)}
+                                onKeyDown={(e) => {
+                                  const { key } = e;
+                                  const isNavKey = ["Enter", "Tab", "ArrowDown", "ArrowUp"].includes(key);
+                                  if (!searchItem) {
+                                    if (isNavKey) {
+                                      e.preventDefault();
+                                      if (key === "ArrowDown" || key === "ArrowUp") {
+                                        if (!searchItem) {
+                                          tableRef.current.focus();
+                                          setTimeout(() => document.activeElement.blur(), 0);
+                                        }
+                                      }
+                                    }
+                                  } else {
+                                    if (key === "Enter" || key === "Tab") {
+                                      handleKeyDown(e, 2);
+                                    }
+                                  }
+                                }}
+                              />
+                            )}
+                          />
+                        )}
                       </div>
                     </td>
 
@@ -2065,7 +2065,7 @@ const EditPurchaseBill = () => {
                             const now = new Date();
                             const sixMonthsLater = new Date();
                             sixMonthsLater.setMonth(now.getMonth() + 6);
-                            
+
                             const monthsRemaining = (expiry.getFullYear() - now.getFullYear()) * 12 + (expiry.getMonth() - now.getMonth());
 
                             if (expiry < now) {
@@ -2426,7 +2426,7 @@ const EditPurchaseBill = () => {
                         }}
                       />
                     </td>
-<td>
+                    <td>
                       <TextField
                         variant="outlined"
                         autoComplete="off"
@@ -2771,10 +2771,10 @@ const EditPurchaseBill = () => {
                       {purchaseReturnPending.length === 0 ? (
                         <tr>
                           <td>
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+                              {!isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />}
+                            </div>
+                          </td>
                         </tr>
                       ) : (
                         purchaseReturnPending.map((row, index) => (

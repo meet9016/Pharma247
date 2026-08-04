@@ -230,121 +230,121 @@ const PurchaseView = () => {
         <div style={{ flexShrink: 0 }}>
           <div>
             <div className="py-3 sal-rtn-fff sale_view_btns" style={{ display: "flex", gap: "4px" }}>
-            <div className="flex flex-row gap-2 " style={{ alignItems: "center" }}>
-              <span
-                style={{
-                  color: "var(--color2)",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  history.push("/purchase");
-                }}
-              >
-                Purchase
-              </span>
-              <ArrowForwardIosIcon
-                style={{
-                  fontSize: "20px",
-                  color: "var(--color1)",
-                }}
-              />
-              <span
-                style={{
-                  color: "var(--color1)",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                }}
-              >
-                View
-              </span>
-              <ArrowForwardIosIcon
-                style={{
-                  fontSize: "20px",
-                  color: "var(--color1)",
-                }}
-              />
-              <span
-                style={{
-                  color: "var(--color1)",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {data.bill_no}
-              </span>
-              <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
-            </div>
-
-            {hasPermission(permissions, "purchase bill edit") && (
-              <div
-                className="flex sale_ve_btnsss"
-                style={{ width: "100%", justifyContent: "end", gap: "10px" }}
-              >
-                {data?.cn_bill_list?.length !== 0 && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ backgroundColor: "var(--color1)" }}
-
-
-                    onClick={() => setOpenAddPopUp(true)}
-                  >
-                    <AddIcon className="mr-2" />
-                    CN View
-                  </Button>
-                )}
-
-                <Button
-                  variant="contained"
-                  className="sale_add_btn sale_dnls gap-2"
-                  style={{ backgroundColor: "var(--color1)", minWidth: 120 }}
-                  disabled={isPdfLoading}
-                  onClick={() => pdfGenerator(id)}
-                >
-                  {isPdfLoading ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 ,color:"#fff"}}>
-                      <CircularProgress size={16} style={{ color: "white" }} />
-                      Downloading...
-                    </span>
-                  ) : (
-                    <>
-                      <FaFilePdf className="w-5 h-5 hover:text-secondary cursor-pointer" />
-                      Download
-                    </>
-                  )}
-                </Button>
-
-                {data?.item_list?.length !== 0 && (<Button
-                  style={{ background: "var(--color1)" }}
-                  variant="contained"
-                  className="sale_add_btn sale_dnls"
+              <div className="flex flex-row gap-2 " style={{ alignItems: "center" }}>
+                <span
+                  style={{
+                    color: "var(--color2)",
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: 700,
+                    fontSize: "20px",
+                    cursor: "pointer",
+                  }}
                   onClick={() => {
-                    history.push("/purchaseEdit/" + data.id + "/" + data?.item_list[0].random_number);
+                    history.push("/purchase");
                   }}
                 >
-                  <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer " />
-                  Edit
-                </Button>)
-                }
-
+                  Purchase 
+                </span>
+                <ArrowForwardIosIcon
+                  style={{
+                    fontSize: "20px",
+                    color: "var(--color1)",
+                  }}
+                />
+                <span
+                  style={{
+                    color: "var(--color1)",
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: 700,
+                    fontSize: "20px",
+                  }}
+                >
+                  View
+                </span>
+                <ArrowForwardIosIcon
+                  style={{
+                    fontSize: "20px",
+                    color: "var(--color1)",
+                  }}
+                />
+                <span
+                  style={{
+                    color: "var(--color1)",
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: 700,
+                    fontSize: "20px",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {data.bill_no}
+                </span>
+                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
               </div>
-            )}
+
+              {hasPermission(permissions, "purchase bill edit") && (
+                <div
+                  className="flex sale_ve_btnsss"
+                  style={{ width: "100%", justifyContent: "end", gap: "10px" }}
+                >
+                  {data?.cn_bill_list?.length !== 0 && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      style={{ backgroundColor: "var(--color1)" }}
+
+
+                      onClick={() => setOpenAddPopUp(true)}
+                    >
+                      <AddIcon className="mr-2" />
+                      CN View
+                    </Button>
+                  )}
+
+                  <Button
+                    variant="contained"
+                    className="sale_add_btn sale_dnls gap-2"
+                    style={{ backgroundColor: "var(--color1)", minWidth: 120 }}
+                    disabled={isPdfLoading}
+                    onClick={() => pdfGenerator(id)}
+                  >
+                    {isPdfLoading ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                        <CircularProgress size={16} style={{ color: "white" }} />
+                        Downloading...
+                      </span>
+                    ) : (
+                      <>
+                        <FaFilePdf className="w-5 h-5 hover:text-secondary cursor-pointer" />
+                        Download
+                      </>
+                    )}
+                  </Button>
+
+                  {data?.item_list?.length !== 0 && (<Button
+                    style={{ background: "var(--color1)" }}
+                    variant="contained"
+                    className="sale_add_btn sale_dnls"
+                    onClick={() => {
+                      history.push("/purchaseEdit/" + data.id + "/" + data?.item_list[0].random_number);
+                    }}
+                  >
+                    <BorderColorIcon className="w-7 h-6 text-white  p-1 cursor-pointer " />
+                    Edit
+                  </Button>)
+                  }
+
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/*<===================================================================== top details  =====================================================================> */}
+          {/*<===================================================================== top details  =====================================================================> */}
 
-        <div>
-          {/* <div className="firstrow flex mt-2 rounded-md p-3" style={{
+          <div>
+            {/* <div className="firstrow flex mt-2 rounded-md p-3" style={{
             backgroundColor: 'rgb(63 98 18 / 11%)',
           }}>
             <div className="detail_main">
@@ -383,171 +383,171 @@ const PurchaseView = () => {
             </div>
           </div> */}
 
-          <div className="scroll-wrapper">
-            <div
-              className="firstrow"
-              style={{
-                display: "flex",
-                alignItems: "stretch",
-                marginTop: "0.5rem",
-                background: "#E0E3DC",
-                border: "1px solid #e7ebe0",
-                borderRadius: "12px",
-                boxShadow:
-                  "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(63,98,18,0.15)",
-                overflow: "hidden",
-                position: "relative",
-              }}
-            >
-              {/* Left accent */}
+            <div className="scroll-wrapper">
               <div
+                className="firstrow"
                 style={{
-                  width: "5px",
-                  background: "linear-gradient(180deg, #3f6212 0%, #65a30d 50%, #84cc16 100%)",
-                  flexShrink: 0,
-                }}
-              />
-
-              {/* SR No badge - compact */}
-              <div
-                style={{
-                  flex: "0 0 auto",
-                  minWidth: "62px",
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "10px 14px",
-                  background: "linear-gradient(180deg, #b8c7a1 0%, #a2b687 50%, #8fa46f 100%)",
-                  borderRight: "1px solid #e7ebe0",
+                  alignItems: "stretch",
+                  marginTop: "0.5rem",
+                  background: "#E0E3DC",
+                  border: "1px solid #e7ebe0",
+                  borderRadius: "12px",
+                  boxShadow:
+                    "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(63,98,18,0.15)",
+                  overflow: "hidden",
+                  position: "relative",
                 }}
               >
-                {/* <span style={{ fontSize: "0.82rem", color: "#65784a", fontWeight: 700, letterSpacing: "0.05em" }}>
+                {/* Left accent */}
+                <div
+                  style={{
+                    width: "5px",
+                    background: "linear-gradient(180deg, #3f6212 0%, #65a30d 50%, #84cc16 100%)",
+                    flexShrink: 0,
+                  }}
+                />
+
+                {/* SR No badge - compact */}
+                <div
+                  style={{
+                    flex: "0 0 auto",
+                    minWidth: "62px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "10px 14px",
+                    background: "linear-gradient(180deg, #b8c7a1 0%, #a2b687 50%, #8fa46f 100%)",
+                    borderRight: "1px solid #e7ebe0",
+                  }}
+                >
+                  {/* <span style={{ fontSize: "0.82rem", color: "#65784a", fontWeight: 700, letterSpacing: "0.05em" }}>
                         Bill No
                       </span> */}
-                <span style={{ fontSize: "25px", fontWeight: 700, color: "#3f6212", lineHeight: 1.1 }}>
-                  {data.sr_no}
-                </span>
-              </div>
+                  <span style={{ fontSize: "25px", fontWeight: 700, color: "#3f6212", lineHeight: 1.1 }}>
+                    {data.sr_no}
+                  </span>
+                </div>
 
-              {/* Fields */}
-              <div
-                style={{
-                  flex: 1,
-                  display: "grid",
-                  gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
-                  alignItems: "center",
-                }}
-              >
-                {[
+                {/* Fields */}
+                <div
+                  style={{
+                    flex: 1,
+                    display: "grid",
+                    gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+                    alignItems: "center",
+                  }}
+                >
+                  {[
 
-                  { label: "Bill Creator", value: data.user_name || "-" },
-                  { label: "Bill No.", value: data.bill_no || "-" },
-                  { label: "Bill Date", value: data.bill_date || "-" },
-                  { label: "Due Date", value: data.due_date || "-" },
-                  { label: "Distributer", value: data.distributor_name || "-" },
-                  { label: "Payment Type", value: data.payment_type || "-" },
-                  { label: "Entery By", value: localStorage.getItem("UserName") || "-" },
+                    { label: "Bill Creator", value: data.user_name || "-" },
+                    { label: "Bill No.", value: data.bill_no || "-" },
+                    { label: "Bill Date", value: data.bill_date || "-" },
+                    { label: "Due Date", value: data.due_date || "-" },
+                    { label: "Distributer", value: data.distributor_name || "-" },
+                    { label: "Payment Type", value: data.payment_type || "-" },
+                    { label: "Entery By", value: localStorage.getItem("UserName") || "-" },
 
-                ].map((item, idx, arr) => (
-                  <div
-                    key={item.label}
-                    className="detail_main"
-                    style={{
-                      minWidth: 0,
-                      padding: "12px 16px",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      gap: "4px",
-                      borderRight: idx < arr.length - 1 ? "1px solid #7c8d66" : "none",
-                      position: "relative",
-                    }}
-                  >
-                    <span
-                      className="heading"
+                  ].map((item, idx, arr) => (
+                    <div
+                      key={item.label}
+                      className="detail_main"
                       style={{
-                        fontSize: "14px",
-                        fontWeight: 700,
-                        color: "#3f6212",
-                        letterSpacing: "0.01em",
+                        minWidth: 0,
+                        padding: "12px 16px",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        gap: "4px",
+                        borderRight: idx < arr.length - 1 ? "1px solid #7c8d66" : "none",
+                        position: "relative",
                       }}
                     >
-                      {item.label}
-                    </span>
-
-                    {item.pill ? (
                       <span
+                        className="heading"
                         style={{
-                          alignSelf: "flex-start",
-                          fontSize: "0.78rem",
-                          fontWeight: 600,
+                          fontSize: "14px",
+                          fontWeight: 700,
                           color: "#3f6212",
-                          background: "#ecfccb",
-                          border: "1px solid #d9f99d",
-                          padding: "2px 10px",
-                          borderRadius: "999px",
-                          textTransform: "capitalize",
-                          whiteSpace: "nowrap",
-                          maxWidth: "100%",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
+                          letterSpacing: "0.01em",
                         }}
-                        title={String(item.value ?? "")}
                       >
-                        {item.value}
+                        {item.label}
                       </span>
-                    ) : (
-                      <span
-                        className="data"
-                        style={{
-                          fontSize: "15px",
-                          fontWeight: 600,
-                          color: item.accent || "#000000",
-                          // fontFamily: item.mono
-                          //   ? "'JetBrains Mono', ui-monospace, monospace"
-                          //   : "inherit",
-                          textTransform: item.cap ? "capitalize" : "none",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          letterSpacing: item.mono ? "-0.01em" : "normal",
-                        }}
-                        title={String(item.value ?? "")}
-                      >
-                        {item.value || "—"}
-                      </span>
-                    )}
-                  </div>
-                ))}
+
+                      {item.pill ? (
+                        <span
+                          style={{
+                            alignSelf: "flex-start",
+                            fontSize: "0.78rem",
+                            fontWeight: 600,
+                            color: "#3f6212",
+                            background: "#ecfccb",
+                            border: "1px solid #d9f99d",
+                            padding: "2px 10px",
+                            borderRadius: "999px",
+                            textTransform: "capitalize",
+                            whiteSpace: "nowrap",
+                            maxWidth: "100%",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                          title={String(item.value ?? "")}
+                        >
+                          {item.value}
+                        </span>
+                      ) : (
+                        <span
+                          className="data"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: 600,
+                            color: item.accent || "#000000",
+                            // fontFamily: item.mono
+                            //   ? "'JetBrains Mono', ui-monospace, monospace"
+                            //   : "inherit",
+                            textTransform: item.cap ? "capitalize" : "none",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            letterSpacing: item.mono ? "-0.01em" : "normal",
+                          }}
+                          title={String(item.value ?? "")}
+                        >
+                          {item.value || "—"}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/*<===============================================================  table data  ===============================================================> */}
+          {/*<===============================================================  table data  ===============================================================> */}
 
-          <div className="table-container mt-5" style={{ flex: 1, minHeight: 0, marginBottom: "20px", overflow: "auto" }}>
+          <div className=" mt-5" style={{ flex: 1, minHeight: 0, marginBottom: "20px", overflow: "auto" }}>
             <table className="customtable  w-full border-collapse custom-table" style={{ whiteSpace: 'nowrap', borderCollapse: "separate", borderSpacing: "0 6px" }}>
-              <thead>
+              <thead >
                 <tr>
-                  <th>Item Name</th>
-                  <th>Unit </th>
-                  <th>HSN</th>
-                  <th>Batch </th>
-                  <th>Expiry </th>
-                  <th>MRP </th>
-                  <th>Qty. </th>
-                  <th>Free </th>
-                  <th>PTR </th>
-                  <th>CD% </th>
-                  <th>Sch.Amt </th>
-                  <th>Base </th>
-                  <th>GST% </th>
-                  <th>Loc. </th>
-                  <th>Margin </th>
-                  <th>Net Rate </th>
-                  <th>Amount </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Item Name</th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Unit </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>HSN</th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Batch </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Expiry </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>MRP </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Qty. </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Free </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>PTR </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>CD% </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Sch.Amt </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Base </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>GST% </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Loc. </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Margin </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Net Rate </th>
+                  <th style={{ backgroundColor: '#E0E3DC' }}>Amount </th>
                 </tr>
               </thead>
               {isLoading ? (
@@ -596,10 +596,10 @@ const PurchaseView = () => {
                           color: "#666",
                         }}
                       >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/purchase.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+                          {!isLoading && <img src="/purchase.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />}
+                        </div>
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -621,7 +621,7 @@ const PurchaseView = () => {
             <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
               <label className="font-bold">Total Qty : </label>
               <span style={{ fontWeight: 600 }}>
-                {data?.total_qty ? data?.total_qty : 0} + {data?.total_free_qty ? data?.total_free_qty : 0} Free
+                {data?.total_qty ? data?.total_qty : 0} + {data?.total_free_qty ? data?.total_free_qty : 0} Free&nbsp;&nbsp;&nbsp;
               </span>
             </div>
             <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
@@ -813,10 +813,10 @@ const PurchaseView = () => {
                       {data?.cn_bill_list?.length === 0 ? (
                         <tr>
                           <td>
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/purchase.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+                              {!isLoading && <img src="/purchase.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />}
+                            </div>
+                          </td>
                         </tr>
                       ) : (
                         data?.cn_bill_list?.map((row, index) => (

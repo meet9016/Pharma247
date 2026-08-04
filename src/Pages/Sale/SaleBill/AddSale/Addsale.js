@@ -156,7 +156,7 @@ const AddSale = () => {
   const [givenAmt, setGivenAmt] = useState(null);
   const [otherAmt, setOtherAmt] = useState(0);
   const [searchItemID, setSearchItemID] = useState("");
-  const [bankData, setBankData] = useState([]);
+  const [paymentMethodData, setPaymentMethodData] = useState([]);
   const [CustomerSearchQuery, setCustomerSearchQuery] = useState("");
   const [searchDoctor, setSearchDoctor] = useState("");
   const [purchaseHistory, setPurchaseHistory] = useState([]);
@@ -1169,19 +1169,17 @@ const AddSale = () => {
     });
   }
 
-  const BankList = async () => {
-
-    let data = new FormData();
+  const PaymentMethodList = async () => {
 
     try {
       await axios
-        .post("bank-list", data, {
+        .get("payment-method-list", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
-          setBankData(response.data.data);
+          setPaymentMethodData(response.data.data);
           if (response.data.status === 401) {
             history.push("/");
             localStorage.clear();
@@ -1212,7 +1210,7 @@ const AddSale = () => {
           generateRandomNumber(),
           fetchCustomers(),
           fetchDoctors(),
-          BankList(),
+          PaymentMethodList(),
         ])
       } catch (error) {
         console.error(error)
@@ -2385,11 +2383,9 @@ const AddSale = () => {
               size="small"
               sx={{ minWidth: "150px" }}
             >
-              <MenuItem value="cash">Cash</MenuItem>
-              <MenuItem value="credit">Credit</MenuItem>
-              {bankData?.filter(b => b.bank_name.toLowerCase().trim() !== "cash" && b.bank_name.toLowerCase().trim() !== "credit").map((option) => (
-                <MenuItem key={option.id} value={option.id}>
-                  {option.bank_name}
+              {paymentMethodData?.map((option) => (
+                <MenuItem key={option.id} value={option.value}>
+                  {option.name}
                 </MenuItem>
               ))}
             </Select>
@@ -2965,10 +2961,10 @@ const AddSale = () => {
                                 fontWeight: 600,
                               }}
                             >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/sales.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+                                {!isLoading && <img src="/sales.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />}
+                              </div>
+                            </td>
                           </tr>
                         )}
                       </tbody>
@@ -3281,16 +3277,18 @@ const AddSale = () => {
                 </td>
                 <td>
                   <TextField
-                   select
+                    select
                     id="outlined-number"
-                     placeholder="Gst"
-                      error={!!itemErrors.gst}
-                       size="small"
-                        inputRef={inputRef6}
-                         onKeyDown={(e) => handleKeyDown(e, 5)}
-                          sx={{ minWidth: "60px",
-                             width: "100%", 
-                             "& .MuiSelect-select": { textAlign: "left" } }}
+                    placeholder="Gst"
+                    error={!!itemErrors.gst}
+                    size="small"
+                    inputRef={inputRef6}
+                    onKeyDown={(e) => handleKeyDown(e, 5)}
+                    sx={{
+                      minWidth: "60px",
+                      width: "100%",
+                      "& .MuiSelect-select": { textAlign: "left" }
+                    }}
                     value={gst || ""}
                     onChange={(e) => {
                       setGst(e.target.value);
@@ -3300,7 +3298,7 @@ const AddSale = () => {
                     <MenuItem value="0">0</MenuItem>
                     <MenuItem value="5">5</MenuItem>
                     <MenuItem value="18">18</MenuItem>
-                    </TextField>
+                  </TextField>
                 </td>
                 <td >
                   <TextField
@@ -4269,7 +4267,7 @@ const AddSale = () => {
                       <thead>
                         <tr>
                           <th></th>
-                          <th style={{textAlign:"left"}}>Item Name</th>
+                          <th style={{ textAlign: "left" }}>Item Name</th>
                           <th>Quantity</th>
                           <th className="">
                             <span style={{ display: "flex", alignItems: "center", gap: "4px", justifyContent: "center" }}>

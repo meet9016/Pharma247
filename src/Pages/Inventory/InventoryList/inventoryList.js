@@ -39,6 +39,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
+import NoData from "../../../componets/NoData/NoData";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -624,7 +625,7 @@ const InventoryList = () => {
           setData(response.data.data.data);
           if (response.data.data.data.length == 0) {
             // toast.dismiss();
-            toast.error("No Record Found");
+            // toast.error("No Record Found");
           }
           setIsLoading(false);
           // BECAUSE OF THIS FITLER IS NOT WORKING PROPERLY
@@ -1967,27 +1968,27 @@ const InventoryList = () => {
                   display: "flex",
                 }}
                 onClick={handleFilterData}
-               disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src="/csv-file.png"
-                    className="report-icon absolute mr-10"
-                    alt="csv "
-                  />
-                </div>
-                Download
-              
-            </>
-          )}
-</Button>
+                disabled={isDownloadLoading}>
+                {isDownloadLoading ? (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                    <CircularProgress size={16} style={{ color: "white" }} />
+                    Downloading...
+                  </span>
+                ) : (
+                  <>
+
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <img
+                        src="/csv-file.png"
+                        className="report-icon absolute mr-10"
+                        alt="csv "
+                      />
+                    </div>
+                    Download
+
+                  </>
+                )}
+              </Button>
 
               <Button
                 aria-controls="simple-menu"
@@ -2316,8 +2317,8 @@ const InventoryList = () => {
               />
             </TableContainer>
           ) : (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-              { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '650px', width: '100%', backgroundColor: '#ffffff', borderRadius: '10px' }}>
+              <NoData minHeight={"100%"} />
             </div>
             //  <div>
             //   <div className="vector-image">
@@ -3063,7 +3064,7 @@ const InventoryList = () => {
 
       <Dialog open={openQR} className="custom-dialog max-991">
         <DialogTitle id="alert-dialog-title" className="secondary">
-          Bulk QR 
+          Bulk QR
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -3100,12 +3101,12 @@ const InventoryList = () => {
                           padding: "20px 0",
                           fontWeight: 600,
                           fontSize: "16px",
+                          backgroundColor: "#ffffff",
+                          borderRadius: "10px"
                         }}
                       >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                        <NoData minHeight={"65vh"} />
+                      </td>
                     </tr>
                   ) : (
                     QRBatch.map((row, index) => (

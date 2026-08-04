@@ -491,9 +491,6 @@ const ReturnView = () => {
 
 
 
-
-
-
             <div className="overflow-x-auto mt-5">
               <table
                 className="customtable  w-full border-collapse custom-table"
@@ -505,19 +502,19 @@ const ReturnView = () => {
               >
                 <thead>
                   <tr>
-                    <th>Item Name</th>
-                    <th>Unit </th>
-                    <th>Batch </th>
-                    <th>Expiry </th>
-                    <th>MRP </th>
-                    <th>Qty. </th>
-                    <th>Free </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>Item Name</th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>Unit </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>Batch </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>Expiry </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>MRP </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>Qty. </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>Free </th>
 
-                    <th>PTR </th>
-                    <th>CD% </th>
-                    <th>GST% </th>
-                    <th>Loc </th>
-                    <th>Amount </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>PTR </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>CD% </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>GST% </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>Loc </th>
+                    <th style={{ backgroundColor: '#E0E3DC' }}>Amount </th>
                   </tr>
                 </thead>
                 {tableData.length == 0 ? (
@@ -570,10 +567,10 @@ const ReturnView = () => {
                             color: "#666",
                           }}
                         >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+                            {!isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />}
+                          </div>
+                        </td>
                       </tr>
                     )}
                   </tbody>

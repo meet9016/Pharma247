@@ -4,6 +4,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import Header from "../../Header";
 import axios from "axios";
 import Loader from "../../../componets/loader/Loader";
+import NoData from "../../../componets/NoData/NoData";
 import { toast, ToastContainer } from "react-toastify";
 import { BsLightbulbFill } from "react-icons/bs";
 import AddIcon from "@mui/icons-material/Add";
@@ -470,7 +471,7 @@ const LoyaltyPoint = () => {
                     </tr>
                   </thead>
 
-                  <tbody >
+                  <tbody style={{ backgroundColor: loyaltypointData.length === 0 ? "#ffffff" : "transparent" }}>
                     {isLoading ? (
                       <tr>
                         <td
@@ -487,12 +488,10 @@ const LoyaltyPoint = () => {
                         <td
                           colSpan={loyaltyPointLabel.length + 2}
                           className="text-center text-gray-500"
-                          style={{ borderRadius: "10px 10px 10px 10px" }}
+                          style={{ borderRadius: "10px 10px 10px 10px", backgroundColor: "#ffffff" }}
                         >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                          <NoData minHeight={"65vh"} />
+                        </td>
                       </tr>
                     ) : (
                       loyaltypointData?.map((item, index) => (

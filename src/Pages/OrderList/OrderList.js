@@ -41,6 +41,7 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import useSubmitShortcut from "../../hooks/useSubmitShortcut";
+import NoData from "../../componets/NoData/NoData";
 
 const OrderList = () => {
   const history = useHistory();
@@ -689,7 +690,7 @@ const OrderList = () => {
                           </tr>
                         </tbody>
                       ) : (
-                        <tbody style={{ background: "#3f621217" }}>
+                        <tbody style={{ background: "#ffffff17" }}>
                           {onlineOrder.length === 0 ? (
                             <tr>
                               <td
@@ -698,12 +699,11 @@ const OrderList = () => {
                                 style={{
                                   textAlign: "center",
                                   borderRadius: "10px 10px 10px 10px",
+                                  backgroundColor: "#ffffff"
                                 }}
                               >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                                <NoData minHeight={"65vh"} />
+                              </td>
                             </tr>
                           ) : (
                             onlineOrder.map((row, index) => (
@@ -1096,12 +1096,12 @@ const OrderList = () => {
                                 textAlign: "center",
                                 padding: "10px",
                                 fontWeight: "600",
+                                backgroundColor: "#ffffff",
+                                borderRadius: "10px"
                               }}
                             >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                              <NoData minHeight={"65vh"} />
+                            </td>
                           </tr>
                         )}
                       </tbody>

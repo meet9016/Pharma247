@@ -2,6 +2,7 @@ import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 import CircularProgress from "@mui/material/CircularProgress";
 import Header from "../../../Header";
 import Loader from "../../../../componets/loader/Loader";
+import NoData from "../../../../componets/NoData/NoData";
 import React, { useEffect, useState, useRef } from "react";
 import { BsLightbulbFill } from "react-icons/bs";
 import {
@@ -723,7 +724,7 @@ const DoctorList = () => {
                       disabled={isDownloadLoading}
                     >
                       {isDownloadLoading ? (
-                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
                           <CircularProgress size={16} style={{ color: "white" }} />
                           Generating...
                         </span>
@@ -807,7 +808,7 @@ const DoctorList = () => {
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody >
+                  <tbody style={{ background: tableData.length === 0 ? '#ffffff' : 'transparent' }}>
                     {(isLoading || isSearchLoading) ? (
                       <tr>
                         <td
@@ -831,12 +832,11 @@ const DoctorList = () => {
                             textAlign: "center",
                             color: "gray",
                             borderRadius: "10px 10px 10px 10px",
+                            backgroundColor: "#ffffff",
                           }}
                         >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                          <NoData minHeight={"65vh"} />
+                        </td>
                       </tr>
                     ) : (
                       tableData.map((row, index) => {

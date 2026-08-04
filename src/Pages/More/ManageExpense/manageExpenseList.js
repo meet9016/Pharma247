@@ -38,6 +38,7 @@ import { format, subDays } from "date-fns";
 import { FaArrowUp } from "react-icons/fa";
 import Alert from "@mui/material/Alert";
 import Loader from "../../../componets/loader/Loader";
+import NoData from "../../../componets/NoData/NoData";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
@@ -496,595 +497,560 @@ const ManageExpense = () => {
             width: '100%',
           }}
         >
-            <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
-              <div className="p-6">
+          <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+            <div className="p-6">
+              <div
+                className="mb-4 mng_expnse_main_hdr"
+                style={{ display: "flex", gap: "4px" }}
+              >
                 <div
-                  className="mb-4 mng_expnse_main_hdr"
-                  style={{ display: "flex", gap: "4px" }}
+                  style={{
+                    display: "flex",
+                    gap: "7px",
+                    marginBottom: "10px",
+                    alignItems: "center",
+                  }}
                 >
-                  <div
+                  <span
                     style={{
+                      color: "var(--color1)",
                       display: "flex",
-                      gap: "7px",
-                      marginBottom: "10px",
                       alignItems: "center",
+                      fontWeight: 700,
+                      fontSize: "20px",
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    <span
-                      style={{
-                        color: "var(--color1)",
-                        display: "flex",
-                        alignItems: "center",
-                        fontWeight: 700,
-                        fontSize: "20px",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Manage Expense
-                    </span>
-                    <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
-                  </div>
-                  <div
-                    className="headerList both_btn_expn"
-                    style={{ marginBottom: "10px" }}
-                  >
-                    <Button
-                      variant="contained"
-                      className="gap-2 add_btn_expn"
-                      style={{
-                        textTransform: "none",
-                        background: "var(--color1)",
-                      }}
-                      onClick={() => setOpenAddPopUp(true)}
-                    >
-                      {" "}
-                      <AddIcon className="" />
-                      Add  Expense
-                    </Button>
-                    <Button
-                      variant="contained"
-                      className="gap-7 add_btn_expn"
-                      style={{
-                        background: "var(--color1)",
-                        color: "white",
-                        // paddingLeft: "35px",
-                        textTransform: "none",
-                        display: "flex",
-                      }}
-                      onClick={handlePdf}
-                      disabled={isDownloadLoading}
-                    >
-                      {isDownloadLoading ? (
-                        <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-                          <CircularProgress size={16} style={{ color: "white" }} />
-                          Generating...
-                        </span>
-                      ) : (
-                        <>
-                          <div style={{ display: "flex", alignItems: "center" }}>
-                            <img
-                              src="/csv-file.png"
-                              className="report-icon absolute mr-10"
-                              alt="csv "
-                            />
-                          </div>
-                          Download
-                        </>
-                      )}
-                    </Button>
-                  </div>
+                    Manage Expense
+                  </span>
+                  <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
                 </div>
                 <div
-                  className="row border-b border-dashed"
-                  style={{ borderColor: "var(--color2)" }}
-                ></div>
-                <div className="csrtureddididid flex flex-col gap-3 justify-between md:flex-row mt-4 oreder_list_fld_rp pb-2" style={{ width: "100%", alignItems: "end" }}>
-                  <div className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-4 w-full gap-3 ttl_dldld">
-                    <div>
-                      <span className="text-gray-500 py-2">Start Date</span>
-                      <div>
-                        <DatePicker
-                          className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker"
-                          selected={startDate}
-                          onChange={handleStartDate}
-                          dateFormat="dd/MM/yyyy"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">End Date</span>
-                      <div>
-                        <DatePicker
-                          className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker"
-                          selected={endDate}
-                          onChange={handleEndDate}
-                          dateFormat="dd/MM/yyyy"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <span className="text-gray-500">Category</span>
-                      <div>
-                        <Select
-                          labelId="dropdown-label"
-                          className="category_fld"
-                          id="dropdown"
-                          value={catagory}
-                          sx={{ width: "100%" }}
-                          onChange={handleCategoryFilter}
-                          size="small"
-                          displayEmpty
-                        >
-                          <MenuItem value="">All</MenuItem>
-                          {catagoryList?.map((option) => (
-                            <MenuItem key={option.id} value={option.id}>
-                              {option.name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 ttl_dldld">
-                    <div
-                      className="total_mng_expn"
-                      style={{
-                        background: "#f3f3f3",
-                        padding: "12px",
-                        borderRadius: "10px",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      <h2 className="primary font-medium text-xl ">
-                        Total{" "}
-                        <span className="secondary font-bold text-xl ">
-                          Rs.{Number(expenseData.total).toFixed(2)}
-                        </span>
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-                <div className="overflow-x-auto mt-4">
-                  <table
-                    className="w-full border-collapse custom-table"
+                  className="headerList both_btn_expn"
+                  style={{ marginBottom: "10px" }}
+                >
+                  <Button
+                    variant="contained"
+                    className="gap-2 add_btn_expn"
                     style={{
-                      whiteSpace: "nowrap",
-                      borderCollapse: "separate",
-                      borderSpacing: "0 6px",
+                      textTransform: "none",
+                      background: "var(--color1)",
                     }}
+                    onClick={() => setOpenAddPopUp(true)}
                   >
-                    <thead>
-                      <tr>
-                        <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
-                        {expenseColumns.map((column) => (
-                          <th
-                            key={column.id}
-                            style={{ minWidth: column.minWidth, padding: '8px' }}
-                          >
-                            {column.label}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody style={{ backgroundColor: "#3f621217" }}>
-                      {isLoading ? (
-                        <tr>
-                          <td
-                            colSpan={expenseColumns.length + 1}
-                            style={{
-                              textAlign: "center",
-                              padding: "40px",
-                            }}
-                          >
-                            <div className="flex justify-center items-center w-full">
-                              <Loader />
-                            </div>
-                          </td>
-                        </tr>
-                      ) : expenseData?.expense_list?.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={expenseColumns.length + 1}
-                            className="text-center text-gray-500"
-                            style={{ borderRadius: "10px 10px 10px 10px" }}
-                          >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
-                        </tr>
-                      ) : (
-                        expenseData?.expense_list?.map((item, index) => (
-                          <tr
-                            key={index}
-                            className="bg-[#f5f8f3] align-middle"
-                          >
-                            <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
-                              {((currentPage - 1) * rowsPerPage) + index + 1}
-                            </td>
-                            {expenseColumns.map((column, colIndex) => {
-                              let value = item[column.id];
-
-
-                              if (!value && value !== 0) {
-                                value = "-";
-                              }
-                              const tdClass = "px-4 py-2 font-semibold text-center";
-                              return (
-                                <td
-                                  key={column.id}
-                                  className={`capitalize ${tdClass} ${colIndex === expenseColumns.length - 1 ? 'rounded-r-[10px]' : ''
-                                    }`}
-                                >
-                                  {value}
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                    {" "}
+                    <AddIcon className="" />
+                    Add  Expense
+                  </Button>
+                  <Button
+                    variant="contained"
+                    className="gap-7 add_btn_expn"
+                    style={{
+                      background: "var(--color1)",
+                      color: "white",
+                      // paddingLeft: "35px",
+                      textTransform: "none",
+                      display: "flex",
+                    }}
+                    onClick={handlePdf}
+                    disabled={isDownloadLoading}
+                  >
+                    {isDownloadLoading ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                        <CircularProgress size={16} style={{ color: "white" }} />
+                        Generating...
+                      </span>
+                    ) : (
+                      <>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <img
+                            src="/csv-file.png"
+                            className="report-icon absolute mr-10"
+                            alt="csv "
+                          />
+                        </div>
+                        Download
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
-            </div>
+              <div
+                className="row border-b border-dashed"
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
+              <div className="csrtureddididid flex flex-col gap-3 justify-between md:flex-row mt-4 oreder_list_fld_rp pb-2" style={{ width: "100%", alignItems: "end" }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-4 w-full gap-3 ttl_dldld">
+                  <div>
+                    <span className="text-gray-500 py-2">Start Date</span>
+                    <div>
+                      <DatePicker
+                        className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker"
+                        selected={startDate}
+                        onChange={handleStartDate}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">End Date</span>
+                    <div>
+                      <DatePicker
+                        className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker"
+                        selected={endDate}
+                        onChange={handleEndDate}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  </div>
 
-            {/* Updated Pagination Section */}
-            <div
-              className="flex justify-center mt-4"
-              style={{
-                marginTop: 'auto',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '1rem',
-              }}
-            >
-              <button
-                onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handleClick(currentPage - 2)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 2}
-                </button>
-              )}
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handleClick(currentPage - 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
-              <button
-                onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-              >
-                {currentPage}
-              </button>
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handleClick(currentPage + 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
-              <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage >= totalPages}
-              >
-                Next
-              </button>
-            </div>
-
-            <Dialog className="custom-dialog"
-              open={openAddPopUpDownload}
-              sx={{
-                "& .MuiDialog-container": {
-                  "& .MuiPaper-root": {
-                    width: "600px",
-                    maxWidth: "1500px",
-                    backgroundColor: "none",
-                    boxShadow: "none",
-                    marginBottom: "0",
-                  },
-                },
-              }}
-            >
-              <Alert
-                action={
-                  <IconButton
-                    aria-label="close"
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                      setOpenAddPopUpDownload(false);
+                  <div>
+                    <span className="text-gray-500">Category</span>
+                    <div>
+                      <Select
+                        labelId="dropdown-label"
+                        className="category_fld"
+                        id="dropdown"
+                        value={catagory}
+                        sx={{ width: "100%" }}
+                        onChange={handleCategoryFilter}
+                        size="small"
+                        displayEmpty
+                      >
+                        <MenuItem value="">All</MenuItem>
+                        {catagoryList?.map((option) => (
+                          <MenuItem key={option.id} value={option.id}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2 ttl_dldld">
+                  <div
+                    className="total_mng_expn"
+                    style={{
+                      background: "#f3f3f3",
+                      padding: "12px",
+                      borderRadius: "10px",
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    <CloseIcon fontSize="inherit" style={{ cursor: "pointer", color: "black" }} />
-                  </IconButton>
-                }
-                sx={{ mb: 2 }}
-              >
-                <h4 className="font-bold text-lg">
-                  {" "}
-                  Please check your email.{" "}
-                </h4>
-                <span className="text-base">
-                  You will receive a maill from us within the next few minutes.
-                </span>
-              </Alert>
-            </Dialog>
-
-            <Dialog open={openAddPopUp} className="custom-dialog modal_991">
-              <DialogTitle id="alert-dialog-title" className="primary">
-                Add Expense
-              </DialogTitle>
-              <IconButton
-                aria-label="close"
-                onClick={handleCloseDialog}
-                sx={{
-                  position: "absolute",
-                  right: 8,
-                  top: 8,
-                  color: "#ffffff",
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  <div className="flex flex-col sm:flex-col md:flex-row gap-4 mb-3">
-                    <div
-                      className="w-full lg:w-1/3 border-b md:border-b-0 md:border-r"
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        lineHeight: "2rem",
-                        width: "inherit",
-                      }}
-                    >
-                      <span className="primary">Category <span className="text-red-600 ml-1">*</span></span>
-                      <FormControl style={{ whiteSpace: "nowrap" }}>
-                        <RadioGroup
-                          aria-labelledby="demo-radio-buttons-group-label"
-                          defaultValue="items"
-                          name="radio-buttons-group"
-                          sx={{
-                            color: "var(--color1)", // Apply color to labels
-                            "& .MuiRadio-root": {
-                              color: "var(--color2)", // Unchecked radio button color
-                            },
-                            "& .Mui-checked": {
-                              color: "var(--color1)", // Checked radio button color
-                            },
-                          }}
-                          value={selectedOption}
-                          onChange={(e) => {
-                            setSelectedOption(e.target.value);
-
-                            setErrors((prev) => ({
-                              ...prev,
-                              selectedOption: "",
-                            }));
+                    <h2 className="primary font-medium text-xl ">
+                      Total{" "}
+                      <span className="secondary font-bold text-xl ">
+                        Rs.{Number(expenseData.total).toFixed(2)}
+                      </span>
+                    </h2>
+                  </div>
+                </div>
+              </div>
+              <div className="overflow-x-auto mt-4">
+                <table
+                  className="w-full border-collapse custom-table"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      <th style={{ minWidth: 150, padding: '8px' }}>SR. No</th>
+                      {expenseColumns.map((column) => (
+                        <th
+                          key={column.id}
+                          style={{ minWidth: column.minWidth, padding: '8px' }}
+                        >
+                          {column.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody style={{ backgroundColor: (!expenseData?.expense_list || expenseData.expense_list.length === 0) ? "#ffffff" : "#3f621217" }}>
+                    {isLoading ? (
+                      <tr>
+                        <td
+                          colSpan={expenseColumns.length + 1}
+                          style={{
+                            textAlign: "center",
+                            padding: "40px",
                           }}
                         >
-                          {catagoryList.map((category) => (
-                            <FormControlLabel
-                              style={{ color: "var(--COLOR_UI_PHARMACY)" }}
-                              key={category.id}
-                              value={category.id}
-                              control={<Radio />}
-                              label={capitalizeFirstLetter(category.name)}
-                            />
-                          ))}
+                          <div className="flex justify-center items-center w-full">
+                            <Loader />
+                          </div>
+                        </td>
+                      </tr>
+                    ) : expenseData?.expense_list?.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={expenseColumns.length + 1}
+                          className="text-center text-gray-500"
+                          style={{ borderRadius: "10px 10px 10px 10px", backgroundColor: "#ffffff" }}
+                        >
+                          <NoData minHeight={"25vh"} />
+                        </td>
+                      </tr>
+                    ) : (
+                      expenseData?.expense_list?.map((item, index) => (
+                        <tr
+                          key={index}
+                          className="bg-[#f5f8f3] align-middle"
+                        >
+                          <td className="rounded-l-[10px] px-4 py-2 font-semibold text-center">
+                            {((currentPage - 1) * rowsPerPage) + index + 1}
+                          </td>
+                          {expenseColumns.map((column, colIndex) => {
+                            let value = item[column.id];
+
+
+                            if (!value && value !== 0) {
+                              value = "-";
+                            }
+                            const tdClass = "px-4 py-2 font-semibold text-center";
+                            return (
+                              <td
+                                key={column.id}
+                                className={`capitalize ${tdClass} ${colIndex === expenseColumns.length - 1 ? 'rounded-r-[10px]' : ''
+                                  }`}
+                              >
+                                {value}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Updated Pagination Section */}
+          <div
+            className="flex justify-center mt-4"
+            style={{
+              marginTop: 'auto',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '1rem',
+            }}
+          >
+            <button
+              onClick={handlePrevious}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            {currentPage > 2 && (
+              <button
+                onClick={() => handleClick(currentPage - 2)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 2}
+              </button>
+            )}
+            {currentPage > 1 && (
+              <button
+                onClick={() => handleClick(currentPage - 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 1}
+              </button>
+            )}
+            <button
+              onClick={() => handleClick(currentPage)}
+              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+            >
+              {currentPage}
+            </button>
+            {currentPage < totalPages && (
+              <button
+                onClick={() => handleClick(currentPage + 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage + 1}
+              </button>
+            )}
+            <button
+              onClick={handleNext}
+              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage >= totalPages}
+            >
+              Next
+            </button>
+          </div>
+
+          <Dialog className="custom-dialog"
+            open={openAddPopUpDownload}
+            sx={{
+              "& .MuiDialog-container": {
+                "& .MuiPaper-root": {
+                  width: "600px",
+                  maxWidth: "1500px",
+                  backgroundColor: "none",
+                  boxShadow: "none",
+                  marginBottom: "0",
+                },
+              },
+            }}
+          >
+            <Alert
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setOpenAddPopUpDownload(false);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" style={{ cursor: "pointer", color: "black" }} />
+                </IconButton>
+              }
+              sx={{ mb: 2 }}
+            >
+              <h4 className="font-bold text-lg">
+                {" "}
+                Please check your email.{" "}
+              </h4>
+              <span className="text-base">
+                You will receive a maill from us within the next few minutes.
+              </span>
+            </Alert>
+          </Dialog>
+
+          <Dialog open={openAddPopUp} className="custom-dialog modal_991">
+            <DialogTitle id="alert-dialog-title" className="primary">
+              Add Expense
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseDialog}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: "#ffffff",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div className="flex flex-col sm:flex-col md:flex-row gap-4 mb-3">
+                  <div
+                    className="w-full lg:w-1/3 border-b md:border-b-0 md:border-r"
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      lineHeight: "2rem",
+                      width: "inherit",
+                    }}
+                  >
+                    <span className="primary">Category <span className="text-red-600 ml-1">*</span></span>
+                    <FormControl style={{ whiteSpace: "nowrap" }}>
+                      <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        defaultValue="items"
+                        name="radio-buttons-group"
+                        sx={{
+                          color: "var(--color1)", // Apply color to labels
+                          "& .MuiRadio-root": {
+                            color: "var(--color2)", // Unchecked radio button color
+                          },
+                          "& .Mui-checked": {
+                            color: "var(--color1)", // Checked radio button color
+                          },
+                        }}
+                        value={selectedOption}
+                        onChange={(e) => {
+                          setSelectedOption(e.target.value);
+
+                          setErrors((prev) => ({
+                            ...prev,
+                            selectedOption: "",
+                          }));
+                        }}
+                      >
+                        {catagoryList.map((category) => (
+                          <FormControlLabel
+                            style={{ color: "var(--COLOR_UI_PHARMACY)" }}
+                            key={category.id}
+                            value={category.id}
+                            control={<Radio />}
+                            label={capitalizeFirstLetter(category.name)}
+                          />
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    {errors.selectedOption && (
+                      <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.selectedOption}</div>
+                    )}
+                  </div>
+                  <div className="w-full lg:w-2/3 flex flex-col gap-5">
+                    <div className="flex flex-col md:flex-row gap-5">
+                      <div className="w-full md:w-1/2">
+                        <span
+                          className=""
+                          style={{ color: "var(--COLOR_UI_PHARMACY)" }}
+                        >
+                          Expense Date <span className="text-red-600 ml-1">*</span>
+                        </span>
+                        <DatePicker
+                          className="custom-datepicker w-[170px]"
+                          selected={expenseDate}
+                          onChange={(newDate) => {
+                            setExpenseDate(newDate);
+                            setErrors((prev) => ({
+                              ...prev,
+                              expenseDate: "",
+                            }));
+                          }}
+                          dateFormat="dd/MM/yyyy"
+                        />
+                        {errors.expenseDate && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.expenseDate}</div>
+                        )}
+                      </div>
+                      <div className="w-full md:w-1/2">
+                        <span
+                          className=""
+                          style={{ color: "var(--COLOR_UI_PHARMACY)" }}
+                        >
+                          Payment Date <span className="text-red-600 ml-1">*</span>
+                        </span>
+                        <DatePicker
+                          className="custom-datepicker w-[170px]"
+                          selected={paymentdate}
+                          onChange={(newDate) => {
+                            setPaymentDate(newDate);
+                            setErrors((prev) => ({
+                              ...prev,
+                              paymentdate: "",
+                            }));
+                          }}
+                          dateFormat="dd/MM/yyyy"
+                        />
+                        {errors.paymentdate && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.paymentdate}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <FormControl>
+                        <RadioGroup
+                          row
+                          value={selectedGSTOption}
+                          onChange={handleGSTOption}
+                          name="radio-buttons-group"
+                          sx={{
+                            "& .MuiRadio-root": {
+                              color: "var(--color2)",
+                            },
+                            "& .Mui-checked": {
+                              color: "var(--color1)",
+                            },
+                          }}
+                        >
+                          <FormControlLabel
+                            value="with_GST"
+                            control={<Radio />}
+                            label="With GST"
+                            sx={{
+                              color: "var(--COLOR_UI_PHARMACY)",
+                              mr: 20,
+                            }}
+                          />
+
+                          <FormControlLabel
+                            value="withOut_GST"
+                            control={<Radio />}
+                            label="Without GST"
+                            sx={{
+                              color: "var(--COLOR_UI_PHARMACY)",
+                            }}
+                          />
                         </RadioGroup>
                       </FormControl>
-                      {errors.selectedOption && (
-                        <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.selectedOption}</div>
-                      )}
                     </div>
-                    <div className="w-full lg:w-2/3 flex flex-col gap-5">
-                      <div className="flex flex-col md:flex-row gap-5">
-                        <div className="w-full md:w-1/2">
-                          <span
-                            className=""
-                            style={{ color: "var(--COLOR_UI_PHARMACY)" }}
-                          >
-                            Expense Date <span className="text-red-600 ml-1">*</span>
-                          </span>
-                          <DatePicker
-                            className="custom-datepicker w-[170px]"
-                            selected={expenseDate}
-                            onChange={(newDate) => {
-                              setExpenseDate(newDate);
-                              setErrors((prev) => ({
-                                ...prev,
-                                expenseDate: "",
-                              }));
-                            }}
-                            dateFormat="dd/MM/yyyy"
-                          />
-                          {errors.expenseDate && (
-                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.expenseDate}</div>
-                          )}
-                        </div>
-                        <div className="w-full md:w-1/2">
-                          <span
-                            className=""
-                            style={{ color: "var(--COLOR_UI_PHARMACY)" }}
-                          >
-                            Payment Date <span className="text-red-600 ml-1">*</span>
-                          </span>
-                          <DatePicker
-                            className="custom-datepicker w-[170px]"
-                            selected={paymentdate}
-                            onChange={(newDate) => {
-                              setPaymentDate(newDate);
-                              setErrors((prev) => ({
-                                ...prev,
-                                paymentdate: "",
-                              }));
-                            }}
-                            dateFormat="dd/MM/yyyy"
-                          />
-                          {errors.paymentdate && (
-                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.paymentdate}</div>
-                          )}
-                        </div>
-                      </div>
-                      <div>
-                        <FormControl>
-                          <RadioGroup
-                            row
-                            value={selectedGSTOption}
-                            onChange={handleGSTOption}
-                            name="radio-buttons-group"
-                            sx={{
-                              "& .MuiRadio-root": {
-                                color: "var(--color2)",
-                              },
-                              "& .Mui-checked": {
-                                color: "var(--color1)",
-                              },
-                            }}
-                          >
-                            <FormControlLabel
-                              value="with_GST"
-                              control={<Radio />}
-                              label="With GST"
-                              sx={{
-                                color: "var(--COLOR_UI_PHARMACY)",
-                                mr: 20,
-                              }}
-                            />
 
-                            <FormControlLabel
-                              value="withOut_GST"
-                              control={<Radio />}
-                              label="Without GST"
-                              sx={{
-                                color: "var(--COLOR_UI_PHARMACY)",
-                              }}
-                            />
-                          </RadioGroup>
-                        </FormControl>
-                      </div>
-
-                      {selectedGSTOption === "with_GST" && (
-                        <>
-                          <div className="flex flex-col md:flex-row gap-5">
-                            <div
-                              className="w-full md:w-1/2"
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                              }}
-                            >
-                              <span
-                                className=""
-                                style={{ color: "var(--COLOR_UI_PHARMACY)" }}
-                              >
-                                GST(%) <span className="text-red-600 ml-1">*</span>
-                              </span>
-                              <TextField
-                                autoComplete="off"
-                                required
-                                placeholder="Gst"
-                                type="number"
-                                size="small"
-                                value={gst}
-                                error={!!errors.gst}
-                                onChange={handleGSTChange}
-                              // inputProps={{ min: 0, max: 100 }}
-                              />
-                              {errors.gst && (
-                                <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.gst}</div>
-                              )}
-                            </div>
-                            <div
-                              className="w-full md:w-1/2"
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                              }}
-                            >
-                              <span
-                                className=""
-                                style={{ color: "var(--COLOR_UI_PHARMACY)" }}
-                              >
-                                GSTN Number <span className="text-red-600 ml-1">*</span>
-                              </span>
-                              <TextField
-                                autoComplete="off"
-                                required
-                                placeholder="GSTN Number"
-                                size="small"
-                                value={gstIN}
-                                error={!!errors.gstIN}
-                                onChange={(e) => {
-                                  setGstIN(e.target.value.toUpperCase());
-                                  setErrors((prev) => ({
-                                    ...prev,
-                                    gstIN: "",
-                                  }));
-                                }}
-                              />
-                              {errors.gstIN && (
-                                <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.gstIN}</div>
-                              )}
-                            </div>
-                          </div>
+                    {selectedGSTOption === "with_GST" && (
+                      <>
+                        <div className="flex flex-col md:flex-row gap-5">
                           <div
                             className="w-full md:w-1/2"
-                            style={{ display: "flex", flexDirection: "column" }}
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                            }}
                           >
                             <span
                               className=""
                               style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                             >
-                              Party Name <span className="text-red-600 ml-1">*</span>
+                              GST(%) <span className="text-red-600 ml-1">*</span>
                             </span>
                             <TextField
                               autoComplete="off"
                               required
-                              placeholder="Party Name"
+                              placeholder="Gst"
+                              type="number"
                               size="small"
-                              value={party}
-                              error={!!errors.party}
+                              value={gst}
+                              error={!!errors.gst}
+                              onChange={handleGSTChange}
+                            // inputProps={{ min: 0, max: 100 }}
+                            />
+                            {errors.gst && (
+                              <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.gst}</div>
+                            )}
+                          </div>
+                          <div
+                            className="w-full md:w-1/2"
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                            }}
+                          >
+                            <span
+                              className=""
+                              style={{ color: "var(--COLOR_UI_PHARMACY)" }}
+                            >
+                              GSTN Number <span className="text-red-600 ml-1">*</span>
+                            </span>
+                            <TextField
+                              autoComplete="off"
+                              required
+                              placeholder="GSTN Number"
+                              size="small"
+                              value={gstIN}
+                              error={!!errors.gstIN}
                               onChange={(e) => {
-                                setParty(e.target.value);
+                                setGstIN(e.target.value.toUpperCase());
                                 setErrors((prev) => ({
                                   ...prev,
-                                  party: "",
+                                  gstIN: "",
                                 }));
                               }}
                             />
-                            {errors.party && (
-                              <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.party}</div>
+                            {errors.gstIN && (
+                              <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.gstIN}</div>
                             )}
                           </div>
-                        </>
-                      )}
-
-                      <div className="flex flex-col md:flex-row gap-5">
+                        </div>
                         <div
                           className="w-full md:w-1/2"
                           style={{ display: "flex", flexDirection: "column" }}
@@ -1093,226 +1059,259 @@ const ManageExpense = () => {
                             className=""
                             style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                           >
-                            without GST Amount <span className="text-red-600 ml-1">*</span>
+                            Party Name <span className="text-red-600 ml-1">*</span>
                           </span>
-                          {/* <span className="ExpenseBoxSubTitle">Amount(Excluding GST)</span> */}
                           <TextField
                             autoComplete="off"
                             required
-                            type="number"
+                            placeholder="Party Name"
                             size="small"
-                            error={!!errors.amount}
-                            value={amount}
-                            placeholder="Without GST Amount"
+                            value={party}
+                            error={!!errors.party}
                             onChange={(e) => {
-                              setAmount(e.target.value);
-
+                              setParty(e.target.value);
                               setErrors((prev) => ({
                                 ...prev,
-                                amount: "",
+                                party: "",
                               }));
                             }}
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
-                                padding: "5px",
-                              },
-                              "& .MuiOutlinedInput-input": {
-                                padding: "5px 10px",
-                              },
-                              "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                                borderColor: "red !important",
-                                borderWidth: "1px",
-                              },
-                            }}
+                          />
+                          {errors.party && (
+                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.party}</div>
+                          )}
+                        </div>
+                      </>
+                    )}
 
-                          />
-                          {errors.amount && (
-                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.amount}</div>
-                          )}
-                        </div>
-                        <div
-                          className="w-full md:w-1/2"
-                          style={{ display: "flex", flexDirection: "column" }}
+                    <div className="flex flex-col md:flex-row gap-5">
+                      <div
+                        className="w-full md:w-1/2"
+                        style={{ display: "flex", flexDirection: "column" }}
+                      >
+                        <span
+                          className=""
+                          style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                         >
-                          <span
-                            className=""
-                            style={{ color: "var(--COLOR_UI_PHARMACY)" }}
-                          >
-                            Total
-                          </span>
-                          <TextField
-                            autoComplete="off"
-                            required
-                            type="number"
-                            size="small"
-                            value={total}
-                            placeholder="Total"
-                            onChange={(e) => setTotal(e.target.value)}
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
-                                padding: "5px",
-                              },
-                              "& .MuiOutlinedInput-input": {
-                                padding: "5px",
-                              },
-                            }}
-                          />
-                          {errors.total && (
-                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.total}</div>
-                          )}
-                        </div>
+                          without GST Amount <span className="text-red-600 ml-1">*</span>
+                        </span>
+                        {/* <span className="ExpenseBoxSubTitle">Amount(Excluding GST)</span> */}
+                        <TextField
+                          autoComplete="off"
+                          required
+                          type="number"
+                          size="small"
+                          error={!!errors.amount}
+                          value={amount}
+                          placeholder="Without GST Amount"
+                          onChange={(e) => {
+                            setAmount(e.target.value);
+
+                            setErrors((prev) => ({
+                              ...prev,
+                              amount: "",
+                            }));
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              padding: "5px",
+                            },
+                            "& .MuiOutlinedInput-input": {
+                              padding: "5px 10px",
+                            },
+                            "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "red !important",
+                              borderWidth: "1px",
+                            },
+                          }}
+
+                        />
+                        {errors.amount && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.amount}</div>
+                        )}
                       </div>
-
-                      <div className="flex flex-col md:flex-row gap-5">
-                        <div
-                          className="w-full md:w-1/2"
-                          style={{ display: "flex", flexDirection: "column" }}
+                      <div
+                        className="w-full md:w-1/2"
+                        style={{ display: "flex", flexDirection: "column" }}
+                      >
+                        <span
+                          className=""
+                          style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                         >
-                          <span
-                            className=""
-                            style={{ color: "var(--COLOR_UI_PHARMACY)" }}
-                          >
-                            Payment Mode <span className="text-red-600 ml-1">*</span>
-                          </span>
-                          <Autocomplete
-                            options={[
+                          Total
+                        </span>
+                        <TextField
+                          autoComplete="off"
+                          required
+                          type="number"
+                          size="small"
+                          value={total}
+                          placeholder="Total"
+                          onChange={(e) => setTotal(e.target.value)}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              padding: "5px",
+                            },
+                            "& .MuiOutlinedInput-input": {
+                              padding: "5px",
+                            },
+                          }}
+                        />
+                        {errors.total && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.total}</div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-5">
+                      <div
+                        className="w-full md:w-1/2"
+                        style={{ display: "flex", flexDirection: "column" }}
+                      >
+                        <span
+                          className=""
+                          style={{ color: "var(--COLOR_UI_PHARMACY)" }}
+                        >
+                          Payment Mode <span className="text-red-600 ml-1">*</span>
+                        </span>
+                        <Autocomplete
+                          options={[
+                            { value: "cash", label: "Cash" },
+                            ...(bankData || []).map((option) => ({
+                              value: option.id,
+                              label: option.bank_name,
+                            })),
+                          ]}
+                          getOptionLabel={(option) => option.label || ""}
+                          value={
+                            [
                               { value: "cash", label: "Cash" },
                               ...(bankData || []).map((option) => ({
                                 value: option.id,
                                 label: option.bank_name,
                               })),
-                            ]}
-                            getOptionLabel={(option) => option.label || ""}
-                            value={
-                              [
-                                { value: "cash", label: "Cash" },
-                                ...(bankData || []).map((option) => ({
-                                  value: option.id,
-                                  label: option.bank_name,
-                                })),
-                              ].find((opt) => opt.value === paymentType) || null
-                            }
-                            onChange={(event, newValue) => {
-                              setPaymentType(newValue ? newValue.value : "");
+                            ].find((opt) => opt.value === paymentType) || null
+                          }
+                          onChange={(event, newValue) => {
+                            setPaymentType(newValue ? newValue.value : "");
 
-                              setErrors((prev) => ({
-                                ...prev,
-                                paymentType: "",
-                              }));
-                            }}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                size="small"
-                                placeholder="Select Payment Mode"
-                                error={!!errors.paymentType}
-                                sx={{
-                                  "& .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: errors.paymentType
-                                      ? "#d32f2f !important"
-                                      : "rgba(0,0,0,0.23)",
-                                  },
-                                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: errors.paymentType
-                                      ? "#d32f2f !important"
-                                      : "rgba(0,0,0,0.87)",
-                                  },
-                                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: errors.paymentType
-                                      ? "#d32f2f !important"
-                                      : "#1976d2",
-                                  },
-                                }}
-                              />
-                            )}
-                          />
-                          {errors.paymentType && (
-                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.paymentType}</div>
+                            setErrors((prev) => ({
+                              ...prev,
+                              paymentType: "",
+                            }));
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              size="small"
+                              placeholder="Select Payment Mode"
+                              error={!!errors.paymentType}
+                              sx={{
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: errors.paymentType
+                                    ? "#d32f2f !important"
+                                    : "rgba(0,0,0,0.23)",
+                                },
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: errors.paymentType
+                                    ? "#d32f2f !important"
+                                    : "rgba(0,0,0,0.87)",
+                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: errors.paymentType
+                                    ? "#d32f2f !important"
+                                    : "#1976d2",
+                                },
+                              }}
+                            />
                           )}
-                        </div>
-                        <div
-                          className="w-full md:w-1/2"
-                          style={{ display: "flex", flexDirection: "column" }}
-                        >
-                          <span
-                            className=""
-                            style={{ color: "var(--COLOR_UI_PHARMACY)" }}
-                          >
-                            Reference No.
-                          </span>
-                          <TextField
-                            autoComplete="off"
-                            required
-                            type="number"
-                            size="small"
-                            value={refNo}
-                            placeholder="Reference Number"
-                            onChange={(e) => setRefNo(e.target.value)}
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
-                                padding: "5px",
-                              },
-                              "& .MuiOutlinedInput-input": {
-                                padding: "5px",
-                              },
-                            }}
-                          />
-                          {errors.refNo && (
-                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.refNo}</div>
-                          )}
-                        </div>
+                        />
+                        {errors.paymentType && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.paymentType}</div>
+                        )}
                       </div>
-                      <div className="flex flex-col md:flex-row gap-5">
-                        <div
-                          className="w-full md:w-1/2"
-                          style={{ display: "flex", flexDirection: "column" }}
+                      <div
+                        className="w-full md:w-1/2"
+                        style={{ display: "flex", flexDirection: "column" }}
+                      >
+                        <span
+                          className=""
+                          style={{ color: "var(--COLOR_UI_PHARMACY)" }}
                         >
-                          <span
-                            className=""
-                            style={{ color: "var(--COLOR_UI_PHARMACY)" }}
-                          >
-                            Remark
-                          </span>
-                          <TextField
-                            autoComplete="off"
-                            required
-                            size="small"
-                            value={remark}
-                            placeholder="Remark"
-                            onChange={(e) => setRemark(e.target.value)}
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
-                                padding: "5px",
-                              },
-                              "& .MuiOutlinedInput-input": {
-                                padding: "5px",
-                              },
-                            }}
-                          />
-                          {errors.remark && (
-                            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.remark}</div>
-                          )}
-                        </div>
+                          Reference No.
+                        </span>
+                        <TextField
+                          autoComplete="off"
+                          required
+                          type="number"
+                          size="small"
+                          value={refNo}
+                          placeholder="Reference Number"
+                          onChange={(e) => setRefNo(e.target.value)}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              padding: "5px",
+                            },
+                            "& .MuiOutlinedInput-input": {
+                              padding: "5px",
+                            },
+                          }}
+                        />
+                        {errors.refNo && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.refNo}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row gap-5">
+                      <div
+                        className="w-full md:w-1/2"
+                        style={{ display: "flex", flexDirection: "column" }}
+                      >
+                        <span
+                          className=""
+                          style={{ color: "var(--COLOR_UI_PHARMACY)" }}
+                        >
+                          Remark
+                        </span>
+                        <TextField
+                          autoComplete="off"
+                          required
+                          size="small"
+                          value={remark}
+                          placeholder="Remark"
+                          onChange={(e) => setRemark(e.target.value)}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              padding: "5px",
+                            },
+                            "& .MuiOutlinedInput-input": {
+                              padding: "5px",
+                            },
+                          }}
+                        />
+                        {errors.remark && (
+                          <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>{errors.remark}</div>
+                        )}
                       </div>
                     </div>
                   </div>
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions style={{ padding: "20px 24px" }}>
-                <Button
-                  autoFocus
-                  variant="contained"
-                  style={{
-                    background: "var(--COLOR_UI_PHARMACY)",
-                    width: "fit-content",
-                  }}
-                  onClick={handleAddExpense}
-                >
-                  Save
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </div>
+                </div>
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions style={{ padding: "20px 24px" }}>
+              <Button
+                autoFocus
+                variant="contained"
+                style={{
+                  background: "var(--COLOR_UI_PHARMACY)",
+                  width: "fit-content",
+                }}
+                onClick={handleAddExpense}
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
       </div>
     </>
   );

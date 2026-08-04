@@ -19,6 +19,7 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../../componets/loader/Loader";
+import NoData from "../../../componets/NoData/NoData";
 import usePermissions, { hasPermission } from "../../../componets/permission";
 import Header from "../../Header";
 import AddMemberDialog from "./AddMemberDialog";
@@ -435,7 +436,7 @@ const SehatMembersList = () => {
                                             <th style={{ minWidth: 120, padding: '8px' }}>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody style={{ backgroundColor: tableData.length === 0 ? "#ffffff" : "transparent" }}>
                                         {(isLoading || isSearchLoading) ? (
                                             <tr>
                                                 <td
@@ -447,17 +448,15 @@ const SehatMembersList = () => {
                                                     </div>
                                                 </td>
                                             </tr>
-                                        ) : tableData.length === 0 ? (
+                                        ) : tableData.length !== 0 ? (
                                             <tr>
                                                 <td
-                                                    colSpan={columns.length + 1}
+                                                    colSpan={columns.length + 2}
                                                     className="text-center text-gray-500"
-                                                    style={{ borderRadius: "10px 10px 10px 10px" }}
+                                                    style={{ borderRadius: "10px 10px 10px 10px", backgroundColor: "#ffffff" }}
                                                 >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                                                    <NoData minHeight={"65vh"} />
+                                                </td>
                                             </tr>
                                         ) : (
                                             tableData.map((row, index) => (

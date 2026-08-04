@@ -165,7 +165,7 @@ const AddPurchaseBill = () => {
 
   const [error, setError] = useState({});
   const [paymentType, setPaymentType] = useState("credit");
-  const [bankData, setBankData] = useState([]);
+  const [paymentMethodData, setPaymentMethodData] = useState([]);
   const [id, setId] = useState(null);
   const [importConpany, setImportConpany] = useState("");
 
@@ -228,7 +228,7 @@ const AddPurchaseBill = () => {
           activeElement.getAttribute("role") === "combobox");
 
       if (isDropdownFocused) return; // Prevent key navigation when an input is focused
-      
+
       const isInputFocused = activeElement && (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA");
 
       if (key === "ArrowDown") {
@@ -239,7 +239,7 @@ const AddPurchaseBill = () => {
           const selectedRow = ItemPurchaseList.item[nextIndex];
           setSelectedEditItemId(selectedRow?.id);
           if (selectedRow) handleEditClick(selectedRow);
-          
+
           setTimeout(() => {
             document.getElementById(`purchase-add-row-${nextIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }, 50);
@@ -253,7 +253,7 @@ const AddPurchaseBill = () => {
           const selectedRow = ItemPurchaseList.item[prevIndex];
           setSelectedEditItemId(selectedRow?.id);
           if (selectedRow) handleEditClick(selectedRow);
-          
+
           setTimeout(() => {
             document.getElementById(`purchase-add-row-${prevIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }, 50);
@@ -409,7 +409,7 @@ const AddPurchaseBill = () => {
 
   useEffect(() => {
     // listOfGst();
-    BankList();
+    PaymentMethodList();
     listDistributor();
 
 
@@ -489,19 +489,18 @@ const AddPurchaseBill = () => {
     setCnAmount(total);
   }, [cnTotalAmount]);
 
-  /*<================================================================= get bank list ==============================================================> */
+  /*<================================================================= get payment method list ==============================================================> */
 
-  const BankList = async () => {
-    let data = new FormData();
+  const PaymentMethodList = async () => {
     try {
       await axios
-        .post("bank-list", data, {
+        .get("payment-method-list", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
-          setBankData(response.data.data);
+          setPaymentMethodData(response.data.data);
           if (response.data.status === 401) {
             history.push("/");
             localStorage.clear();
@@ -2235,7 +2234,7 @@ const AddPurchaseBill = () => {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Select
+                  <Select
                   labelId="dropdown-label"
                   id="dropdown"
                   value={paymentType}
@@ -2243,15 +2242,13 @@ const AddPurchaseBill = () => {
                   size="small"
                   className="min-w-[150px] rounded-md"
                 >
-                  <MenuItem value="cash" className="hover:bg-[var(--color2)]">Cash</MenuItem>
-                  <MenuItem value="credit" className="hover:bg-[var(--color2)]">Credit</MenuItem>
-                  {bankData?.map((option) => (
+                  {paymentMethodData?.map((option) => (
                     <MenuItem
                       key={option.id}
-                      value={option.id}
+                      value={option.value}
                       className="hover:bg-[var(--color2)]"
                     >
-                      {option.bank_name}
+                      {option.name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -2652,168 +2649,168 @@ const AddPurchaseBill = () => {
                     <td style={{ fontSize: 15, height: "47px", minWidth: 350, width: "350px", maxWidth: "350px" }}>
                       <div style={{ width: "100%", height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
                         {isEditMode ? (
-                        <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
-                          <DeleteIcon
-                            className="delete-icon mr-2"
-                            onClick={() => {
-                              setIsEditMode(false);
-                              setTimeout(() => {
-                                removeItem();
-                                inputRefs.current[2]?.focus();
-                              }, 0);
-                            }}
-                          />
-                          {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
-                        </div>
-                      ) : (
-                        <Autocomplete
-                          fullWidth
-                          key={autocompleteKey}
-                          value={selectedOption}
-                          size="small"
-
-                          onChange={handleOptionChange}
-                          onInputChange={handleInputChange}
-                          open={autoCompleteOpen}
-                          onOpen={() => setAutoCompleteOpen(true)}
-                          onClose={() => setAutoCompleteOpen(false)}
-                          getOptionLabel={(option) =>
-                            `${option.iteam_name} `
-                          }
-                          ListboxProps={{
-                            onScroll: handleScroll,
-                          }}
-                          options={itemList}
-                          renderOption={(props, option) => (
-                            <ListItem {...props}>
-                              <ListItemText
-                                primary={`${option?.iteam_name}`}
-                                secondary={`${option.company_name}`}
-                              />
-                            </ListItem>
-                          )}
-                          renderInput={(params) => (
-                            <TextField
-                              tabIndex={0}
-                              variant="outlined"
-                              autoComplete="off"
-                              {...params}
-                              error={!!error.item}
-                              placeholder="Item Name"
-                              value={searchItem?.iteam_name}
-                              inputRef={(el) => (inputRefs.current[2] = el)}
-                              onFocus={() => setSelectedIndex(-1)}
-                              fullWidth
-                              sx={{
-                                minWidth: "100%",
-                                width: "100%",
-                                '& .MuiInputBase-input': {
-                                  // textAlign: 'center',
-                                  textTransform: '',
-                                },
+                          <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
+                            <DeleteIcon
+                              className="delete-icon mr-2"
+                              onClick={() => {
+                                setIsEditMode(false);
+                                setTimeout(() => {
+                                  removeItem();
+                                  inputRefs.current[2]?.focus();
+                                }, 0);
                               }}
+                            />
+                            {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
+                          </div>
+                        ) : (
+                          <Autocomplete
+                            fullWidth
+                            key={autocompleteKey}
+                            value={selectedOption}
+                            size="small"
 
-                              InputProps={{
-                                ...params.InputProps,
-                                style: { textTransform: '' },
-                                endAdornment: (
-                                  <>
-                                    {selectedOption && (
-                                      <Tooltip
-                                        title="Item Purchase History"
-                                        arrow
-                                        componentsProps={{
-                                          tooltip: {
-                                            sx: {
-                                              backgroundColor: "#3f6212",
-                                              color: 'white',
-                                              fontSize: '14px',
-                                              fontWeight: '500',
-                                              padding: '8px 12px',
-                                              '& .MuiTooltip-arrow': {
-                                                color: '#3f6212',
+                            onChange={handleOptionChange}
+                            onInputChange={handleInputChange}
+                            open={autoCompleteOpen}
+                            onOpen={() => setAutoCompleteOpen(true)}
+                            onClose={() => setAutoCompleteOpen(false)}
+                            getOptionLabel={(option) =>
+                              `${option.iteam_name} `
+                            }
+                            ListboxProps={{
+                              onScroll: handleScroll,
+                            }}
+                            options={itemList}
+                            renderOption={(props, option) => (
+                              <ListItem {...props}>
+                                <ListItemText
+                                  primary={`${option?.iteam_name}`}
+                                  secondary={`${option.company_name}`}
+                                />
+                              </ListItem>
+                            )}
+                            renderInput={(params) => (
+                              <TextField
+                                tabIndex={0}
+                                variant="outlined"
+                                autoComplete="off"
+                                {...params}
+                                error={!!error.item}
+                                placeholder="Item Name"
+                                value={searchItem?.iteam_name}
+                                inputRef={(el) => (inputRefs.current[2] = el)}
+                                onFocus={() => setSelectedIndex(-1)}
+                                fullWidth
+                                sx={{
+                                  minWidth: "100%",
+                                  width: "100%",
+                                  '& .MuiInputBase-input': {
+                                    // textAlign: 'center',
+                                    textTransform: '',
+                                  },
+                                }}
+
+                                InputProps={{
+                                  ...params.InputProps,
+                                  style: { textTransform: '' },
+                                  endAdornment: (
+                                    <>
+                                      {selectedOption && (
+                                        <Tooltip
+                                          title="Item Purchase History"
+                                          arrow
+                                          componentsProps={{
+                                            tooltip: {
+                                              sx: {
+                                                backgroundColor: "#3f6212",
+                                                color: 'white',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                padding: '8px 12px',
+                                                '& .MuiTooltip-arrow': {
+                                                  color: '#3f6212',
+                                                }
                                               }
-                                            }
-                                          }
-                                        }}
-                                      >
-                                        <IconButton
-                                          size="small"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            fetchItemHistory(selectedOption);
-                                          }}
-                                          sx={{
-                                            marginRight: '-8px',
-                                            zIndex: 1,
-                                            width: '28px',
-                                            height: '28px',
-                                            border: '2px solid var(--color1)',
-                                            borderRadius: '50%',
-                                            transition: 'all 0.3s ease',
-                                            '&:hover': {
-                                              backgroundColor: 'var(--color1) !important',
-                                              borderColor: 'var(--color1)',
-                                            },
-                                            '&:hover .sales-history-text': {
-                                              color: 'white !important'
                                             }
                                           }}
                                         >
-                                          <span
-                                            className="sales-history-text"
-                                            style={{
-                                              color: 'var(--color1)',
-                                              fontWeight: 'bold',
-                                              fontSize: '14px',
-                                              transition: 'color 0.3s ease'
+                                          <IconButton
+                                            size="small"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              fetchItemHistory(selectedOption);
+                                            }}
+                                            sx={{
+                                              marginRight: '-8px',
+                                              zIndex: 1,
+                                              width: '28px',
+                                              height: '28px',
+                                              border: '2px solid var(--color1)',
+                                              borderRadius: '50%',
+                                              transition: 'all 0.3s ease',
+                                              '&:hover': {
+                                                backgroundColor: 'var(--color1) !important',
+                                                borderColor: 'var(--color1)',
+                                              },
+                                              '&:hover .sales-history-text': {
+                                                color: 'white !important'
+                                              }
                                             }}
                                           >
-                                            P
-                                          </span>
-                                        </IconButton>
-                                      </Tooltip>
-                                    )}
-                                    {params.InputProps.endAdornment}
-                                  </>
-                                ),
-                              }}
+                                            <span
+                                              className="sales-history-text"
+                                              style={{
+                                                color: 'var(--color1)',
+                                                fontWeight: 'bold',
+                                                fontSize: '14px',
+                                                transition: 'color 0.3s ease'
+                                              }}
+                                            >
+                                              P
+                                            </span>
+                                          </IconButton>
+                                        </Tooltip>
+                                      )}
+                                      {params.InputProps.endAdornment}
+                                    </>
+                                  ),
+                                }}
 
-                              onKeyDown={(e) => {
-                                const { key, shiftKey } = e;
-                                const isTab = key === "Tab";
-                                const isShiftTab = isTab && shiftKey;
-                                const isEnter = key === "Enter";
-                                const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+                                onKeyDown={(e) => {
+                                  const { key, shiftKey } = e;
+                                  const isTab = key === "Tab";
+                                  const isShiftTab = isTab && shiftKey;
+                                  const isEnter = key === "Enter";
+                                  const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
 
-                                if (isShiftTab) return;
+                                  if (isShiftTab) return;
 
-                                if (!searchItem && isArrowKey) {
-                                  tableRef.current.focus();
-                                  setTimeout(() => document.activeElement.blur(), 0);
-                                  return;
-                                }
-
-                                if ((isEnter || isTab) && autoCompleteOpen) return;
-
-                                if (isEnter || isTab) {
-                                  e.preventDefault();
-
-                                  if (!selectedOption) {
-                                    e.preventDefault();
-                                    setTimeout(() => {
-                                      setError((prev) => ({ ...prev, item: true }));
-                                    }, 100);
-                                  } else {
-                                    setTimeout(() => inputRefs?.current[3].focus(), 100);
+                                  if (!searchItem && isArrowKey) {
+                                    tableRef.current.focus();
+                                    setTimeout(() => document.activeElement.blur(), 0);
+                                    return;
                                   }
-                                  return;
-                                }
-                              }}
-                            />
-                          )}
-                        />
-                      )}
+
+                                  if ((isEnter || isTab) && autoCompleteOpen) return;
+
+                                  if (isEnter || isTab) {
+                                    e.preventDefault();
+
+                                    if (!selectedOption) {
+                                      e.preventDefault();
+                                      setTimeout(() => {
+                                        setError((prev) => ({ ...prev, item: true }));
+                                      }, 100);
+                                    } else {
+                                      setTimeout(() => inputRefs?.current[3].focus(), 100);
+                                    }
+                                    return;
+                                  }
+                                }}
+                              />
+                            )}
+                          />
+                        )}
                       </div>
                     </td>
 
@@ -2944,7 +2941,7 @@ const AddPurchaseBill = () => {
                             const now = new Date();
                             const sixMonthsLater = new Date();
                             sixMonthsLater.setMonth(now.getMonth() + 6);
-                            
+
                             const monthsRemaining = (expiry.getFullYear() - now.getFullYear()) * 12 + (expiry.getMonth() - now.getMonth());
 
                             if (expiry < now) {
@@ -3743,10 +3740,10 @@ const AddPurchaseBill = () => {
                         {purchaseReturnPending.length === 0 ? (
                           <tr>
                             <td colSpan={5}>
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/purchase.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
+                                {!isLoading && <img src="/purchase.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />}
+                              </div>
+                            </td>
                           </tr>
                         ) : (
                           purchaseReturnPending.map((row, index) => (

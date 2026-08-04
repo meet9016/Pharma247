@@ -18,6 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import React, { useEffect, useState, useRef } from "react";
+import NoData from "../../../../componets/NoData/NoData";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import axios from "axios";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
@@ -878,12 +879,11 @@ const PaymentList = () => {
                               style={{
                                 textAlign: "center",
                                 borderRadius: "10px 10px 10px 10px",
+                                backgroundColor: "#ffffff"
                               }}
                             >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                              <NoData minHeight={"55vh"} />
+                            </td>
                           </tr>
                         ) : (
                           tableData.map((row, index) => (
@@ -1339,12 +1339,12 @@ const PaymentList = () => {
                                 padding: "20px",
                                 color: "gray",
                                 fontWeight: 600,
+                                backgroundColor: "#ffffff",
+                                borderRadius: "10px"
                               }}
                             >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                              <NoData minHeight={"55vh"} />
+                            </td>
                           </tr>
                         </tbody>
                       )}

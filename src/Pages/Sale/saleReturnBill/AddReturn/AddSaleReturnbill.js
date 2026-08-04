@@ -94,7 +94,7 @@ const Salereturn = () => {
     const [endDate, setEndDate] = useState(dayjs());
     const [saleItemId, setSaleItemId] = useState('');
     const [selectedEditItem, setSelectedEditItem] = useState(null);
-    const [bankData, setBankData] = useState([]);
+    const [paymentMethodData, setPaymentMethodData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [search, setSearch] = useState('');
     const [searchDoctor, setSearchDoctor] = useState('');
@@ -226,7 +226,7 @@ const Salereturn = () => {
         const RandomNumber = localStorage.getItem('RandomNumber')
         setRandomNumber(RandomNumber)
 
-        BankList();
+        PaymentMethodList();
         const handleClickOutside = (event) => {
             if (tableRef.current && !tableRef.current.contains(event.target)) {
                 setIsVisible(false);
@@ -324,10 +324,10 @@ const Salereturn = () => {
         setCustomer(newValue);
     };
 
-    const BankList = async () => {
+    const PaymentMethodList = async () => {
         try {
             console.log("Token :", token);
-            await axios.post('bank-list', {}, {
+            await axios.get('payment-method-list', {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -335,7 +335,7 @@ const Salereturn = () => {
 
             }
             ).then((response) => {
-                setBankData(response.data.data);
+                setPaymentMethodData(response.data.data);
                 if (response.data.status === 401) {
                     history.push('/');
                     localStorage.clear();
@@ -1016,10 +1016,8 @@ const Salereturn = () => {
                                 }
                             }}
                         >
-                            <MenuItem value="cash">Cash</MenuItem>
-                            <MenuItem value="credit">Credit</MenuItem>
-                            {bankData?.filter(b => b.bank_name.toLowerCase().trim() !== "cash" && b.bank_name.toLowerCase().trim() !== "credit").map(option => (
-                                <MenuItem key={option.id} value={option.id}>{option.bank_name}</MenuItem>
+                            {paymentMethodData?.map(option => (
+                                <MenuItem key={option.id} value={option.value}>{option.name}</MenuItem>
                             ))}
                         </Select>
                         <Button ref={returnSubmitBtnRef} variant="contained" className="payment_btn_divv" sx={{ textTransform: 'none', background: "var(--color1)" }} onClick={() => handleSubmit()}> Save </Button>

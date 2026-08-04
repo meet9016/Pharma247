@@ -30,6 +30,7 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Loader from "../../../../componets/loader/Loader";
+import NoData from "../../../../componets/NoData/NoData";
 import { toast, ToastContainer } from "react-toastify";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import * as XLSX from "xlsx";
@@ -663,27 +664,27 @@ const DistributerList = () => {
                           display: "flex",
                         }}
                         onClick={exportToExcel}
-                       disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img
-                            src="/csv-file.png"
-                            className="report-icon absolute"
-                            alt="csv "
-                          />
-                        </div>
-                        Download
-                      
-            </>
-          )}
-</Button>
+                        disabled={isDownloadLoading}>
+                        {isDownloadLoading ? (
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                            <CircularProgress size={16} style={{ color: "white" }} />
+                            Downloading...
+                          </span>
+                        ) : (
+                          <>
+
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                              <img
+                                src="/csv-file.png"
+                                className="report-icon absolute"
+                                alt="csv "
+                              />
+                            </div>
+                            Download
+
+                          </>
+                        )}
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -756,18 +757,16 @@ const DistributerList = () => {
                         </tr>
                       </tbody>
                     ) : (
-                      <tbody style={{ background: "#3f621217" }}>
+                      <tbody style={{ background: tableData.length === 0 ? '#ffffff' : '#3f621217' }}>
                         {tableData.length === 0 ? (
                           <tr>
                             <td
-                              colSpan={columns.length + 1}
+                              colSpan={columns.length + 2}
                               className="text-center text-gray-500"
-                              style={{ borderRadius: "10px 10px 10px 10px" }}
+                              style={{ borderRadius: "10px 10px 10px 10px", backgroundColor: "white" }}
                             >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/distributor.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                              <NoData minHeight={"65vh"} />
+                            </td>
                           </tr>
                         ) : (
                           tableData.map((row, index) => (
@@ -1550,21 +1549,21 @@ const DistributerList = () => {
                         backgroundColor: "#f8fafc !important"
                       }
                     }}
-                   disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                    <CloudDownloadIcon sx={{ fontSize: 18 }} />
-                    Download Sample File
-                  
-            </>
-          )}
-</Button>
+                    disabled={isDownloadLoading}>
+                    {isDownloadLoading ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                        <CircularProgress size={16} style={{ color: "white" }} />
+                        Downloading...
+                      </span>
+                    ) : (
+                      <>
+
+                        <CloudDownloadIcon sx={{ fontSize: 18 }} />
+                        Download Sample File
+
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
             </DialogContent>

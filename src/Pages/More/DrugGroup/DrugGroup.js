@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Loader from "../../../componets/loader/Loader";
+import NoData from "../../../componets/NoData/NoData";
 import { toast, ToastContainer } from "react-toastify";
 import ClearIcon from "@mui/icons-material/Clear";
 import { InputAdornment } from "@mui/material";
@@ -395,7 +396,7 @@ const DrugGroup = () => {
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody >
+                <tbody style={{ background: drugGroupData.length === 0 ? '#ffffff' : 'transparent' }}>
                   {isLoading || isSearching ? (
                     <tr>
                       <td colSpan={drugGroupColumns.length + 2}
@@ -415,12 +416,11 @@ const DrugGroup = () => {
                           textAlign: "center",
                           color: "gray",
                           borderRadius: "10px 10px 10px 10px",
+                          backgroundColor: "#ffffff",
                         }}
                       >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                        <NoData minHeight={"65vh"} />
+                      </td>
                     </tr>
                   ) : (
                     drugGroupData.map((item, index) => (

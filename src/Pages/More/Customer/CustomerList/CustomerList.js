@@ -1,5 +1,6 @@
 import CircularProgress from "@mui/material/CircularProgress";
 import Loader from "../../../../componets/loader/Loader";
+import NoData from "../../../../componets/NoData/NoData";
 import useSubmitShortcut from "../../../../hooks/useSubmitShortcut";
 import Header from "../../../Header";
 import React, { useEffect, useState } from "react";
@@ -868,7 +869,7 @@ const CustomerList = () => {
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style={{ background: tableData.length === 0 ? '#ffffff' : 'transparent' }}>
                   {isLoading ? (
                     <tr>
                       <td
@@ -886,11 +887,10 @@ const CustomerList = () => {
                           textAlign: "center",
                           color: "gray",
                           borderRadius: "10px 10px 10px 10px",
+                          backgroundColor: "#ffffff",
                         }}
                       >
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-                          {!isLoading && <img src="/customer.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />}
-                        </div>
+                        <NoData minHeight={"65vh"} />
                       </td>
                     </tr>
                   ) : (

@@ -45,6 +45,7 @@ import IconButton from "@mui/material/IconButton";
 import RemoveIcon from "@mui/icons-material/Remove";
 import axios from "axios";
 import Loader from "../../../componets/loader/Loader";
+import NoData from "../../../componets/NoData/NoData";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { image } from "d3";
@@ -297,15 +298,25 @@ const BankAccount = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!bankName) newErrors.bankName = "Bank Name is required";
+    if (!bankName) {
+      newErrors.bankName = "Bank Name is required";
+    } else if (!/^[a-zA-Z\s\-\.]+$/.test(bankName)) {
+      newErrors.bankName = "Bank Name should only contain letters, spaces, hyphens, and dots";
+    }
+
     if (!accountType) newErrors.accountType = "Account Type is required";
+
     // if (switchCheck) {
     if (!accountNumber) {
       newErrors.accountNumber = "Account Number is required";
+    } else if (!/^\d{9,18}$/.test(accountNumber)) {
+      newErrors.accountNumber = "Account Number must be 9 to 18 digits";
     }
 
     if (!reEnterAccountNumber) {
       newErrors.reEnterAccountNumber = "Re-Enter Account Number is required";
+    } else if (!/^\d{9,18}$/.test(reEnterAccountNumber)) {
+      newErrors.reEnterAccountNumber = "Re-Enter Account Number must be 9 to 18 digits";
     }
 
     if (
@@ -316,10 +327,24 @@ const BankAccount = () => {
       newErrors.accountNumber = "Account Numbers do not match";
       newErrors.reEnterAccountNumber = "Account Numbers do not match";
     }
-    if (!ifscCode) newErrors.ifscCode = "IFSC Code is required";
-    if (!accountHolderName)
+
+    if (!ifscCode) {
+      newErrors.ifscCode = "IFSC Code is required";
+    } else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/i.test(ifscCode)) {
+      newErrors.ifscCode = "Invalid IFSC Code format";
+    }
+
+    if (!accountHolderName) {
       newErrors.accountHolderName = "Account Holder Name is required";
-    if (!branchName) newErrors.branchName = "Branch Name is required";
+    } else if (!/^[a-zA-Z\s\-\.]+$/.test(accountHolderName)) {
+      newErrors.accountHolderName = "Account Holder Name should only contain letters, spaces, hyphens, and dots";
+    }
+
+    if (!branchName) {
+      newErrors.branchName = "Branch Name is required";
+    } else if (!/^[a-zA-Z0-9\s\-\.,]+$/.test(branchName)) {
+      newErrors.branchName = "Branch Name should only contain letters, numbers, spaces, hyphens, dots, and commas";
+    }
     // }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -878,7 +903,7 @@ const BankAccount = () => {
                   }}
                 >
                   {isDownloadLoading ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
                       <CircularProgress size={16} style={{ color: "white" }} />
                       Downloading...
                     </span>
@@ -1189,7 +1214,7 @@ const BankAccount = () => {
                             ))}
                           </tr>
                         </thead>
-                        <tbody style={{ backgroundColor: "#3f621217" }}>
+                        <tbody style={{ backgroundColor: (!bankDetails || bankDetails.length === 0) ? "#ffffff" : "#3f621217" }}>
                           {bankDetails?.length > 0 ? (
                             bankDetails.map((item, index) => (
                               // <tr key={index}>
@@ -1252,11 +1277,10 @@ const BankAccount = () => {
                               <td colSpan={PassbookColumns.length} style={{
                                 textAlign: "center", padding: "20px",
                                 color: "gray",
+                                backgroundColor: "#ffffff"
                               }}>
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                                <NoData minHeight={"15vh"} />
+                              </td>
                             </tr>
                           )}
 

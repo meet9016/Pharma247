@@ -16,6 +16,7 @@ import {
   MenuItem
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
+import NoData from "../../../../componets/NoData/NoData";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
@@ -289,32 +290,32 @@ const Purchasebill = () => {
       purches_id: id,
     };
     try {
-  const response = await axios.post("purches-delete?", data, {
-          params: params,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-  });
+      const response = await axios.post("purches-delete?", data, {
+        params: params,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-          setIsDelete(false);
+      setIsDelete(false);
 
-          // Refresh current page after deletion
-          purchaseBillList(currentPage);
+      // Refresh current page after deletion
+      purchaseBillList(currentPage);
 
-  toast.dismiss();
+      toast.dismiss();
 
-  toast.success(response?.data?.message || "Purchase bill deleted successfully");
+      toast.success(response?.data?.message || "Purchase bill deleted successfully");
 
-          if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-          }
+      if (response.data.status === 401) {
+        history.push("/");
+        localStorage.clear();
+      }
     } catch (error) {
       console.error("API error:", error);
 
-  toast.dismiss();
-  toast.error(error?.response?.data?.message || "Something went wrong");
+      toast.dismiss();
+      toast.error(error?.response?.data?.message || "Something went wrong");
 
       if (error?.response?.status === 401) {
         localStorage.removeItem("token");
@@ -504,7 +505,7 @@ const Purchasebill = () => {
                   }}
                 >
                   {isPdfLoading ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 ,color:"#fff",textColor:"#fff"}}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff", textColor: "#fff" }}>
                       <CircularProgress size={16} style={{ color: "white" }} />
                       Generating...
                     </span>
@@ -623,12 +624,10 @@ const Purchasebill = () => {
                       <td
                         colSpan={columns.length + 1}
                         className="text-center text-gray-500"
-                        style={{ borderRadius: "10px 10px 10px 10px" }}
+                        style={{ borderRadius: "10px 10px 10px 10px", backgroundColor: "#ffffff" }}
                       >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/purchase.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                        <NoData minHeight={"55vh"} />
+                      </td>
                     </tr>
                   ) : (
                     paginatedData.map((row) => (

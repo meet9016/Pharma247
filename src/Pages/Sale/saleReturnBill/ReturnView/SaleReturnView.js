@@ -265,21 +265,21 @@ const SaleReturnView = () => {
                           className="sale_add_btn sale_dnls gap-2"
                           style={{ backgroundColor: "var(--color1)" }}
                           onClick={() => pdfGenerator(tableData.id)}
-                         disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                          <FaFilePdf className="w-5 h-5 hover:text-secondary cursor-pointer" />
-                          Download
-                        
-            </>
-          )}
-</Button>
+                          disabled={isDownloadLoading}>
+                          {isDownloadLoading ? (
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                              <CircularProgress size={16} style={{ color: "white" }} />
+                              Downloading...
+                            </span>
+                          ) : (
+                            <>
+
+                              <FaFilePdf className="w-5 h-5 hover:text-secondary cursor-pointer" />
+                              Download
+
+                            </>
+                          )}
+                        </Button>
 
                         <Button
                           variant="contained"

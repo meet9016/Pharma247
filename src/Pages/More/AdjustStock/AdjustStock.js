@@ -31,6 +31,7 @@ import { format, subDays } from "date-fns";
 import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
 import Loader from "../../../componets/loader/Loader";
+import NoData from "../../../componets/NoData/NoData";
 import { toast, ToastContainer } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
@@ -660,7 +661,7 @@ const AdjustStock = () => {
                       ))}
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody style={{ background: filteredList.length === 0 ? '#ffffff' : 'transparent' }}>
                     {(isLoading || isSearchLoading) ? (
                       <tr>
                         <td
@@ -681,12 +682,10 @@ const AdjustStock = () => {
                         <td
                           colSpan={stockList.length + 1}
                           className="text-center text-gray-500"
-                          style={{ borderRadius: "10px 10px 10px 10px" }}
+                          style={{ borderRadius: "10px 10px 10px 10px", backgroundColor: "#ffffff" }}
                         >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  { !isLoading && <img src="/no-data.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} /> }
-</div>
-</td>
+                          <NoData minHeight={"65vh"} />
+                        </td>
                       </tr>
                     ) : (
                       filteredList.map((row, index) => (

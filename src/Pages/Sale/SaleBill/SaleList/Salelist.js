@@ -17,6 +17,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import TextField from "@mui/material/TextField";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import NoData from "../../../../componets/NoData/NoData";
 import axios from "axios";
 import Loader from "../../../../componets/loader/Loader";
 import { FaFilePdf } from "react-icons/fa6";
@@ -381,7 +382,7 @@ const Salelist = () => {
                     }}
                   >
                     {isDownloadLoading ? (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
                         <CircularProgress size={16} style={{ color: "white" }} />
                         Generating...
                       </span>
@@ -503,12 +504,11 @@ const Salelist = () => {
                             textAlign: "center",
                             color: "gray",
                             borderRadius: "10px 10px 10px 10px",
+                            backgroundColor: "#ffffff"
                           }}
                         >
-<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', width: '100%' }}>
-  <img src="/sales.png" alt="No Items Available" style={{ maxWidth: '300px', height: 'auto' }} />
-</div>
-</td>
+                          <NoData minHeight={"55vh"} />
+                        </td>
                       </tr>
                     ) : (
                       paginatedData.map((row, index) => {
@@ -737,20 +737,20 @@ const Salelist = () => {
                 onClick={() => {
                   AllPDFGenerate();
                 }}
-               disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                generate
-              
-            </>
-          )}
-</Button>
+                disabled={isDownloadLoading}>
+                {isDownloadLoading ? (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                    <CircularProgress size={16} style={{ color: "white" }} />
+                    Downloading...
+                  </span>
+                ) : (
+                  <>
+
+                    generate
+
+                  </>
+                )}
+              </Button>
               <Button
                 autoFocus
                 variant="contained"

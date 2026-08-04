@@ -6,8 +6,10 @@ import ProfileView from "../ProfileView";
 import { Box, TablePagination } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
 import axios from "axios";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 const LogActivity = () => {
+    const history = useHistory();
     const [isLoading, setIsLoading] = useState(false);
 
     const [logAllData, setLogAllData] = useState([])
