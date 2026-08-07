@@ -17,6 +17,7 @@ import { FaSearch } from "react-icons/fa";
 import Loader from "../../../../componets/loader/Loader";
 import { saveAs } from "file-saver";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 
 const Stock_AdjustMent_Report = () => {
   const history = useHistory();
@@ -67,10 +68,13 @@ const Stock_AdjustMent_Report = () => {
           },
         })
         .then((response) => {
-          setAdjustStockListData(response.data.data.data);
+          const arr = response.data.data.data;
+          setAdjustStockListData(arr);
           setTotal(response.data.data.total_amount);
-          toast.dismiss();
-          toast.success(response.data.message);
+          if (arr && arr.length > 0) {
+            toast.dismiss();
+            toast.success(response.data.message);
+          }
         });
     } catch (error) {
       toast.dismiss();
@@ -464,16 +468,7 @@ const Stock_AdjustMent_Report = () => {
                     </div>
                   </div>
                 ) : (
-                  <div>
-                    <div className="SearchIcon">
-                      <div>
-                        <FaSearch className="IconSize" />
-                      </div>
-                      <p className="text-gray-500 font-semibold">
-                        Apply filter to get records.
-                      </p>
-                    </div>
-                  </div>
+                  <NoData minHeight="65vh" />
                 )}
               </div>
             </div>

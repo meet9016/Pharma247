@@ -22,6 +22,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Loader from "../../../../componets/loader/Loader";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 const Top_Distributor = () => {
   const history = useHistory();
   const [startDate, setStartDate] = useState(subDays(new Date(), 2));
@@ -128,226 +129,218 @@ const Top_Distributor = () => {
       />
       <div>
         <div className="p-6">
-            <div className="mb-4 flex report_hdr_main">
-              <div
-                className="report_hdr_ec"
+          <div className="mb-4 flex report_hdr_main">
+            <div
+              className="report_hdr_ec"
+              style={{
+                display: "flex",
+                gap: "7px",
+                alignItems: "center",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <span
                 style={{
+                  color: "var(--color2)",
                   display: "flex",
-                  gap: "7px",
+                  fontWeight: 700,
+                  fontSize: "20px",
+                  cursor: "pointer",
+                }}
+                onClick={() => history.push("/reports")}
+              >
+                {" "}
+                Reports
+              </span>
+
+              <ArrowForwardIosIcon
+                style={{ fontSize: "18px", color: "var(--color1)" }}
+              />
+
+              <span
+                className="report_hdr_txt_ec gap-2"
+                style={{
+                  color: "var(--color1)",
+                  display: "flex",
+                  fontWeight: 700,
+                  fontSize: "20px",
                   alignItems: "center",
-                  whiteSpace: "nowrap",
                 }}
               >
-                <span
-                  style={{
-                    color: "var(--color2)",
-                    display: "flex",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => history.push("/reports")}
-                >
-                  {" "}
-                  Reports
-                </span>
-
-                <ArrowForwardIosIcon
-                  style={{ fontSize: "18px", color: "var(--color1)" }}
-                />
-
-                <span
-                  className="report_hdr_txt_ec gap-2"
-                  style={{
-                    color: "var(--color1)",
-                    display: "flex",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    alignItems: "center",
-                  }}
-                >
-                  {" "}
-                  Top Distributors
-                  <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
-                </span>
-              </div>
-              <div className="headerList">
-                <Button
-                  variant="contained"
-                  className="gap-7 report_btn_purch"
-                  style={{
-                    background: "var(--color1)",
-                    color: "white",
-                    // paddingLeft: "35px",
-                    textTransform: "none",
-                    display: "flex",
-                  }}
-                  onClick={exportToCSV}
-                 disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <img
-                      src="/csv-file.png"
-                      className="report-icon absolute mr-10"
-                      alt="csv "
-                    />
-                  </div>
-                  Download
-                
-            </>
-          )}
-</Button>
-              </div>
+                {" "}
+                Top Distributors
+                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+              </span>
             </div>
-            <div
-              className="row border-b border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
-            <div className="mt-4 ">
-              <div className="manageExpenseRow">
-                <div
-                  className="oreder_list_fld_rp grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-5 gap-3 pb-2"
-                  style={{ width: "100%", alignItems: "end" }}
-                >
-                  <div className="detail_report detail_report_sss flex flex-col detailrep_100">
-                    <span className="primary">Start Date</span>
-                    <div style={{ width: "100%" }}>
-                      <DatePicker
-                        className="custom-datepicker "
-                        selected={startDate}
-                        onChange={(newDate) => setStartDate(newDate)}
-                        dateFormat="dd/MM/yyyy"
+            <div className="headerList">
+              <Button
+                variant="contained"
+                className="gap-7 report_btn_purch"
+                style={{
+                  background: "var(--color1)",
+                  color: "white",
+                  // paddingLeft: "35px",
+                  textTransform: "none",
+                  display: "flex",
+                }}
+                onClick={exportToCSV}
+                disabled={isDownloadLoading}>
+                {isDownloadLoading ? (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                    <CircularProgress size={16} style={{ color: "white" }} />
+                    Downloading...
+                  </span>
+                ) : (
+                  <>
+
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <img
+                        src="/csv-file.png"
+                        className="report-icon absolute mr-10"
+                        alt="csv "
                       />
                     </div>
-                  </div>
-                  <div className="detail_report detail_report_sss flex flex-col detailrep_100">
-                    <span className="primary">End Date</span>
-                    <div style={{ width: "100%" }}>
-                      <DatePicker
-                        className="custom-datepicker "
-                        selected={endDate}
-                        onChange={(newDate) => setEndDate(newDate)}
-                        dateFormat="dd/MM/yyyy"
-                      />
-                    </div>
-                  </div>
-                  <div className="detail_report detail_report_sss flex flex-col detailrep_100">
-                    <Button
-                      style={{
-                        background: "var(--color1)",
-                        height: "40px",
-                      }}
-                      variant="contained"
-                      onClick={handlefilterData}
-                    >
-                      Go
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              {isLoading ? (
-                <div className="loader-container ">
-                  <Loader />
-                </div>
-              ) : topDistributorData.length > 0 ? (
-                <div className="firstrow">
-                  <div className="overflow-x-auto mt-4">
-                    <table
-                      className="w-full border-collapse custom-table"
-                      style={{
-                        whiteSpace: "nowrap",
-                        borderCollapse: "separate",
-                        borderSpacing: "0 6px",
-                      }}
-                    >
-                      <thead>
-                        <tr>
-                          <th>SR. No</th>
-                          {TopDistributorColumns.map((column) => (
-                            <th
-                              key={column.id}
-                              style={{ minWidth: column.minWidth }}
-                            >
-                              {column.label}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody style={{ background: "#3f621217" }}>
-                        {topDistributorData.map((row, index) => {
-                          return (
-                            <tr
-                              hover
-                              role="checkbox"
-                              tabIndex={-1}
-                              key={row.code}
-                            >
-                              <td style={{ borderRadius: "10px 0 0 10px" }}>
-                                {startIndex + index}
-                              </td>
-                              {TopDistributorColumns.map((column, colIndex) => {
-                                const value = row[column.id];
-                                // const formattedValue =
-                                //   typeof value === "string" && value.length > 0
-                                //     ? value.charAt(0).toUpperCase() +
-                                //     value.slice(1)
-                                //     : value;
+                    Download
 
-                                const formattedValue =
-                                  value === null ||
-                                    value === undefined ||
-                                    value === ""
-                                    ? "-"
-                                    : typeof value === "string"
-                                      ? value.charAt(0).toUpperCase() + value.slice(1)
-                                      : value;
-
-                                return (
-                                  <td
-                                    key={column.id}
-                                    align={column.align}
-                                    style={
-                                      colIndex ===
-                                        TopDistributorColumns.length - 1
-                                        ? { borderRadius: "0 10px 10px 0" }
-                                        : {}
-                                    }
-                                  >
-                                    {column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : formattedValue}
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div className="SearchIcon">
-                    <div>
-                      <FaSearch className="IconSize" />
-                    </div>
-                    <p className="text-gray-500 font-semibold">
-                      Apply filter to get records.
-                    </p>
-                  </div>
-                </div>
-              )}
+                  </>
+                )}
+              </Button>
             </div>
           </div>
+          <div
+            className="row border-b border-dashed"
+            style={{ borderColor: "var(--color2)" }}
+          ></div>
+          <div className="mt-4 ">
+            <div className="manageExpenseRow">
+              <div
+                className="oreder_list_fld_rp grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-5 gap-3 pb-2"
+                style={{ width: "100%", alignItems: "end" }}
+              >
+                <div className="detail_report detail_report_sss flex flex-col detailrep_100">
+                  <span className="primary">Start Date</span>
+                  <div style={{ width: "100%" }}>
+                    <DatePicker
+                      className="custom-datepicker "
+                      selected={startDate}
+                      onChange={(newDate) => setStartDate(newDate)}
+                      dateFormat="dd/MM/yyyy"
+                    />
+                  </div>
+                </div>
+                <div className="detail_report detail_report_sss flex flex-col detailrep_100">
+                  <span className="primary">End Date</span>
+                  <div style={{ width: "100%" }}>
+                    <DatePicker
+                      className="custom-datepicker "
+                      selected={endDate}
+                      onChange={(newDate) => setEndDate(newDate)}
+                      dateFormat="dd/MM/yyyy"
+                    />
+                  </div>
+                </div>
+                <div className="detail_report detail_report_sss flex flex-col detailrep_100">
+                  <Button
+                    style={{
+                      background: "var(--color1)",
+                      height: "40px",
+                      width: "fit-content",
+                    }}
+                    variant="contained"
+                    onClick={handlefilterData}
+                  >
+                    Go
+                  </Button>
+                </div>
+              </div>
+            </div>
+            {isLoading ? (
+              <div className="loader-container ">
+                <Loader />
+              </div>
+            ) : topDistributorData.length > 0 ? (
+              <div className="firstrow">
+                <div className="overflow-x-auto mt-4">
+                  <table
+                    className="w-full border-collapse custom-table"
+                    style={{
+                      whiteSpace: "nowrap",
+                      borderCollapse: "separate",
+                      borderSpacing: "0 6px",
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        <th>SR. No</th>
+                        {TopDistributorColumns.map((column) => (
+                          <th
+                            key={column.id}
+                            style={{ minWidth: column.minWidth }}
+                          >
+                            {column.label}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody style={{ background: "#3f621217" }}>
+                      {topDistributorData.map((row, index) => {
+                        return (
+                          <tr
+                            hover
+                            role="checkbox"
+                            tabIndex={-1}
+                            key={row.code}
+                          >
+                            <td style={{ borderRadius: "10px 0 0 10px" }}>
+                              {startIndex + index}
+                            </td>
+                            {TopDistributorColumns.map((column, colIndex) => {
+                              const value = row[column.id];
+                              // const formattedValue =
+                              //   typeof value === "string" && value.length > 0
+                              //     ? value.charAt(0).toUpperCase() +
+                              //     value.slice(1)
+                              //     : value;
+
+                              const formattedValue =
+                                value === null ||
+                                  value === undefined ||
+                                  value === ""
+                                  ? "-"
+                                  : typeof value === "string"
+                                    ? value.charAt(0).toUpperCase() + value.slice(1)
+                                    : value;
+
+                              return (
+                                <td
+                                  key={column.id}
+                                  align={column.align}
+                                  style={
+                                    colIndex ===
+                                      TopDistributorColumns.length - 1
+                                      ? { borderRadius: "0 10px 10px 0" }
+                                      : {}
+                                  }
+                                >
+                                  {column.format && typeof value === "number"
+                                    ? column.format(value)
+                                    : formattedValue}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+                ) : (
+                  <NoData minHeight="65vh" />
+                )}
+          </div>
         </div>
+      </div>
     </>
   );
 };

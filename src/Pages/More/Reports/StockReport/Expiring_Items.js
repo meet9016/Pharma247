@@ -28,6 +28,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 
 const Expiring_Items = () => {
 
@@ -311,7 +312,7 @@ const Expiring_Items = () => {
                       </div>
                     </div>
                     <div className="detail_report detailrep_100 flex flex-col">
-                      <span className="primary">End Date</span>
+                      <span className="end Date">End Date</span>
                       <div style={{ width: "100%" }}>
                         <DatePicker
                           className="custom-datepicker "
@@ -469,16 +470,7 @@ const Expiring_Items = () => {
                   </div>
                 </div>
               ) : (
-                <div>
-                  <div className="SearchIcon">
-                    <div>
-                      <FaSearch className="IconSize" />
-                    </div>
-                    <p className="text-gray-500 font-semibold">
-                      Apply filter to get records.
-                    </p>
-                  </div>
-                </div>
+                <NoData minHeight="65vh" />
               )}
             </div>
           </div>

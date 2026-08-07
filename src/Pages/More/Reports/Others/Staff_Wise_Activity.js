@@ -24,6 +24,8 @@ import DatePicker from "react-datepicker";
 import { addDays, format, subDays, subMonths } from "date-fns";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
+import NoData from "../../../../componets/NoData/NoData";
+
 const StaffWiseActivity = () => {
   const history = useHistory();
   const token = localStorage.getItem("token");
@@ -364,10 +366,6 @@ const StaffWiseActivity = () => {
                             <tr key={index}>
                               {StaffActivityColumns.map((column) => (
                                 <td key={column.id}>
-                                  {/* {item[column.id] &&
-                                    item[column.id].charAt(0).toUpperCase() +
-                                    item[column.id].slice(1)} */}
-
                                   {
                                     item[column.id] === null ||
                                       item[column.id] === undefined ||
@@ -387,16 +385,7 @@ const StaffWiseActivity = () => {
                     </div>
                   </div>
                 ) : (
-                  <div>
-                    <div className="SearchIcon">
-                      <div>
-                        <FaSearch className="IconSize" />
-                      </div>
-                      <p className="text-gray-500 font-semibold">
-                        Apply filter to get records.
-                      </p>
-                    </div>
-                  </div>
+                  <NoData minHeight="65vh" />
                 )}
               </div>
             </div>

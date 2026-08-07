@@ -27,6 +27,7 @@ import DatePicker from "react-datepicker";
 import { format, subDays } from "date-fns";
 import { saveAs } from "file-saver";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 
 const Item_Batch_wiseStock = () => {
   const history = useHistory();
@@ -523,16 +524,7 @@ const Item_Batch_wiseStock = () => {
                       </div>
                     </div>
                   ) : (
-                    <div>
-                      <div className="SearchIcon">
-                        <div>
-                          <FaSearch className="IconSize" />
-                        </div>
-                        <p className="text-gray-500 font-semibold">
-                          Apply filter to get records.
-                        </p>
-                      </div>
-                    </div>
+                    <NoData minHeight="65vh" />
                   )}
                 </div>
               </div>

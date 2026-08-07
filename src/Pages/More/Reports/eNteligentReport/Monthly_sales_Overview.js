@@ -14,6 +14,7 @@ import { saveAs } from "file-saver";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Loader from "../../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 const Monthly_sales_Overview = () => {
   const history = useHistory();
   const [monthDate, setMonthDate] = useState(subMonths(new Date(), 1));
@@ -263,16 +264,7 @@ const Monthly_sales_Overview = () => {
                   <Loader />
                 </div>
               ) : !monthlySaleData?.duration ? (
-                <div>
-                  <div className="SearchIcon">
-                    <div>
-                      <FaSearch className="IconSize" />
-                    </div>
-                    <p className="text-gray-500 font-semibold">
-                      Apply filter to get records.
-                    </p>
-                  </div>
-                </div>
+                <NoData minHeight="65vh" />
               ) : (
                 <div className="firstrow">
                   <div className="overflow-x-auto mt-4">

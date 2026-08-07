@@ -22,6 +22,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Loader from "../../../../componets/loader/Loader";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 const Top_Customers = () => {
   const history = useHistory();
   const [startDate, setStartDate] = useState(subDays(new Date(), 2));
@@ -333,16 +334,7 @@ const Top_Customers = () => {
                   </div>
                 </div>
               ) : (
-                <div>
-                  <div className="SearchIcon">
-                    <div>
-                      <FaSearch className="IconSize" />
-                    </div>
-                    <p className="text-gray-500 font-semibold">
-                      Apply filter to get records.
-                    </p>
-                  </div>
-                </div>
+                <NoData minHeight="65vh" />
               )}
             </div>
           </div>

@@ -25,6 +25,7 @@ import Loader from "../../../../componets/loader/Loader";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 const DayWiseSummary = () => {
   const history = useHistory();
   const [monthDate, setMonthDate] = useState(new Date());
@@ -176,246 +177,237 @@ const DayWiseSummary = () => {
       />
       <div>
         <div className="p-6">
-            <div className="mb-4 flex report_hdr_main">
-              <div
-                className="report_hdr_ec"
+          <div className="mb-4 flex report_hdr_main">
+            <div
+              className="report_hdr_ec"
+              style={{
+                display: "flex",
+                gap: "7px",
+                alignItems: "center",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <span
                 style={{
+                  color: "var(--color2)",
                   display: "flex",
-                  gap: "7px",
+                  fontWeight: 700,
+                  fontSize: "20px",
+                  cursor: "pointer",
+                }}
+                onClick={() => history.push("/reports")}
+              >
+                {" "}
+                Reports
+              </span>
+
+              <ArrowForwardIosIcon
+                style={{ fontSize: "18px", color: "var(--color1)" }}
+              />
+
+              <span
+                className="report_hdr_txt_ec gap-2 txt_hdr_rpt"
+                style={{
+                  color: "var(--color1)",
+                  display: "flex",
+                  fontWeight: 700,
+                  fontSize: "20px",
                   alignItems: "center",
-                  whiteSpace: "nowrap",
                 }}
               >
-                <span
-                  style={{
-                    color: "var(--color2)",
-                    display: "flex",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => history.push("/reports")}
-                >
-                  {" "}
-                  Reports
-                </span>
-
-                <ArrowForwardIosIcon
-                  style={{ fontSize: "18px", color: "var(--color1)" }}
-                />
-
-                <span
-                  className="report_hdr_txt_ec gap-2 txt_hdr_rpt"
-                  style={{
-                    color: "var(--color1)",
-                    display: "flex",
-                    fontWeight: 700,
-                    fontSize: "20px",
-                    alignItems: "center",
-                  }}
-                >
-                  {" "}
-                  Day wise Summary
-                  <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
-                </span>
-              </div>
-              <div className="headerList">
-                <Button
-                  variant="contained"
-                  className="gap-7 report_btn_purch"
-                  style={{
-                    background: "var(--color1)",
-                    color: "white",
-                    // paddingLeft: "35px",
-                    textTransform: "none",
-                    display: "flex",
-                  }}
-                  onClick={exportToCSV}
-                  disabled={isDownloadLoading}>
-                  {isDownloadLoading ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
-                      <CircularProgress size={16} style={{ color: "white" }} />
-                      Downloading...
-                    </span>
-                  ) : (
-                    <>
-
-                      {" "}
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <img
-                          src="/csv-file.png"
-                          className="report-icon absolute mr-10"
-                          alt="csv "
-                        />
-                      </div>
-                      Download
-
-                    </>
-                  )}
-                </Button>
-              </div>
+                {" "}
+                Day wise Summary
+                <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+              </span>
             </div>
-            <div
-              className="row border-b border-dashed"
-              style={{ borderColor: "var(--color2)" }}
-            ></div>
-            <div className="mt-4 ">
-              <div className="manageExpenseRow">
+            <div className="headerList">
+              <Button
+                variant="contained"
+                className="gap-7 report_btn_purch"
+                style={{
+                  background: "var(--color1)",
+                  color: "white",
+                  // paddingLeft: "35px",
+                  textTransform: "none",
+                  display: "flex",
+                }}
+                onClick={exportToCSV}
+                disabled={isDownloadLoading}>
+                {isDownloadLoading ? (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                    <CircularProgress size={16} style={{ color: "white" }} />
+                    Downloading...
+                  </span>
+                ) : (
+                  <>
+
+                    {" "}
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <img
+                        src="/csv-file.png"
+                        className="report-icon absolute mr-10"
+                        alt="csv "
+                      />
+                    </div>
+                    Download
+
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+          <div
+            className="row border-b border-dashed"
+            style={{ borderColor: "var(--color2)" }}
+          ></div>
+          <div className="mt-4 ">
+            <div className="manageExpenseRow">
+              <div
+                className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row pb-2 csrtureddididid"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  alignItems: "end",
+                }}
+              >
                 <div
-                  className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row pb-2 csrtureddididid"
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    width: "100%",
-                    alignItems: "end",
-                  }}
+                  className="grid grid-cols-2 sm:grid-cols-2  md:grid-cols-4 w-full gap-3 ttl_dldld day_wise_sum"
+                  style={{ alignItems: "end" }}
                 >
-                  <div
-                    className="grid grid-cols-2 sm:grid-cols-2  md:grid-cols-4 w-full gap-3 ttl_dldld day_wise_sum"
-                    style={{ alignItems: "end" }}
-                  >
-                    <div className="detail_report flex flex-col detailrep_100">
-                      <span className="primary">Start Date</span>
-                      <div style={{ width: "100%" }}>
-                        <DatePicker
-                          className="custom-datepicker "
-                          selected={monthDate}
-                          onChange={(newDate) => setMonthDate(newDate)}
-                          dateFormat="MM/yyyy"
-                          showMonthYearPicker
-                        />
-                      </div>
-                    </div>
-                    <div className="detail_report detail_report_sss flex flex-col detailrep_100">
-                      <FormControl sx={{ width: "100%" }} size="small">
-                        <InputLabel id="demo-select-small-label">
-                          Report Type
-                        </InputLabel>
-                        <Select
-                          labelId="demo-select-small-label"
-                          id="demo-select-small"
-                          value={reportType}
-                          onChange={(e) => setReportType(e.target.value)}
-                          label="Report Type"
-                        >
-                          <MenuItem value="" disabled>
-                            Select Report Type
-                          </MenuItem>
-                          <MenuItem value="0">Purchase</MenuItem>
-                          <MenuItem value="1">Purchase Return</MenuItem>
-                          <MenuItem value="2">Sales</MenuItem>
-                          <MenuItem value="3">Sales Return</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                    <div className="detail_report detail_report_sss flex flex-col detailrep_100">
-                      <Button
-                        style={{
-                          background: "var(--color1)",
-                          height: "40px",
-                          width: "fit-content",
-                        }}
-                        variant="contained"
-                        onClick={handlefilterData}
-                      >
-                        Go
-                      </Button>
+                  <div className="detail_report flex flex-col detailrep_100">
+                    <span className="primary">Start Date</span>
+                    <div style={{ width: "100%" }}>
+                      <DatePicker
+                        className="custom-datepicker "
+                        selected={monthDate}
+                        onChange={(newDate) => setMonthDate(newDate)}
+                        dateFormat="MM/yyyy"
+                        showMonthYearPicker
+                      />
                     </div>
                   </div>
-                  <div className="flex gap-2  ttl_dldld">
-                    <div
-                      className="total_mng_expn  detail_report_totl"
+                  <div className="detail_report detail_report_sss flex flex-col detailrep_100">
+                    <FormControl sx={{ width: "100%" }} size="small">
+                      <InputLabel id="demo-select-small-label">
+                        Report Type
+                      </InputLabel>
+                      <Select
+                        labelId="demo-select-small-label"
+                        id="demo-select-small"
+                        value={reportType}
+                        onChange={(e) => setReportType(e.target.value)}
+                        label="Report Type"
+                      >
+                        <MenuItem value="" disabled>
+                          Select Report Type
+                        </MenuItem>
+                        <MenuItem value="0">Purchase</MenuItem>
+                        <MenuItem value="1">Purchase Return</MenuItem>
+                        <MenuItem value="2">Sales</MenuItem>
+                        <MenuItem value="3">Sales Return</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                  <div className="detail_report detail_report_sss flex flex-col detailrep_100">
+                    <Button
                       style={{
-                        background: "#f3f3f3",
-                        padding: "12px",
-                        borderRadius: "10px",
-                        whiteSpace: "nowrap",
+                        background: "var(--color1)",
+                        height: "40px",
+                        width: "fit-content",
                       }}
+                      variant="contained"
+                      onClick={handlefilterData}
                     >
-                      <h2 className="primary font-medium text-xl ">Total  <span className="secondary font-bold text-xl ">
-                        Rs.{total}
-                      </span></h2>
-                    </div>
+                      Go
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {isLoading ? (
-              <div className="loader-container ">
-                <Loader />
-              </div>
-            ) : dayWiseSummaryData?.bill_list?.length > 0 ? (
-              <div className="firstrow">
-                <div className="overflow-x-auto mt-4">
-                  <table
-                    className="w-full border-collapse custom-table"
+                <div className="flex gap-2  ttl_dldld">
+                  <div
+                    className="total_mng_expn  detail_report_totl"
                     style={{
+                      background: "#f3f3f3",
+                      padding: "12px",
+                      borderRadius: "10px",
                       whiteSpace: "nowrap",
-                      borderCollapse: "separate",
-                      borderSpacing: "0 6px",
                     }}
                   >
-                    <thead>
-                      <tr>
-                        {DayWiseSummaryColumns.map((column) => (
-                          <th
+                    <h2 className="primary font-medium text-xl ">Total  <span className="secondary font-bold text-xl ">
+                      Rs.{total}
+                    </span></h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="loader-container ">
+              <Loader />
+            </div>
+          ) : dayWiseSummaryData?.bill_list?.length > 0 ? (
+            <div className="firstrow">
+              <div className="overflow-x-auto mt-4">
+                <table
+                  className="w-full border-collapse custom-table"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      {DayWiseSummaryColumns.map((column) => (
+                        <th
+                          key={column.id}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          {column.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody style={{ background: "#3f621217" }}>
+                    {dayWiseSummaryData?.bill_list?.map((item, index) => (
+                      <tr key={index}>
+                        {DayWiseSummaryColumns.map((column, colIndex) => (
+                          <td
                             key={column.id}
-                            style={{ minWidth: column.minWidth }}
+                            style={
+                              colIndex === 0
+                                ? {
+                                  borderRadius: "10px 0 0 10px",
+                                }
+                                : colIndex ===
+                                  DayWiseSummaryColumns.length - 1
+                                  ? {
+                                    borderRadius: "0 10px 10px 0",
+                                  }
+                                  : {}
+                            }
                           >
-                            {column.label}
-                          </th>
+                            {/* {item[column.id]} */}
+
+                            {item[column.id] === null ||
+                              item[column.id] === undefined ||
+                              item[column.id] === ""
+                              ? "-"
+                              : item[column.id]}
+                          </td>
                         ))}
                       </tr>
-                    </thead>
-                    <tbody style={{ background: "#3f621217" }}>
-                      {dayWiseSummaryData?.bill_list?.map((item, index) => (
-                        <tr key={index}>
-                          {DayWiseSummaryColumns.map((column, colIndex) => (
-                            <td
-                              key={column.id}
-                              style={
-                                colIndex === 0
-                                  ? {
-                                    borderRadius: "10px 0 0 10px",
-                                  }
-                                  : colIndex ===
-                                    DayWiseSummaryColumns.length - 1
-                                    ? {
-                                      borderRadius: "0 10px 10px 0",
-                                    }
-                                    : {}
-                              }
-                            >
-                              {/* {item[column.id]} */}
-
-                              {item[column.id] === null ||
-                                item[column.id] === undefined ||
-                                item[column.id] === ""
-                                ? "-"
-                                : item[column.id]}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            ) : (
-              <div>
-                <div className="SearchIcon">
-                  <div>
-                    <FaSearch className="IconSize" />
-                  </div>
-                  <p className="text-gray-500 font-semibold">
-                    Apply filter to get records.
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <NoData minHeight="65vh" />
+          )}
         </div>
+      </div>
     </>
   );
 };

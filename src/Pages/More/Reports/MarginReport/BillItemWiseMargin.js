@@ -24,6 +24,7 @@ import { saveAs } from "file-saver";
 import Loader from "../../../../componets/loader/Loader";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 const BillItemWiseMargin = () => {
   const history = useHistory();
   const [startDate, setStartDate] = useState(subDays(new Date(), 2));
@@ -373,7 +374,7 @@ const BillItemWiseMargin = () => {
                         style={{
                           background: "var(--color1)",
                           height: "40px",
-                          width: "f"
+                          width: "fit-content"
                         }}
                         variant="contained"
                         onClick={handlefilterData}
@@ -516,16 +517,7 @@ const BillItemWiseMargin = () => {
                     </div>
                   </>
                 ) : (
-                  <div>
-                    <div className="SearchIcon">
-                      <div>
-                        <FaSearch className="IconSize" />
-                      </div>
-                      <p className="text-gray-500 font-semibold">
-                        Apply filter to get records.
-                      </p>
-                    </div>
-                  </div>
+                  <NoData minHeight="65vh" />
                 )}
               </div>
             </div>

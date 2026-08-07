@@ -24,6 +24,7 @@ import { saveAs } from "file-saver";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../../../componets/loader/Loader";
+import NoData from "../../../../componets/NoData/NoData";
 const PurchaseBillReport = () => {
   const history = useHistory();
   const [lastMonth, setLastMonth] = useState(subMonths(new Date(), 1));
@@ -405,16 +406,7 @@ const PurchaseBillReport = () => {
                 </div>
               </div>
             ) : (
-              <div>
-                <div className="SearchIcon">
-                  <div>
-                    <FaSearch className="IconSize" />
-                  </div>
-                  <p className="text-gray-500 font-semibold">
-                    Apply filter to get records.
-                  </p>
-                </div>
-              </div>
+                <NoData minHeight="65vh" />
             )}
           </div>
         </div>

@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import Loader from "../../../../componets/loader/Loader";
+import NoData from "../../../../componets/NoData/NoData";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -71,7 +72,6 @@ const DoctorItemWise = () => {
   const handlefilterData = async (currentPage) => {
     if (validateForm()) {
       let data = new FormData();
-      setIsDownloadLoading(true);
       const params = {
         start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
         end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -90,6 +90,10 @@ const DoctorItemWise = () => {
           })
           .then((response) => {
             setIsLoading(false);
+            if (response.data.message && response.data.data?.doctor_report?.length > 0) {
+              toast.dismiss();
+              toast.success(response.data.message);
+            }
             setDoctorItemWiseData(response.data.data);
             setTotal(response.data.data.total_amount);
             setTotalNetProfit(response.data.data.total_net_profite);
@@ -224,11 +228,7 @@ const DoctorItemWise = () => {
           draggable
           pauseOnHover
         />
-        {isLoading ? (
-          <div className="loader-container ">
-            <Loader />
-          </div>
-        ) : (
+        <div>
           <div className="p-6">
             <div className="mb-4 flex report_hdr_main">
               <div
@@ -291,27 +291,27 @@ const DoctorItemWise = () => {
                   }}
                   className="gap-7 report_btn_purch"
                   onClick={exportToCSV}
-                 disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <img
-                      src="/csv-file.png"
-                      className="report-icon absolute mr-10"
-                      alt="csv"
-                    />
-                  </div>
-                  Download
-                
-            </>
-          )}
-</Button>{" "}
+                  disabled={isDownloadLoading}>
+                  {isDownloadLoading ? (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                      <CircularProgress size={16} style={{ color: "white" }} />
+                      Downloading...
+                    </span>
+                  ) : (
+                    <>
+
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src="/csv-file.png"
+                          className="report-icon absolute mr-10"
+                          alt="csv"
+                        />
+                      </div>
+                      Download
+
+                    </>
+                  )}
+                </Button>{" "}
               </div>
             </div>
             <div
@@ -440,7 +440,11 @@ const DoctorItemWise = () => {
                   </div>
                 </div>
               </div>
-              {doctorItemWiseData?.doctor_report?.length > 0 ? (
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : doctorItemWiseData?.doctor_report?.length > 0 ? (
                 <div className="firstrow">
                   <div className="overflow-x-auto mt-4">
                     <table
@@ -589,21 +593,11 @@ const DoctorItemWise = () => {
                   </div>
                 </div>
               ) : (
-                <div>
-                  <div className="vector-image">
-                    <div style={{ maxWidth: "200px", marginBottom: "20px" }}>
-                      { !isLoading && <img src="../empty_image.png" alt="empty"> </img> }
-                    </div>
-                    <span className="text-gray-500 font-semibold">Oops !</span>
-                    <p className="text-gray-500 font-semibold">
-                      No Items found with your search criteria.
-                    </p>
-                  </div>
-                </div>
+                <NoData minHeight="65vh" />
               )}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </>
   );

@@ -30,6 +30,7 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import { addDays, format, subDays, subMonths } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 
 const SaleSummary = () => {
   const csvIcon = process.env.PUBLIC_URL + "/csv.png";
@@ -488,16 +489,6 @@ const SaleSummary = () => {
                                 )
                               )}
                           </tr>
-                          {/* <tr>
-                                                      
-                                                        {saleSummaryData.sales?.length > 0 &&
-                                                            Object.keys(saleSummaryData.sales[0]).map((column) => (
-                                                                <th key={column}>
-                                                                    {column === 'total_sales' ? 'Total Sale' : capitalizeFirstLetter(column)}
-                                                                </th>
-                                                            ))
-                                                        }
-                                                    </tr> */}
                         </thead>
                         <tbody style={{ background: "#3f621217" }}>
                           {saleSummaryData.sales?.map((item, index) => (
@@ -513,7 +504,6 @@ const SaleSummary = () => {
                                         : {}
                                   }
                                 >
-                                  {/* {item[key]} */}
                                   {
                                     item[key] === null ||
                                       item[key] === undefined ||
@@ -530,16 +520,7 @@ const SaleSummary = () => {
                     </div>
                   </div>
                 ) : (
-                  <div>
-                    <div className="SearchIcon">
-                      <div>
-                        <FaSearch className="IconSize" />
-                      </div>
-                      <p className="text-gray-500 font-semibold">
-                        Apply filter to get records.
-                      </p>
-                    </div>
-                  </div>
+                  <NoData minHeight="65vh" />
                 )}
               </div>
             </div>

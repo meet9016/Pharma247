@@ -26,6 +26,7 @@ import { addDays, format, subDays } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import Loader from "../../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 const PurchasePaymentSummary = () => {
   const history = useHistory();
   const token = localStorage.getItem("token");
@@ -183,259 +184,250 @@ const PurchasePaymentSummary = () => {
           />
           <div className="p-6">
             <div className="mb-4 flex report_hdr_main">
-                <div
-                  className="report_hdr_ec"
+              <div
+                className="report_hdr_ec"
+                style={{
+                  display: "flex",
+                  gap: "7px",
+                  alignItems: "center",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <span
                   style={{
+                    color: "var(--color2)",
                     display: "flex",
-                    gap: "7px",
+                    fontWeight: 700,
+                    fontSize: "20px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => history.push("/reports")}
+                >
+                  {" "}
+                  Reports
+                </span>
+
+                <ArrowForwardIosIcon
+                  style={{ fontSize: "17px", color: "var(--color1)" }}
+                />
+
+                <span
+                  className="report_hdr_txt_ec gap-2"
+                  style={{
+                    color: "var(--color1)",
+                    display: "flex",
+                    fontWeight: 700,
+                    fontSize: "20px",
                     alignItems: "center",
-                    whiteSpace: "nowrap",
                   }}
                 >
-                  <span
-                    style={{
-                      color: "var(--color2)",
-                      display: "flex",
-                      fontWeight: 700,
-                      fontSize: "20px",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => history.push("/reports")}
-                  >
-                    {" "}
-                    Reports
-                  </span>
-
-                  <ArrowForwardIosIcon
-                    style={{ fontSize: "17px", color: "var(--color1)" }}
-                  />
-
-                  <span
-                    className="report_hdr_txt_ec gap-2"
-                    style={{
-                      color: "var(--color1)",
-                      display: "flex",
-                      fontWeight: 700,
-                      fontSize: "20px",
-                      alignItems: "center",
-                    }}
-                  >
-                    Purchase Payment Summary
-                    <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
-                  </span>
-                </div>
-                <div className="headerList">
-                  <Button
-                    variant="contained"
-                    className="gap-7  report_btn_purch"
-                    style={{
-                      background: "var(--color1)",
-                      color: "white",
-                      // paddingLeft: "35px",
-                      textTransform: "none",
-                      display: "flex",
-                    }}
-                    onClick={exportToCSV}
-                    disabled={isDownloadLoading}>
-                    {isDownloadLoading ? (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
-                        <CircularProgress size={16} style={{ color: "white" }} />
-                        Downloading...
-                      </span>
-                    ) : (
-                      <>
-
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img
-                            src="/csv-file.png"
-                            className="report-icon absolute mr-10"
-                            alt="csv "
-                          />
-                        </div>
-                        Download
-
-                      </>
-                    )}
-                  </Button>
-                </div>
+                  Purchase Payment Summary
+                  <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
+                </span>
               </div>
-              <div
-                className="row border-b border-dashed"
-                style={{ borderColor: "var(--color2)" }}
-              ></div>
-              <div className="mt-4 ">
-                <div
-                  className="manageExpenseRow"
-                //   style={{
-                //     borderBottom: "2px solid rgb(0 0 0 / 0.1)",
-                //   }}
-                >
-                  <div
-                    className="oreder_list_fld_rp  grid grid-cols-1 sm:grid-cols-3  lg:grid-cols-5 gap-3 pb-3"
-                    style={{ width: "100%", alignItems: "end" }}
-                  >
-                    <div className="detail_report detail_report_sss flex flex-col detailrep_100">
-                      <span className="primary">Start Date</span>
-                      <div style={{ width: "100%" }}>
-                        <DatePicker
-                          className="custom-datepicker "
-                          selected={startDate}
-                          onChange={(newDate) => setStartDate(newDate)}
-                          dateFormat="dd/MM/yyyy"
-                        />
-                      </div>
-                    </div>
-                    <div className="detail_report detail_report_sss flex flex-col detailrep_100">
-                      <span className="primary">End Date</span>
-                      <div style={{ width: "100%" }}>
-                        <DatePicker
-                          className="custom-datepicker "
-                          selected={endDate}
-                          onChange={(newDate) => setEndDate(newDate)}
-                          dateFormat="dd/MM/yyyy"
-                        />
-                      </div>
-                    </div>
-                    <div className="detail_report detail_report_sss flex flex-col detailrep_100">
-                      <FormControl style={{ width: "100% " }} size="small">
-                        <InputLabel id="demo-select-small-label">
-                          {" "}
-                          Purchase Payment Status
-                        </InputLabel>
-                        <Select
-                          labelId="demo-select-small-label"
-                          id="demo-select-small"
-                          value={paymentStatus}
-                          onChange={(e) => setPaymnetStatus(e.target.value)}
-                          label="Purchase Payment Status"
-                          style={{ width: "100%" }}
-                        >
-                          <MenuItem value="" disabled>
-                            Purchase Payment Status
-                          </MenuItem>
-                          <MenuItem value="All">All</MenuItem>
-                          <MenuItem value="Partially_Paid">
-                            Partially Paid
-                          </MenuItem>
-                          <MenuItem value="Paid">Paid</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                    <div className="detail_report detail_report_sss flex flex-col detailrep_100 ">
-                      {/* <div className="detail" > */}
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-basic"
-                        value={searchDistributor}
-                        sx={{ width: "100%" }}
-                        size="small"
-                        onChange={(e) => setSearchDistributor(e.target.value)}
-                        variant="outlined"
-                        placeholder="Search by Bill No"
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <SearchIcon />
-                            </InputAdornment>
-                          ),
-                          type: "search",
-                        }}
-                      />
-                      {/* </div> */}
-                    </div>
+              <div className="headerList">
+                <Button
+                  variant="contained"
+                  className="gap-7  report_btn_purch"
+                  style={{
+                    background: "var(--color1)",
+                    color: "white",
+                    // paddingLeft: "35px",
+                    textTransform: "none",
+                    display: "flex",
+                  }}
+                  onClick={exportToCSV}
+                  disabled={isDownloadLoading}>
+                  {isDownloadLoading ? (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                      <CircularProgress size={16} style={{ color: "white" }} />
+                      Downloading...
+                    </span>
+                  ) : (
+                    <>
 
-                    <div className="purch_report_hdr detail_report detail_report_sss">
-                      <Button
-                        // className="go_btn_divv"
-                        style={{
-                          background: "var(--color1)",
-                          height: "40px",
-                          width: "fit-content",
-                        }}
-                        variant="contained"
-                        onClick={handleFilterData}
-                      >
-                        Go
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                {isLoading ? (
-                  <div className="loader-container ">
-                    <Loader />
-                  </div>
-                ) : purchasePaymentData.length > 0 ? (
-                  <div className="firstrow">
-                    <div className="overflow-x-auto mt-4">
-                      <table
-                        className="w-full border-collapse custom-table"
-                        style={{
-                          whiteSpace: "nowrap",
-                          borderCollapse: "separate",
-                          borderSpacing: "0 6px",
-                        }}
-                      >
-                        <thead>
-                          <tr>
-                            {GstSaleRegisterColumns.map((column) => (
-                              <th
-                                key={column.id}
-                                style={{ minWidth: column.minWidth }}
-                              >
-                                {column.label}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody style={{ background: "#3f621217" }}>
-                          {purchasePaymentData?.map((item, index) => (
-                            <tr key={index}>
-                              {GstSaleRegisterColumns.map(
-                                (column, colIndex) => (
-                                  <td
-                                    key={column.id}
-                                    style={
-                                      colIndex === 0
-                                        ? {
-                                          borderRadius: "10px 0 0 10px",
-                                        }
-                                        : colIndex ===
-                                          GstSaleRegisterColumns.length - 1
-                                          ? {
-                                            borderRadius: "0 10px 10px 0",
-                                          }
-                                          : {}
-                                    }
-                                  >
-                                    {column.id === "total"
-                                      ? parseFloat(item[column.id]).toFixed(2)
-                                      : item[column.id]
-                                        ?.charAt(0)
-                                        .toUpperCase() +
-                                      item[column.id]?.slice(1)}
-                                  </td>
-                                )
-                              )}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="SearchIcon-bill">
-                      <div>
-                        <FaReceipt className="IconSize-bill" />
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src="/csv-file.png"
+                          className="report-icon absolute mr-10"
+                          alt="csv "
+                        />
                       </div>
-                      <p className="text-gray-500 font-semibold">
-                        Outstanding bills are just a click away!
-                      </p>
-                    </div>
-                  </div>
-                )}
+                      Download
+
+                    </>
+                  )}
+                </Button>
               </div>
             </div>
+            <div
+              className="row border-b border-dashed"
+              style={{ borderColor: "var(--color2)" }}
+            ></div>
+            <div className="mt-4 ">
+              <div
+                className="manageExpenseRow"
+              //   style={{
+              //     borderBottom: "2px solid rgb(0 0 0 / 0.1)",
+              //   }}
+              >
+                <div
+                  className="oreder_list_fld_rp  grid grid-cols-1 sm:grid-cols-3  lg:grid-cols-5 gap-3 pb-3"
+                  style={{ width: "100%", alignItems: "end" }}
+                >
+                  <div className="detail_report detail_report_sss flex flex-col detailrep_100">
+                    <span className="primary">Start Date</span>
+                    <div style={{ width: "100%" }}>
+                      <DatePicker
+                        className="custom-datepicker "
+                        selected={startDate}
+                        onChange={(newDate) => setStartDate(newDate)}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  </div>
+                  <div className="detail_report detail_report_sss flex flex-col detailrep_100">
+                    <span className="primary">End Date</span>
+                    <div style={{ width: "100%" }}>
+                      <DatePicker
+                        className="custom-datepicker "
+                        selected={endDate}
+                        onChange={(newDate) => setEndDate(newDate)}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  </div>
+                  <div className="detail_report detail_report_sss flex flex-col detailrep_100">
+                    <FormControl style={{ width: "100% " }} size="small">
+                      <InputLabel id="demo-select-small-label">
+                        {" "}
+                        Purchase Payment Status
+                      </InputLabel>
+                      <Select
+                        labelId="demo-select-small-label"
+                        id="demo-select-small"
+                        value={paymentStatus}
+                        onChange={(e) => setPaymnetStatus(e.target.value)}
+                        label="Purchase Payment Status"
+                        style={{ width: "100%" }}
+                      >
+                        <MenuItem value="" disabled>
+                          Purchase Payment Status
+                        </MenuItem>
+                        <MenuItem value="All">All</MenuItem>
+                        <MenuItem value="Partially_Paid">
+                          Partially Paid
+                        </MenuItem>
+                        <MenuItem value="Paid">Paid</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                  <div className="detail_report detail_report_sss flex flex-col detailrep_100 ">
+                    {/* <div className="detail" > */}
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-basic"
+                      value={searchDistributor}
+                      sx={{ width: "100%" }}
+                      size="small"
+                      onChange={(e) => setSearchDistributor(e.target.value)}
+                      variant="outlined"
+                      placeholder="Search by Bill No"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <SearchIcon />
+                          </InputAdornment>
+                        ),
+                        type: "search",
+                      }}
+                    />
+                    {/* </div> */}
+                  </div>
+
+                  <div className="purch_report_hdr detail_report detail_report_sss">
+                    <Button
+                      // className="go_btn_divv"
+                      style={{
+                        background: "var(--color1)",
+                        height: "40px",
+                        width: "fit-content",
+                      }}
+                      variant="contained"
+                      onClick={handleFilterData}
+                    >
+                      Go
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : purchasePaymentData.length > 0 ? (
+                <div className="firstrow">
+                  <div className="overflow-x-auto mt-4">
+                    <table
+                      className="w-full border-collapse custom-table"
+                      style={{
+                        whiteSpace: "nowrap",
+                        borderCollapse: "separate",
+                        borderSpacing: "0 6px",
+                      }}
+                    >
+                      <thead>
+                        <tr>
+                          {GstSaleRegisterColumns.map((column) => (
+                            <th
+                              key={column.id}
+                              style={{ minWidth: column.minWidth }}
+                            >
+                              {column.label}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody style={{ background: "#3f621217" }}>
+                        {purchasePaymentData?.map((item, index) => (
+                          <tr key={index}>
+                            {GstSaleRegisterColumns.map(
+                              (column, colIndex) => (
+                                <td
+                                  key={column.id}
+                                  style={
+                                    colIndex === 0
+                                      ? {
+                                        borderRadius: "10px 0 0 10px",
+                                      }
+                                      : colIndex ===
+                                        GstSaleRegisterColumns.length - 1
+                                        ? {
+                                          borderRadius: "0 10px 10px 0",
+                                        }
+                                        : {}
+                                  }
+                                >
+                                  {column.id === "total"
+                                    ? parseFloat(item[column.id]).toFixed(2)
+                                    : item[column.id]
+                                      ?.charAt(0)
+                                      .toUpperCase() +
+                                    item[column.id]?.slice(1)}
+                                </td>
+                              )
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ) : (
+                <NoData  minHeight="65vh" />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </>

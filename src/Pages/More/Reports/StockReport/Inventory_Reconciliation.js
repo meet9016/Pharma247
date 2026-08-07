@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { FormControl, MenuList } from "@mui/material";
 import Loader from "../../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 import {
   Box,
   ListItem,
@@ -315,8 +316,10 @@ const Inventory_Reconciliation = () => {
         const parsedData = response.data;
         if (parsedData?.data) {
           setReportData(parsedData.data);
-          toast.dismiss();
-          toast.success(parsedData.message);
+          if (parsedData.data.length > 0) {
+            toast.dismiss();
+            toast.success(parsedData.message);
+          }
         } else {
           toast.dismiss();
           toast.error(parsedData.message || "No data available for the selected criteria.");
@@ -650,22 +653,11 @@ const Inventory_Reconciliation = () => {
                     </div>
                   </>
                 ) : (
-                  <div>
-                    <div className="vector-image">
-                      <div style={{ maxWidth: "200px", marginBottom: "20px" }}>
-                        {!isLoading && <img src="../empty_image.png" alt="empty" />}
-                      </div>
-                      <span className="text-gray-500 font-semibold">
-                        Oops !
-                      </span>
-                      <p className="text-gray-500 font-semibold">
-                        No Items found with your search criteria.
-                      </p>
-                    </div>
-                  </div>
+                  <NoData minHeight="65vh" />
                 )}
               </div>
-              <div className="flex justify-center mt-4">
+              {reportData?.length > 0 && (
+                <div className="flex justify-center mt-4">
                 <button
                   onClick={handlePrevious}
                   className={`mx-1 px-3 py-1 rounded ${currentPage === 1
@@ -717,6 +709,7 @@ const Inventory_Reconciliation = () => {
                   Next
                 </button>
               </div>
+              )}
             </div>
           )}
         </div>

@@ -27,6 +27,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
 
 const Purchase_Return_Report = () => {
   const history = useHistory();
@@ -462,16 +463,7 @@ const Purchase_Return_Report = () => {
                   </div>
                 </div>
               ) : (
-                <div>
-                  <div className="SearchIcon">
-                    <div>
-                      <FaSearch className="IconSize" />
-                    </div>
-                    <p className="text-gray-500 font-semibold">
-                      Apply filter to get records.
-                    </p>
-                  </div>
-                </div>
+                <NoData minHeight="65vh" />
               )}
             </div>
           </div>

@@ -16,6 +16,8 @@ import DatePicker from "react-datepicker";
 import { addDays, format, subDays, subMonths } from "date-fns";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { toast, ToastContainer } from "react-toastify";
+import NoData from "../../../../componets/NoData/NoData";
+
 const CompanyItemWise = () => {
   const history = useHistory();
   const token = localStorage.getItem("token");
@@ -419,16 +421,7 @@ const CompanyItemWise = () => {
                     </div>
                   </div>
                 ) : (
-                  <div>
-                    <div className="SearchIcon">
-                      <div>
-                        <FaSearch className="IconSize" />
-                      </div>
-                      <p className="text-gray-500 font-semibold">
-                        Apply filter to get records.
-                      </p>
-                    </div>
-                  </div>
+                  <NoData minHeight="65vh" />
                 )}
               </div>
             </div>

@@ -22,6 +22,7 @@ import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../../../componets/loader/Loader";
+import NoData from "../../../../componets/NoData/NoData";
 const SalesBill = () => {
   const history = useHistory();
   const token = localStorage.getItem("token");
@@ -497,16 +498,7 @@ const SalesBill = () => {
                 </div>
               </div>
             ) : (
-              <div>
-                <div className="SearchIcon">
-                  <div>
-                    <FaSearch className="IconSize" />
-                  </div>
-                  <p className="text-gray-500 font-semibold">
-                    Apply filter to get records.
-                  </p>
-                </div>
-              </div>
+              <NoData minHeight="65vh" />
             )}
           </div>
         </div>
