@@ -43,7 +43,6 @@ const Top_Customers = () => {
 
   const handlefilterData = async () => {
     let data = new FormData();
-    setIsDownloadLoading(true);
     const params = {
       start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
       end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -127,13 +126,8 @@ const Top_Customers = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
-        <div>
-          <div className="p-6">
+      <div>
+        <div className="p-6">
             <div className="mb-4 flex report_hdr_main">
               <div
                 className="report_hdr_ec"
@@ -189,27 +183,27 @@ const Top_Customers = () => {
                     display: "flex",
                   }}
                   onClick={exportToCSV}
-                 disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <img
-                      src="/csv-file.png"
-                      className="report-icon absolute mr-10"
-                      alt="csv "
-                    />
-                  </div>
-                  Download
-                
-            </>
-          )}
-</Button>{" "}
+                  disabled={isDownloadLoading}>
+                  {isDownloadLoading ? (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                      <CircularProgress size={16} style={{ color: "white" }} />
+                      Downloading...
+                    </span>
+                  ) : (
+                    <>
+
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src="/csv-file.png"
+                          className="report-icon absolute mr-10"
+                          alt="csv "
+                        />
+                      </div>
+                      Download
+
+                    </>
+                  )}
+                </Button>{" "}
               </div>
             </div>
             <div
@@ -259,7 +253,11 @@ const Top_Customers = () => {
                   </div>
                 </div>
               </div>
-              {topCustomerData.length > 0 ? (
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : topCustomerData.length > 0 ? (
                 <div className="firstrow">
                   <div className="overflow-x-auto mt-4">
                     <table
@@ -349,7 +347,6 @@ const Top_Customers = () => {
             </div>
           </div>
         </div>
-      )}
     </>
   );
 };

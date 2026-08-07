@@ -400,7 +400,7 @@ export default function MemberView({ viewMember, setViewMember, memberDetails })
                                                     flexShrink: 0,
                                                 }}
                                             >
-                                                <MedicalServicesIcon  sx={{ fontSize: 22, color: "#3f6212" }} />
+                                                <MedicalServicesIcon sx={{ fontSize: 22, color: "#3f6212" }} />
                                             </Box>
                                             <Box>
                                                 <Typography variant="body1" fontWeight={700} color="#3f6212">

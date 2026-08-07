@@ -105,7 +105,6 @@ const SaleSummary = () => {
   const handlefilterData = async () => {
     if (validateForm()) {
       let data = new FormData();
-      setIsDownloadLoading(true);
       const params = {
         start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
         end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -197,11 +196,7 @@ const SaleSummary = () => {
             draggable
             pauseOnHover
           />
-          {isLoading ? (
-            <div className="loader-container ">
-              <Loader />
-            </div>
-          ) : (
+          <div>
             <div className="p-6">
               <div className="mb-4 flex report_hdr_main">
                 <div
@@ -465,7 +460,11 @@ const SaleSummary = () => {
                     </div>
                   </div>
                 </div>
-                {saleSummaryData?.sales?.length > 0 ? (
+                {isLoading ? (
+                  <div className="loader-container ">
+                    <Loader />
+                  </div>
+                ) : saleSummaryData?.sales?.length > 0 ? (
                   <div className="firstrow">
                     <div className="overflow-x-auto mt-4">
                       <table
@@ -544,7 +543,7 @@ const SaleSummary = () => {
                 )}
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </>

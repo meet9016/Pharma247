@@ -64,7 +64,6 @@ const ItemWiseMargin = () => {
   const handlefilterData = async () => {
     if (validateForm()) {
       let data = new FormData();
-      setIsDownloadLoading(true);
       const params = {
         start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
         end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -194,13 +193,8 @@ const ItemWiseMargin = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
-        <div>
-          <div className="p-6">
+      <div>
+        <div className="p-6">
             <div className="mb-4 flex report_hdr_main">
               <div
                 className="report_hdr_ec"
@@ -371,7 +365,11 @@ const ItemWiseMargin = () => {
                   </div>
                 </div>
               </div>
-              {itemMarginData?.iteam_margin_report?.length > 0 ? (
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : itemMarginData?.iteam_margin_report?.length > 0 ? (
                 <>
                   <div
                     style={{
@@ -506,7 +504,6 @@ const ItemWiseMargin = () => {
             </div>
           </div>
         </div>
-      )}
     </>
   );
 };

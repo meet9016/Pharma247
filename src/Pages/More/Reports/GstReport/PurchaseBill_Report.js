@@ -95,7 +95,6 @@ const PurchaseBillReport = () => {
   const handlefilterData = async () => {
     if (validateForm()) {
       let data = new FormData();
-      setIsDownloadLoading(true);
       const params = {
         month_year: lastMonth ? format(lastMonth, "MM-yyyy") : "",
         type: reportType,
@@ -171,13 +170,8 @@ const PurchaseBillReport = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
-        <div>
-          <div className="p-6">
+      <div>
+        <div className="p-6">
             <div className="mb-4 flex report_hdr_main">
               <div
                 className="report_hdr_ec"
@@ -356,7 +350,11 @@ const PurchaseBillReport = () => {
                 </div>
               </div>
             </div>
-            {purchaseGSTData?.purches?.length > 0 ? (
+            {isLoading ? (
+              <div className="loader-container ">
+                <Loader />
+              </div>
+            ) : purchaseGSTData?.purches?.length > 0 ? (
               <div className="firstrow">
                 <div className="overflow-x-auto mt-4">
                   <table
@@ -420,7 +418,6 @@ const PurchaseBillReport = () => {
             )}
           </div>
         </div>
-      )}
     </>
   );
 };

@@ -397,6 +397,7 @@ const InventoryList = () => {
           item_name: item.iteam_name,
           item_id: item.item_id,
           batch_id: item.id,
+          batch_name: item.batch_name,
           qty: item.qty
         }));
       }

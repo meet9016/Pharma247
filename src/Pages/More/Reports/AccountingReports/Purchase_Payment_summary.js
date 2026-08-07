@@ -71,7 +71,6 @@ const PurchasePaymentSummary = () => {
       if (paymentMode !== "All") {
         let x = paymentMode;
       }
-      setIsDownloadLoading(true);
       const params = {
         start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
         end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -97,13 +96,13 @@ const PurchasePaymentSummary = () => {
           });
       } catch (error) {
         console.error("API error:", error);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
   };
@@ -182,13 +181,8 @@ const PurchasePaymentSummary = () => {
             draggable
             pauseOnHover
           />
-          {isLoading ? (
-            <div className="loader-container ">
-              <Loader />
-            </div>
-          ) : (
-            <div className="p-6">
-              <div className="mb-4 flex report_hdr_main">
+          <div className="p-6">
+            <div className="mb-4 flex report_hdr_main">
                 <div
                   className="report_hdr_ec"
                   style={{
@@ -242,27 +236,27 @@ const PurchasePaymentSummary = () => {
                       display: "flex",
                     }}
                     onClick={exportToCSV}
-                   disabled={isDownloadLoading}>
-{isDownloadLoading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color:"#fff" }}>
-              <CircularProgress size={16} style={{ color: "white" }} />
-              Downloading...
-            </span>
-          ) : (
-            <>
-              
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <img
-                        src="/csv-file.png"
-                        className="report-icon absolute mr-10"
-                        alt="csv "
-                      />
-                    </div>
-                    Download
-                  
-            </>
-          )}
-</Button>
+                    disabled={isDownloadLoading}>
+                    {isDownloadLoading ? (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: "#fff" }}>
+                        <CircularProgress size={16} style={{ color: "white" }} />
+                        Downloading...
+                      </span>
+                    ) : (
+                      <>
+
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <img
+                            src="/csv-file.png"
+                            className="report-icon absolute mr-10"
+                            alt="csv "
+                          />
+                        </div>
+                        Download
+
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
               <div
@@ -366,7 +360,11 @@ const PurchasePaymentSummary = () => {
                     </div>
                   </div>
                 </div>
-                {purchasePaymentData.length > 0 ? (
+                {isLoading ? (
+                  <div className="loader-container ">
+                    <Loader />
+                  </div>
+                ) : purchasePaymentData.length > 0 ? (
                   <div className="firstrow">
                     <div className="overflow-x-auto mt-4">
                       <table
@@ -438,7 +436,6 @@ const PurchasePaymentSummary = () => {
                 )}
               </div>
             </div>
-          )}
         </div>
       </div>
     </>

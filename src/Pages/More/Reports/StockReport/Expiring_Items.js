@@ -143,7 +143,6 @@ const Expiring_Items = () => {
   };
   const handlefilterData = async (currentPage) => {
     let data = new FormData();
-    setIsDownloadLoading(true);
 
 
     data.append("start_month", startDate ? format(startDate, "MM/yy") : "");
@@ -202,13 +201,8 @@ const Expiring_Items = () => {
           draggable
           pauseOnHover
         />
-        {isLoading ? (
-          <div className="loader-container ">
-            <Loader />
-          </div>
-        ) : (
-          <div className="p-6">
-            <div className="mb-4 flex report_hdr_main">
+        <div className="p-6">
+          <div className="mb-4 flex report_hdr_main">
               <div
                 className="report_hdr_ec"
                 style={{
@@ -350,7 +344,11 @@ const Expiring_Items = () => {
 
                 </div>
               </div>
-              {expiryDateData?.length > 0 ? (
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : expiryDateData?.length > 0 ? (
                 <div className="firstrow">
                   <div className="overflow-x-auto mt-4">
                     <table
@@ -484,7 +482,6 @@ const Expiring_Items = () => {
               )}
             </div>
           </div>
-        )}
       </div>
     </>
   );

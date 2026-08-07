@@ -48,7 +48,6 @@ const Top_Distributor = () => {
   const startIndex = (currentPage - 1) * rowsPerPage + 1;
   const handlefilterData = async () => {
     let data = new FormData();
-    setIsDownloadLoading(true);
     const params = {
       start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
       end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -127,13 +126,8 @@ const Top_Distributor = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
-        <div>
-          <div className="p-6">
+      <div>
+        <div className="p-6">
             <div className="mb-4 flex report_hdr_main">
               <div
                 className="report_hdr_ec"
@@ -258,7 +252,11 @@ const Top_Distributor = () => {
                   </div>
                 </div>
               </div>
-              {topDistributorData.length > 0 ? (
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : topDistributorData.length > 0 ? (
                 <div className="firstrow">
                   <div className="overflow-x-auto mt-4">
                     <table
@@ -350,7 +348,6 @@ const Top_Distributor = () => {
             </div>
           </div>
         </div>
-      )}
     </>
   );
 };

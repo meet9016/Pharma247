@@ -21,6 +21,7 @@ import axios from "axios";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { toast, ToastContainer } from "react-toastify";
+import Loader from "../../../../componets/loader/Loader";
 const SalesBill = () => {
   const history = useHistory();
   const token = localStorage.getItem("token");
@@ -104,7 +105,7 @@ const SalesBill = () => {
       if (paymentMode !== "all") {
         let x = paymentMode;
       }
-      setIsDownloadLoading(true);
+      setIsLoading(true);
       const params = {
         month_year: lastMonth ? format(lastMonth, "MM-yyyy") : "",
         type: reportType,
@@ -400,7 +401,11 @@ const SalesBill = () => {
                 </div>
               </div>
             </div>
-            {saleGSTData?.sales?.length > 0 ? (
+            {isLoading ? (
+              <div className="loader-container ">
+                <Loader />
+              </div>
+            ) : saleGSTData?.sales?.length > 0 ? (
               <div className="firstrow">
                 <div className="overflow-x-auto mt-4">
                   <table

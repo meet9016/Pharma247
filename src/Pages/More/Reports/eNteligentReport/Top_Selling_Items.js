@@ -82,7 +82,6 @@ const Top_Selling_Items = () => {
 
   const handlefilterData = async (currentPage) => {
     let data = new FormData();
-    setIsDownloadLoading(true);
     const params = {
       // start_date: startDate.format('YYYY-MM-DD'),
       // end_date: endDate.format('YYYY-MM-DD'),
@@ -188,13 +187,8 @@ const Top_Selling_Items = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
-        <div>
-          <div className="p-6">
+      <div>
+        <div className="p-6">
             <div className="mb-4 flex report_hdr_main">
               <div
                 className="report_hdr_ec"
@@ -338,7 +332,11 @@ const Top_Selling_Items = () => {
                   </div>
                 </div>
               </div>
-              {topSaleData.length > 0 ? (
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : topSaleData.length > 0 ? (
                 <div className="firstrow">
                   <div className="overflow-x-auto mt-4">
                     <table
@@ -469,7 +467,6 @@ const Top_Selling_Items = () => {
             </div>
           </div>
         </div>
-      )}
     </>
   );
 };

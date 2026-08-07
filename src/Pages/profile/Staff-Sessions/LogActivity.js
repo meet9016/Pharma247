@@ -34,7 +34,7 @@ const LogActivity = () => {
             page: page + 1,
             limit: rowsPerPage,
         }
-        axios.post("logs-activity?", {
+        axios.post("logs-activity?", {}, {
             params: params,
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -47,13 +47,13 @@ const LogActivity = () => {
             })
             .catch((error) => {
                 console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                if (error?.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("role");
+                    localStorage.clear();
+                    history.push("/");
+                }
             });
     };
 

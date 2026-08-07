@@ -191,7 +191,7 @@ const AdjustStock = () => {
 
   let purchaseItemList = () => {
     axios
-      .post("purches-iteam-list", {
+      .post("purches-iteam-list", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

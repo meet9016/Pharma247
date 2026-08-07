@@ -315,11 +315,11 @@ const Inventory_Reconciliation = () => {
         const parsedData = response.data;
         if (parsedData?.data) {
           setReportData(parsedData.data);
-          //  toast.dismiss();
-          toast.success("please wait ...downloading is in progress!")
+          toast.dismiss();
+          toast.success(parsedData.message);
         } else {
           toast.dismiss();
-          toast.error("No data available for the selected criteria.");
+          toast.error(parsedData.message || "No data available for the selected criteria.");
         }
       }
     } catch (error) {
@@ -653,7 +653,7 @@ const Inventory_Reconciliation = () => {
                   <div>
                     <div className="vector-image">
                       <div style={{ maxWidth: "200px", marginBottom: "20px" }}>
-                        { !isLoading && <img src="../empty_image.png" alt="empty"> </img> }
+                        {!isLoading && <img src="../empty_image.png" alt="empty" />}
                       </div>
                       <span className="text-gray-500 font-semibold">
                         Oops !

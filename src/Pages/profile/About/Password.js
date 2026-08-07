@@ -29,7 +29,7 @@ const Password = () => {
     const fetchAboutDetails = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.post("about-get", {
+            const response = await axios.post("about-get", {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -44,13 +44,13 @@ const Password = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     };
 
@@ -106,20 +106,20 @@ const Password = () => {
                     },
                 }
                 ).then((response) => {
-                     toast.dismiss();
-toast.success(response.data.message);
+                    toast.dismiss();
+                    toast.success(response.data.message);
                     setIsLoading(false);
 
                 })
             } catch (error) {
                 console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+                if (error?.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("role");
+                    localStorage.clear();
+                    history.push("/");
+                }
             }
         }
     };
@@ -127,7 +127,7 @@ toast.success(response.data.message);
         <>
 
             <Header />
-              <ToastContainer
+            <ToastContainer
 
                 position="top-right"
                 autoClose={5000}
@@ -195,7 +195,7 @@ toast.success(response.data.message);
                                                         onClick={handleClickCurrentPassword}
                                                         onMouseDown={handleMouseDownPassword}
                                                     >
-                                                        {currentPasswordIcon ? <VisibilityOff className="primary"/> : <Visibility className="primary"/>}
+                                                        {currentPasswordIcon ? <VisibilityOff className="primary" /> : <Visibility className="primary" />}
                                                     </IconButton>
                                                 </InputAdornment>
                                             }
@@ -204,7 +204,7 @@ toast.success(response.data.message);
                                     {passwordError && <div style={{ color: 'red', fontSize: '12px' }}>{passwordError}</div>}
                                 </div>
                                 <Box className='mb-4' style={{ width: "100%" }}>
-                                    <Button variant="contained" style={{ textTransform: 'none', background: "var(--color1)", paddingLeft: "20px", marginTop: "20px",width:"100%" }} onClick={handleUpdate} >Update</Button>
+                                    <Button variant="contained" style={{ textTransform: 'none', background: "var(--color1)", paddingLeft: "20px", marginTop: "20px", width: "100%" }} onClick={handleUpdate} >Update</Button>
                                 </Box>
                             </div>
                         </div>

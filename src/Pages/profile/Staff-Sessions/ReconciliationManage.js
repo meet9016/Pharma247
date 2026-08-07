@@ -28,7 +28,7 @@ const ReconciliationManage = () => {
   const getData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.post("reconciliation-iteam-list", {
+      const response = await axios.post("reconciliation-iteam-list", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

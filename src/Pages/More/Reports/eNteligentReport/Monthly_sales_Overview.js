@@ -46,7 +46,6 @@ const Monthly_sales_Overview = () => {
 
   const handlefilterData = async () => {
     let data = new FormData();
-    setIsDownloadLoading(true);
     const params = {
       month_year: monthDate ? format(monthDate, "MM-yyyy") : "",
     };
@@ -146,13 +145,8 @@ const Monthly_sales_Overview = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
-        <div>
-          <div className="p-6">
+      <div>
+        <div className="p-6">
             <div className="mb-4 flex report_hdr_main">
               <div
                 className="report_hdr_ec"
@@ -264,7 +258,11 @@ const Monthly_sales_Overview = () => {
                   </div>
                 </div>
               </div>
-              {!monthlySaleData?.duration ? (
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : !monthlySaleData?.duration ? (
                 <div>
                   <div className="SearchIcon">
                     <div>
@@ -320,7 +318,6 @@ const Monthly_sales_Overview = () => {
             </div>
           </div>
         </div>
-      )}
     </>
   );
 };

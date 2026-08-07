@@ -69,7 +69,6 @@ const BillItemWiseMargin = () => {
   const handlefilterData = async () => {
     if (validateForm()) {
       let data = new FormData();
-      setIsDownloadLoading(true);
       const params = {
         start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
         end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -212,14 +211,9 @@ const BillItemWiseMargin = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
+      <div>
         <div>
-          <div>
-            <div className="p-6">
+          <div className="p-6">
               <div className="mb-4 flex report_hdr_main">
                 <div
                   className="report_hdr_ec"
@@ -389,7 +383,11 @@ const BillItemWiseMargin = () => {
                     </div>
                   </div>
                 </div>
-                {billMarginData?.bill_margin_report?.length > 0 ? (
+                {isLoading ? (
+                  <div className="loader-container ">
+                    <Loader />
+                  </div>
+                ) : billMarginData?.bill_margin_report?.length > 0 ? (
                   <>
                     <div
                       style={{
@@ -533,7 +531,6 @@ const BillItemWiseMargin = () => {
             </div>
           </div>
         </div>
-      )}
     </>
   );
 };

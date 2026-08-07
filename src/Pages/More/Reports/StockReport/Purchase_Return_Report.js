@@ -125,7 +125,6 @@ const Purchase_Return_Report = () => {
 
   const handlefilterData = async (currentPage) => {
     let data = new FormData();
-    setIsDownloadLoading(true);
     const params = {
       start_date: startDate ? format(startDate, "yyyy-MM-dd") : "",
       end_date: endDate ? format(endDate, "yyyy-MM-dd") : "",
@@ -177,13 +176,8 @@ const Purchase_Return_Report = () => {
           draggable
           pauseOnHover
         />
-        {isLoading ? (
-          <div className="loader-container ">
-            <Loader />
-          </div>
-        ) : (
-          <div className="p-6">
-            <div className="mb-4 flex report_hdr_main">
+        <div className="p-6">
+          <div className="mb-4 flex report_hdr_main">
               <div
                 className="report_hdr_ec"
                 style={{
@@ -367,7 +361,11 @@ const Purchase_Return_Report = () => {
                   </div>
                 </div>
               </div>
-              {purchaseReturnData?.purches_return?.length > 0 ? (
+              {isLoading ? (
+                <div className="loader-container ">
+                  <Loader />
+                </div>
+              ) : purchaseReturnData?.purches_return?.length > 0 ? (
                 <div className="firstrow">
                   <div className="overflow-x-auto mt-4">
                     <table
@@ -477,7 +475,6 @@ const Purchase_Return_Report = () => {
               )}
             </div>
           </div>
-        )}
       </div>
     </>
   );
