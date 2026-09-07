@@ -1603,9 +1603,9 @@ const InventoryList = () => {
                                   color: "var(--COLOR_UI_PHARMACY)", // Color for checked checkboxes
                                 },
                               }}
-                              checked={selectedGstIds.includes(gst.id)}
+                              checked={selectedGstIds.includes(gst.name) || selectedGstIds.includes(gst.id)}
                               onChange={(event) =>
-                                handleCheckboxChangeGst(event, gst.id)
+                                handleCheckboxChangeGst(event, gst.name)
                               }
                               name={gst.name}
                             />
@@ -2712,9 +2712,9 @@ const InventoryList = () => {
                                   color: "var(--color1)", // Color for checked checkboxes
                                 },
                               }}
-                              checked={selectedGstIds.includes(gst.id)}
+                              checked={selectedGstIds.includes(gst.name) || selectedGstIds.includes(gst.id)}
                               onChange={(event) =>
-                                handleCheckboxChangeGst(event, gst.id)
+                                handleCheckboxChangeGst(event, gst.name)
                               }
                               name={gst.name}
                             />

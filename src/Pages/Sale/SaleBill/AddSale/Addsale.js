@@ -120,7 +120,7 @@ const AddSale = () => {
   const [order, setOrder] = useState("");
   const [roundOff, setRoundOff] = useState(0);
   const [itemEditID, setItemEditID] = useState(0);
-  const [gst, setGst] = useState("0");
+  const [gst, setGst] = useState("");
   const [batch, setBatch] = useState("");
   const [unit, setUnit] = useState("");
   const [finalDiscount, setFinalDiscount] = useState(0);
@@ -1074,7 +1074,10 @@ const AddSale = () => {
       setDoctorData(doctors);
 
       if (!doctor && doctors.length) {
-        setDoctor(doctors.find(d => d.default_doctor === "1") || doctors[0]);
+        const defaultDoc = doctors.find(
+          (d) => d.default_doctor === "1" || d.default_doctor === 1 || d.default_doctor === "Yes"
+        );
+        setDoctor(defaultDoc || null);
       }
 
       if (res.data.status === 401) {
@@ -1139,7 +1142,7 @@ const AddSale = () => {
 
       const customers = res.data.data || [];
       setCustomerDetails(customers);
-      setCustomer(customers[0]);
+      setCustomer(null);
 
       // if (!search && customers.length > 0) {
       //   setCustomer(customers[0]);
@@ -2026,7 +2029,7 @@ const AddSale = () => {
         setMRP("");
         setQty("");
         setBase("");
-        setGst("0");
+        setGst("");
         setBatch("");
         setBarcode("");
         setLoc("");
@@ -2069,7 +2072,7 @@ const AddSale = () => {
     setExpiryDate("");
     setMRP("");
     setBase("");
-    setGst("0");
+    setGst("");
     setQty("");
     setOrder("");
     setLoc("");
@@ -3277,28 +3280,35 @@ const AddSale = () => {
                 </td>
                 <td>
                   <TextField
-                    select
+                    disabled
+                    autoComplete="off"
                     id="outlined-number"
-                    placeholder="Gst"
+                    placeholder="0"
                     error={!!itemErrors.gst}
                     size="small"
                     inputRef={inputRef6}
-                    onKeyDown={(e) => handleKeyDown(e, 5)}
+                    onKeyDown={(e) => {
+                      const invalidKeys = ["e", "E", ".", "+", "-", ","];
+                      if (invalidKeys.includes(e.key)) {
+                        e.preventDefault();
+                        return;
+                      }
+                      handleKeyDown(e, 5);
+                    }}
                     sx={{
                       minWidth: "60px",
                       width: "100%",
-                      "& .MuiSelect-select": { textAlign: "left" }
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
                     }}
                     value={gst || ""}
                     onChange={(e) => {
-                      setGst(e.target.value);
+                      const value = e.target.value.replace(/[^0-9]/g, "");
+                      setGst(value);
                       setItemErrors((prev) => ({ ...prev, gst: false }));
                     }}
-                  >
-                    <MenuItem value="0">0</MenuItem>
-                    <MenuItem value="5">5</MenuItem>
-                    <MenuItem value="18">18</MenuItem>
-                  </TextField>
+                  />
                 </td>
                 <td >
                   <TextField

@@ -91,7 +91,7 @@ const AddPurchaseBill = () => {
   const [margin, setMargin] = useState("");
   const [disc, setDisc] = useState("");
   const [base, setBase] = useState("");
-  const [gst, setGst] = useState("0");
+  const [gst, setGst] = useState("");
   const [batch, setBatch] = useState("");
   const [HSN, setHSN] = useState("");
   const [otherAmt, setOtherAmt] = useState("");
@@ -208,6 +208,16 @@ const AddPurchaseBill = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!openAddDistributorPopUp) {
+      setAddDistributorAddress("");
+      setAddDistributorMobile("");
+      setAddDistributorName("");
+      setAddDistributorNo("");
+      setAddDistributorError({});
+    }
+  }, [openAddDistributorPopUp]);
 
   /*<=================================================== disable autocomplete to focus when tableref is focused  ==========================================> */
 
@@ -1193,8 +1203,6 @@ const AddPurchaseBill = () => {
 
     if (gst === undefined || gst === null || gst === "") {
       newErrors.gst = "GST is required";
-    } else if (gst != 18 && gst != 5 && gst != 0) {
-      newErrors.gst = "Enter valid GST";
     }
 
     if (!ptr || ptr === "") {
@@ -1396,6 +1404,7 @@ const AddPurchaseBill = () => {
         setAddDistributorMobile("");
         setAddDistributorName("");
         setAddDistributorNo("");
+        setAddDistributorError({});
         toast.dismiss();
         toast.success(response.data.message || "Distributor Added successfully");
         setOpenAddDistributorPopUp(false);
@@ -2373,6 +2382,11 @@ const AddPurchaseBill = () => {
                   <span className="title mb-2 flex  items-center gap-2">Distributor <span className="text-red-600">*</span>    <FaPlusCircle
                     className="primary cursor-pointer"
                     onClick={() => {
+                      setAddDistributorAddress("");
+                      setAddDistributorMobile("");
+                      setAddDistributorName("");
+                      setAddDistributorNo("");
+                      setAddDistributorError({});
                       setOpenAddDistributorPopUp(true);
                     }}
                   /></span>
@@ -2619,7 +2633,7 @@ const AddPurchaseBill = () => {
                   <tr className="input-row">
                     <th>
                       <div className="flex justify-start items-center gap-2">
-                        Search Item Name <span className="text-red-600 ">*</span>
+                        Search Item Name<span className="text-red-600 ">*</span>
                         <FaPlusCircle
                           className="primary cursor-pointer"
                           onClick={() => { setOpenAddItemPopUp(true) }}
@@ -3214,10 +3228,10 @@ const AddPurchaseBill = () => {
 
                     <td>
                       <TextField
-                        select
-                        // SelectProps={{ native: true }}
                         variant="outlined"
+                        autoComplete="off"
                         size="small"
+                        placeholder="0"
                         value={gst}
                         sx={{
                           minWidth: "60px",
@@ -3229,14 +3243,17 @@ const AddPurchaseBill = () => {
                         error={!!error.gst}
                         inputRef={(el) => (inputRefs.current[11] = el)}
                         onChange={(e) => {
-                          const value = e.target.value;
-                          setGst(value ? Number(value) : "");
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          setGst(value);
                           setError((prev) => ({ ...prev, gst: "" }));
-                          setTimeout(() => {
-                            inputRefs.current[12]?.focus();
-                          }, 100);
                         }}
                         onKeyDown={(e) => {
+                          const invalidKeys = ["e", "E", ".", "+", "-", ","];
+                          if (invalidKeys.includes(e.key)) {
+                            e.preventDefault();
+                            return;
+                          }
+
                           const isTab = e.key === "Tab";
                           const isEnter = e.key === "Enter";
                           const isShiftTab = isTab && e.shiftKey;
@@ -3249,11 +3266,7 @@ const AddPurchaseBill = () => {
                             inputRefs.current[12]?.focus();
                           }
                         }}
-                      >
-                        <MenuItem value="0">0</MenuItem>
-                        <MenuItem value="5">5</MenuItem>
-                        <MenuItem value="18">18</MenuItem>
-                      </TextField>
+                      />
                     </td>
 
                     <td>
@@ -3937,7 +3950,11 @@ const AddPurchaseBill = () => {
 
 
 
-          <Dialog open={openAddDistributorPopUp} className="custom-dialog add-distributor-dialog modal_991">
+          <Dialog
+            open={openAddDistributorPopUp}
+            onClose={() => setOpenAddDistributorPopUp(false)}
+            className="custom-dialog add-distributor-dialog modal_991"
+          >
             <DialogTitle id="alert-dialog-title" className="primary">
               Add Distributor
             </DialogTitle>
@@ -3949,6 +3966,7 @@ const AddPurchaseBill = () => {
                 setAddDistributorMobile("");
                 setAddDistributorName("");
                 setAddDistributorNo("");
+                setAddDistributorError({});
               }}
 
               sx={{
@@ -3982,6 +4000,10 @@ const AddPurchaseBill = () => {
                           value={addDistributorName}
                           onInputChange={(e, newValue) => {
                             setAddDistributorName(newValue.toUpperCase());
+                            setAddDistributorError((prev) => ({
+                              ...prev,
+                              addDistributorName: "",
+                            }));
                           }}
                           onChange={(e, selectedValue) => {
                             const found = distributorList.find(d => d.name === selectedValue);
@@ -4004,6 +4026,11 @@ const AddPurchaseBill = () => {
                                   ...prev,
                                   addDistributorName: "",
                                 }));
+                              }}
+                              sx={{
+                                "& input::placeholder": {
+                                  textTransform: "none",
+                                },
                               }}
                               FormHelperTextProps={{
                                 sx: {
@@ -4045,6 +4072,10 @@ const AddPurchaseBill = () => {
                             }
 
                             setAddDistributorMobile(numericValue);
+                            setAddDistributorError((prev) => ({
+                              ...prev,
+                              addDistributorMobile: "",
+                            }));
                           }}
                           onChange={(e, selectedValue) => {
                             const found = distributorList.find(d => d.phone_number === selectedValue);
@@ -4101,6 +4132,10 @@ const AddPurchaseBill = () => {
                           value={addDistributorNo}
                           onInputChange={(e, newValue) => {
                             setAddDistributorNo(newValue.toUpperCase());
+                            setAddDistributorError((prev) => ({
+                              ...prev,
+                              addDistributorNo: "",
+                            }));
                           }}
                           onChange={(e, selectedValue) => {
                             const found = distributorList.find(d => d.gst === selectedValue);
@@ -4119,6 +4154,11 @@ const AddPurchaseBill = () => {
                               inputRef={(el) => (inputRefs.current[18] = el)}
                               error={!!addDistributorError.addDistributorNo}
                               helperText={addDistributorError.addDistributorNo}
+                              sx={{
+                                "& input::placeholder": {
+                                  textTransform: "none",
+                                },
+                              }}
                               FormHelperTextProps={{
                                 sx: {
                                   color: "#ff0000 !important",
@@ -4156,7 +4196,10 @@ const AddPurchaseBill = () => {
                           value={addDistributorAddress}
                           onChange={(e) => {
                             const value = e.target.value;
-                            const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
+                            const capitalized = value
+                              .split(" ")
+                              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                              .join(" ");
                             setAddDistributorAddress(capitalized);
                           }}
                           inputRef={(el) => (inputRefs.current[19] = el)}

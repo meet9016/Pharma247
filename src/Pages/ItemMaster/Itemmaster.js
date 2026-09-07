@@ -113,6 +113,19 @@ const Itemmaster = () => {
   });
   const [drugGroupError, setDrugGroupError] = useState("");
 
+  useEffect(() => {
+    setDistributorAddress("");
+    setDistributorMobileNo("");
+    setDistributorName("");
+    setDistributorGSTNumber("");
+    setSelectedDistributorId("");
+    setDistributorError({
+      distributorName: "",
+      distributorMobileNo: "",
+      distributorGSTNumber: "",
+    });
+  }, [openDistributor]);
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -1568,7 +1581,19 @@ const Itemmaster = () => {
                         <label className="label">Suppliers </label>
                         <FaPlusCircle
                           className="mt-1.5 cursor-pointer"
-                          onClick={() => setOpenDistributor(true)}
+                          onClick={() => {
+                            setDistributorAddress("");
+                            setDistributorMobileNo("");
+                            setDistributorName("");
+                            setDistributorGSTNumber("");
+                            setSelectedDistributorId("");
+                            setDistributorError({
+                              distributorName: "",
+                              distributorMobileNo: "",
+                              distributorGSTNumber: "",
+                            });
+                            setOpenDistributor(true);
+                          }}
                         />
                       </div>
                       {/* <label className="label"></label> */}
@@ -1615,35 +1640,37 @@ const Itemmaster = () => {
 
                     <div className="fields secrw_divvv itm_divv_wid" style={{ width: "50%" }}>
                       <label className="label">GST%</label>
-                      <Select
-                        labelId="dropdown-label"
-                        id="dropdown"
+                      <TextField
+                        id="outlined-number"
+                        placeholder="0"
+                        size="small"
+                        type="text"
+                        autoComplete="off"
                         value={gst || ""}
                         onChange={(e) => {
-                          setGST(e.target.value);
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          setGST(value);
                         }}
-                        size="small"
-                        displayEmpty
-                        renderValue={(selected) => {
-                          if (selected === "") {
-                            return <span style={{ color: "rgba(0, 0, 0, 0.38)" }}>Select GST%</span>;
+                        onKeyDown={(e) => {
+                          const invalidKeys = ["e", "E", ".", "+", "-", ","];
+                          if (invalidKeys.includes(e.key)) {
+                            e.preventDefault();
                           }
-                          const selectedOption = gstList.find((option) => option.id == selected);
-                          return selectedOption ? selectedOption.name : "";
                         }}
                         sx={{
-                          ".MuiSelect-select": {
-                            color: gst ? "inherit" : "rgba(0, 0, 0, 0.38)",
-                            padding: "8.5px 12px !important",
+                          "& .MuiOutlinedInput-root": {
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "rgba(0, 0, 0, 0.38) "
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "var(--color1)",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "var(--color1)",
+                            },
                           },
                         }}
-                      >
-                        {gstList.map((option) => (
-                          <MenuItem key={option.id} value={option.id}>
-                            {option.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                      />
                     </div>
 
                     {/* <div className="row border-b pb-6 " style={{ borderColor: "var(--color2)" }}> */}
@@ -2319,6 +2346,11 @@ const Itemmaster = () => {
           setDistributorName("");
           setDistributorGSTNumber("");
           setSelectedDistributorId("");
+          setDistributorError({
+            distributorName: "",
+            distributorMobileNo: "",
+            distributorGSTNumber: "",
+          });
         }}
       >
         <DialogTitle id="alert-dialog-title" className="primary">
@@ -2333,6 +2365,11 @@ const Itemmaster = () => {
             setDistributorName("");
             setDistributorGSTNumber("");
             setSelectedDistributorId("");
+            setDistributorError({
+              distributorName: "",
+              distributorMobileNo: "",
+              distributorGSTNumber: "",
+            });
           }}
           sx={{
             position: "absolute",
@@ -2418,6 +2455,9 @@ const Itemmaster = () => {
                             autoComplete: "off",
                           }}
                           sx={{
+                            "& input::placeholder": {
+                              textTransform: "none",
+                            },
                             "& .MuiOutlinedInput-root": {
                               "& .MuiOutlinedInput-notchedOutline": {
                                 borderColor: distributorError.distributorName
@@ -2495,17 +2535,17 @@ const Itemmaster = () => {
                           sx={{
                             "& .MuiOutlinedInput-root": {
                               "& .MuiOutlinedInput-notchedOutline": {
-                                borderColor: distributorError.distributorName
+                                borderColor: distributorError.distributorMobileNo
                                   ? "#d32f2f !important"
                                   : "rgba(0,0,0,0.38)",
                               },
                               "&:hover .MuiOutlinedInput-notchedOutline": {
-                                borderColor: distributorError.distributorName
+                                borderColor: distributorError.distributorMobileNo
                                   ? "#d32f2f"
                                   : "var(--color1)",
                               },
                               "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                borderColor: distributorError.distributorName
+                                borderColor: distributorError.distributorMobileNo
                                   ? "#d32f2f"
                                   : "var(--color1)",
                               },
@@ -2529,6 +2569,10 @@ const Itemmaster = () => {
                       onInputChange={(e, newValue) => {
                         setDistributorGSTNumber(newValue.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 15));
                         setSelectedDistributorId("");
+                        setDistributorError((prev) => ({
+                          ...prev,
+                          distributorGSTNumber: "",
+                        }));
                       }}
                       onChange={(e, selectedValue) => {
                         setDistributorError((prev) => ({
@@ -2560,19 +2604,22 @@ const Itemmaster = () => {
                             maxLength: 15,
                           }}
                           sx={{
+                            "& input::placeholder": {
+                              textTransform: "none",
+                            },
                             "& .MuiOutlinedInput-root": {
                               "& .MuiOutlinedInput-notchedOutline": {
-                                borderColor: distributorError.distributorName
+                                borderColor: distributorError.distributorGSTNumber
                                   ? "#d32f2f !important"
                                   : "rgba(0,0,0,0.38)",
                               },
                               "&:hover .MuiOutlinedInput-notchedOutline": {
-                                borderColor: distributorError.distributorName
+                                borderColor: distributorError.distributorGSTNumber
                                   ? "#d32f2f"
                                   : "var(--color1)",
                               },
                               "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                borderColor: distributorError.distributorName
+                                borderColor: distributorError.distributorGSTNumber
                                   ? "#d32f2f"
                                   : "var(--color1)",
                               },
@@ -2598,7 +2645,14 @@ const Itemmaster = () => {
                       autoComplete="off"
                       size="small"
                       value={distributorAddress}
-                      onChange={(e) => setDistributorAddress(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const capitalized = value
+                          .split(" ")
+                          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(" ");
+                        setDistributorAddress(capitalized);
+                      }}
                     />
                   </div>
                 </div>
