@@ -487,7 +487,7 @@ const Dashboard = () => {
                 >
                   <div className="flex flex-col gap-2">
                     <span className="text-gray-600 dark:text-gray-500 text-lg">
-                      STOCK BY PTR
+                      STOCK BY MRP
                     </span>
                     <div className="text-3xl font-bold text-gray-900">
                       Rs. {formatAmount(record?.total_mrp)}

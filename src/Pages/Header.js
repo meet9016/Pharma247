@@ -575,7 +575,7 @@ const Header = () => {
                           </li>
                         )}
 
-                        <li className="block border-b-2">
+                        {/* <li className="block border-b-2">
                           <Link to="/reconciliation">
                             <span
                               className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
@@ -584,7 +584,7 @@ const Header = () => {
                               Reconciliation
                             </span>
                           </Link>
-                        </li>
+                        </li> */}
                         <li className="block border-b-2">
                           <Link to="/loyaltyPoints">
                             <span

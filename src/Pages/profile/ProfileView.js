@@ -54,13 +54,13 @@ const ProfileView = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     }
 
@@ -89,13 +89,13 @@ const ProfileView = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
-   if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userId");
+                localStorage.removeItem("role");
+                localStorage.clear();
+                history.push("/");
+            }
         }
     };
 
@@ -204,14 +204,14 @@ const ProfileView = () => {
                                                 Manage Staff Roles
                                             </li>
                                         )}
-                                        {hasPermission(permissions, "staff members view") && (
+                                        {/* {hasPermission(permissions, "staff members view") && (
                                             <li
                                                 className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/reconciliationManage' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
                                                 onClick={() => handleItemClick('/reconciliationManage', 'Reconciliation')}
                                             >
                                                 Reconciliation
                                             </li>
-                                        )}
+                                        )} */}
 
                                         <li
                                             className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/StaffSessions' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}

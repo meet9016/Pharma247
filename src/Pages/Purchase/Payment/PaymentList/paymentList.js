@@ -131,7 +131,14 @@ const PaymentList = () => {
       label: option.bank_name,
       value: option.id,
     })) || []),
-  ];
+  ].filter(
+    (option, index, self) =>
+      index ===
+      self.findIndex(
+        (o) =>
+          o.label?.toLowerCase().trim() === option.label?.toLowerCase().trim()
+      )
+  );
 
   // Effect for handling search with debouncing (copied from OrderList)
   useEffect(() => {
@@ -784,29 +791,39 @@ const PaymentList = () => {
                                   )}
                                 />
                               ) : column.id === "payment_mode" ? (
-                                <Autocomplete
-                                  options={[
+                                (() => {
+                                  const searchPaymentOptions = [
                                     { id: "", name: "All" },
                                     { id: "cash", name: "Cash" },
                                     { id: "credit", name: "Credit" },
-                                    ...bankData.map(bank => ({ id: bank.id, name: bank.bank_name }))
-                                  ]}
-                                  getOptionLabel={(opt) => opt.name || ""}
-                                  value={
-                                    [
-                                      { id: "", name: "All" },
-                                      { id: "cash", name: "Cash" },
-                                      { id: "credit", name: "Credit" },
-                                      ...bankData.map(bank => ({ id: bank.id, name: bank.bank_name }))
-                                    ].find(mode => mode.id?.toString() === searchTerms[index]?.toString()) || { id: "", name: "All" }
-                                  }
-                                  onChange={(_, val) => handleSearchChange(index, val ? val.id : "")}
-                                  size="small"
-                                  sx={{ width: 150 }}
-                                  renderInput={(params) => (
-                                    <TextField {...params} placeholder="Payment Mode" variant="outlined" />
-                                  )}
-                                />
+                                    ...(bankData?.map((bank) => ({ id: bank.id, name: bank.bank_name })) || []),
+                                  ].filter(
+                                    (option, index, self) =>
+                                      index ===
+                                      self.findIndex(
+                                        (o) =>
+                                          o.name?.toLowerCase().trim() === option.name?.toLowerCase().trim()
+                                      )
+                                  );
+
+                                  return (
+                                    <Autocomplete
+                                      options={searchPaymentOptions}
+                                      getOptionLabel={(opt) => opt.name || ""}
+                                      value={
+                                        searchPaymentOptions.find(
+                                          (mode) => mode.id?.toString() === searchTerms[index]?.toString()
+                                        ) || { id: "", name: "All" }
+                                      }
+                                      onChange={(_, val) => handleSearchChange(index, val ? val.id : "")}
+                                      size="small"
+                                      sx={{ width: 150 }}
+                                      renderInput={(params) => (
+                                        <TextField {...params} placeholder="Payment Mode" variant="outlined" />
+                                      )}
+                                    />
+                                  );
+                                })()
                               ) : column.id === "status" ? (
                                 <Autocomplete
                                   options={[
