@@ -216,35 +216,35 @@ const AddReturnbill = () => {
 
       // Prevent table navigation when a dropdown is focused
       if (isDropdownFocused) return;
-        if (e.key === "ArrowDown") {
-          e.preventDefault();
-          const nextIndex = Math.min(selectedIndex + 1, tableData.item_list.length - 1);
-          setSelectedIndex(nextIndex);
-          if (nextIndex !== selectedIndex) {
-            const selectedRow = tableData.item_list[nextIndex];
-            if (selectedRow) handleEditClick(selectedRow);
-            
-            setTimeout(() => {
-              document.getElementById(`return-add-row-${nextIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 50);
-          }
-        } else if (e.key === "ArrowUp") {
-          e.preventDefault();
-          const prevIndex = Math.max(selectedIndex - 1, 0);
-          setSelectedIndex(prevIndex);
-          if (prevIndex !== selectedIndex) {
-            const selectedRow = tableData.item_list[prevIndex];
-            if (selectedRow) handleEditClick(selectedRow);
-            
-            setTimeout(() => {
-              document.getElementById(`return-add-row-${prevIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 50);
-          }
-        } else if (e.key === "Enter" && selectedIndex !== -1) {
-          const selectedRow = tableData.item_list[selectedIndex];
-          if (!selectedRow) return;
-          handleEditClick(selectedRow);
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        const nextIndex = Math.min(selectedIndex + 1, tableData.item_list.length - 1);
+        setSelectedIndex(nextIndex);
+        if (nextIndex !== selectedIndex) {
+          const selectedRow = tableData.item_list[nextIndex];
+          if (selectedRow) handleEditClick(selectedRow);
+
+          setTimeout(() => {
+            document.getElementById(`return-add-row-${nextIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 50);
         }
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const prevIndex = Math.max(selectedIndex - 1, 0);
+        setSelectedIndex(prevIndex);
+        if (prevIndex !== selectedIndex) {
+          const selectedRow = tableData.item_list[prevIndex];
+          if (selectedRow) handleEditClick(selectedRow);
+
+          setTimeout(() => {
+            document.getElementById(`return-add-row-${prevIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 50);
+        }
+      } else if (e.key === "Enter" && selectedIndex !== -1) {
+        const selectedRow = tableData.item_list[selectedIndex];
+        if (!selectedRow) return;
+        handleEditClick(selectedRow);
+      }
     };
 
     document.addEventListener("keydown", handleKeyPress);
@@ -318,7 +318,7 @@ const AddReturnbill = () => {
       setBatch(selectedEditItem.batch_number);
       setExpiryDate(selectedEditItem.expiry);
       setMRP(selectedEditItem.mrp);
-      setQty(selectedEditItem.total_stock);
+      setQty(selectedEditItem.qty !== undefined && selectedEditItem.qty !== null && selectedEditItem.qty !== "" ? selectedEditItem.qty : selectedEditItem.total_stock);
       setFree(selectedEditItem.fr_qty);
       setPTR(selectedEditItem.ptr);
       setDisc(selectedEditItem.disocunt);
@@ -819,8 +819,9 @@ const AddReturnbill = () => {
     setSelectedEditItem(item);
     setSelectedEditItemId(item.id);
     setItemPurchaseId(item.item_id);
-    setQty(item.total_stock);
-    setEditQty(item.total_stock);
+    const itemQty = item.qty !== undefined && item.qty !== null && item.qty !== "" ? item.qty : item.total_stock;
+    setQty(itemQty);
+    setEditQty(itemQty);
     setFree(item.fr_qty);
     setInitialTotalStock(item.total_stock);
     setTimeout(() => {
@@ -1253,7 +1254,7 @@ const AddReturnbill = () => {
                           billDateRef.current?.setOpen(false);
                           setTimeout(() => {
                             if (inputRefs.current[3]) {
-                                inputRefs.current[3].focus();
+                              inputRefs.current[3].focus();
                             }
                           }, 10);
                         }
@@ -1282,7 +1283,7 @@ const AddReturnbill = () => {
                           startDateRef.current?.setOpen(false);
                           setTimeout(() => {
                             if (inputRefs.current[4]) {
-                                inputRefs.current[4].focus();
+                              inputRefs.current[4].focus();
                             }
                           }, 10);
                         }
@@ -1327,7 +1328,7 @@ const AddReturnbill = () => {
                           endDateRef.current?.setOpen(false);
                           setTimeout(() => {
                             if (inputRefs.current[5]) {
-                                inputRefs.current[5].focus();
+                              inputRefs.current[5].focus();
                             }
                           }, 10);
                         }
@@ -1409,46 +1410,46 @@ const AddReturnbill = () => {
                     <td style={{ fontSize: 15, height: "47px", minWidth: 350, width: "350px", maxWidth: "350px" }}>
                       <div style={{ width: "100%", height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
                         {isEditMode ? (
-                        <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
-                          <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
-                          {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
-                        </div>
-                      ) : (
-                        <TextField
-                          autoComplete="off"
-                          id="outlined-basic"
-                          size="small"
-                          fullWidth
-                          sx={{
-                            minWidth: "100%",
-                            width: "100%",
-                            textTransform: 'uppercase',
+                          <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
+                            <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
+                            {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
+                          </div>
+                        ) : (
+                          <TextField
+                            autoComplete="off"
+                            id="outlined-basic"
+                            size="small"
+                            fullWidth
+                            sx={{
+                              minWidth: "100%",
+                              width: "100%",
+                              textTransform: 'uppercase',
 
-                          }}
-                          value={searchQuery.toUpperCase()}
-                          onChange={handleInputChange}
+                            }}
+                            value={searchQuery.toUpperCase()}
+                            onChange={handleInputChange}
 
-                          variant="outlined"
-                          placeholder="Please search any items.."
-                          inputRef={(el) => (inputRefs.current[5] = el)}
-                          error={!!errors.searchItem}
-                          onKeyDown={e => {
-                            if (e.key === "Enter" && !searchQuery) {
-                              e.preventDefault();
-                              setErrors((prev) => ({ ...prev, searchItem: true }));
-                            }
-                          }}
+                            variant="outlined"
+                            placeholder="Please search any items.."
+                            inputRef={(el) => (inputRefs.current[5] = el)}
+                            error={!!errors.searchItem}
+                            onKeyDown={e => {
+                              if (e.key === "Enter" && !searchQuery) {
+                                e.preventDefault();
+                                setErrors((prev) => ({ ...prev, searchItem: true }));
+                              }
+                            }}
 
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="start">
-                                <svg width="20" height="20" fill="gray"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
-                              </InputAdornment>
-                            ),
-                            type: "search",
-                          }}
-                        />
-                      )}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="start">
+                                  <svg width="20" height="20" fill="gray"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+                                </InputAdornment>
+                              ),
+                              type: "search",
+                            }}
+                          />
+                        )}
                       </div>
                     </td>
 
@@ -1491,9 +1492,9 @@ const AddReturnbill = () => {
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
-                          size="small"
-                          InputProps={{ readOnly: true, sx: { color: 'text.disabled', cursor: 'not-allowed', backgroundColor: 'action.hover' } }}
-                          placeholder="Batch"
+                        size="small"
+                        InputProps={{ readOnly: true, sx: { color: 'text.disabled', cursor: 'not-allowed', backgroundColor: 'action.hover' } }}
+                        placeholder="Batch"
                         error={!!errors.batch}
                         value={batch}
                         sx={{
@@ -1552,11 +1553,11 @@ const AddReturnbill = () => {
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
-                            },
-                          }}
-                          size="small"
-                          InputProps={{ readOnly: true, sx: { color: 'text.disabled', cursor: 'not-allowed', backgroundColor: 'action.hover' } }}
-                          error={!!errors.mrp}
+                          },
+                        }}
+                        size="small"
+                        InputProps={{ readOnly: true, sx: { color: 'text.disabled', cursor: 'not-allowed', backgroundColor: 'action.hover' } }}
+                        error={!!errors.mrp}
                         value={mrp}
                         onChange={(e) => {
                           const value = e.target.value;
@@ -1696,18 +1697,21 @@ const AddReturnbill = () => {
                         id="dropdown"
                         value={gst}
                         sx={{
-                          minWidth: "40px",
+                          minWidth: "60px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
                           },
                         }}
                         select
-                        // SelectProps={{ native: true }}
                         variant="outlined"
                         onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleKeyDown(e, 11);
+                          if (e.key === "Enter" || e.key === "Tab") {
+                            if (!e.shiftKey) {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleKeyDown(e, 11);
+                            }
                           }
                         }}
                         onChange={(e) => {
@@ -1718,9 +1722,19 @@ const AddReturnbill = () => {
                         size="small"
                         error={!!errors.gst}
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={18}>18</MenuItem>
+                        {gstList && gstList.length > 0 ? (
+                          gstList.map((g) => (
+                            <MenuItem key={g.id || g.name} value={g.name}>
+                              {g.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          [
+                            <MenuItem key="18" value="18">18</MenuItem>,
+                            <MenuItem key="5" value="5">5</MenuItem>,
+                            <MenuItem key="0" value="0">0</MenuItem>
+                          ]
+                        )}
                       </TextField>
                     </td>
 
@@ -1824,7 +1838,7 @@ const AddReturnbill = () => {
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number ? item.batch_number : "-"}</td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry ? item.expiry : "-"}</td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : "-"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.total_stock ? item.total_stock : "-"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty !== undefined && item.qty !== null && item.qty !== "" ? item.qty : (item.total_stock ? item.total_stock : "-")}</td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-"}</td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-"}</td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-"}</td>

@@ -105,9 +105,9 @@ const Salereturn = () => {
     const [errors, setErrors] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [showModal, setShowModal] = useState(false);
-
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [gstOpen, setGstOpen] = useState(false);
+    const [gstList, setGstList] = useState([]);
     const [fieldErrors, setFieldErrors] = useState({});
 
     const toggleModal = () => {
@@ -188,7 +188,6 @@ const Salereturn = () => {
                 try {
                     const response = await axios.post(
                         "doctor-list?",
-
                         {
                             params: params,
                             headers: {
@@ -221,12 +220,28 @@ const Salereturn = () => {
         }
     }, [searchDoctor]);
 
+    const listOfGst = () => {
+        axios
+            .get("gst-list", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((response) => {
+                setGstList(response.data.data || []);
+            })
+            .catch((error) => {
+                console.error("Error fetching GST list", error);
+            });
+    };
+
     useEffect(() => {
         // ListOfDoctor();
         const RandomNumber = localStorage.getItem('RandomNumber')
         setRandomNumber(RandomNumber)
 
         PaymentMethodList();
+        listOfGst();
         const handleClickOutside = (event) => {
             if (tableRef.current && !tableRef.current.contains(event.target)) {
                 setIsVisible(false);
@@ -1460,9 +1475,9 @@ const Salereturn = () => {
                                         open={gstOpen}
                                         onOpen={() => setGstOpen(true)}
                                         onClose={() => setGstOpen(false)}
-                                        value={gst === "" || gst === null || gst === undefined ? "" : Number(gst)}
+                                        value={gst === "" || gst === null || gst === undefined ? "" : (isNaN(gst) ? gst : Number(gst))}
                                         onChange={(e) => {
-                                            setGst(e.target.value !== "" ? Number(e.target.value) : "");
+                                            setGst(e.target.value !== "" ? e.target.value : "");
                                             setUnsavedItems(true);
                                             setGstOpen(false);
                                             setTimeout(() => {
@@ -1510,9 +1525,19 @@ const Salereturn = () => {
                                             }
                                         }}
                                     >
-                                        <MenuItem value={0}>0</MenuItem>
-                                        <MenuItem value={5}>5</MenuItem>
-                                        <MenuItem value={18}>18</MenuItem>
+                                        {gstList && gstList.length > 0 ? (
+                                            gstList.map((g) => (
+                                                <MenuItem key={g.id || g.name} value={isNaN(g.name) ? g.name : Number(g.name)}>
+                                                    {g.name}
+                                                </MenuItem>
+                                            ))
+                                        ) : (
+                                            [
+                                                <MenuItem key="0" value={0}>0</MenuItem>,
+                                                <MenuItem key="5" value={5}>5</MenuItem>,
+                                                <MenuItem key="18" value={18}>18</MenuItem>
+                                            ]
+                                        )}
                                     </Select>
                                 </td>
                                 <td>

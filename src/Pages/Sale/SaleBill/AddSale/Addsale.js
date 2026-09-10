@@ -121,6 +121,7 @@ const AddSale = () => {
   const [roundOff, setRoundOff] = useState(0);
   const [itemEditID, setItemEditID] = useState(0);
   const [gst, setGst] = useState("");
+  const [gstList, setGstList] = useState([]);
   const [batch, setBatch] = useState("");
   const [unit, setUnit] = useState("");
   const [finalDiscount, setFinalDiscount] = useState(0);
@@ -1205,6 +1206,21 @@ const AddSale = () => {
   };
 
 
+  const listOfGst = () => {
+    return axios
+      .get("gst-list", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setGstList(response.data.data || []);
+      })
+      .catch((error) => {
+        console.error("Error fetching GST list", error);
+      });
+  };
+
   useEffect(() => {
 
     const loadData = async () => {
@@ -1214,6 +1230,7 @@ const AddSale = () => {
           fetchCustomers(),
           fetchDoctors(),
           PaymentMethodList(),
+          listOfGst(),
         ])
       } catch (error) {
         console.error(error)
@@ -2356,7 +2373,6 @@ const AddSale = () => {
 
           <div className="flex items-center gap-2">
 
-
             <button
               type="button"
               className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
@@ -3280,21 +3296,9 @@ const AddSale = () => {
                 </td>
                 <td>
                   <TextField
-                    disabled
-                    autoComplete="off"
-                    id="outlined-number"
-                    placeholder="0"
-                    error={!!itemErrors.gst}
-                    size="small"
-                    inputRef={inputRef6}
-                    onKeyDown={(e) => {
-                      const invalidKeys = ["e", "E", ".", "+", "-", ","];
-                      if (invalidKeys.includes(e.key)) {
-                        e.preventDefault();
-                        return;
-                      }
-                      handleKeyDown(e, 5);
-                    }}
+                    labelId="dropdown-label"
+                    id="dropdown"
+                    value={gst}
                     sx={{
                       minWidth: "60px",
                       width: "100%",
@@ -3302,13 +3306,39 @@ const AddSale = () => {
                         textAlign: 'center',
                       },
                     }}
-                    value={gst || ""}
+                    select
+                    variant="outlined"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === "Tab") {
+                        if (!e.shiftKey) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleKeyDown(e, 5);
+                        }
+                      }
+                    }}
                     onChange={(e) => {
-                      const value = e.target.value.replace(/[^0-9]/g, "");
-                      setGst(value);
+                      setGst(e.target.value);
                       setItemErrors((prev) => ({ ...prev, gst: false }));
                     }}
-                  />
+                    inputRef={inputRef6}
+                    size="small"
+                    error={!!itemErrors.gst}
+                  >
+                    {gstList && gstList.length > 0 ? (
+                      gstList.map((g) => (
+                        <MenuItem key={g.id || g.name} value={g.name}>
+                          {g.name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      [
+                        <MenuItem key="18" value="18">18</MenuItem>,
+                        <MenuItem key="5" value="5">5</MenuItem>,
+                        <MenuItem key="0" value="0">0</MenuItem>
+                      ]
+                    )}
+                  </TextField>
                 </td>
                 <td >
                   <TextField

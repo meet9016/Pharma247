@@ -418,11 +418,9 @@ const AddPurchaseBill = () => {
   }, [id]);
 
   useEffect(() => {
-    // listOfGst();
+    listOfGst();
     PaymentMethodList();
     listDistributor();
-
-
   }, []);
 
 
@@ -960,23 +958,20 @@ const AddPurchaseBill = () => {
 
   /*<=================================================================== Get GST List   ====================================================================> */
 
-  // let listOfGst = () => {
-  //   axios
-  //     .get("gst-list", {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       setGstList(response.data.data);
-  //       // gstList.filer((gst) =>(
-  //       //   return age >= 18;
-  //       // )
-  //     })
-  //     .catch((error) => {
-  //       setUnsavedItems(false);
-  //     });
-  // };
+  const listOfGst = () => {
+    axios
+      .get("gst-list", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setGstList(response.data.data || []);
+      })
+      .catch((error) => {
+        console.error("Error fetching GST list", error);
+      });
+  };
 
   /*<================================================================ Get Distributor List   =================================================================> */
 
@@ -3228,13 +3223,12 @@ const AddPurchaseBill = () => {
 
                     <td>
                       <TextField
+                        select
                         variant="outlined"
-                        autoComplete="off"
                         size="small"
-                        placeholder="0"
                         value={gst}
                         sx={{
-                          minWidth: "60px",
+                          minWidth: "70px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
@@ -3243,30 +3237,33 @@ const AddPurchaseBill = () => {
                         error={!!error.gst}
                         inputRef={(el) => (inputRefs.current[11] = el)}
                         onChange={(e) => {
-                          const value = e.target.value.replace(/[^0-9]/g, "");
-                          setGst(value);
+                          setGst(e.target.value);
                           setError((prev) => ({ ...prev, gst: "" }));
                         }}
                         onKeyDown={(e) => {
-                          const invalidKeys = ["e", "E", ".", "+", "-", ","];
-                          if (invalidKeys.includes(e.key)) {
-                            e.preventDefault();
-                            return;
-                          }
-
-                          const isTab = e.key === "Tab";
-                          const isEnter = e.key === "Enter";
-                          const isShiftTab = isTab && e.shiftKey;
-
-                          if (isShiftTab) return;
-
-                          if (isEnter || isTab) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            inputRefs.current[12]?.focus();
+                          if (e.key === "Enter" || e.key === "Tab") {
+                            if (!e.shiftKey) {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              inputRefs.current[12]?.focus();
+                            }
                           }
                         }}
-                      />
+                      >
+                        {gstList && gstList.length > 0 ? (
+                          gstList.map((g) => (
+                            <MenuItem key={g.id || g.name} value={g.name}>
+                              {g.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          [
+                            <MenuItem key="18" value="18">18</MenuItem>,
+                            <MenuItem key="5" value="5">5</MenuItem>,
+                            <MenuItem key="0" value="0">0</MenuItem>
+                          ]
+                        )}
+                      </TextField>
                     </td>
 
                     <td>
@@ -3935,21 +3932,6 @@ const AddPurchaseBill = () => {
 
           {/*<================================================= add Distributor PopUp Box  ==============================================> */}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           <Dialog
             open={openAddDistributorPopUp}
             onClose={() => setOpenAddDistributorPopUp(false)}
@@ -4059,18 +4041,10 @@ const AddPurchaseBill = () => {
                         <label className="label secondary">Mobile Number<span className="text-red-600  ">*</span></label>
                         <Autocomplete
                           freeSolo
-                          options={distributorList.map(d => d.phone_number)}
+                          options={distributorList.map(d => (d.phone_number && d.phone_number.trim() !== "") ? d.phone_number : "-")}
                           value={addDistributorMobile}
                           onInputChange={(e, newValue) => {
                             const numericValue = newValue.replace(/[^0-9]/g, "").slice(0, 10);
-
-                            // Check if number already exists
-                            const exists = distributorList.some(d => d.phone_number === numericValue);
-                            if (exists) {
-                              // Optional: show alert or set error state
-                              console.warn("This number already exists!");
-                            }
-
                             setAddDistributorMobile(numericValue);
                             setAddDistributorError((prev) => ({
                               ...prev,
@@ -4078,11 +4052,14 @@ const AddPurchaseBill = () => {
                             }));
                           }}
                           onChange={(e, selectedValue) => {
-                            const found = distributorList.find(d => d.phone_number === selectedValue);
+                            const found = distributorList.find(d => {
+                              const phone = (d.phone_number && d.phone_number.trim() !== "") ? d.phone_number : "-";
+                              return phone === selectedValue;
+                            });
                             if (found) {
-                              setAddDistributorName(found.name);
-                              setAddDistributorMobile(found.phone_number);
-                              setAddDistributorNo(found.gst);
+                              setAddDistributorName(found.name || "");
+                              setAddDistributorMobile(found.phone_number || "");
+                              setAddDistributorNo(found.gst || "");
                               setAddDistributorAddress(found.area || "");
                             }
                           }}
@@ -4102,16 +4079,8 @@ const AddPurchaseBill = () => {
                                   e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
                                 }
                               }}
-                              error={
-                                !!addDistributorError.addDistributorMobile ||
-                                distributorList.some(d => d.phone_number === addDistributorMobile)
-                              }
-                              helperText={
-                                addDistributorError.addDistributorMobile ||
-                                (distributorList.some(d => d.phone_number === addDistributorMobile)
-                                  ? "This number already exists"
-                                  : "")
-                              }
+                              error={!!addDistributorError.addDistributorMobile}
+                              helperText={addDistributorError.addDistributorMobile}
                               FormHelperTextProps={{
                                 sx: {
                                   color: "#ff0000 !important",
@@ -4125,61 +4094,38 @@ const AddPurchaseBill = () => {
                       {/* GST Number */}
                       <div className="fields add_new_item_divv">
                         <label className="label secondary">Distributor GSTIN Number<span className="text-red-600  ">*</span></label>
-                        <Autocomplete
-                          freeSolo
-                          options={distributorList.map(d => d.gst)}
-                          getOptionLabel={(option) => (typeof option === "string" ? option : "")}
+                        <TextField
+                          size="small"
                           value={addDistributorNo}
-                          onInputChange={(e, newValue) => {
-                            setAddDistributorNo(newValue.toUpperCase());
+                          onChange={(e) => {
+                            const formattedValue = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 15);
+                            setAddDistributorNo(formattedValue);
                             setAddDistributorError((prev) => ({
                               ...prev,
                               addDistributorNo: "",
                             }));
                           }}
-                          onChange={(e, selectedValue) => {
-                            const found = distributorList.find(d => d.gst === selectedValue);
-                            if (found) {
-                              setAddDistributorName(found.name);
-                              setAddDistributorMobile(found.phone_number);
-                              setAddDistributorNo(found.gst);
-                              setAddDistributorAddress(found.area || "");
-                            }
+                          inputRef={(el) => (inputRefs.current[18] = el)}
+                          error={!!addDistributorError.addDistributorNo}
+                          helperText={addDistributorError.addDistributorNo}
+                          sx={{
+                            "& input::placeholder": {
+                              textTransform: "none",
+                            },
                           }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-
-                              size="small"
-                              inputRef={(el) => (inputRefs.current[18] = el)}
-                              error={!!addDistributorError.addDistributorNo}
-                              helperText={addDistributorError.addDistributorNo}
-                              sx={{
-                                "& input::placeholder": {
-                                  textTransform: "none",
-                                },
-                              }}
-                              FormHelperTextProps={{
-                                sx: {
-                                  color: "#ff0000 !important",
-                                  ml: 0,
-                                },
-                              }}
-                              onKeyDown={(e) => handleKeyDown(e, 18)}
-                              inputProps={{
-                                ...params.inputProps,
-                                style: { textTransform: "uppercase" },
-                                autoComplete: "off",
-                                maxLength: 15,
-                                onInput: (e) => {
-                                  e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 15);
-                                }
-                              }}
-
-                            />
-                          )}
+                          FormHelperTextProps={{
+                            sx: {
+                              color: "#ff0000 !important",
+                              ml: 0,
+                            },
+                          }}
+                          onKeyDown={(e) => handleKeyDown(e, 18)}
+                          inputProps={{
+                            style: { textTransform: "uppercase" },
+                            autoComplete: "off",
+                            maxLength: 15,
+                          }}
                         />
-
                       </div>
                     </div>
 
@@ -4239,41 +4185,7 @@ const AddPurchaseBill = () => {
             </DialogContent>
           </Dialog>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           {/*<==================================================== add item PopUp Box  ===================================================> */}
-
-
-
-
-
-
-
-
-
 
           <Dialog open={openAddItemPopUp} className="custom-dialog add-item-dialog modal_991 ">
             <DialogTitle id="alert-dialog-title" className="primary">
