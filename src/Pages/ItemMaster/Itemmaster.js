@@ -357,7 +357,7 @@ const Itemmaster = () => {
     const { scrollTop, scrollHeight, clientHeight } = listboxNode;
 
     if (
-      scrollTop + clientHeight >= scrollHeight - 50 &&
+      scrollTop + clientHeight >= scrollHeight - 20 &&
       distributorHasMore &&
       !distributorIsFetchingMore
     ) {
@@ -1677,6 +1677,7 @@ const Itemmaster = () => {
                           }}
                           ListboxProps={{
                             onScroll: handleDistributorScroll,
+                            style: { maxHeight: 250 }
                           }}
                           getOptionLabel={(option) => {
                             if (!option) return "";
@@ -2480,6 +2481,7 @@ const Itemmaster = () => {
                       value={distributorName}
                       ListboxProps={{
                         onScroll: handleDistributorScroll,
+                        style: { maxHeight: 250 }
                       }}
                       onInputChange={(e, newValue, reason) => {
                         const uppercased = (newValue || "").toUpperCase();
@@ -2589,6 +2591,7 @@ const Itemmaster = () => {
                       value={distributorMobileNo}
                       ListboxProps={{
                         onScroll: handleDistributorScroll,
+                        style: { maxHeight: 250 }
                       }}
                       onInputChange={(e, newValue) => {
                         const numericValue = newValue.replace(/[^0-9]/g, "").slice(0, 10);
@@ -2661,6 +2664,7 @@ const Itemmaster = () => {
                       value={distributorGSTNumber}
                       ListboxProps={{
                         onScroll: handleDistributorScroll,
+                        style: { maxHeight: 250 }
                       }}
                       onInputChange={(e, newValue) => {
                         setDistributorGSTNumber(newValue.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 15));
