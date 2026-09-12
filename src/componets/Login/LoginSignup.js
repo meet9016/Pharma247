@@ -218,7 +218,6 @@ const LoginSignup = () => {
     // }
 
 
-
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -636,7 +635,8 @@ const LoginSignup = () => {
 
   const handleOtpsend = async () => {
     const data = new FormData();
-    data.append("mobile_number", mobile);
+    const mobileNumberToSend = registerData.mobile_number || mobile || "";
+    data.append("mobile_number", mobileNumberToSend);
     try {
       const response = await axios.post("otp-resend", data, {
         headers: {
@@ -1280,8 +1280,6 @@ const LoginSignup = () => {
                     ← Back
                   </div>
                 </div>
-
-
 
                 <div className="input-box">
                   <TextField
