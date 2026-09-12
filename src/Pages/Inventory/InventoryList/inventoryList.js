@@ -475,7 +475,6 @@ const InventoryList = () => {
         ? prevSelected.filter((id) => id !== itemId)
         : [...prevSelected, itemId]
     );
-
   };
 
   /*<==================================================================================== pagination  ===========================================================================> */
@@ -1905,6 +1904,22 @@ const InventoryList = () => {
                 }}
               >
                 Missing Category : {missingData.items_with_missing_category}
+              </Button>
+              <Button
+                variant={activeMissingFilter === "items_with_missing_drug_group" ? "contained" : "outlined"}
+                style={{
+                  borderColor: "rgb(14, 86, 143)",
+                  backgroundColor: activeMissingFilter === "items_with_missing_drug_group" ? "rgb(14, 86, 143)" : "transparent",
+                  color: activeMissingFilter === "items_with_missing_drug_group" ? "white" : "rgb(14, 86, 143)",
+                  textTransform: "none",
+                }}
+                onClick={() => {
+                  const newFilter = activeMissingFilter === "items_with_missing_drug_group" ? "" : "items_with_missing_drug_group";
+                  setActiveMissingFilter(newFilter);
+                  handleSearch(newFilter);
+                }}
+              >
+                Missing Drug Group : {missingData.items_with_missing_drug_group}
               </Button>
             </div>
             <Button
@@ -3488,3 +3503,12 @@ const InventoryList = () => {
 };
 
 export default InventoryList;
+
+
+
+
+
+
+
+
+
