@@ -10,7 +10,10 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, {
+  useState, useEffect, useRef
+
+} from "react";
 import Select from "@mui/material/Select";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
@@ -65,6 +68,10 @@ const Itemmaster = () => {
   const [companyList, setCompanyList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [suppliersList, setSuppliersList] = useState([]);
+  const [distributorPage, setDistributorPage] = useState(1);
+  const [distributorHasMore, setDistributorHasMore] = useState(true);
+  const [distributorIsFetchingMore, setDistributorIsFetchingMore] = useState(false);
+  const [distributorSearchName, setDistributorSearchName] = useState("");
   const [drugGroupList, setDrugGroupList] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedCompany, setSelectedCompany] = useState(null);
@@ -114,16 +121,22 @@ const Itemmaster = () => {
   const [drugGroupError, setDrugGroupError] = useState("");
 
   useEffect(() => {
-    setDistributorAddress("");
-    setDistributorMobileNo("");
-    setDistributorName("");
-    setDistributorGSTNumber("");
-    setSelectedDistributorId("");
-    setDistributorError({
-      distributorName: "",
-      distributorMobileNo: "",
-      distributorGSTNumber: "",
-    });
+    if (openDistributor) {
+      setDistributorAddress("");
+      setDistributorMobileNo("");
+      setDistributorName("");
+      setDistributorGSTNumber("");
+      setSelectedDistributorId("");
+      setDistributorSearchName("");
+      setDistributorPage(1);
+      setDistributorHasMore(true);
+      listSuppliers("", 1);
+      setDistributorError({
+        distributorName: "",
+        distributorMobileNo: "",
+        distributorGSTNumber: "",
+      });
+    }
   }, [openDistributor]);
 
   const handleFileChange = (e) => {
@@ -339,20 +352,68 @@ const Itemmaster = () => {
       });
   };
 
-  let listSuppliers = (newlyAddedName) => {
+  const handleDistributorScroll = (event) => {
+    const listboxNode = event.currentTarget;
+    const { scrollTop, scrollHeight, clientHeight } = listboxNode;
+
+    if (
+      scrollTop + clientHeight >= scrollHeight - 50 &&
+      distributorHasMore &&
+      !distributorIsFetchingMore
+    ) {
+      setDistributorPage((prevPage) => {
+        const nextPage = prevPage + 1;
+        listSuppliers(distributorSearchName, nextPage);
+        return nextPage;
+      });
+    }
+  };
+
+  let listSuppliers = (searchName = "", pageNumber = 1, newlyAddedName = "") => {
+    if (typeof searchName === "object" && searchName !== null) {
+      newlyAddedName = searchName.newlyAddedName || "";
+      searchName = "";
+    }
+    if (distributorIsFetchingMore && pageNumber > 1) return;
+
+    setDistributorIsFetchingMore(true);
+
+    let data = new FormData();
+    data.append("search_name", searchName ? String(searchName).trim() : "");
+    data.append("page", pageNumber);
+
     axios
-      .post("list-distributer", {}, {
+      .post("list-distributer", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        const list = response.data.data || [];
-        setSuppliersList(list);
+        const list = response?.data?.data?.distributor || response?.data?.data || [];
+        const totalRecords = response?.data?.total_records || response?.data?.count || 0;
+
+        if (pageNumber === 1) {
+          setSuppliersList(list);
+        } else {
+          setSuppliersList((prev) => {
+            const existingIds = new Set(prev.map((d) => d.id));
+            const filtered = list.filter((d) => !existingIds.has(d.id));
+            return [...prev, ...filtered];
+          });
+        }
+
+        if (!list || list.length === 0) {
+          setDistributorHasMore(false);
+        } else if (totalRecords > 0) {
+          setDistributorHasMore(suppliersList.length + list.length < totalRecords || list.length >= 10);
+        } else {
+          setDistributorHasMore(list.length >= 5);
+        }
+
         setIsLoading(false);
         if (newlyAddedName) {
-          const found = list.find(d =>
-            (d.name || d.distributor_name || "").toUpperCase() === newlyAddedName.toUpperCase()
+          const found = list.find((d) =>
+            (d.name || d.distributor_name || "").toUpperCase() === String(newlyAddedName).toUpperCase()
           );
           if (found) {
             setSelectedSuppliers(found);
@@ -360,9 +421,7 @@ const Itemmaster = () => {
         }
       })
       .catch((error) => {
-
         console.error("API error:", error);
-
         if (error?.response?.status === 401) {
           localStorage.removeItem("token");
           localStorage.removeItem("userId");
@@ -370,6 +429,9 @@ const Itemmaster = () => {
           localStorage.clear();
           history.push("/");
         }
+      })
+      .finally(() => {
+        setDistributorIsFetchingMore(false);
       });
   };
 
@@ -672,7 +734,6 @@ const Itemmaster = () => {
   //   }
   //   return isValid;
   // };
-
 
   const submitDistributor = async () => {
     const newErrors = {};
@@ -1605,8 +1666,18 @@ const Itemmaster = () => {
                           options={suppliersList}
                           value={selectedSuppliers}
                           size="small"
-                          // sx={{ width: 350 }}
                           onChange={(e, value) => setSelectedSuppliers(value)}
+                          onInputChange={(event, newInputValue, reason) => {
+                            if (reason === "input") {
+                              setDistributorSearchName(newInputValue);
+                              setDistributorPage(1);
+                              setDistributorHasMore(true);
+                              listSuppliers(newInputValue, 1);
+                            }
+                          }}
+                          ListboxProps={{
+                            onScroll: handleDistributorScroll,
+                          }}
                           getOptionLabel={(option) => {
                             if (!option) return "";
                             return (option.name || option.distributor_name || "").toUpperCase();
@@ -2339,6 +2410,15 @@ const Itemmaster = () => {
         id="modal"
         className="custom-dialog add-distributor-dialog modal_991"
         open={openDistributor}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            const isPopperOpen = document.querySelector(".MuiAutocomplete-popper");
+            if (!isPopperOpen) {
+              e.preventDefault();
+              submitDistributor();
+            }
+          }
+        }}
         onClose={() => {
           setOpenDistributor(false);
           setDistributorAddress("");
@@ -2398,8 +2478,11 @@ const Itemmaster = () => {
                       freeSolo
                       options={Array.from(new Set(suppliersList.map(d => (d.name || d.distributor_name || "").toUpperCase().trim()).filter(Boolean)))}
                       value={distributorName}
-                      onInputChange={(e, newValue) => {
-                        const uppercased = newValue.toUpperCase();
+                      ListboxProps={{
+                        onScroll: handleDistributorScroll,
+                      }}
+                      onInputChange={(e, newValue, reason) => {
+                        const uppercased = (newValue || "").toUpperCase();
                         setDistributorName(uppercased);
 
                         setDistributorError((prev) => ({
@@ -2421,6 +2504,13 @@ const Itemmaster = () => {
                             setDistributorGSTNumber("");
                             setDistributorAddress("");
                           }
+                        }
+
+                        if (reason === "input") {
+                          setDistributorSearchName(newValue);
+                          setDistributorPage(1);
+                          setDistributorHasMore(true);
+                          listSuppliers(newValue, 1);
                         }
                       }}
                       onChange={(e, selectedValue) => {
@@ -2497,6 +2587,9 @@ const Itemmaster = () => {
                       freeSolo
                       options={Array.from(new Set(suppliersList.map(d => (d.phone_number || d.mobile_no || "").toUpperCase()).filter(Boolean)))}
                       value={distributorMobileNo}
+                      ListboxProps={{
+                        onScroll: handleDistributorScroll,
+                      }}
                       onInputChange={(e, newValue) => {
                         const numericValue = newValue.replace(/[^0-9]/g, "").slice(0, 10);
                         setDistributorMobileNo(numericValue);
@@ -2566,6 +2659,9 @@ const Itemmaster = () => {
                       freeSolo
                       options={Array.from(new Set(suppliersList.map(d => (d.gst || d.gst_number || "").toUpperCase()).filter(Boolean)))}
                       value={distributorGSTNumber}
+                      ListboxProps={{
+                        onScroll: handleDistributorScroll,
+                      }}
                       onInputChange={(e, newValue) => {
                         setDistributorGSTNumber(newValue.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 15));
                         setSelectedDistributorId("");
@@ -2671,7 +2767,6 @@ const Itemmaster = () => {
                       "&:hover": { backgroundColor: "#3f6212" },
                     }}
                     onClick={submitDistributor}
-                    disabled={!distributorName || !distributorMobileNo || !distributorGSTNumber}
                   >
                     Add Distributor
                   </Button>

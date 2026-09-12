@@ -1369,10 +1369,15 @@ const AddPurchaseBill = () => {
 
     if (!addDistributorMobile.trim()) {
       newErrors.addDistributorMobile = "Mobile Number is required";
+    } else if (!/^\d{10}$/.test(addDistributorMobile.trim())) {
+      newErrors.addDistributorMobile = "Mobile number must be 10 digits";
     }
 
+    const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
     if (!addDistributorNo.trim()) {
       newErrors.addDistributorNo = "GSTIN Number is required";
+    } else if (!gstRegex.test(addDistributorNo.trim())) {
+      newErrors.addDistributorNo = "Enter a valid GSTIN (e.g. 27AAACR5055K1Z7)";
     }
 
     setAddDistributorError(newErrors);
@@ -1382,10 +1387,10 @@ const AddPurchaseBill = () => {
     }
 
     let data = new FormData();
-    data.append("gst_number", addDistributorNo);
-    data.append("distributor_name", addDistributorName);
-    data.append("mobile_no", addDistributorMobile);
-    data.append("area", addDistributorAddress);
+    data.append("gst_number", addDistributorNo.trim());
+    data.append("distributor_name", addDistributorName.trim());
+    data.append("mobile_no", addDistributorMobile.trim());
+    data.append("area", addDistributorAddress.trim());
 
     try {
       const response = await axios.post("create-distributer", data, {

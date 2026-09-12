@@ -459,13 +459,22 @@ const AddSale = () => {
     inputRef8  // 8 - Order
   ];
 
+  const isRefDisabled = (ref) => {
+    if (!ref || !ref.current) return true;
+    const el = ref.current;
+    if (el.disabled) return true;
+    if (el.getAttribute && el.getAttribute("aria-disabled") === "true") return true;
+    if (el.closest && el.closest(".Mui-disabled")) return true;
+    return false;
+  };
+
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter" || event.key === "Tab") {
       event.preventDefault();
       if (event.shiftKey && event.key === "Tab") {
         for (let i = index - 1; i >= 0; i--) {
           const prevRef = itemRowInputOrder[i];
-          if (prevRef && prevRef.current && !prevRef.current.disabled) {
+          if (!isRefDisabled(prevRef)) {
             prevRef.current.focus();
             return;
           }
@@ -474,7 +483,7 @@ const AddSale = () => {
       } else {
         for (let i = index + 1; i < itemRowInputOrder.length; i++) {
           const nextRef = itemRowInputOrder[i];
-          if (nextRef && nextRef.current && !nextRef.current.disabled) {
+          if (!isRefDisabled(nextRef)) {
             nextRef.current.focus();
             return;
           }
@@ -874,7 +883,7 @@ const AddSale = () => {
     setExpiryDate(event.expiry_date);
     setMRP(event.mrp);
     setMaxQty(event.qty);
-    setBase(event.base);
+    setBase(event.mrp !== undefined && event.mrp !== null && event.mrp !== "" ? event.mrp : event.base);
     setGst(event.gst_name);
     setLoc(event.location);
     setTempQty(event.tempQty);
@@ -3161,7 +3170,7 @@ const AddSale = () => {
                                 setTimeout(() => {
                                   for (let i = 0; i < itemRowInputOrder.length; i++) {
                                     const nextRef = itemRowInputOrder[i];
-                                    if (nextRef && nextRef.current && !nextRef.current.disabled) {
+                                    if (!isRefDisabled(nextRef)) {
                                       nextRef.current.focus();
                                       return;
                                     }
@@ -3286,7 +3295,21 @@ const AddSale = () => {
                     }}
                     size="small"
                     inputRef={inputRef5}
-                    onKeyDown={(e) => handleKeyDown(e, 4)}
+                    onKeyDown={(e) => {
+                      if ((e.key === "Enter" || e.key === "Tab") && !e.shiftKey) {
+                        e.preventDefault();
+                        if (inputRef7 && inputRef7.current) {
+                          inputRef7.current.focus();
+                          if (typeof inputRef7.current.select === "function") {
+                            inputRef7.current.select();
+                          }
+                        } else {
+                          handleKeyDown(e, 4);
+                        }
+                      } else {
+                        handleKeyDown(e, 4);
+                      }
+                    }}
                     value={base}
                     onChange={(e) => {
                       setBase(e.target.value);
@@ -3296,6 +3319,7 @@ const AddSale = () => {
                 </td>
                 <td>
                   <TextField
+                    disabled
                     labelId="dropdown-label"
                     id="dropdown"
                     value={gst}
