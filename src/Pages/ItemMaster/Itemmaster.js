@@ -1137,17 +1137,12 @@ const Itemmaster = () => {
           setSelectedSuppliers(supplier);
 
           const locationItem = locationList.find((x) => x === data?.loaction);
-
-          setLocationValue(locationItem);
-
           if (locationItem) {
             setLocationValue(locationItem);
+            setLocation(locationItem);
           } else {
-            setLocationValue(data?.loaction);
-            console.warn(
-              "Location not found in locationList, keeping the previous value:",
-              data?.loaction
-            );
+            setLocationValue(data?.loaction || "");
+            setLocation(data?.loaction || "");
           }
 
           setDisc(data?.discount);
@@ -1172,6 +1167,8 @@ const Itemmaster = () => {
     setLocationValue(newValue);
     if (newValue) {
       setLocation(newValue);
+    } else {
+      setLocation("");
     }
   };
 
@@ -1190,6 +1187,11 @@ const Itemmaster = () => {
 
   const handleLocationInputChange = (event, newInputValue) => {
     setLocation(newInputValue);
+    if (!newInputValue) {
+      setLocationValue(null);
+    } else {
+      setLocationValue(newInputValue);
+    }
   };
 
   const handleInputChange = (event, newInputValue) => {
@@ -1252,6 +1254,7 @@ const Itemmaster = () => {
     setMin("");
     setPack(`1 * 0`);
     setLocation("");
+    setLocationValue(null);
     setError("");
     setDrugGroup(null);
     setMRP(0);
@@ -1788,13 +1791,14 @@ const Itemmaster = () => {
                 /> */}
 
                       <Autocomplete
+                        freeSolo
                         value={locationvalue}
-                        inputValue={location}
+                        inputValue={location || ""}
                         size="small"
                         onChange={handleLocationOptionChange}
                         onInputChange={handleLocationInputChange}
                         getOptionLabel={(option) =>
-                          typeof option === "string" ? option : option
+                          typeof option === "string" ? option : (option || "")
                         }
                         options={locationList}
                         renderOption={(props, option) => (
