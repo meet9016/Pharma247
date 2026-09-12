@@ -170,7 +170,7 @@ const PurchasePaymentSummary = () => {
     <>
       <div>
         <div>
-          <Header />
+          
           <ToastContainer
             position="top-right"
             autoClose={5000}

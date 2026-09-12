@@ -363,7 +363,7 @@ const Dashboard = () => {
   return (
     <div style={{ height: "100vh", overflow: "hidden", display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
-        <Header key={reRender} />
+
 
         {isLoading ? (
           <div className="loaderdash">
@@ -379,8 +379,9 @@ const Dashboard = () => {
           >
             <div className="dsh_card_chart grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-3 px-4 py-3 rounded-lg">
               <div
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6 cursor-pointer"
                 style={{ width: "100%" }}
+                onClick={() => history.push('/sale')}
               >
                 <div className="flex flex-col gap-2">
                   <span className="text-gray-600 dark:text-gray-500 text-lg">
@@ -398,8 +399,9 @@ const Dashboard = () => {
                 </div>
               </div>
               <div
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6 cursor-pointer"
                 style={{ width: "100%" }}
+                onClick={() => history.push('/purchase')}
               >
                 <div className="flex flex-col gap-2">
                   <span className="text-gray-600 dark:text-gray-500 text-lg">
@@ -417,8 +419,9 @@ const Dashboard = () => {
                 </div>
               </div>
               <div
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6 cursor-pointer"
                 style={{ width: "100%" }}
+                onClick={() => history.push('/customer')}
               >
                 <div className="flex flex-col gap-2">
                   <span className="text-gray-600 dark:text-gray-500 text-lg">
@@ -437,8 +440,9 @@ const Dashboard = () => {
                 </div>
               </div>
               <div
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between gap-6 cursor-pointer"
                 style={{ width: "100%" }}
+                onClick={() => history.push('/distributorList')}
               >
                 <div className="flex flex-col gap-2">
                   <span className="text-gray-600 dark:text-gray-500 text-lg">
@@ -801,7 +805,7 @@ const Dashboard = () => {
                   {/* View All */}
                   <div className="flex justify-end mt-4">
                     <Link
-                      to="/DistributorList"
+                      to="/distributorList"
                       className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                     >
                       View all <ChevronRightIcon className="w-4 h-4" />

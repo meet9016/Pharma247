@@ -322,7 +322,7 @@ const SalereturnList = () => {
   return (
     <>
 
-      <Header />
+      
       {isLoading ? (
         <div className="loader-container ">
           <Loader />

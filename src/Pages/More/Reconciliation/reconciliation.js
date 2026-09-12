@@ -167,7 +167,7 @@ const Reconciliation = () => {
 
   return (
     <div >
-      <Header />
+      
       <ToastContainer
 
         position="top-right"

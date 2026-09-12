@@ -126,7 +126,7 @@ const ReconciliationManage = () => {
 
   return (
     <>
-      <Header />
+      
       <ToastContainer
 
         position="top-right"

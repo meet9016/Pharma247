@@ -144,7 +144,7 @@ toast.success(response.data.message);
 
   return (
     <>
-      <Header key={reRender} />
+
       <ToastContainer
 
         position="top-right"

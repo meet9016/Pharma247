@@ -269,7 +269,7 @@ toast.success(response.data.message);
 
   return (
     <div >
-      <Header />
+      
         <ToastContainer
 
         position="top-right"

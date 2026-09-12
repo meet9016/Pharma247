@@ -176,7 +176,7 @@ const Top_Selling_Items = () => {
 
   return (
     <>
-      <Header />
+      
       <ToastContainer
         position="top-right"
         autoClose={5000}

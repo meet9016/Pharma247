@@ -122,7 +122,7 @@ const OnlineOrders = () => {
 
   return (
     <>
-      <Header />
+      
       <ToastContainer position="top-right" autoClose={5000} />
       {isLoading ? (
         <div className="loader-container">

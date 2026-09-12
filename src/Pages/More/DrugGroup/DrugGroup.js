@@ -303,7 +303,7 @@ const DrugGroup = () => {
 
   return (
     <div>
-      <Header />
+      
       <ToastContainer position="top-right" autoClose={5000} />
       <div style={{
         minHeight: 'calc(100vh - 64px)',

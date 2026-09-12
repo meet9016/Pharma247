@@ -181,7 +181,7 @@ const SaleReturnView = () => {
     <>
       <div>
         <div>
-          <Header />
+          
           {isLoading ? (
             <div className="loader-container ">
               <Loader />

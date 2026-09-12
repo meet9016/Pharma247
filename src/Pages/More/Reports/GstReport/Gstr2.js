@@ -154,7 +154,7 @@ const Gstr2 = () => {
 
     return (
         <>
-            <Header />
+            
             <ToastContainer
 
                 position="top-right"

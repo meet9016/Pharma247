@@ -476,7 +476,7 @@ const Header = () => {
                       <ul className="dropdown-menu absolute hidden text-gray-700 pt-3 shadow-lg w-48">
                         {hasPermission(permissions, "distributor view") && (
                           <li className="block border-b-2">
-                            <Link to="/DistributorList">
+                            <Link to="/distributorList">
                               <div>
                                 <span
                                   className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
@@ -1152,7 +1152,7 @@ const Header = () => {
                   <ul className="dropdown-menu hidden text-black pt-3 shadow-lg  right-0">
                     {hasPermission(permissions, "distributor view") && (
                       <li className="block border-b border-black">
-                        <Link to="/DistributorList">
+                        <Link to="/distributorList">
                           <div>
                             <span
                               className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"

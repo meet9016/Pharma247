@@ -418,7 +418,7 @@ const Purchasebill = () => {
 
   return (
     <>
-      <Header />
+      
       <ToastContainer
         position="top-right"
         autoClose={5000}

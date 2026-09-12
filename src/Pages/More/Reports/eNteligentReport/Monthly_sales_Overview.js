@@ -134,7 +134,7 @@ const Monthly_sales_Overview = () => {
 
   return (
     <>
-      <Header />
+      
       <ToastContainer
         position="top-right"
         autoClose={5000}

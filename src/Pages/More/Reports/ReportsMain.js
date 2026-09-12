@@ -332,7 +332,7 @@ const ReportsMain = () => {
         height: "100vh",
         overflow: "hidden",
       }}>
-      <Header />
+      
 
       <Box className="flex flex-wrap"
         sx={{

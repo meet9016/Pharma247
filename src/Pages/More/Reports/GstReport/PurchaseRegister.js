@@ -50,7 +50,7 @@ const PurchaseRegister = () => {
     return (
         <>
             <div>
-                <Header />
+                
                 <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '20px 20px 0px' }}>
                     <div style={{ display: 'flex', gap: '4px' }}>
                         <div style={{ display: 'flex', gap: '7px', alignItems: 'center', }}>

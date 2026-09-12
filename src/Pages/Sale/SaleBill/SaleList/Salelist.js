@@ -311,7 +311,7 @@ const Salelist = () => {
   return (
     <>
       <div>
-        <Header />
+        
 
         <div
           style={{

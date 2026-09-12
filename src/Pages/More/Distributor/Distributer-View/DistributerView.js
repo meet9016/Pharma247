@@ -299,7 +299,7 @@ const DistributerView = () => {
 
   return (
     <>
-      <Header />
+      
       {isLoading ? (
         <div className="loader-container ">
           <Loader />
@@ -328,7 +328,7 @@ const DistributerView = () => {
                     fontSize: "20px",
                   }}
                   onClick={() => {
-                    history.push("/DistributorList");
+                    history.push("/distributorList");
                   }}
                   className="cursor-pointer cust_header_txt_main_og"
                 >

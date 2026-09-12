@@ -1,4 +1,5 @@
 import './App.css';
+import Header from './Pages/Header';
 import Dashboard from './Pages/Dashboard';
 import Adminprotected from './protected/AdminProtect';
 import Package from './Pages/More/Package/Package';
@@ -121,6 +122,17 @@ function TitleUpdater() {
     document.title = `${title}`;
   }, [location]);
 
+  return null;
+}
+
+function HeaderConditional() {
+  const location = useLocation();
+  const noHeaderRoutes = ['/TrialEnd', '/Register', '/login'];
+  const showHeader = location.pathname !== '/' && !noHeaderRoutes.some(path => location.pathname === path || location.pathname.startsWith(path + '/'));
+  
+  if (showHeader) {
+    return <Header />;
+  }
   return null;
 }
 
@@ -443,6 +455,7 @@ function App() {
 
         <Router>
           <TitleUpdater />
+          <HeaderConditional />
           <Switch>
             <Route path='/TrialEnd'>
               <TrialEnd />
@@ -528,7 +541,7 @@ function App() {
                 <AddDistributer />
               </Protected>
             </Route>
-            <Route path='/DistributorList'>
+            <Route path='/distributorList'>
               <Protected>
                 <DistributerList />
               </Protected>

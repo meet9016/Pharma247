@@ -126,7 +126,7 @@ const Password = () => {
     return (
         <>
 
-            <Header />
+            
             <ToastContainer
 
                 position="top-right"

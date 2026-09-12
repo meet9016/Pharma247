@@ -165,7 +165,7 @@ const Purchase_Return_Report = () => {
   return (
     <>
       <div>
-        <Header />
+        
         <ToastContainer
           position="top-right"
           autoClose={5000}

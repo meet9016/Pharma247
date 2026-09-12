@@ -190,7 +190,7 @@ const Gstr_3B = () => {
 
   return (
     <>
-      <Header />
+      
       <ToastContainer
         position="top-right"
         autoClose={5000}

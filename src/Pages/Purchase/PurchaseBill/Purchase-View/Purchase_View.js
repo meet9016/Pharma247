@@ -221,7 +221,7 @@ const PurchaseView = () => {
 
   return (
     <>
-      <Header />
+      
 
       <div style={{ backgroundColor: 'rgb(240, 240, 240)', height: 'calc(100vh - 65px)', padding: "0px 20px 0px", display: "flex", flexDirection: "column", overflow: "hidden" }}>
 

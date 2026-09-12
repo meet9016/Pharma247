@@ -212,7 +212,7 @@ const Plans = () => {
 
   return (
     <>
-      <Header />
+      
       <ToastContainer
 
         position="top-right"

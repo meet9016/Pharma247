@@ -193,7 +193,7 @@ const CustomerView = () => {
   };
   return (
     <>
-      <Header />
+      
       {isLoading ? (
         <div className="loader-container ">
           <Loader />

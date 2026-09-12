@@ -208,7 +208,7 @@ const CashManage = () => {
   return (
     <>
       <div>
-        <Header />
+        
 
         <div
           style={{

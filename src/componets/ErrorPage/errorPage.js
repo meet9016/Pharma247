@@ -8,7 +8,7 @@ const ErrorPage = () => {
     return (
         <>
             <div>
-                <Header />
+                
                 <div className="container mx-auto">
                     <div className="flex flex-wrap items-center justify-center">
                         <div className="w-100 my-6">

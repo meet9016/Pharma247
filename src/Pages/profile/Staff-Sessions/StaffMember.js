@@ -348,7 +348,7 @@ const StaffMember = () => {
 
     return (
         <>
-            <Header />
+            
             <ToastContainer
 
                 position="top-right"

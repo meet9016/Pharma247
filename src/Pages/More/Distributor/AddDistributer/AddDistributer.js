@@ -256,7 +256,7 @@ const AddDistributer = () => {
           setDurgLicence("");
           setDueDays("");
           setTimeout(() => {
-            history.push("/DistributorList");
+            history.push("/distributorList");
           }, 1000);
         });
     } catch (error) {
@@ -285,7 +285,7 @@ const AddDistributer = () => {
 
   return (
     <div>
-      <Header />
+      
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -306,7 +306,7 @@ const AddDistributer = () => {
               </h1>
               <h1
                 className="text-xl font-bold primary cursor-pointer add_dist_dst_lst"
-                onClick={() => history.push("/DistributorList")}
+                onClick={() => history.push("/distributorList")}
               >
                 <ReplyAllIcon className="mb-2 mr-2" />
                 Distributor List
@@ -963,7 +963,7 @@ const AddDistributer = () => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => history.push("/DistributorList")}
+                      onClick={() => history.push("/distributorList")}
                       style={{
                         marginLeft: "8px",
                         backgroundColor: "#dbdce0",

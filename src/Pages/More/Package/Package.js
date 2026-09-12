@@ -320,7 +320,7 @@ toast.error(error.response.data.message)
   return (
 
     <div >
-      <Header />
+      
         <ToastContainer
 
         position="top-right"

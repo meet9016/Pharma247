@@ -101,7 +101,7 @@ const ReferEarn = () => {
 
   return (
     <>
-      <Header />
+      
       <ToastContainer
 
         position="top-right"
